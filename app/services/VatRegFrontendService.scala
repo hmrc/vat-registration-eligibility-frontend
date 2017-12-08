@@ -16,15 +16,17 @@
 
 package services
 
-import javax.inject.Singleton
+import javax.inject.Inject
 
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.config.inject.ServicesConfig
 
-@Singleton
-class VatRegFrontendService extends ServicesConfig {
-  val vatRegFrontendUrl: String = getConfString("vat-registration-frontend.www.url", "")
+class VatRegFrontendServiceImpl @Inject()(config: ServicesConfig) extends VatRegFrontendService {
+  val vatRegFrontendUrl: String = config.getConfString("vat-registration-frontend.www.url", "")
+}
 
-  def buildVatRegFrontendUrlEntry(implicit hc: HeaderCarrier): String = s"$vatRegFrontendUrl/who-is-registering-the-company-for-vat"
-  def buildVatRegFrontendUrlWelcome(implicit hc: HeaderCarrier): String = vatRegFrontendUrl
+trait VatRegFrontendService {
+  val vatRegFrontendUrl: String
+
+  def buildVatRegFrontendUrlEntry: String = s"$vatRegFrontendUrl/who-is-registering-the-company-for-vat"
+  def buildVatRegFrontendUrlWelcome: String = vatRegFrontendUrl
 }

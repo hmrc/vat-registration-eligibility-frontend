@@ -16,28 +16,33 @@
 
 package services
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
-import common.enums.VatRegStatus
+import common.enums.CacheKeys.{CurrentProfile => CurrentProfileKey}
+import common.enums.CacheKeys._
 import connectors.{BusinessRegistrationConnector, CompanyRegistrationConnector, KeystoreConnector}
 import models.CurrentProfile
-import common.enums.CacheKeys.{CurrentProfile => CurrentProfileKey}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.http.HeaderCarrier
 
-@Singleton
-class CurrentProfileService @Inject()(val keystoreConnector: KeystoreConnector,
+class CurrentProfileServiceImpl @Inject()(val keystoreConnector: KeystoreConnector,
                                       val businessRegistrationConnector: BusinessRegistrationConnector,
                                       val compRegConnector: CompanyRegistrationConnector,
-                                      val incorpInfoService: IncorpInfoService,
-                                      val vatRegistrationService: VatRegistrationService)  {
+                                      val incorpInfoService: IncorporationInformationService,
+                                      val vatRegistrationService: VatRegistrationService) extends CurrentProfileService
+
+trait CurrentProfileService {
+  val keystoreConnector: KeystoreConnector
+  val businessRegistrationConnector: BusinessRegistrationConnector
+  val compRegConnector: CompanyRegistrationConnector
+  val incorpInfoService: IncorporationInformationService
+  val vatRegistrationService: VatRegistrationService
 
   def getCurrentProfile()(implicit hc: HeaderCarrier): Future[CurrentProfile] = {
-    keystoreConnector.fetchAndGet[CurrentProfile](CurrentProfileKey.toString) flatMap {
-      case Some(profile) => Future.successful(profile)
-      case None => buildCurrentProfile
+    keystoreConnector.fetchAndGet[CurrentProfile](CurrentProfileKey) flatMap {
+      _.fold(buildCurrentProfile)(profile => Future.successful(profile))
     }
   }
 
@@ -60,4 +65,3 @@ class CurrentProfileService @Inject()(val keystoreConnector: KeystoreConnector,
     } yield profile
   }
 }
-

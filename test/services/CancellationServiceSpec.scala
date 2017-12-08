@@ -28,7 +28,11 @@ import scala.concurrent.Future
 class CancellationServiceSpec extends VatRegSpec with VatRegistrationFixture {
 
   class Setup {
-    val service = new CancellationService(mockKeystoreConnector,mockS4LService, mockCurrentProfileService)
+    val service = new CancellationService {
+      override val keystoreConnector = mockKeystoreConnector
+      override val s4LConnector = mockS4LConnector
+      override val currentProfileService = mockCurrentProfileService
+    }
 
     def mockBuildCurrentProfile(regId: String) = when(mockCurrentProfileService.buildCurrentProfile(ArgumentMatchers.any()))
       .thenReturn(Future.successful(currentProfile.copy(registrationId = regId)))
@@ -45,10 +49,10 @@ class CancellationServiceSpec extends VatRegSpec with VatRegistrationFixture {
     def failedRemoveFromKeystore = when(mockKeystoreConnector.remove()(ArgumentMatchers.any()))
       .thenReturn(Future.failed(new Exception("ThrownError")))
 
-    def clearFromS4Later = when(mockS4LService.clear()(ArgumentMatchers.any(),ArgumentMatchers.any()))
+    def clearFromS4Later = when(mockS4LConnector.clear(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.successful(HttpResponse(200)))
 
-    def failedClearFromS4Later = when(mockS4LService.clear()(ArgumentMatchers.any(),ArgumentMatchers.any()))
+    def failedClearFromS4Later = when(mockS4LConnector.clear(ArgumentMatchers.any())(ArgumentMatchers.any()))
       .thenReturn(Future.failed(new Exception("ThrownError")))
   }
 

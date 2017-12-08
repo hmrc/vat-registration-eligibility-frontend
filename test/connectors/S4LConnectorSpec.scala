@@ -34,7 +34,9 @@ class S4LConnectorSpec extends UnitSpec with MockitoSugar with FutureAssertions 
 
   val mockShortLivedCache = mock[VatShortLivedCache]
 
-  object S4LConnectorTest extends S4LConnector(mockShortLivedCache)
+  val s4lConnectorTest = new S4LConnector {
+    override val shortCache = mockShortLivedCache
+  }
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -48,7 +50,7 @@ class S4LConnectorSpec extends UnitSpec with MockitoSugar with FutureAssertions 
         (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(Option(taxableTurnoverModel)))
 
-      S4LConnectorTest.fetchAndGet[TaxableTurnover]("", "") returnsSome taxableTurnoverModel
+      await(s4lConnectorTest.fetchAndGet[TaxableTurnover]("", "")) shouldBe Some(taxableTurnoverModel)
     }
   }
 
@@ -60,7 +62,7 @@ class S4LConnectorSpec extends UnitSpec with MockitoSugar with FutureAssertions 
         (ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(returnCacheMap))
 
-      val result = S4LConnectorTest.save[TaxableTurnover]("", "", taxableTurnoverModel)
+      val result = s4lConnectorTest.save[TaxableTurnover]("", "", taxableTurnoverModel)
       await(result) shouldBe returnCacheMap
     }
   }
@@ -71,7 +73,7 @@ class S4LConnectorSpec extends UnitSpec with MockitoSugar with FutureAssertions 
         (ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(HttpResponse(OK)))
 
-      val result = S4LConnectorTest.clear("test")
+      val result = s4lConnectorTest.clear("test")
       await(result).status shouldBe HttpResponse(OK).status
     }
   }
@@ -82,7 +84,7 @@ class S4LConnectorSpec extends UnitSpec with MockitoSugar with FutureAssertions 
         (ArgumentMatchers.any(), ArgumentMatchers.any()))
         .thenReturn(Future.successful(Some(cacheMap)))
 
-      val result = S4LConnectorTest.fetchAll("testUserId")
+      val result = s4lConnectorTest.fetchAll("testUserId")
       await(result) shouldBe Some(cacheMap)
     }
   }

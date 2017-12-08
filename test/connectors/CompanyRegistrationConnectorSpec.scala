@@ -19,25 +19,26 @@ package connectors
 import helpers.VatRegSpec
 import models.external.CompanyRegistrationProfile
 import play.api.libs.json.{JsObject, Json}
-import utils.VREFEFeatureSwitch
+import uk.gov.hmrc.http.BadRequestException
+import utils.VREFEFeatureSwitches
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.BadRequestException
 
 class CompanyRegistrationConnectorSpec extends VatRegSpec {
 
   val testUrl = "testUrl"
   val testUri = "testUri"
-  val mockFeatureSwitch = mock[VREFEFeatureSwitch]
+  val mockFeatureSwitch = mock[VREFEFeatureSwitches]
 
   class Setup(stubbed: Boolean) {
-    val connector = new CompanyRegistrationConnector(mockFeatureSwitch) {
+    val connector = new CompanyRegistrationConnector {
       override val companyRegistrationUri = testUri
       override val companyRegistrationUrl = testUrl
       override lazy val stubUri = testUri
       override lazy val stubUrl = testUrl
       override val http = mockWSHttp
       override def useCompanyRegistration = stubbed
+      override val featureSwitch = mockFeatureSwitch
     }
   }
 

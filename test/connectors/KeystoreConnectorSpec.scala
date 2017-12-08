@@ -32,7 +32,9 @@ class KeystoreConnectorSpec extends VatRegSpec with VatMocks {
 
   val mockVatSessionCache = mock[VatSessionCache]
 
-  val connector = new KeystoreConnector(mockVatSessionCache)
+  val connector = new KeystoreConnector {
+    override val sessionCache = mockVatSessionCache
+  }
 
   case class TestModel(test: String)
 

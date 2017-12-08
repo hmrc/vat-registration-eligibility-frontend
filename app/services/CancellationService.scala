@@ -19,40 +19,44 @@ package services
 import javax.inject.Inject
 
 import common.enums.CacheKeys
-import connectors.KeystoreConnector
+import connectors.{KeystoreConnector, S4LConnector}
 import models.CurrentProfile
-import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
-
-import scala.concurrent.Future
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-class CancellationService @Inject()(val keystoreConnector: KeystoreConnector,
-                                    val s4LService: S4LService,
-                                    val currentProfileService: CurrentProfileService){
+import scala.concurrent.Future
+
+class CancellationServiceImpl @Inject()(val keystoreConnector: KeystoreConnector,
+                                        val s4LConnector: S4LConnector,
+                                        val currentProfileService: CurrentProfileService) extends CancellationService
+
+trait CancellationService {
+  val keystoreConnector: KeystoreConnector
+  val s4LConnector: S4LConnector
+  val currentProfileService: CurrentProfileService
 
   def deleteEligibilityData(regId: String)(implicit hc: HeaderCarrier): Future[Boolean] = {
     getCurrentProfile flatMap { implicit profile =>
       if (regId != profile.registrationId) {
-        Logger.warn(s"[VatRegistrationService] [deleteEligibilityData] - Requested document regId: $regId does not correspond to the CurrentProfile regId")
+        logger.warn(s"[VatRegistrationService] [deleteEligibilityData] - Requested document regId: $regId does not correspond to the CurrentProfile regId")
         Future.successful(false)
       } else {
         clearSessionData
       }} recover {
       case ex: Exception =>
-        Logger.error(s"[VatRegistrationService] [deleteEligibilityData] - Received an error when deleting Registration regId: $regId - error: ${ex.getMessage}")
+        logger.error(s"[VatRegistrationService] [deleteEligibilityData] - Received an error when deleting Registration regId: $regId - error: ${ex.getMessage}")
         throw ex
     }
   }
 
   private def clearSessionData(implicit hc: HeaderCarrier, profile: CurrentProfile): Future[Boolean] = for {
     _ <- keystoreConnector.remove()
-    _ <- s4LService.clear()
+    _ <- s4LConnector.clear(profile.registrationId)
   } yield true
 
   private def getCurrentProfile(implicit hc: HeaderCarrier): Future[CurrentProfile] = {
-    keystoreConnector.fetchAndGet[CurrentProfile](CacheKeys.CurrentProfile.toString) flatMap (
-        _.fold(currentProfileService.buildCurrentProfile)(cp => Future.successful(cp))
-      )
+    keystoreConnector.fetchAndGet[CurrentProfile](CacheKeys.CurrentProfile.toString) flatMap(
+      _.fold(currentProfileService.buildCurrentProfile)(cp => Future.successful(cp))
+    )
   }
 }

@@ -16,23 +16,22 @@
 
 package controllers.builders
 
-import models.api.VatServiceEligibility
 import models.view.{SummaryRow, SummarySection}
 
-case class SummaryOtherVatSchemeBuilder(vatServiceEligibility: VatServiceEligibility)
+case class SummaryOtherVatSchemeBuilder(a:Option[Boolean])
   extends SummarySectionBuilder {
 
   override val sectionId: String = "otherVatScheme"
 
   val agriculturalFlatRow: SummaryRow = SummaryRow(
     s"$sectionId.agriculturalFlat",
-    booleanToMessageKey(vatServiceEligibility.applyingForAnyOf),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showApplyingForAnyOf())
   )
 
   val accountingSchemeRow: SummaryRow = SummaryRow(
     s"$sectionId.accountingScheme",
-    booleanToMessageKey(vatServiceEligibility.applyingForAnyOf),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showApplyingForAnyOf())
   )
 

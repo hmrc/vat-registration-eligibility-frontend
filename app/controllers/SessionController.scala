@@ -17,16 +17,20 @@
 package controllers
 
 import java.io.File
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import views.html.pages.error.TimeoutView
 
 import scala.concurrent.Future
 
-@Singleton
-class SessionController @Inject()(implicit val messagesApi: MessagesApi) extends VatRegistrationController {
+class SessionControllerImpl @Inject()(implicit val messagesApi: MessagesApi,
+                                      val authConnector: AuthConnector) extends SessionController
+
+trait SessionController extends VatRegistrationController {
+
   def renewSession: Action[AnyContent] = authorised.async {
     implicit user =>
       implicit request =>

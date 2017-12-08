@@ -20,7 +20,9 @@ import java.time.LocalDate
 
 import fixtures.{S4LFixture, VatRegistrationFixture}
 import helpers.VatRegSpec
+import mocks.ThresholdServiceMock
 import models.CurrentProfile
+import models.MonthYearModel.FORMAT_DD_MMMM_Y
 import models.view.{ExpectationOverThresholdView, OverThresholdView}
 import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers
@@ -33,20 +35,26 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture with S4LFixture {
+class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture with S4LFixture with ThresholdServiceMock {
 
   val expectedError = "Date of Incorporation data expected to be found in Incorporation"
 
-  object TestThresholdController extends ThresholdController() {
+  val testThresholdController = new ThresholdController {
     override val authConnector = mockAuthConnector
+    override val thresholdService = mockThresholdService
+    override val messagesApi = mockMessages
+    override val currentProfileService = mockCurrentProfileService
 
     override def withCurrentProfile(f: (CurrentProfile) => Future[Result])(implicit request: Request[_], hc: HeaderCarrier): Future[Result] = {
      f(currentProfile)
     }
   }
 
-  object TestThresholdControllerWithoutIncorpDate extends ThresholdController() {
+  val testThresholdControllerWithoutIncorpDate = new ThresholdController {
     override val authConnector = mockAuthConnector
+    override val thresholdService = mockThresholdService
+    override val messagesApi = mockMessagesApi
+    override val currentProfileService = mockCurrentProfileService
 
     override def withCurrentProfile(f: (CurrentProfile) => Future[Result])(implicit request: Request[_], hc: HeaderCarrier): Future[Result] = {
       f(currentProfile.copy(incorporationDate = None))
@@ -59,29 +67,47 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
     val expectedText = "VAT taxable turnover gone over"
 
     "returnException if no IncorporationInfo Date present" in {
-      val res = intercept[Exception](callAuthorised(TestThresholdControllerWithoutIncorpDate.goneOverShow) {
+      val res = intercept[Exception](callAuthorised(testThresholdControllerWithoutIncorpDate.goneOverShow) {
         a => status(a) shouldBe 500
       }).getMessage
       res shouldBe expectedError
     }
 
-    "return HTML when there's an over threshold view data" in {
-      val overThreshold = OverThresholdView(true, Some(LocalDate.of(2017, 6, 30)))
+    "return HTML when there is no view data" in {
+      mockGetThresholdViewModel[OverThresholdView](Future.successful(None))
 
-      when(mockEligibilityService.getEligibilityChoice(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithThreshold.copy(overThreshold = Some(overThreshold))))
-
-      callAuthorised(TestThresholdController.goneOverShow) {
-        _ includesText expectedText
+      callAuthorised(testThresholdController.goneOverShow) { res =>
+        res includesText expectedText
+        res passJsoupTest { doc =>
+          doc.getElementById("pageHeading").text should include(incorpDate.format(FORMAT_DD_MMMM_Y))
+          doc.getElementsByAttribute("checked").size shouldBe 0
+          doc.getElementById("overThreshold.month").attr("value") shouldBe ""
+          doc.getElementById("overThreshold.year").attr("value") shouldBe ""
+        }
       }
     }
 
-    "return HTML with a default over threshold view data" in {
-      when(mockEligibilityService.getEligibilityChoice(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(emptyS4LEligibilityChoice))
+    "return HTML when there's an over threshold view data with date" in {
+      mockGetThresholdViewModel[OverThresholdView](Future.successful(Some(validOverThresholdView.copy(true, Some(LocalDate.of(2017, 6, 30))))))
 
-      callAuthorised(TestThresholdController.goneOverShow) {
-        _ includesText expectedText
+      callAuthorised(testThresholdController.goneOverShow) {
+        _ passJsoupTest { doc =>
+          doc.getElementById("overThreshold.month").attr("value") shouldBe "6"
+          doc.getElementById("overThreshold.year").attr("value") shouldBe "2017"
+          doc.getElementById("overThresholdRadio-true").attr("checked") shouldBe "checked"
+        }
+      }
+    }
+
+    "return HTML when there's an over threshold view data with no date" in {
+      mockGetThresholdViewModel[OverThresholdView](Future.successful(Some(validOverThresholdView.copy(false, None))))
+
+      callAuthorised(testThresholdController.goneOverShow) {
+        _ passJsoupTest { doc =>
+          doc.getElementById("overThreshold.month").attr("value") shouldBe ""
+          doc.getElementById("overThreshold.year").attr("value") shouldBe ""
+          doc.getElementById("overThresholdRadio-false").attr("checked") shouldBe "checked"
+        }
       }
     }
   }
@@ -90,7 +116,7 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
     "return Exception When Incorporation date is empty" in {
 
       val res = intercept[Exception](submitAuthorised
-      (TestThresholdControllerWithoutIncorpDate.goneOverSubmit, fakeRequest.withFormUrlEncodedBody())
+      (testThresholdControllerWithoutIncorpDate.goneOverSubmit, fakeRequest.withFormUrlEncodedBody())
       (a => status(a) shouldBe 500)).getMessage
       res shouldBe expectedError
     }
@@ -98,7 +124,7 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
     "return 400 when no data posted" in {
 
       submitAuthorised(
-        TestThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody()) {
+        testThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody()) {
         status(_) shouldBe Status.BAD_REQUEST
       }
     }
@@ -106,7 +132,7 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
     "return 400 when partial data is posted" in {
 
       submitAuthorised(
-        TestThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody(
+        testThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody(
           "overThresholdRadio" -> "true",
           "overThreshold.month" -> "",
           "overThreshold.year" -> "2017"
@@ -116,11 +142,10 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
     }
 
     "return 400 with incorrect data (date before incorporation date) - yes selected" in {
-      val overThreshold = OverThresholdView(true, Some(LocalDate.of(2017, 6, 30)))
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithThreshold.copy(overThreshold = Some(overThreshold))))
+      val thresholdOverThresholdTrue = validThresholdPostIncorp.copy(overThreshold = Some(OverThresholdView(true, Some(LocalDate.of(2017, 6, 30)))))
+      mockSaveThreshold(Future.successful(thresholdOverThresholdTrue))
 
-      submitAuthorised(TestThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody(
+      submitAuthorised(testThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody(
         "overThresholdRadio" -> "true",
         "overThreshold.month" -> "6",
         "overThreshold.year" -> "2016"
@@ -130,11 +155,10 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
     }
 
     "return 303 with valid data - yes selected" in {
-      val overThreshold = OverThresholdView(true, Some(LocalDate.of(2017, 1, 30)))
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithThreshold.copy(overThreshold = Some(overThreshold))))
+      val thresholdOverThresholdTrue = validThresholdPostIncorp.copy(overThreshold = Some(OverThresholdView(true, Some(LocalDate.of(2017, 1, 30)))))
+      mockSaveThreshold(Future.successful(thresholdOverThresholdTrue))
 
-      submitAuthorised(TestThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody(
+      submitAuthorised(testThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody(
         "overThresholdRadio" -> "true",
         "overThreshold.month" -> "1",
         "overThreshold.year" -> "2017"
@@ -144,10 +168,9 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
     }
 
     "return 303 with valid data - no selected" in {
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithThreshold))
+      mockSaveThreshold(Future.successful(validThresholdPostIncorp))
 
-      submitAuthorised(TestThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody(
+      submitAuthorised(testThresholdController.goneOverSubmit(), fakeRequest.withFormUrlEncodedBody(
         "overThresholdRadio" -> "false"
       )) {
         _ redirectsTo controllers.routes.ThresholdController.expectationOverShow().url
@@ -156,38 +179,61 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
 
   }
   s"GET ${routes.ThresholdController.expectationOverShow()}" should {
+    val thresholdexpectOverThresholdTrue = ExpectationOverThresholdView(true, Some(LocalDate.of(2017, 6, 30)))
+    val thresholdexpectOverThresholdFalse = ExpectationOverThresholdView(false, None)
+
     "returnException if no IncorporationInfo Date present" in {
-      val expectation = ExpectationOverThresholdView(true, Some(LocalDate.of(2017, 6, 30)))
-
-      when(mockEligibilityService.getEligibilityChoice(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithThreshold.copy(expectationOverThreshold = Some(expectation))))
-
-      val res = intercept[Exception](callAuthorised(TestThresholdControllerWithoutIncorpDate.expectationOverShow)
+      mockGetThresholdViewModel[ExpectationOverThresholdView](Future.successful(Some(thresholdexpectOverThresholdTrue)))
+      val res = intercept[Exception](callAuthorised(testThresholdControllerWithoutIncorpDate.expectationOverShow)
       (a => status(a) shouldBe 500)).getMessage
       res shouldBe expectedError
     }
-    "return 200 and elements are populated when there's a over threshold view in S4L" in {
-      val expectation = ExpectationOverThresholdView(true, Some(LocalDate.of(2017, 6, 30)))
 
-      when(mockEligibilityService.getEligibilityChoice(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithThreshold.copy(expectationOverThreshold = Some(expectation))))
+    "return 200 and the page is NOT prepopulated if there is no view data" in {
+      mockGetThresholdViewModel[ExpectationOverThresholdView](Future.successful(None))
 
-      callAuthorised(TestThresholdController.expectationOverShow()) {
-        a =>
-          a.map(a => {val res = Jsoup.parse(contentAsString(a))
-          res.getElementById("expectationOverThreshold.day").attr("value") shouldBe("30")
-          res.getElementById("expectationOverThreshold.month").attr("value") shouldBe("6")
-          res.getElementById("expectationOverThreshold.year").attr("value") shouldBe("2017")
-          res.getElementById("expectationOverThresholdRadio-true").attr("checked") shouldBe "checked"})
-
-          }
+      callAuthorised(testThresholdController.expectationOverShow()) {
+        _ passJsoupTest { doc =>
+          doc.getElementById("expectationOverThreshold.day").attr("value") shouldBe ""
+          doc.getElementById("expectationOverThreshold.month").attr("value") shouldBe ""
+          doc.getElementById("expectationOverThreshold.year").attr("value") shouldBe ""
+          doc.getElementById("expectationOverThresholdRadio-true").attr("checked") shouldBe ""
+        }
       }
     }
+
+    "return 200 and elements are populated when there's a over threshold view with date" in {
+      mockGetThresholdViewModel[ExpectationOverThresholdView](Future.successful(Some(thresholdexpectOverThresholdTrue)))
+
+      callAuthorised(testThresholdController.expectationOverShow()) {
+        _ passJsoupTest { doc =>
+          doc.getElementById("expectationOverThreshold.day").attr("value") shouldBe "30"
+          doc.getElementById("expectationOverThreshold.month").attr("value") shouldBe "6"
+          doc.getElementById("expectationOverThreshold.year").attr("value") shouldBe "2017"
+          doc.getElementById("expectationOverThresholdRadio-true").attr("checked") shouldBe "checked"
+        }
+      }
+    }
+
+    "return 200 and elements are populated when there's a over threshold view with no date" in {
+      mockGetThresholdViewModel[ExpectationOverThresholdView](Future.successful(Some(thresholdexpectOverThresholdFalse)))
+
+      callAuthorised(testThresholdController.expectationOverShow()) {
+        _ passJsoupTest { doc =>
+          doc.getElementById("expectationOverThreshold.day").attr("value") shouldBe ""
+          doc.getElementById("expectationOverThreshold.month").attr("value") shouldBe ""
+          doc.getElementById("expectationOverThreshold.year").attr("value") shouldBe ""
+          doc.getElementById("expectationOverThresholdRadio-true").attr("checked") shouldBe ""
+          doc.getElementById("expectationOverThresholdRadio-false").attr("checked") shouldBe "checked"
+        }
+      }
+    }
+  }
   s"POST ${routes.ThresholdController.expectationOverSubmit()}" should {
     "return Exception When Incorporation date is empty" in {
 
       val res = intercept[Exception](submitAuthorised
-      (TestThresholdControllerWithoutIncorpDate.expectationOverSubmit(), fakeRequest.withFormUrlEncodedBody())
+      (testThresholdControllerWithoutIncorpDate.expectationOverSubmit(), fakeRequest.withFormUrlEncodedBody())
       (a => status(a) shouldBe 500)).getMessage
       res shouldBe expectedError
     }
@@ -195,18 +241,17 @@ class ThresholdControllerSpec extends VatRegSpec with VatRegistrationFixture wit
     "return 400 when no data posted" in {
 
       submitAuthorised(
-        TestThresholdController.expectationOverSubmit(), fakeRequest.withFormUrlEncodedBody()) {
+        testThresholdController.expectationOverSubmit(), fakeRequest.withFormUrlEncodedBody()) {
         status(_) shouldBe Status.BAD_REQUEST
       }
     }
 
     "return 303 with valid data - yes selected" in {
-      val expectation = ExpectationOverThresholdView(true, Some(LocalDate.of(2017, 1, 1)))
+      val thresholdexpectOverThresholdTrue = ExpectationOverThresholdView(true, Some(LocalDate.of(2017, 1, 1)))
 
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithThreshold.copy(expectationOverThreshold = Some(expectation))))
+      mockGetThresholdViewModel[ExpectationOverThresholdView](Future.successful(Some(thresholdexpectOverThresholdTrue)))
 
-      submitAuthorised(TestThresholdController.expectationOverSubmit(), fakeRequest.withFormUrlEncodedBody(
+      submitAuthorised(testThresholdController.expectationOverSubmit(), fakeRequest.withFormUrlEncodedBody(
         "expectationOverThresholdRadio" -> "true",
         "expectationOverThreshold.day" -> "01",
         "expectationOverThreshold.month" -> "01",

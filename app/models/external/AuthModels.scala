@@ -19,6 +19,7 @@ package models.external
 import play.api.libs.json.Json
 
 trait AuthResponse
+
 case class Authority(ids: String, userDetailsLink: String) extends AuthResponse
 
 object Authority {

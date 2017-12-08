@@ -16,7 +16,7 @@
 
 package models.external
 
-import play.api.libs.json.{Json, _}
+import play.api.libs.json._
 
 case class BusinessProfile(registrationID: String,
                            language: String)

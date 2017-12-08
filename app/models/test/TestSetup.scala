@@ -35,10 +35,10 @@ case class VatEligibilityChoiceTestSetup(taxableTurnoverChoice: Option[String],
                                          overThresholdSelection: Option[String],
                                          overThresholdMonth: Option[String],
                                          overThresholdYear: Option[String],
-                                         expectationOverThresholdSelection:Option[String],
-                                         expectationOverThresholdDay:Option[String],
-                                         expectationOverThresholdMonth:Option[String],
-                                         expectationOverThresholdYear:Option[String])
+                                         expectationOverThresholdSelection: Option[String],
+                                         expectationOverThresholdDay: Option[String],
+                                         expectationOverThresholdMonth: Option[String],
+                                         expectationOverThresholdYear: Option[String])
 
 object VatEligibilityChoiceTestSetup {
   implicit val format = Json.format[VatEligibilityChoiceTestSetup]

@@ -32,28 +32,26 @@ class EligibilitySummaryControllerSpec extends VatRegSpec with VatRegistrationFi
 
   class Setup {
 
-    val testController = new EligibilitySummaryController()(
-      mockS4LService,
-      mockMessages,
-      mockSummaryService,
-      mockVatRegistrationService,
-      mockCurrentProfileService
-    ) {
+    val testController = new EligibilitySummaryController {
       override val authConnector = mockAuthConnector
+      override val summaryService = mockSummaryService
+      override val vatRegistrationService = mockVatRegistrationService
+      override val currentProfileService = mockCurrentProfileService
+      override val messagesApi = mockMessages
 
       override def withCurrentProfile(f: (CurrentProfile) => Future[Result])(implicit request: Request[_], hc: HeaderCarrier): Future[Result] = {
         f(currentProfile)
       }
     }
-    val INCORPORATION_STATUS = "incorporationStatus"
 
+    val INCORPORATION_STATUS = "incorporationStatus"
   }
 
   val fakeRequest = FakeRequest(controllers.routes.EligibilitySummaryController.show())
 
   "Calling eligibility summary to show the Eligibility summary page" should {
     "return HTML with a valid threshold summary view" in new Setup {
-      when(mockSummaryService.getEligibilitySummary()(ArgumentMatchers.any(),ArgumentMatchers.any()))
+      when(mockSummaryService.getEligibilitySummary(ArgumentMatchers.any(),ArgumentMatchers.any()))
         .thenReturn(validEligibilitySummary)
 
       callAuthorised(testController.show)(_ includesText "Check and confirm your answers")
@@ -62,7 +60,8 @@ class EligibilitySummaryControllerSpec extends VatRegSpec with VatRegistrationFi
 
   s"POST ${controllers.routes.EligibilitySummaryController.submit()}" should {
     "return 303 with valid data - Company NOT INCORPORATED" in new Setup {
-      when(mockVatRegistrationService.getIncorporationDate(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(Future.successful(None))
+      when(mockVatRegistrationService.getIncorporationDate(ArgumentMatchers.any(), ArgumentMatchers.any()))
+        .thenReturn(Future.successful(None))
 
       mockKeystoreFetchAndGet[IncorporationInfo](INCORPORATION_STATUS, None)
 
@@ -71,4 +70,4 @@ class EligibilitySummaryControllerSpec extends VatRegSpec with VatRegistrationFi
       }
     }
   }
-  }
+}

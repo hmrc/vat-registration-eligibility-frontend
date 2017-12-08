@@ -16,35 +16,34 @@
 
 package controllers.builders
 
-import models.api.VatServiceEligibility
 import models.view.{SummaryRow, SummarySection}
 
-case class SummaryOtherBusinessBuilder(vatServiceEligibility: VatServiceEligibility)
+case class SummaryOtherBusinessBuilder(a:Option[Boolean])
   extends SummarySectionBuilder {
 
   override val sectionId: String = "otherBusiness"
 
   val soleTraderRow: SummaryRow = SummaryRow(
     s"$sectionId.soleTrader",
-    booleanToMessageKey(vatServiceEligibility.doAnyApplyToYou),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoAnyApplyToYou())
   )
 
   val vatGroupRow: SummaryRow = SummaryRow(
     s"$sectionId.vatGroup",
-    booleanToMessageKey(vatServiceEligibility.doAnyApplyToYou),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoAnyApplyToYou())
   )
 
   val makingProfitRow: SummaryRow = SummaryRow(
     s"$sectionId.makingProfit",
-    booleanToMessageKey(vatServiceEligibility.doAnyApplyToYou),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoAnyApplyToYou())
   )
 
   val limitedCompanyRow: SummaryRow = SummaryRow(
     s"$sectionId.limitedCompany",
-    booleanToMessageKey(vatServiceEligibility.doAnyApplyToYou),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoAnyApplyToYou())
   )
 

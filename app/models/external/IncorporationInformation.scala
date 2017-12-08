@@ -20,7 +20,6 @@ import java.time.LocalDate
 
 import play.api.libs.json._
 
-
 case class IncorpSubscription(transactionId: String, regime: String, subscriber: String, callbackUrl: String)
 
 object IncorpSubscription {

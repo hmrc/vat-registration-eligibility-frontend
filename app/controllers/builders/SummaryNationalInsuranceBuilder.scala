@@ -16,16 +16,15 @@
 
 package controllers.builders
 
-import models.api.VatServiceEligibility
 import models.view.{SummaryRow, SummarySection}
 
-case class SummaryNationalInsuranceBuilder(vatServiceEligibility: VatServiceEligibility) extends SummarySectionBuilder {
+case class SummaryNationalInsuranceBuilder(a:Option[Boolean]) extends SummarySectionBuilder {
 
   override val sectionId: String = "nationalInsurance"
 
   val nationalInsuranceRow: SummaryRow = SummaryRow(
     s"$sectionId.hasNino",
-    booleanToMessageKey(vatServiceEligibility.haveNino),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showHaveNino())
   )
 

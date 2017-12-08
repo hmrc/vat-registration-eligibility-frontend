@@ -20,6 +20,7 @@ import common.enums.CacheKeys.IneligibilityReason
 import common.enums.{EligibilityQuestions => Questions}
 import fixtures.{S4LFixture, VatRegistrationFixture}
 import helpers.VatRegSpec
+import mocks.EligibilityServiceMock
 import models.CurrentProfile
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
@@ -33,15 +34,15 @@ import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
 import scala.concurrent.Future
 
-class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture with S4LFixture {
+class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture with S4LFixture with EligibilityServiceMock {
 
   class Setup {
-    val testController = new EligibilityController(mockKeystoreConnector,
-      mockCurrentProfileService,
-      mockEligibilityService,
-      mockMessages,
-      mockVatRegistrationService) {
+    val testController = new EligibilityController {
       override val authConnector: AuthConnector = mockAuthConnector
+      override val eligibilityService = mockEligibilityService
+      override val keystoreConnector = mockKeystoreConnector
+      override val currentProfileService = mockCurrentProfileService
+      override val messagesApi = mockMessages
 
       override def withCurrentProfile(f: (CurrentProfile) => Future[Result])(implicit request: Request[_], hc: HeaderCarrier): Future[Result] = {
         f(currentProfile)
@@ -51,20 +52,17 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
 
   "GET EligibilityController.showExemptionCriteria()" should {
     "return HTML for relevant page with no data in the form" in new Setup {
-      when(mockEligibilityService.getEligibility(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockGetEligibility(Future.successful(validEligibility))
 
       val expectedTitle = "Will the company apply for a VAT registration exception or exemption?"
-      callAuthorised(testController.showExemptionCriteria())(_ includesText expectedTitle)
+      callAuthorised(testController.showExemptionCriteria())(a => a includesText expectedTitle)
     }
   }
 
   "POST EligibilityController.submitExemptionCriteria()" should {
 
     "redirect to 'company will do any of' if answer is yes" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
-
+        mockSaveEligibility(Future.successful(validEligibility))
       submitAuthorised(testController.submitExemptionCriteria,
         FakeRequest().withFormUrlEncodedBody(
           "question" -> Questions.applyingForVatExemption,
@@ -79,8 +77,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
     }
 
     "show ineligible screen on yes submitted" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       when(mockKeystoreConnector.cache[String](any(), any())(any(), any())).thenReturn(CacheMap("id", Map()).pure)
 
@@ -92,8 +89,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
 
   "GET EligibilityController.showHaveNino()" should {
     "return HTML for relevant page with no data in the form" in new Setup {
-      when(mockEligibilityService.getEligibility(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockGetEligibility(Future.successful(validEligibility))
 
       val expectedTitle = "Do you have a UK National Insurance number?"
       callAuthorised(testController.showHaveNino())(_ includesText expectedTitle)
@@ -103,9 +99,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
   "POST EligibilityController.submitHaveNino()" should {
 
     "redirect to 'doing business abroad' if answer is yes" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
-
+      mockSaveEligibility(Future.successful(validEligibility))
       submitAuthorised(testController.submitHaveNino,
         FakeRequest().withFormUrlEncodedBody(
           "question" -> Questions.haveNino,
@@ -120,8 +114,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
     }
 
     "show ineligible screen on no submitted" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       when(mockKeystoreConnector.cache[String](any(), any())(any(), any())).thenReturn(CacheMap("id", Map()).pure)
 
@@ -133,8 +126,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
 
   "GET EligibilityController.showDoingBusinessAbroad()" should {
     "return HTML for relevant page with no data in the form" in new Setup {
-      when(mockEligibilityService.getEligibility(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockGetEligibility(Future.successful(validEligibility))
 
       val expectedTitle = "Will the company do international business"
       callAuthorised(testController.showDoingBusinessAbroad())(_ includesText expectedTitle)
@@ -144,8 +136,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
   "POST EligibilityController.submitDoingBusinessAbroad()" should {
 
     "redirect to 'do any apply to you' if answer is no" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       submitAuthorised(testController.submitDoingBusinessAbroad,
         FakeRequest().withFormUrlEncodedBody(
@@ -161,9 +152,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
     }
 
     "show ineligible screen on yes submitted" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
-
+      mockSaveEligibility(Future.successful(validEligibility))
       when(mockKeystoreConnector.cache[String](any(), any())(any(), any())).thenReturn(CacheMap("id", Map()).pure)
 
       submitAuthorised(testController.submitDoingBusinessAbroad,
@@ -174,9 +163,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
 
   "GET EligibilityController.showDoAnyApplyToYou()" should {
     "return HTML for relevant page with no data in the form" in new Setup {
-      when(mockEligibilityService.getEligibility(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
-
+      mockGetEligibility(Future.successful(validEligibility))
       val expectedTitle = "Are you involved with more than one business or changing the legal status of your business?"
       callAuthorised(testController.showDoAnyApplyToYou())(_ includesText expectedTitle)
     }
@@ -185,8 +172,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
   "POST EligibilityController.submitDoAnyApplyToYou()" should {
 
     "redirect to 'do any apply to you' if answer is no" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       submitAuthorised(testController.submitDoAnyApplyToYou,
         FakeRequest().withFormUrlEncodedBody(
@@ -202,8 +188,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
     }
 
     "show ineligible screen on yes submitted" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       when(mockKeystoreConnector.cache[String](any(), any())(any(), any())).thenReturn(CacheMap("id", Map()).pure)
 
@@ -215,8 +200,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
 
   "GET EligibilityController.showApplyingForAnyOf()" should {
     "return HTML for relevant page with no data in the form" in new Setup {
-      when(mockEligibilityService.getEligibility(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockGetEligibility(Future.successful(validEligibility))
 
       val expectedTitle = "Is the company applying for either the Agricultural Flat Rate Scheme or the Annual Accounting Scheme?"
       callAuthorised(testController.showApplyingForAnyOf())(_ includesText expectedTitle)
@@ -226,8 +210,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
   "POST EligibilityController.submitApplyingForAnyOf()" should {
 
     "redirect to 'do any apply to you' if answer is no" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       submitAuthorised(testController.submitApplyingForAnyOf,
         FakeRequest().withFormUrlEncodedBody(
@@ -243,8 +226,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
     }
 
     "show ineligible screen on yes submitted" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       when(mockKeystoreConnector.cache[String](any(), any())(any(), any())).thenReturn(CacheMap("id", Map()).pure)
 
@@ -256,8 +238,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
 
   "GET EligibilityController.showCompanyWillDoAnyOf()" should {
     "return HTML for relevant page with no data in the form" in new Setup {
-      when(mockEligibilityService.getEligibility(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockGetEligibility(Future.successful(validEligibility))
 
       val expectedTitle = "Will the company do any of the following once"
       callAuthorised(testController.showCompanyWillDoAnyOf())(_ includesText expectedTitle)
@@ -267,8 +248,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
   "POST EligibilityController.submitCompanyWillDoAnyOf()" should {
 
     "redirect to 'do any apply to you' if answer is no" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       submitAuthorised(testController.submitCompanyWillDoAnyOf,
         FakeRequest().withFormUrlEncodedBody(
@@ -284,8 +264,7 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
     }
 
     "show ineligible screen on yes submitted" in new Setup {
-      when(mockEligibilityService.saveQuestion(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
+      mockSaveEligibility(Future.successful(validEligibility))
 
       when(mockKeystoreConnector.cache[String](any(), any())(any(), any())).thenReturn(CacheMap("id", Map()).pure)
 
@@ -304,12 +283,12 @@ class EligibilityControllerSpec extends VatRegSpec with VatRegistrationFixture w
 
       //below the "" empty css class indicates that the section is showing (not "hidden")
       val eligibilityQuestions = Seq[(Questions.Value, String)](
-        Questions.haveNino                    -> """id="nino-text" class=""""",
-        Questions.doingBusinessAbroad         -> """id="business-abroad-text" class=""""",
+        Questions.haveNino                                      -> """id="nino-text" class=""""",
+        Questions.doingBusinessAbroad                        -> """id="business-abroad-text" class=""""",
         Questions.doAnyApplyToYou             -> """id="do-any-apply-to-you-text" class=""""",
-        Questions.applyingForAnyOf            -> """id="applying-for-any-of-text" class=""""",
-        Questions.applyingForVatExemption     -> """id="applying-for-vat-exemption-text"""",
-        Questions.companyWillDoAnyOf          -> """id="company-will-do-any-of-text" class="""""
+        Questions.applyingForAnyOf               -> """id="applying-for-any-of-text" class=""""",
+        Questions.applyingForVatExemption                         -> """id="applying-for-vat-exemption-text"""",
+        Questions.companyWillDoAnyOf                  -> """id="company-will-do-any-of-text" class="""""
       )
 
       forAll(eligibilityQuestions) { case (question, expectedTitle) =>

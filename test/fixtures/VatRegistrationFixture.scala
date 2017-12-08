@@ -17,40 +17,48 @@
 package fixtures
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
-import common.enums.VatRegStatus
-import models.api._
 import models.external.{IncorporationInfo, _}
-import models.view.{Summary, SummaryRow, SummarySection}
-import play.api.http.Status._
-import uk.gov.hmrc.play.http._
-import uk.gov.hmrc.http.HttpResponse
+import models.view.TaxableTurnover._
+import models.view.VoluntaryRegistration._
+import models.view.VoluntaryRegistrationReason._
+import models.view._
 
 trait VatRegistrationFixture {
-
   //Test variables
   val testRegId = "VAT123456"
-  val validHttpResponse = HttpResponse(OK)
-  val testDate = LocalDate.of(2017, 3, 21)
+  val testDate = Some(LocalDate.of(2017, 3, 21))
 
   //Api models
-  val validVatChoice = VatEligibilityChoice(
-    VatEligibilityChoice.NECESSITY_VOLUNTARY,
-    vatThresholdPostIncorp = Some(VatThresholdPostIncorp(true, Some(testDate))),
-    vatExpectedThresholdPostIncorp = Some(VatExpectedThresholdPostIncorp(true, Some(testDate))))
-  val validServiceEligibility          = VatServiceEligibility(Some(true), Some(false), Some(false), Some(false), Some(false), Some(false), Some(validVatChoice))
-  val validServiceEligibilityNoChoice  = VatServiceEligibility(Some(true), Some(false), Some(false), Some(false), Some(false), Some(false))
-
-  val validVatThresholdPostIncorp      = VatThresholdPostIncorp(overThresholdSelection = false, None)
-  val validExpectedVatThresholdPostIncorp      = VatExpectedThresholdPostIncorp(expectedOverThresholdSelection = true, Some(LocalDate.now()))
-  val emptyVatScheme = VatScheme(testRegId, status = VatRegStatus.draft)
-
-  val validVatScheme = VatScheme(
-    id = testRegId,
-    status =VatRegStatus.draft,
-    vatServiceEligibility = Some(validServiceEligibility)
+  val validThresholdPreIncorp = Threshold(
+    taxableTurnover = Some(TaxableTurnover(TAXABLE_NO)),
+    voluntaryRegistration = Some(VoluntaryRegistration(REGISTER_YES)),
+    voluntaryRegistrationReason = Some(VoluntaryRegistrationReason(SELLS)),
+    overThreshold = None,
+    expectationOverThreshold = None
   )
+  val validThresholdPostIncorp = Threshold(
+    taxableTurnover = None,
+    voluntaryRegistration = Some(VoluntaryRegistration(REGISTER_YES)),
+    voluntaryRegistrationReason = Some(VoluntaryRegistrationReason(SELLS)),
+    overThreshold = Some(OverThresholdView(selection = false, None)),
+    expectationOverThreshold = Some(ExpectationOverThresholdView(selection = false, None))
+  )
+  val validThresholdPostIncorp2 = Threshold(
+    taxableTurnover = None,
+    voluntaryRegistration = Some(VoluntaryRegistration(REGISTER_YES)),
+    voluntaryRegistrationReason = Some(VoluntaryRegistrationReason(SELLS)),
+    overThreshold = Some(OverThresholdView(selection = true, testDate)),
+    expectationOverThreshold = Some(ExpectationOverThresholdView(selection = true, testDate))
+  )
+
+  val validEligibility = Eligibility(Some(true),Some(false),Some(false),Some(false),Some(false),Some(false))
+
+  // View Models
+  val validOverThresholdView = OverThresholdView(false,None)
+  val validTaxableTurnOverView = TaxableTurnover(TaxableTurnover.TAXABLE_YES)
+  val validVoluntaryRegistrationView = VoluntaryRegistration(VoluntaryRegistration.REGISTER_YES)
+  val validVoluntaryRegistrationReasonView = VoluntaryRegistrationReason(VoluntaryRegistrationReason.SELLS)
 
   val testIncorporationInfo = IncorporationInfo(
     IncorpSubscription(
@@ -64,14 +72,7 @@ trait VatRegistrationFixture {
       incorporationDate = Some(LocalDate.of(2016, 8, 5)),
       description = Some("Some description")))
 
-  def vatScheme(id: String = testRegId, vatServiceEligibility: Option[VatServiceEligibility] = None): VatScheme =
-    VatScheme(
-      id = id,
-      status = VatRegStatus.draft,
-      vatServiceEligibility = vatServiceEligibility
-    )
-
-  val nationalInsuiranceSection = SummarySection(
+  val nationalInsuranceSection = SummarySection(
     "nationalInsurance",
     rows = Seq((SummaryRow("nationalInsurance.hasNino","app.common.yes",Some(controllers.routes.EligibilityController.showHaveNino())),true))
   )
@@ -122,7 +123,7 @@ trait VatRegistrationFixture {
   )
 
   val validEligibilitySummary = Summary(Seq(
-    nationalInsuiranceSection,
+    nationalInsuranceSection,
     internationalBusinessSection,
     otherBusinessSection,
     otherVatSchemeSection,

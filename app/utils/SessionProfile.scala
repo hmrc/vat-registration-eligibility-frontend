@@ -16,6 +16,8 @@
 
 package utils
 
+import java.time.LocalDate
+
 import models.CurrentProfile
 import play.api.mvc.{Request, Result}
 import services.CurrentProfileService
@@ -30,4 +32,7 @@ trait SessionProfile {
   def withCurrentProfile(f: CurrentProfile => Future[Result])(implicit request: Request[_], hc: HeaderCarrier): Future[Result] = {
     currentProfileService.getCurrentProfile flatMap f
   }
+
+  def hasIncorpDate(f: LocalDate => Future[Result])(implicit cp: CurrentProfile) =
+    cp.incorporationDate.fold(throw new IllegalStateException("Date of Incorporation data expected to be found in Incorporation"))(f)
 }

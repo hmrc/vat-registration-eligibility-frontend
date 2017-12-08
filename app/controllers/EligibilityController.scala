@@ -16,34 +16,38 @@
 
 package controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
 import common.enums.CacheKeys.IneligibilityReason
-import common.enums.{EligibilityQuestions => Questions}
+import common.enums.EligibilityQuestions
 import connectors.KeystoreConnector
 import forms.ServiceCriteriaFormFactory
-import models.view.YesOrNoQuestion
 import models.CurrentProfile
+import models.view.YesOrNoQuestion
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, Result}
-import services.{CurrentProfileService, EligibilityService, VatRegistrationService}
+import services.{CurrentProfileService, EligibilityService}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import utils.SessionProfile
 
 import scala.concurrent.Future
 
-@Singleton
-class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
-                                      val currentProfileService: CurrentProfileService,
-                                      val eligibilityService: EligibilityService,
-                                      implicit val messagesApi: MessagesApi,
-                                      implicit val vrs: VatRegistrationService)
-  extends VatRegistrationController with SessionProfile {
 
-  private def submitQuestion(question: Questions.Value, newValue: Boolean, exitCondition: Boolean)(success: => Result, fail: => Result)
+class EligibilityControllerImpl @Inject()(val keystoreConnector: KeystoreConnector,
+                                          val currentProfileService: CurrentProfileService,
+                                          val eligibilityService: EligibilityService,
+                                          val messagesApi: MessagesApi,
+                                          val authConnector: AuthConnector) extends EligibilityController{}
+
+trait EligibilityController extends VatRegistrationController with SessionProfile {
+  val keystoreConnector: KeystoreConnector
+  val eligibilityService: EligibilityService
+
+  private def submitQuestion(question: EligibilityQuestions.Value, newValue: Boolean, exitCondition: Boolean)(success: => Result, fail: => Result)
                             (implicit currentProfile: CurrentProfile, hc: HeaderCarrier): Future[Result] = {
-    eligibilityService.saveQuestion(question, newValue) flatMap { _ =>
+    eligibilityService.saveEligibility(YesOrNoQuestion(question, newValue)) flatMap { _ =>
       if(exitCondition) {
         keystoreConnector.cache(IneligibilityReason.toString, question.toString) map (_ => fail)
       } else {
@@ -52,7 +56,7 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
     }
   }
 
-  private def fillYesNoQuestionForm(question: Questions.Value, optBoolean: Option[Boolean]): Form[YesOrNoQuestion] = {
+  private def fillYesNoQuestionForm(question: EligibilityQuestions.Value, optBoolean: Option[Boolean]): Form[YesOrNoQuestion] = {
     val form: Form[YesOrNoQuestion] = ServiceCriteriaFormFactory.form(question)
     optBoolean.fold(form)(x => form.fill(YesOrNoQuestion(question, x)))
   }
@@ -63,7 +67,7 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
         withCurrentProfile { implicit profile =>
           keystoreConnector.fetchAndGet[String](IneligibilityReason.toString) map {
             case None         => InternalServerError
-            case Some(v) if v == Questions.applyingForVatExemption.toString => Ok(views.html.pages.ineligible.exemption_ineligible())
+            case Some(v) if v == EligibilityQuestions.applyingForVatExemption.toString => Ok(views.html.pages.ineligible.exemption_ineligible())
             case Some(v)      => Ok(views.html.pages.ineligible.ineligible(v.toString))
           }
         }
@@ -75,7 +79,7 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
         withCurrentProfile { implicit profile =>
           for {
             eligibility <- eligibilityService.getEligibility
-            formFilled  =  fillYesNoQuestionForm(Questions.haveNino, eligibility.haveNino)
+            formFilled  =  fillYesNoQuestionForm(EligibilityQuestions.haveNino, eligibility.hasNino)
           } yield Ok(views.html.pages.have_nino(formFilled))
         }
   }
@@ -84,9 +88,9 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
     implicit user =>
       implicit request =>
         withCurrentProfile { implicit profile =>
-          ServiceCriteriaFormFactory.form(Questions.haveNino).bindFromRequest.fold(
+          ServiceCriteriaFormFactory.form(EligibilityQuestions.haveNino).bindFromRequest.fold(
             hasErrors => Future.successful(BadRequest(views.html.pages.have_nino(hasErrors))),
-            data => submitQuestion(Questions.haveNino, data.answer, !data.answer)(
+            data => submitQuestion(EligibilityQuestions.haveNino, data.answer, !data.answer)(
               success = Redirect(controllers.routes.EligibilityController.showDoingBusinessAbroad()),
               fail    = Redirect(controllers.routes.EligibilityController.ineligible())
             )
@@ -100,7 +104,7 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
         withCurrentProfile { implicit profile =>
           for {
             eligibility <- eligibilityService.getEligibility
-            formFilled = fillYesNoQuestionForm(Questions.doingBusinessAbroad, eligibility.doingBusinessAbroad)
+            formFilled = fillYesNoQuestionForm(EligibilityQuestions.doingBusinessAbroad, eligibility.internationalBusiness)
           } yield Ok(views.html.pages.doing_business_abroad(formFilled))
         }
   }
@@ -109,9 +113,9 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
     implicit  user =>
       implicit request =>
         withCurrentProfile { implicit profile =>
-          ServiceCriteriaFormFactory.form(Questions.doingBusinessAbroad).bindFromRequest.fold(
+          ServiceCriteriaFormFactory.form(EligibilityQuestions.doingBusinessAbroad).bindFromRequest.fold(
             hasErrors => Future.successful(BadRequest(views.html.pages.doing_business_abroad(hasErrors))),
-            data => submitQuestion(Questions.doingBusinessAbroad, data.answer, data.answer)(
+            data => submitQuestion(EligibilityQuestions.doingBusinessAbroad, data.answer, data.answer)(
               success = Redirect(controllers.routes.EligibilityController.showDoAnyApplyToYou()),
               fail    = Redirect(controllers.routes.EligibilityController.ineligible())
             )
@@ -125,7 +129,7 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
         withCurrentProfile { implicit profile =>
           for {
             eligibility <- eligibilityService.getEligibility
-            formFilled  =  fillYesNoQuestionForm(Questions.doAnyApplyToYou, eligibility.doAnyApplyToYou)
+            formFilled  =  fillYesNoQuestionForm(EligibilityQuestions.doAnyApplyToYou, eligibility.moreThanOneBusinessOrLegalStatus)
           } yield Ok(views.html.pages.do_any_apply_to_you(formFilled))
         }
   }
@@ -134,9 +138,9 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
     implicit user =>
       implicit request =>
         withCurrentProfile { implicit profile =>
-          ServiceCriteriaFormFactory.form(Questions.doAnyApplyToYou).bindFromRequest.fold(
+          ServiceCriteriaFormFactory.form(EligibilityQuestions.doAnyApplyToYou).bindFromRequest.fold(
             hasErrors => Future.successful(BadRequest(views.html.pages.do_any_apply_to_you(hasErrors))),
-            data => submitQuestion(Questions.doAnyApplyToYou, data.answer, data.answer)(
+            data => submitQuestion(EligibilityQuestions.doAnyApplyToYou, data.answer, data.answer)(
               success = Redirect(controllers.routes.EligibilityController.showApplyingForAnyOf()),
               fail    = Redirect(controllers.routes.EligibilityController.ineligible())
             )
@@ -150,7 +154,7 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
         withCurrentProfile { implicit profile =>
           for {
             eligibility <- eligibilityService.getEligibility
-            formFilled  =  fillYesNoQuestionForm(Questions.applyingForAnyOf, eligibility.applyingForAnyOf)
+            formFilled  =  fillYesNoQuestionForm(EligibilityQuestions.applyingForAnyOf, eligibility.agriculturalFRSOrAnnualAccount)
           } yield Ok(views.html.pages.applying_for_any_of(formFilled))
         }
   }
@@ -159,9 +163,9 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
     implicit user =>
       implicit request =>
         withCurrentProfile{ implicit profile =>
-          ServiceCriteriaFormFactory.form(Questions.applyingForAnyOf).bindFromRequest.fold(
+          ServiceCriteriaFormFactory.form(EligibilityQuestions.applyingForAnyOf).bindFromRequest.fold(
             hasErrors => Future.successful(BadRequest(views.html.pages.applying_for_any_of(hasErrors))),
-            data => submitQuestion(Questions.applyingForAnyOf, data.answer, data.answer)(
+            data => submitQuestion(EligibilityQuestions.applyingForAnyOf, data.answer, data.answer)(
               success = Redirect(controllers.routes.EligibilityController.showExemptionCriteria()),
               fail    = Redirect(controllers.routes.EligibilityController.ineligible())
             )
@@ -175,7 +179,7 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
         withCurrentProfile { implicit profile =>
           for {
             eligibility <- eligibilityService.getEligibility
-            formFilled  =  fillYesNoQuestionForm(Questions.companyWillDoAnyOf, eligibility.companyWillDoAnyOf)
+            formFilled  =  fillYesNoQuestionForm(EligibilityQuestions.companyWillDoAnyOf, eligibility.racehorsesOrLandAndProperty)
           } yield Ok(views.html.pages.company_will_do_any_of(formFilled))
         }
   }
@@ -184,14 +188,14 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
     implicit user =>
       implicit request =>
         withCurrentProfile { implicit profile =>
-          ServiceCriteriaFormFactory.form(Questions.companyWillDoAnyOf).bindFromRequest.fold(
+          ServiceCriteriaFormFactory.form(EligibilityQuestions.companyWillDoAnyOf).bindFromRequest.fold(
             hasErrors => Future.successful(BadRequest(views.html.pages.company_will_do_any_of(hasErrors))),
-            data => submitQuestion(Questions.companyWillDoAnyOf, data.answer, data.answer)(
+            data => submitQuestion(EligibilityQuestions.companyWillDoAnyOf, data.answer, data.answer)(
               success = Redirect(controllers.routes.EligibilitySummaryController.show()),
               fail    = Redirect(controllers.routes.EligibilityController.ineligible())
             )
           )
-      }
+        }
   }
 
   def showExemptionCriteria : Action[AnyContent] = authorised.async{
@@ -200,7 +204,7 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
         withCurrentProfile { implicit profile =>
           for {
             eligibility <- eligibilityService.getEligibility
-            formFilled  =  fillYesNoQuestionForm(Questions.applyingForVatExemption, eligibility.applyingForVatExemption)
+            formFilled  =  fillYesNoQuestionForm(EligibilityQuestions.applyingForVatExemption, eligibility.exceptionOrExemption)
           } yield Ok(views.html.pages.applying_for_vat_exemption(formFilled))
         }
   }
@@ -209,13 +213,15 @@ class EligibilityController @Inject()(val keystoreConnector: KeystoreConnector,
     implicit user =>
       implicit request =>
         withCurrentProfile { implicit profile =>
-          ServiceCriteriaFormFactory.form(Questions.applyingForVatExemption).bindFromRequest.fold(
+          ServiceCriteriaFormFactory.form(EligibilityQuestions.applyingForVatExemption).bindFromRequest.fold(
             hasErrors => Future.successful(BadRequest(views.html.pages.applying_for_vat_exemption(hasErrors))),
-            data => submitQuestion(Questions.applyingForVatExemption, data.answer, data.answer)(
+            data => submitQuestion(EligibilityQuestions.applyingForVatExemption, data.answer, data.answer)(
               success = Redirect(controllers.routes.EligibilityController.showCompanyWillDoAnyOf()),
               fail    = Redirect(controllers.routes.EligibilityController.ineligible())
             )
           )
-      }
+        }
   }
 }
+
+

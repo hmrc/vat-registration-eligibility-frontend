@@ -16,44 +16,44 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
 import config.WSHttp
 import models.external.BusinessProfile
-import play.api.Logger
-import uk.gov.hmrc.play.config.ServicesConfig
+import play.api.http.Status.FORBIDDEN
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.config.inject.ServicesConfig
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{BadRequestException, CoreGet, HeaderCarrier, HttpReads, NotFoundException, Upstream4xxResponse, Upstream5xxResponse}
 
-@Singleton
-class BusinessRegistrationConnector @Inject()() extends ServicesConfig {
-  val businessRegUrl = baseUrl("business-registration")
-  val http: CoreGet = WSHttp
+class BusinessRegistrationConnectorImpl @Inject()(val http: WSHttp, config: ServicesConfig) extends BusinessRegistrationConnector {
+  lazy val businessRegUrl = config.baseUrl("business-registration")
+}
+
+trait BusinessRegistrationConnector {
+  val businessRegUrl: String
+
+  val http: WSHttp
 
   def retrieveBusinessProfile(implicit hc: HeaderCarrier, rds: HttpReads[BusinessProfile]): Future[BusinessProfile] = {
-    http.GET[BusinessProfile](s"$businessRegUrl/business-registration/business-tax-registration") map {
-      profile =>
-        profile
-    } recover {
-      case e =>
-        throw logResponse(e, "retrieveBusinessProfile", "retrieving business profile")
+    http.GET[BusinessProfile](s"$businessRegUrl/business-registration/business-tax-registration") recover {
+      case e => throw logResponse(e, "retrieveBusinessProfile", "retrieving business profile")
     }
   }
 
   private[connectors] def logResponse(e: Throwable, f: String, m: String, regId: Option[String] = None): Throwable = {
-    val optRegId = regId.map(r => s" and regId: $regId").getOrElse("")
-    def log(s: String) = Logger.error(s"[BusinessRegistrationConnector] [$f] received $s when $m$optRegId")
+    val optRegId = regId.fold("")(id => s" and regId: $id")
+    def log(s: String): Unit = logger.error(s"[BusinessRegistrationConnector] [$f] received $s when $m$optRegId")
     e match {
-      case e: NotFoundException => log("NOT FOUND")
+      case e: NotFoundException   => log("NOT FOUND")
       case e: BadRequestException => log("BAD REQUEST")
       case e: Upstream4xxResponse => e.upstreamResponseCode match {
-      case 403 => log("FORBIDDEN")
-      case _ => log(s"Upstream 4xx: ${e.upstreamResponseCode} ${e.message}")
-    }
+        case FORBIDDEN => log("FORBIDDEN")
+        case _         => log(s"Upstream 4xx: ${e.upstreamResponseCode} ${e.message}")
+      }
       case e: Upstream5xxResponse => log(s"Upstream 5xx: ${e.upstreamResponseCode}")
-      case e: Exception => log(s"ERROR: ${e.getMessage}")
+      case e: Exception           => log(s"ERROR: ${e.getMessage}")
     }
     e
   }

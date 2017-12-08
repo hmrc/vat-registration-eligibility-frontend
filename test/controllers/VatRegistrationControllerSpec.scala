@@ -61,42 +61,4 @@ class VatRegistrationControllerSpec extends VatRegSpec {
       callAuthorised(testController.authorisedActionGenerator)(status(_) shouldBe NO_CONTENT)
     }
   }
-
-  "copyGlobalErrorsToFields" should {
-
-    "leave form object intact if no form errors are present" in new Setup {
-      lazy val formUpdate = testController.copyGlobalErrorsToFields[TestClass]("text")
-
-      val data = Map(
-        "text" -> Seq("some text"),
-        "number" -> Seq("123")
-      )
-      val form = testForm.bindFromRequest(data)
-      formUpdate(form) shouldBe form
-    }
-
-    "leave form object intact when not interested in text field" in new Setup {
-      lazy val formUpdate = testController.copyGlobalErrorsToFields[TestClass]("number")
-
-      val data = Map(
-        "text" -> Seq("foo"),
-        "number" -> Seq("123")
-      )
-      val form = testForm.bindFromRequest(data)
-      formUpdate(form) shouldBe form
-    }
-
-    "register an additional form field error on the 'text' field" in new Setup {
-      lazy val formUpdate = testController.copyGlobalErrorsToFields[TestClass]("text")
-
-      val data = Map(
-        "text" -> Seq("foo"),
-        "number" -> Seq("123")
-      )
-
-      val form = testForm.bindFromRequest(data)
-      formUpdate(form) shouldHaveErrors Seq("" -> "message.code", "text" -> "message.code")
-    }
-  }
-
 }

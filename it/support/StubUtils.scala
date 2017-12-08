@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern
 import common.enums.{CacheKeys, VatRegStatus}
-import play.api.libs.json.{Format, JsObject, Json}
+import play.api.libs.json.{Format, JsObject, JsValue, Json}
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
 import uk.gov.hmrc.crypto.ApplicationCrypto
@@ -405,7 +405,7 @@ trait StubUtils {
       stubFor(get(urlPathEqualTo("/business-registration/business-tax-registration")).willReturn(ok(businessProfile)))
       CorporationTaxRegistrationStub().existsWithStatus("held")
 
-      val currentProfile = """
+      val currentProfile = s"""
                              |{
                              | "companyName" : "testCompanyName",
                              | "registrationID" : "1",
@@ -422,10 +422,10 @@ trait StubUtils {
       builder
     }
 
-    def withProfileAndIncorpDate(currentState: Option[String] = None, nextState: Option[String] = None) = withProfileInclIncorp(true, currentState, nextState)
-    def withProfile(currentState: Option[String] = None, nextState: Option[String] = None) = withProfileInclIncorp(false, currentState, nextState)
+    def withProfileAndIncorpDate(currentState: Option[String] = None, nextState: Option[String] = None) = buildProfile(true, currentState, nextState)
+    def withProfile(currentState: Option[String] = None, nextState: Option[String] = None) = buildProfile(false, currentState, nextState)
 
-    private val withProfileInclIncorp = (withIncorporationDate: Boolean, currentState: Option[String], nextState: Option[String]) => {
+    private def buildProfile(withIncorporationDate: Boolean, currentState: Option[String], nextState: Option[String]) = {
       val incorporationDate = Json.parse("""{"incorporationDate": "2016-08-05"}""").as[JsObject]
       val js = Json.parse(s"""
         |{
@@ -491,6 +491,29 @@ trait StubUtils {
           .willReturn(ok(
             s"""{ "registrationId" : "1" , "status" : "draft" }"""
           )))
+      builder
+    }
+
+    def has(block: String, json: JsValue) = {
+      stubFor(
+        get(urlPathEqualTo(s"/vatreg/1/$block"))
+          .willReturn(ok(json.toString))
+      )
+      builder
+    }
+
+    def hasNoData(block: String) = {
+      stubFor(
+        get(urlPathEqualTo(s"/vatreg/1/$block"))
+          .willReturn(noContent())
+      )
+      builder
+    }
+
+    def patched(block: String, json: JsValue) = {
+      stubFor(
+        patch(urlPathMatching(s"/vatreg/1/$block"))
+          .willReturn(aResponse().withStatus(202).withBody(json.toString)))
       builder
     }
 

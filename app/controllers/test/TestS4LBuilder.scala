@@ -23,8 +23,9 @@ import models.{S4LVatEligibility, S4LVatEligibilityChoice}
 import models.test.TestSetup
 import models.view.{ExpectationOverThresholdView, OverThresholdView, TaxableTurnover, VoluntaryRegistration, VoluntaryRegistrationReason}
 
-class TestS4LBuilder {
+class TestS4LBuilderImpl extends TestS4LBuilder
 
+trait TestS4LBuilder {
   def eligibilityChoiceFromData(data: TestSetup): S4LVatEligibilityChoice = {
     val taxableTurnover: Option[String] = data.vatEligibilityChoice.taxableTurnoverChoice
 

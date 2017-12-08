@@ -48,5 +48,4 @@ object TestSetupForm {
     "vatServiceEligibility" -> vatServiceEligibilityTestSetupMapping,
     "vatEligibilityChoice" -> vatChoiceTestSetupMapping
   )(TestSetup.apply)(TestSetup.unapply))
-
 }

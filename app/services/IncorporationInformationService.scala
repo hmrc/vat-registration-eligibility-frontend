@@ -24,10 +24,14 @@ import scala.concurrent.Future
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.http.HeaderCarrier
 
-@Singleton
-class IncorpInfoService @Inject()(val keystoreConnector: KeystoreConnector,
-                                  val incorpInfoConnector: IncorporationInformationConnector) {
+class IncorporationInformationServiceImpl @Inject()(val keystoreConnector: KeystoreConnector,
+                                                    val incorpInfoConnector: IncorporationInformationConnector) extends IncorporationInformationService
 
-  def getCompanyName(regId: String, txId: String)(implicit hc: HeaderCarrier): Future[String] =
+trait IncorporationInformationService {
+  val keystoreConnector: KeystoreConnector
+  val incorpInfoConnector: IncorporationInformationConnector
+
+  def getCompanyName(regId: String, txId: String)(implicit hc: HeaderCarrier): Future[String] = {
     incorpInfoConnector.getCompanyName(regId, txId) map(_.\("company_name").as[String])
+  }
 }

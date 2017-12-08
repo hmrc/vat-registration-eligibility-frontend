@@ -21,7 +21,7 @@ import java.time.LocalDate
 import common.enums.VatRegStatus
 import fixtures.{S4LFixture, VatRegistrationFixture}
 import helpers.FutureAssertions
-import mocks.VatMocks
+import mocks.{EligibilityServiceMock, VatMocks}
 import models.{CurrentProfile, S4LVatEligibility}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -31,28 +31,22 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class SummaryServiceSpec extends UnitSpec with MockitoSugar with VatMocks with FutureAssertions with VatRegistrationFixture with S4LFixture {
+class SummaryServiceSpec extends UnitSpec with MockitoSugar with VatMocks with FutureAssertions with VatRegistrationFixture with S4LFixture with EligibilityServiceMock {
   implicit val hc = HeaderCarrier()
 
   implicit val currentProfile = CurrentProfile("Test Me", testRegId, "000-434-1",
     VatRegStatus.draft,Some(LocalDate.of(2016, 12, 21)))
 
   class Setup {
-    val service = new SummaryService(
-      eligibilityService = mockEligibilityService
-    )
+    val service = new SummaryService {
+      override val  questionsService = mockEligibilityService
+    }
   }
 
   "Calling Eligibility Summary" should {
     "return a valid summary with the right amount of sections from a valid api model" in new Setup {
-      when(mockEligibilityService.getEligibility(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibility))
-
-      when(mockEligibilityService.toApi(ArgumentMatchers.any[S4LVatEligibility]()))
-        .thenReturn(validServiceEligibilityNoChoice)
-
-      val response = await(service.getEligibilitySummary())
-
+      mockGetEligibility(Future.successful(validEligibility))
+      val response = await(service.getEligibilitySummary)
       response.sections.length shouldBe 6
       response.sections(0).id shouldBe "nationalInsurance"
       response.sections(1).id shouldBe "internationalBusiness"

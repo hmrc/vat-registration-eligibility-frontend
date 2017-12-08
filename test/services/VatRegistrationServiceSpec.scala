@@ -33,42 +33,23 @@ import scala.language.postfixOps
 class VatRegistrationServiceSpec extends VatRegSpec with VatRegistrationFixture with S4LFixture {
 
   class Setup {
-    val service = new VatRegistrationService(mockS4LService, mockKeystoreConnector, mockRegConnector)
+    val service = new VatRegistrationService {
+      override val vatRegConnector = mockRegConnector
+      override val keystoreConnector = mockKeystoreConnector
+    }
   }
 
   override def beforeEach() {
     super.beforeEach()
     mockFetchRegId(testRegId)
-    when(mockRegConnector.getIncorporationInfo(any())(any())).thenReturn(OptionT.none[Future, IncorporationInfo])
-  }
-
-  "Calling submitEligibility" should {
-    "return a success response when VatEligibility is submitted" in new Setup {
-      when(mockRegConnector.upsertVatEligibility(any(), any())(any(), any())).thenReturn(validServiceEligibility.pure)
-
-      service.submitEligibility(validServiceEligibility) returns validServiceEligibility
-    }
-  }
-
-  "Calling deleteVatScheme" should {
-    "return a success response when the delete VatScheme is successful" in new Setup {
-      mockKeystoreCache[String]("RegistrationId", CacheMap("", Map.empty))
-      when(mockRegConnector.deleteVatScheme(any())(any(), any())).thenReturn(().pure)
-
-      service.deleteVatScheme() completedSuccessfully
-    }
-  }
-
-  "When this is the first time the user starts a journey and we're persisting to the backend" should {
-    "submitEligibility should process the submission even if VatScheme does not contain a VatEligibility object" in new Setup {
-      when(mockRegConnector.upsertVatEligibility(any(), any())(any(), any())).thenReturn(validServiceEligibility.pure)
-      service.submitEligibility(validServiceEligibility) returns validServiceEligibility
-    }
+    when(mockRegConnector.getIncorporationInfo(any())(any()))
+      .thenReturn(Future.successful(None))
   }
 
   "Calling getIncorporationInfo" should {
     "successfully returns an incorporation information" in new Setup {
-      when(mockRegConnector.getIncorporationInfo(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(OptionT.fromOption(Some(testIncorporationInfo)))
+      when(mockRegConnector.getIncorporationInfo(ArgumentMatchers.any())(ArgumentMatchers.any()))
+        .thenReturn(Future.successful(Some(testIncorporationInfo)))
 
       service.getIncorporationInfo("txId") returns Some(testIncorporationInfo)
     }
@@ -78,23 +59,16 @@ class VatRegistrationServiceSpec extends VatRegSpec with VatRegistrationFixture 
     "successfully returns an incorporation date from keystore" in new Setup {
       mockKeystoreFetchAndGet[CurrentProfile](CacheKeys.CurrentProfile.toString, Some(currentProfile))
 
-      service.getIncorporationDate("txId") returns currentProfile.incorporationDate
+      service.getIncorporationDate returns currentProfile.incorporationDate
     }
 
     "successfully returns an incorporation date from microservice and save to keystore" in new Setup {
-      mockKeystoreFetchAndGet[CurrentProfile](CacheKeys.CurrentProfile.toString, Some(currentProfile.copy(incorporationDate = None)))
-      when(mockRegConnector.getIncorporationInfo(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(OptionT.fromOption(Some(testIncorporationInfo)))
+      when(mockRegConnector.getIncorporationInfo(ArgumentMatchers.any())(ArgumentMatchers.any()))
+        .thenReturn(Future.successful(Some(testIncorporationInfo)))
+
       mockKeystoreCache[String](CacheKeys.CurrentProfile.toString, CacheMap("", Map.empty))
 
-      service.getIncorporationDate("txId") returns testIncorporationInfo.statusEvent.incorporationDate
-    }
-
-    "throw an exception if no Current Profile is returned from keystore" in new Setup {
-      mockKeystoreFetchAndGet[CurrentProfile](CacheKeys.CurrentProfile.toString, None)
-      when(mockRegConnector.getIncorporationInfo(ArgumentMatchers.any())(ArgumentMatchers.any())).thenReturn(OptionT.fromOption(Some(testIncorporationInfo)))
-      mockKeystoreCache[String](CacheKeys.CurrentProfile.toString, CacheMap("", Map.empty))
-
-      an[IllegalStateException] shouldBe thrownBy(await(service.getIncorporationDate("txId")))
+      service.getIncorporationDate(currentProfile.copy(incorporationDate = None), hc) returns testIncorporationInfo.statusEvent.incorporationDate
     }
   }
 }

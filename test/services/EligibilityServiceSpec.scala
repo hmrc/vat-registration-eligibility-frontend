@@ -16,242 +16,151 @@
 
 package services
 
-import java.time.LocalDate
-
-import common.enums.{CacheKeys, EligibilityQuestions, VatRegStatus}
-import fixtures.{S4LFixture, VatRegistrationFixture}
+import common.enums.{EligibilityQuestions, EligibilityResult, VatRegStatus}
+import connectors.VatRegistrationConnector
+import fixtures.VatRegistrationFixture
 import helpers.FutureAssertions
 import mocks.VatMocks
-import models.api.{VatEligibilityChoice, VatExpectedThresholdPostIncorp, VatScheme, VatThresholdPostIncorp}
-import models.view.{ExpectationOverThresholdView, OverThresholdView, TaxableTurnover, VoluntaryRegistration, VoluntaryRegistrationReason}
-import models.view.TaxableTurnover._
-import models.view.VoluntaryRegistration._
-import models.view.VoluntaryRegistrationReason._
-import models.{CurrentProfile, S4LVatEligibility, S4LVatEligibilityChoice}
+import models.CurrentProfile
+import models.view.Eligibility
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import org.scalatest.mockito.MockitoSugar
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.http.cache.client.CacheMap
+import org.scalatest.mockito.MockitoSugar
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.Future
 
-class EligibilityServiceSpec extends UnitSpec with MockitoSugar with VatMocks with FutureAssertions with VatRegistrationFixture with S4LFixture {
+class EligibilityServiceSpec extends UnitSpec with MockitoSugar with VatMocks with FutureAssertions with VatRegistrationFixture {
+  implicit val currentProfile = CurrentProfile("Test Me", testRegId, "000-434-1", VatRegStatus.draft,None)
   implicit val hc = HeaderCarrier()
+  val validEmptyEligibility = Eligibility(None, None, None, None, None, None)
 
-  class SetupWithCurrentProfileIncorpDate {
-    implicit val currentProfile = CurrentProfile("Test Me", testRegId, "000-434-1",
-      VatRegStatus.draft,Some(LocalDate.of(2016, 12, 21)))
+  class Setup(s4lData: Option[Eligibility] = None, backendData: Option[(String, Int)] = None) {
+    val service = new EligibilityService {
+      override val s4LConnector = mockS4LConnector
+      override val vatRegistrationConnector: VatRegistrationConnector = mockRegConnector
+      override val currentVersion = 1
+    }
 
-    val service = new EligibilityService(
-      s4lService = mockS4LService,
-      vatRegistrationService = mockVatRegistrationService
-    )
+    when(mockS4LConnector.fetchAndGet[Eligibility](ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(Future.successful(s4lData))
 
-    when(mockS4LService.fetchAndGet(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-      .thenReturn(Future.successful(None))
+    getEligibilityMock(Future.successful(backendData))
+
+    when(mockS4LConnector.save(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(Future.successful(CacheMap("", Map())))
   }
 
-  class SetupWithCurrentProfileNoIncorpDate {
-    implicit val currentProfile = CurrentProfile("Test Me", testRegId, "000-434-1",
-      VatRegStatus.draft,None)
+  class SetupForS4L {
+    val service = new EligibilityService {
+      override val s4LConnector = mockS4LConnector
+      override val vatRegistrationConnector: VatRegistrationConnector = mockRegConnector
+      override val currentVersion = 1
 
-    val service = new EligibilityService(
-      s4lService = mockS4LService,
-      vatRegistrationService = mockVatRegistrationService
-    )
+      override def getEligibility(implicit currentProfile: CurrentProfile, hc: HeaderCarrier): Future[Eligibility] =
+        Future.successful(validEmptyEligibility)
+    }
 
-    when(mockS4LService.fetchAndGet(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-      .thenReturn(Future.successful(None))
+    when(mockS4LConnector.save(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
+      .thenReturn(Future.successful(CacheMap("", Map())))
   }
 
-  class Setup2(newValue: S4LVatEligibility) {
-    implicit val currentProfile = CurrentProfile("Test Me", testRegId, "000-434-1",
-      VatRegStatus.draft,None)
+  class SetupForBackendSave {
+    val service = new EligibilityService {
+      override val s4LConnector = mockS4LConnector
+      override val vatRegistrationConnector: VatRegistrationConnector = mockRegConnector
+      override val currentVersion = 1
 
-    val service = new EligibilityService(s4lService = mockS4LService,
-                                         vatRegistrationService = mockVatRegistrationService) {
-      override def getEligibility(implicit currentProfile: CurrentProfile, hc: HeaderCarrier): Future[S4LVatEligibility] =
-        Future.successful(validS4LEligibility)
+      override def getEligibility(implicit currentProfile: CurrentProfile, hc: HeaderCarrier): Future[Eligibility] =
+        Future.successful(validEmptyEligibility)
+    }
 
-      override def saveEligibilityQuestions(newValue: S4LVatEligibility)
-                                           (implicit currentProfile: CurrentProfile, hc: HeaderCarrier): Future[S4LVatEligibility] =
-        Future.successful(newValue)
+    patchEligibilityMock(Future.successful(Json.toJson("""{}""")))
+
+    when(mockS4LConnector.clear(ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(HttpResponse(200)))
+  }
+
+  class SetupForBackendSaveSuccess {
+    val service = new EligibilityService {
+      override val s4LConnector = mockS4LConnector
+      override val vatRegistrationConnector: VatRegistrationConnector = mockRegConnector
+      override val currentVersion = 1
+
+      override def getEligibility(implicit currentProfile: CurrentProfile, hc: HeaderCarrier): Future[Eligibility] =
+        Future.successful(validEligibility)
+    }
+
+    patchEligibilityMock(Future.successful(Json.toJson("""{}""")))
+
+    when(mockS4LConnector.clear(ArgumentMatchers.any())(ArgumentMatchers.any()))
+      .thenReturn(Future.successful(HttpResponse(200)))
+  }
+
+  "Calling getEligibility" should {
+    val vers = 1
+    val results = EligibilityResult(vers).questions
+
+    val partialEligibility = Eligibility(Some(true), Some(false), Some(false), None, None, None)
+
+    "return a default Eligibility view model if nothing is in S4L & backend" in new Setup {
+      service.getEligibility returns validEmptyEligibility
+    }
+
+    "return a partial Eligibility view model from S4L" in new Setup(Some(partialEligibility)) {
+      service.getEligibility returns partialEligibility
+    }
+
+    "return a failed noNino Eligibility view model from backend" in new Setup(None, Some((results.noNino, vers))) {
+      service.getEligibility returns validEmptyEligibility.copy(hasNino = Some(false))
+    }
+
+    "return a failed racehorsesOrLandAndProperty Eligibility view model from backend" in new Setup(None, Some((results.racehorsesOrLandAndProperty, vers))) {
+      service.getEligibility returns validEligibility.copy(racehorsesOrLandAndProperty = Some(true))
+    }
+
+    "return a full success Eligibility view model from backend" in new Setup(None, Some((results.success, vers))) {
+      service.getEligibility returns validEligibility
     }
   }
 
-  "Calling saveQuestion" should {
-    Seq[(EligibilityQuestions.Value, S4LVatEligibility)](
-      EligibilityQuestions.doingBusinessAbroad -> validS4LEligibility.copy(doingBusinessAbroad = Some(true)),
-      EligibilityQuestions.doAnyApplyToYou -> validS4LEligibility.copy(doAnyApplyToYou = Some(true)),
-      EligibilityQuestions.applyingForAnyOf -> validS4LEligibility.copy(applyingForAnyOf = Some(true)),
-      EligibilityQuestions.applyingForVatExemption -> validS4LEligibility.copy(applyingForVatExemption = Some(true))
+  "Calling saveQuestions" should {
+    import models.view.{YesOrNoQuestion => yn}
+
+    Seq[(yn, Eligibility)](
+      (yn(EligibilityQuestions.haveNino, true), validEmptyEligibility.copy(hasNino = Some(true))),
+      (yn(EligibilityQuestions.doingBusinessAbroad, false), validEmptyEligibility.copy(internationalBusiness = Some(false))),
+      (yn(EligibilityQuestions.doAnyApplyToYou, false), validEmptyEligibility.copy(moreThanOneBusinessOrLegalStatus = Some(false))),
+      (yn(EligibilityQuestions.applyingForAnyOf, false), validEmptyEligibility.copy(agriculturalFRSOrAnnualAccount = Some(false))),
+      (yn(EligibilityQuestions.applyingForVatExemption, false), validEmptyEligibility.copy(exceptionOrExemption = Some(false))),
+      (yn(EligibilityQuestions.companyWillDoAnyOf, false), validEmptyEligibility.copy(racehorsesOrLandAndProperty = Some(false)))
     ).foreach {
-      case (key, expected) =>
-        s"return an updated S4L Eligibility View model with new $key value" in new Setup2(expected) {
-          service.saveQuestion(key, true) returns expected
+      case (view, expected) =>
+        s"save to S4L and return an incomplete Eligibility model with ${view.question} value set to ${view.answer}" in new SetupForS4L {
+          service.saveEligibility(view) returns expected
         }
     }
-  }
 
-  "Calling getEligibilityChoice" should {
-    "return a default empty S4L Eligibility Choice View Model when there is no data in S4L and backend" in new SetupWithCurrentProfileNoIncorpDate {
-      val vatScheme = VatScheme(
-        id = testRegId,
-        status = VatRegStatus.draft,
-        vatServiceEligibility = Some(validServiceEligibilityNoChoice)
-      )
-
-      when(mockVatRegistrationService.getVatScheme()(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(vatScheme))
-
-      when(mockS4LService.save(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(Future.successful(CacheMap("", Map())))
-
-      service.getEligibilityChoice returns S4LVatEligibilityChoice()
+    Seq[(yn, Eligibility)](
+      (yn(EligibilityQuestions.haveNino, false), validEmptyEligibility.copy(hasNino = Some(false))),
+      (yn(EligibilityQuestions.doingBusinessAbroad, true), validEmptyEligibility.copy(internationalBusiness = Some(true))),
+      (yn(EligibilityQuestions.doAnyApplyToYou, true), validEmptyEligibility.copy(moreThanOneBusinessOrLegalStatus = Some(true))),
+      (yn(EligibilityQuestions.applyingForAnyOf, true), validEmptyEligibility.copy(agriculturalFRSOrAnnualAccount = Some(true))),
+      (yn(EligibilityQuestions.applyingForVatExemption, true), validEmptyEligibility.copy(exceptionOrExemption = Some(true))),
+      (yn(EligibilityQuestions.companyWillDoAnyOf, true), validEmptyEligibility.copy(racehorsesOrLandAndProperty = Some(true)))
+    ).foreach {
+      case (view, expected) =>
+        s"save to backend and return an Eligibility model with ${view.question} value set to ${view.answer}" in new SetupForBackendSave {
+          service.saveEligibility(view) returns expected
+        }
     }
 
-    "return a valid S4L View Model converted from backend data when necessity is voluntary and reason is SELLS" in new SetupWithCurrentProfileNoIncorpDate {
-      val choice = VatEligibilityChoice(
-        VatEligibilityChoice.NECESSITY_VOLUNTARY,
-        Some(SELLS)
-      )
-
-      val vatScheme = VatScheme(
-        id = testRegId,
-        status = VatRegStatus.draft,
-        vatServiceEligibility = Some(validServiceEligibility.copy(vatEligibilityChoice = Some(choice)))
-      )
-
-      when(mockVatRegistrationService.getVatScheme()(ArgumentMatchers.any(), ArgumentMatchers.any()))
-          .thenReturn(Future.successful(vatScheme))
-
-      when(mockS4LService.save(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(CacheMap("", Map())))
-
-      val expected = S4LVatEligibilityChoice(
-        Some(TaxableTurnover(TAXABLE_NO)),
-        Some(VoluntaryRegistration(REGISTER_YES)),
-        Some(VoluntaryRegistrationReason(SELLS))
-      )
-
-      service.getEligibilityChoice returns expected
-    }
-
-    "return a valid S4L View Model converted from backend data when necessity is voluntary and reason is INTENDS_TO_SELL" in
-      new SetupWithCurrentProfileNoIncorpDate {
-
-      val choice = VatEligibilityChoice(
-        VatEligibilityChoice.NECESSITY_VOLUNTARY,
-        Some(INTENDS_TO_SELL)
-      )
-
-      val vatScheme = VatScheme(
-        id = testRegId,
-        status = VatRegStatus.draft,
-        vatServiceEligibility = Some(validServiceEligibility.copy(vatEligibilityChoice = Some(choice)))
-      )
-
-      when(mockVatRegistrationService.getVatScheme()(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(vatScheme))
-
-      when(mockS4LService.save(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(CacheMap("", Map())))
-
-      val expected = S4LVatEligibilityChoice(
-        Some(TaxableTurnover(TAXABLE_NO)),
-        Some(VoluntaryRegistration(REGISTER_YES)),
-        Some(VoluntaryRegistrationReason(INTENDS_TO_SELL))
-      )
-
-      service.getEligibilityChoice returns expected
-    }
-
-    "return a valid S4L View Model converted from backend data when necessity is voluntary and reason is NEITHER" in new SetupWithCurrentProfileNoIncorpDate {
-      val choice = VatEligibilityChoice(
-        VatEligibilityChoice.NECESSITY_VOLUNTARY,
-        Some(NEITHER)
-      )
-
-      val vatScheme = VatScheme(
-        id = testRegId,
-        status = VatRegStatus.draft,
-        vatServiceEligibility = Some(validServiceEligibility.copy(vatEligibilityChoice = Some(choice)))
-      )
-
-      when(mockVatRegistrationService.getVatScheme()(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(vatScheme))
-
-      when(mockS4LService.save(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(CacheMap("", Map())))
-
-      val expected = S4LVatEligibilityChoice(
-        Some(TaxableTurnover(TAXABLE_NO)),
-        Some(VoluntaryRegistration(REGISTER_YES)),
-        Some(VoluntaryRegistrationReason(NEITHER))
-      )
-
-      service.getEligibilityChoice returns expected
-    }
-
-    "return a valid S4L View Model converted from backend data when necessity is obligatory" in new SetupWithCurrentProfileNoIncorpDate {
-      val choice = VatEligibilityChoice(
-        VatEligibilityChoice.NECESSITY_OBLIGATORY,
-        None
-      )
-
-      val vatScheme = VatScheme(
-        id = testRegId,
-        status = VatRegStatus.draft,
-        vatServiceEligibility = Some(validServiceEligibility.copy(vatEligibilityChoice = Some(choice)))
-      )
-
-      when(mockVatRegistrationService.getVatScheme()(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(vatScheme))
-
-      when(mockS4LService.save(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(CacheMap("", Map())))
-
-      val expected = S4LVatEligibilityChoice(
-        Some(TaxableTurnover(TAXABLE_YES)),
-        Some(VoluntaryRegistration(REGISTER_NO))
-      )
-
-      service.getEligibilityChoice returns expected
-    }
-
-    "return a valid S4L View Model converted from backend data when necessity is obligatory and over threshold are both true" in
-      new SetupWithCurrentProfileIncorpDate {
-
-      val choice = VatEligibilityChoice(
-        VatEligibilityChoice.NECESSITY_OBLIGATORY,
-        None,
-        Some(VatThresholdPostIncorp(true, Some(LocalDate.of(2016, 12, 20)))),
-        Some(VatExpectedThresholdPostIncorp(true, Some(LocalDate.of(2016, 12, 20))))
-      )
-
-      val vatScheme = VatScheme(
-        id = testRegId,
-        status = VatRegStatus.draft,
-        vatServiceEligibility = Some(validServiceEligibility.copy(vatEligibilityChoice = Some(choice)))
-      )
-
-      when(mockVatRegistrationService.getVatScheme()(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(vatScheme))
-
-      when(mockS4LService.save(ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(CacheMap("", Map())))
-
-      val expected = S4LVatEligibilityChoice(
-        None,
-        Some(VoluntaryRegistration(REGISTER_NO)),
-        None,
-        Some(OverThresholdView(true, Some(LocalDate.of(2016, 12, 20)))),
-        Some(ExpectationOverThresholdView(true, Some(LocalDate.of(2016, 12, 20))))
-      )
-
-      service.getEligibilityChoice returns expected
+    "save to backend a success Eligibility and return view model" in new SetupForBackendSaveSuccess() {
+      val view = yn(EligibilityQuestions.companyWillDoAnyOf, false)
+      service.saveEligibility(view) returns validEligibility
     }
   }
 }

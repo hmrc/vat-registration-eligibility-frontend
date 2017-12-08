@@ -38,11 +38,13 @@ import scala.concurrent.Future
 class CurrentProfileServiceSpec extends UnitSpec with MockitoSugar with VatMocks with FutureAssertions with VatRegistrationFixture {
   val mockBusinessRegistrationConnector = mock[BusinessRegistrationConnector]
 
-  val testService = new CurrentProfileService(mockKeystoreConnector,
-                                              mockBusinessRegistrationConnector,
-                                              mockCompanyRegConnector,
-                                              mockIncorpInfoService,
-                                              mockVatRegistrationService)
+  val testService = new CurrentProfileService {
+    override val keystoreConnector = mockKeystoreConnector
+    override val businessRegistrationConnector = mockBusinessRegistrationConnector
+    override val compRegConnector = mockCompanyRegConnector
+    override val incorpInfoService = mockIncorpInfoService
+    override val vatRegistrationService = mockVatRegistrationService
+  }
 
   val now = LocalDate.now()
 

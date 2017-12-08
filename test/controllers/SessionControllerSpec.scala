@@ -24,14 +24,17 @@ import play.api.test.Helpers.{contentType, headers, redirectLocation}
 
 class SessionControllerSpec extends VatRegSpec {
 
-  object TestController extends SessionController
+  val testController = new SessionController {
+    override protected def authConnector = mockAuthConnector
+    override def messagesApi = mockMessages
+  }
 
   implicit val duration: Timeout = 5.seconds
 
   //TODO: This should work
   "renewSession" should {
     "return 200 when hit with Authorised User" ignore {
-      callAuthorised(TestController.renewSession()){ a =>
+      callAuthorised(testController.renewSession()){ a =>
         redirectLocation(a) shouldBe ""
         status(a) shouldBe 200
         contentType(a) shouldBe Some("image/jpeg")
@@ -45,7 +48,7 @@ class SessionControllerSpec extends VatRegSpec {
 
       val fr = FakeRequest().withHeaders(("playFoo","no more"))
 
-      val res = TestController.destroySession()(fr)
+      val res = testController.destroySession()(fr)
       status(res) shouldBe 303
       headers(res).contains("playFoo") shouldBe false
 
@@ -55,7 +58,7 @@ class SessionControllerSpec extends VatRegSpec {
 
   "timeoutShow" should {
     "return 200" in {
-      val res = TestController.timeoutShow()(FakeRequest())
+      val res = testController.timeoutShow()(FakeRequest())
       status(res) shouldBe 200
     }
   }

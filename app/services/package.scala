@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package models.api
+import org.slf4j.{Logger, LoggerFactory}
 
-import common.enums.VatRegStatus
-import play.api.libs.functional.syntax._
-import play.api.libs.json._
+package object services {
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 
-
-case class VatScheme(id: String,
-                     vatServiceEligibility: Option[VatServiceEligibility] = None,
-                      status: VatRegStatus.Value
-                    )
-
-object VatScheme {
-  implicit val format: OFormat[VatScheme] = (
-    (__ \ "registrationId").format[String] and
-    (__ \ "vatEligibility").formatNullable[VatServiceEligibility] and
-      (__ \ "status").format[VatRegStatus.Value]
-  )(VatScheme.apply, unlift(VatScheme.unapply))
+  type Completion[T] = scala.util.Either[T,T]
+  val Incomplete = scala.util.Left
+  val Completed = scala.util.Right
 }

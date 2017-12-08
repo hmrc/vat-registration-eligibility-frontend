@@ -18,8 +18,10 @@ package controllers
 
 import fixtures.{S4LFixture, VatRegistrationFixture}
 import helpers.VatRegSpec
+import mocks.ThresholdServiceMock
 import models.CurrentProfile
 import models.view.TaxableTurnover
+import models.view.TaxableTurnover._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import play.api.mvc.{Request, Result}
@@ -32,15 +34,12 @@ import scala.concurrent.Future
 class TaxableTurnoverControllerSpec extends VatRegSpec with VatRegistrationFixture with S4LFixture {
 
   class Setup {
-    val testController = new TaxableTurnoverController()(mockMessages,
-      mockS4LService,
-      mockVatRegistrationService,
-      mockCurrentProfileService,
-      mockVatRegFrontendService,
-      mockEligibilityService
-    ){
-
+    val testController = new TaxableTurnoverController {
       override val authConnector: AuthConnector = mockAuthConnector
+      override val thresholdService = mockThresholdService
+      override val vatRegFrontendService = mockVatRegFrontendService
+      override val currentProfileService = mockCurrentProfileService
+      override val messagesApi = mockMessages
 
       override def withCurrentProfile(f: (CurrentProfile) => Future[Result])(implicit request: Request[_], hc: HeaderCarrier): Future[Result] = {
         f(currentProfile)
@@ -53,21 +52,37 @@ class TaxableTurnoverControllerSpec extends VatRegSpec with VatRegistrationFixtu
   s"GET ${routes.TaxableTurnoverController.show()}" should {
     val expectedText = "VAT taxable sales of more than £85,000 in the 30 days"
 
-    "return HTML when there's a taxable turnover view model data" in new Setup {
-      when(mockEligibilityService.getEligibilityChoice(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithTaxableTurnover))
+    "return 200 with HTML not prepopulated when there is no view data" in new Setup {
+      mockGetThresholdViewModel[TaxableTurnover](Future.successful(None))
 
-      callAuthorised(testController.show()) {
-        _ includesText expectedText
+      callAuthorised(testController.show) { res =>
+        res includesText expectedText
+        res passJsoupTest { doc =>
+          doc.getElementById("taxableTurnoverRadio-taxable_yes").attr("checked") shouldBe ""
+          doc.getElementById("taxableTurnoverRadio-taxable_no").attr("checked") shouldBe ""
+        }
       }
     }
 
-    "return HTML when there's a default taxable turnover view model data" in new Setup{
-      when(mockEligibilityService.getEligibilityChoice(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(emptyS4LEligibilityChoice))
+    "return 200 with HTML prepopulated to YES when there is view data" in new Setup {
+      mockGetThresholdViewModel[TaxableTurnover](Future.successful(Some(TaxableTurnover(TAXABLE_YES))))
 
       callAuthorised(testController.show) {
-        _ includesText expectedText
+        _ passJsoupTest { doc =>
+          doc.getElementById("taxableTurnoverRadio-taxable_yes").attr("checked") shouldBe "checked"
+          doc.getElementById("taxableTurnoverRadio-taxable_no").attr("checked") shouldBe ""
+        }
+      }
+    }
+
+    "return 200 with HTML prepopulated to NO when there is view data" in new Setup {
+      mockGetThresholdViewModel[TaxableTurnover](Future.successful(Some(TaxableTurnover(TAXABLE_NO))))
+
+      callAuthorised(testController.show) {
+        _ passJsoupTest { doc =>
+          doc.getElementById("taxableTurnoverRadio-taxable_yes").attr("checked") shouldBe ""
+          doc.getElementById("taxableTurnoverRadio-taxable_no").attr("checked") shouldBe "checked"
+        }
       }
     }
   }
@@ -83,10 +98,9 @@ class TaxableTurnoverControllerSpec extends VatRegSpec with VatRegistrationFixtu
   s"POST ${routes.TaxableTurnoverController.submit()} with Taxable Turnover selected Yes" should {
 
     "return 303" in new Setup {
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithTaxableTurnover))
-
-      when(mockVatRegFrontendService.buildVatRegFrontendUrlEntry(ArgumentMatchers.any())).thenReturn("someUrl")
+      mockSaveThreshold(Future.successful(validThresholdPreIncorp.copy(taxableTurnover = Some(TaxableTurnover(TaxableTurnover.TAXABLE_YES)))))
+      when(mockVatRegFrontendService.buildVatRegFrontendUrlEntry)
+        .thenReturn("someUrl")
 
       submitAuthorised(testController.submit(), fakeRequest.withFormUrlEncodedBody(
         "taxableTurnoverRadio" -> TaxableTurnover.TAXABLE_YES
@@ -99,10 +113,9 @@ class TaxableTurnoverControllerSpec extends VatRegSpec with VatRegistrationFixtu
     "return 303" in new Setup {
       import models.view.TaxableTurnover.TAXABLE_NO
 
-      val taxableNO = TaxableTurnover(TAXABLE_NO)
+      mockSaveThreshold(Future.successful(validThresholdPreIncorp))
 
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithTaxableTurnover.copy(taxableTurnover = Some(taxableNO))))
+      mockGetThresholdViewModel[TaxableTurnover](Future.successful(Some(validTaxableTurnOverView.copy(yesNo = TAXABLE_NO))))
 
       submitAuthorised(testController.submit(), fakeRequest.withFormUrlEncodedBody(
         "taxableTurnoverRadio" -> TaxableTurnover.TAXABLE_NO
