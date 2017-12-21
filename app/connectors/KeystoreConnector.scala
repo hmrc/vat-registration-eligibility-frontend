@@ -16,18 +16,19 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
-import config.VatSessionCache
 import play.api.libs.json.Format
-import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 import scala.concurrent.Future
 
-@Singleton
-class KeystoreConnector @Inject()(val sessionCache: VatSessionCache) {
+class KeystoreConnectorImpl @Inject()(val sessionCache: SessionCache) extends KeystoreConnector
+
+trait KeystoreConnector {
+  val sessionCache: SessionCache
 
   def cache[T](formId: String, body : T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap] = {
     sessionCache.cache[T](formId, body)

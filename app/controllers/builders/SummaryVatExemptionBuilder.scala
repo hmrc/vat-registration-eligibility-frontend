@@ -16,23 +16,22 @@
 
 package controllers.builders
 
-import models.api.VatServiceEligibility
 import models.view.{SummaryRow, SummarySection}
 
-case class SummaryVatExemptionBuilder(vatServiceEligibility: VatServiceEligibility)
+case class SummaryVatExemptionBuilder(a:Option[Boolean])
   extends SummarySectionBuilder {
 
   override val sectionId: String = "vatExemption"
 
   val vatExceptionRow: SummaryRow = SummaryRow(
     s"$sectionId.vatException",
-    booleanToMessageKey(vatServiceEligibility.applyingForVatExemption),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showExemptionCriteria())
   )
 
   val vatExemptionRow: SummaryRow = SummaryRow(
     s"$sectionId.vatExemption",
-    booleanToMessageKey(vatServiceEligibility.applyingForVatExemption),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showExemptionCriteria())
   )
 

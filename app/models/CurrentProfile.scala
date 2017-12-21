@@ -33,25 +33,19 @@ case class CurrentProfile(companyName: String,
 object CurrentProfile {
   val reads: Reads[CurrentProfile] = (
     (__ \ "companyName").read[String] and
-      (__ \ "registrationID").read[String] and
-      (__ \ "transactionID").read[String] and
-      (__ \ "vatRegistrationStatus").read[VatRegStatus.Value] and
-      (__ \ "incorporationDate").readNullable[LocalDate]
-    )(CurrentProfile.apply _)
+    (__ \ "registrationID").read[String] and
+    (__ \ "transactionID").read[String] and
+    (__ \ "vatRegistrationStatus").read[VatRegStatus.Value] and
+    (__ \ "incorporationDate").readNullable[LocalDate]
+  )(CurrentProfile.apply _)
 
   val writes: Writes[CurrentProfile] = (
     (__ \ "companyName").write[String] and
-      (__ \ "registrationID").write[String] and
-      (__ \ "transactionID").write[String] and
-      (__ \ "vatRegistrationStatus").write[VatRegStatus.Value] and
-      (__ \ "incorporationDate").writeNullable[LocalDate]
-    )(unlift(CurrentProfile.unapply))
+    (__ \ "registrationID").write[String] and
+    (__ \ "transactionID").write[String] and
+    (__ \ "vatRegistrationStatus").write[VatRegStatus.Value] and
+    (__ \ "incorporationDate").writeNullable[LocalDate]
+  )(unlift(CurrentProfile.unapply))
 
   implicit val format: Format[CurrentProfile] = Format(reads, writes)
-}
-
-object hasIncorpDate{
-  def unapply(implicit arg: CurrentProfile): Future[LocalDate] = {
-    arg.incorporationDate.fold(throw new IllegalStateException("Date of Incorporation data expected to be found in Incorporation"))(Future.successful)
-  }
 }

@@ -16,22 +16,27 @@
 
 package connectors.test
 
-import javax.inject.Singleton
+import javax.inject.Inject
 
 import config.WSHttp
-import play.api.mvc.{Result, Results}
-import uk.gov.hmrc.play.config.ServicesConfig
-
+import play.api.mvc.Result
+import play.api.mvc.Results.Ok
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.config.inject.ServicesConfig
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpResponse }
 
-@Singleton
-class TestVatRegistrationConnector extends ServicesConfig {
-  val vatRegUrl = baseUrl("vat-registration")
-  val http = WSHttp
+class TestVatRegistrationConnectorImpl @Inject()(val http: WSHttp, config: ServicesConfig) extends TestVatRegistrationConnector {
+  lazy val vatRegUrl = config.baseUrl("vat-registration")
+}
 
-  def dropCollection()(implicit hc: HeaderCarrier): Future[Result] =
-    http.POSTEmpty[HttpResponse](s"$vatRegUrl/vatreg/test-only/clear").map { _ => Results.Ok }
+trait TestVatRegistrationConnector {
+  val vatRegUrl: String
 
+  val http: WSHttp
+
+  def dropCollection(implicit hc: HeaderCarrier): Future[Result] = {
+    http.POSTEmpty[HttpResponse](s"$vatRegUrl/vatreg/test-only/clear").map(_ => Ok)
+  }
 }

@@ -24,8 +24,7 @@ case class S4LVatEligibility(haveNino: Option[Boolean] = None,
                              doAnyApplyToYou: Option[Boolean] = None,
                              applyingForAnyOf: Option[Boolean] = None,
                              applyingForVatExemption: Option[Boolean] = None,
-                             companyWillDoAnyOf: Option[Boolean] = None
-)
+                             companyWillDoAnyOf: Option[Boolean] = None)
 
 object S4LVatEligibility {
   implicit val format: OFormat[S4LVatEligibility] = Json.format[S4LVatEligibility]

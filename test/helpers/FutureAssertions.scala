@@ -17,6 +17,8 @@
 package helpers
 
 import cats.data.OptionT
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.Assertion
 import play.api.http.Status
@@ -81,6 +83,11 @@ trait FutureAssertions extends ScalaFutures {
       contentAsString(fr) should include(s)
     }
 
+    def passJsoupTest(f: Document => Assertion) = {
+      fr map { res =>
+        f(Jsoup.parse(contentAsString(res)))
+      }
+    }
   }
 
 }

@@ -20,28 +20,28 @@ import javax.inject.Inject
 
 import controllers.builders.{SummaryResourceBuilder, _}
 import models.CurrentProfile
-import models.api.VatServiceEligibility
-import models.view.Summary
+import models.view.{Eligibility, Summary}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
-class SummaryService @Inject()(val eligibilityService: EligibilityService) extends SummarySrv
+class SummaryServiceImpl @Inject()(val questionsService: EligibilityService) extends SummaryService
 
-trait SummarySrv{
-  val eligibilityService: EligibilityService
+trait SummaryService {
+  val questionsService: EligibilityService
 
-  def getEligibilitySummary()(implicit hc: HeaderCarrier, profile: CurrentProfile): Future[Summary] =
-    eligibilityService.getEligibility.map(a => eligibilitySummary(eligibilityService.toApi(a)))
+  def getEligibilitySummary(implicit hc: HeaderCarrier, profile: CurrentProfile): Future[Summary] =
+    questionsService.getEligibility.map(a => eligibilitySummary(a))
 
-  private def eligibilitySummary(vs: VatServiceEligibility)(implicit profile : CurrentProfile): Summary =
+  private def eligibilitySummary(qs: Eligibility): Summary = {
     Summary(Seq(
-      SummaryNationalInsuranceBuilder(vs).section,
-      SummaryInternationalBusinessBuilder(vs).section,
-      SummaryOtherBusinessBuilder(vs).section,
-      SummaryOtherVatSchemeBuilder(vs).section,
-      SummaryVatExemptionBuilder(vs).section,
-      SummaryResourceBuilder(vs).section
+      SummaryNationalInsuranceBuilder(qs.hasNino).section,
+      SummaryInternationalBusinessBuilder(qs.internationalBusiness).section,
+      SummaryOtherBusinessBuilder(qs.moreThanOneBusinessOrLegalStatus).section,
+      SummaryOtherVatSchemeBuilder(qs.agriculturalFRSOrAnnualAccount).section,
+      SummaryVatExemptionBuilder(qs.exceptionOrExemption).section,
+      SummaryResourceBuilder(qs.racehorsesOrLandAndProperty).section
     ))
+  }
 }

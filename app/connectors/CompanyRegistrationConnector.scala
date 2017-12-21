@@ -16,26 +16,36 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
 import config.WSHttp
 import models.external.CompanyRegistrationProfile
-import play.api.Logger
 import play.api.libs.json.JsObject
-import uk.gov.hmrc.play.config.ServicesConfig
-import utils.VREFEFeatureSwitch
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier}
+import uk.gov.hmrc.play.config.inject.ServicesConfig
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import utils.VREFEFeatureSwitches
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{BadRequestException, CoreGet, HeaderCarrier}
 
-@Singleton
-class CompanyRegistrationConnector @Inject()(val featureSwitch: VREFEFeatureSwitch) extends ServicesConfig {
-  val companyRegistrationUrl: String = baseUrl("company-registration")
-  val companyRegistrationUri: String = getConfString("company-registration.uri", "")
-  lazy val stubUrl: String = baseUrl("incorporation-frontend-stubs")
-  lazy val stubUri: String = getConfString("incorporation-frontend-stubs.uri","")
-  val http: CoreGet = WSHttp
+class CompanyRegistrationConnectorImpl @Inject()(val http: WSHttp,
+                                                 val featureSwitch: VREFEFeatureSwitches,
+                                                 config: ServicesConfig) extends CompanyRegistrationConnector {
+  lazy val companyRegistrationUrl: String = config.baseUrl("company-registration")
+  lazy val companyRegistrationUri: String = config.getConfString("company-registration.uri", "")
+  lazy val stubUrl: String                = config.baseUrl("incorporation-frontend-stubs")
+  lazy val stubUri: String                = config.getConfString("incorporation-frontend-stubs.uri","")
+}
+
+trait CompanyRegistrationConnector {
+  val companyRegistrationUrl: String
+  val companyRegistrationUri: String
+  val stubUrl: String
+  val stubUri: String
+
+  val http: WSHttp
+
+  val featureSwitch: VREFEFeatureSwitches
 
   def getCompanyRegistrationDetails(regId: String)(implicit hc : HeaderCarrier) : Future[CompanyRegistrationProfile] = {
     val url = if (useCompanyRegistration) s"$companyRegistrationUrl$companyRegistrationUri/corporation-tax-registration" else s"$stubUrl$stubUri"
@@ -47,17 +57,15 @@ class CompanyRegistrationConnector @Inject()(val featureSwitch: VREFEFeatureSwit
         CompanyRegistrationProfile(status, txId)
     } recover {
       case badRequestErr: BadRequestException =>
-        Logger.error(s"[CompanyRegistrationConnect] [getCompanyRegistrationDetails] - Received a BadRequest status code when expecting a Company Registration document for reg id: $regId")
+        logger.error(s"[CompanyRegistrationConnect] [getCompanyRegistrationDetails] - Received a BadRequest status code when expecting a Company Registration document for reg id: $regId")
         throw badRequestErr
       case ex: Exception =>
-        Logger.error(s"[CompanyRegistrationConnect] [getCompanyRegistrationDetails] - Received an error when expecting a Company Registration document for reg id: $regId - error: ${ex.getMessage}")
+        logger.error(s"[CompanyRegistrationConnect] [getCompanyRegistrationDetails] - Received an error when expecting a Company Registration document for reg id: $regId - error: ${ex.getMessage}")
         throw ex
     }
   }
 
-  private[connectors] def useCompanyRegistration: Boolean = {
-    featureSwitch.companyReg.enabled
-  }
+  private[connectors] def useCompanyRegistration: Boolean = featureSwitch.companyReg.enabled
 }
 
 

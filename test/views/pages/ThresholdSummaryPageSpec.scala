@@ -19,34 +19,27 @@ package views.pages
 import java.time.LocalDate
 
 import controllers.builders.SummaryVatThresholdBuilder
-import helpers.VatRegSpec
+import fixtures.VatRegistrationFixture
 import models.MonthYearModel
-import models.api.VatThresholdPostIncorp
-import models.view.{Summary, SummaryRow}
+import models.view.{OverThresholdView, Summary}
 import org.jsoup.Jsoup
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 import views.html.pages.threshold_summary
 
-/**
-  * Created by eric on 28/09/17.
-  */
-class ThresholdSummaryPageSpec extends UnitSpec with WithFakeApplication with I18nSupport{
+
+class ThresholdSummaryPageSpec extends UnitSpec with WithFakeApplication with I18nSupport with VatRegistrationFixture {
 
   val injector = fakeApplication.injector
   implicit val messagesApi = injector.instanceOf[MessagesApi]
   implicit val request = FakeRequest()
 
-  val testPostIncorpUnder = VatThresholdPostIncorp(true,None)
-  val testPreIncorp = VatThresholdPostIncorp(false,None)
   val incorpDate = MonthYearModel.FORMAT_DD_MMMM_Y.format(LocalDate.of(2017,7,8))
 
-
-
   "Rendering the summary page for a post incorporprated company that has gone over threshold" should{
-    val postIncorp = VatThresholdPostIncorp(true,Some(LocalDate.of(2017,8,5)))
-    val summarySection = SummaryVatThresholdBuilder(Some(postIncorp)).section
+    val data = validThresholdPostIncorp.copy(overThreshold = Some(OverThresholdView(true, Some(LocalDate.of(2017,8,5)))))
+    val summarySection = SummaryVatThresholdBuilder(data).section
     lazy val view = threshold_summary(Summary(Seq(summarySection)),incorpDate)
     lazy val document = Jsoup.parse(view.body)
 
@@ -66,8 +59,7 @@ class ThresholdSummaryPageSpec extends UnitSpec with WithFakeApplication with I1
   }
 
   "Rendering the summary page for a post incorporated company that hasn't gone over" should{
-    val postIncorp = VatThresholdPostIncorp(false,None)
-    val summarySection = SummaryVatThresholdBuilder(Some(postIncorp)).section
+    val summarySection = SummaryVatThresholdBuilder(validThresholdPostIncorp).section
     lazy val view = threshold_summary(Summary(Seq(summarySection)),incorpDate)
     lazy val document = Jsoup.parse(view.body)
 

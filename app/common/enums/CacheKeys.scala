@@ -16,10 +16,13 @@
 
 package common.enums
 
+import scala.language.implicitConversions
+
 object CacheKeys extends Enumeration {
   val CurrentProfile = Value
   val IneligibilityReason = Value
   val Eligibility = Value
+  val Threshold = Value
   val EligibilityChoice = Value
 
   implicit def cacheKeysValueToString(value: CacheKeys.Value): String = value.toString

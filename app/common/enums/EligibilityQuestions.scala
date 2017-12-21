@@ -16,17 +16,15 @@
 
 package common.enums
 
-import play.api.libs.json._
+import scala.language.implicitConversions
 
 object EligibilityQuestions extends Enumeration {
-  val haveNino = Value
-  val doingBusinessAbroad = Value
-  val doAnyApplyToYou = Value
-  val applyingForAnyOf = Value
+  val haveNino                = Value
+  val doingBusinessAbroad     = Value
+  val doAnyApplyToYou         = Value
+  val applyingForAnyOf        = Value
   val applyingForVatExemption = Value
-  val companyWillDoAnyOf = Value
+  val companyWillDoAnyOf      = Value
 
   implicit def eligibilityQuestionValueToString(value: EligibilityQuestions.Value): String = value.toString
-
-  implicit val format = Format(Reads.enumNameReads(EligibilityQuestions), Writes.enumNameWrites)
 }

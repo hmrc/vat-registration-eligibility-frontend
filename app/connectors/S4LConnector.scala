@@ -16,26 +16,26 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
-import cats.data.OptionT
-import config.VatShortLivedCache
 import play.api.libs.json.Format
-import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 import scala.concurrent.Future
 
-@Singleton
-class S4LConnector @Inject()(val shortCache: VatShortLivedCache) {
+class S4LConnectorImpl @Inject()(val shortCache: ShortLivedCache) extends S4LConnector
+
+trait S4LConnector {
+  val shortCache: ShortLivedCache
 
   def save[T](Id: String, formId: String, data: T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap] = {
     shortCache.cache[T](Id, formId, data)
   }
 
-  def fetchAndGet[T](Id: String, formId: String)(implicit hc: HeaderCarrier, format: Format[T]): OptionalResponse[T] = {
-    OptionT(shortCache.fetchAndGetEntry[T](Id, formId))
+  def fetchAndGet[T](Id: String, formId: String)(implicit hc: HeaderCarrier, format: Format[T]): Future[Option[T]] = {
+    shortCache.fetchAndGetEntry[T](Id, formId)
   }
 
   def clear(Id: String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {

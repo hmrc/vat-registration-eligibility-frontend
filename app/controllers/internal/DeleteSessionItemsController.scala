@@ -18,32 +18,41 @@ package controllers.internal
 
 import javax.inject.Inject
 
-import config.FrontendAuthConnector
-import connectors.{KeystoreConnector, S4LConnector}
 import controllers.VatRegistrationController
-import play.api.Logger
+import org.slf4j.{Logger, LoggerFactory}
 import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
-import services.{CancellationService, VatRegistrationService}
+import play.api.mvc.{Action, AnyContent, Result}
+import services.CancellationService
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
 import scala.concurrent.Future
 
-class DeleteSessionItemsController @Inject()(val messagesApi: MessagesApi,
-                                             val cancelService: CancellationService) extends VatRegistrationController {
+class DeleteSessionItemsControllerImpl @Inject()(val messagesApi: MessagesApi,
+                                                 val authConnector: AuthConnector,
+                                                 val cancelService: CancellationService) extends DeleteSessionItemsController
+
+trait DeleteSessionItemsController extends VatRegistrationController {
+  val cancelService: CancellationService
+
+  private val logger: Logger = LoggerFactory.getLogger(getClass)
 
   def deleteSessionRelatedData(regId: String): Action[AnyContent] = Action.async {
     implicit request =>
-        implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers)
-        FrontendAuthConnector.currentAuthority flatMap (_.fold {
-          Logger.warn(s"[DeleteSessionItemsController][deleteSessionRelatedData] - cant get Authority")
-          Future.successful(Unauthorized)
-        }{ _ =>
-          cancelService.deleteEligibilityData(regId) map (result => if(result) Ok else BadRequest)
-        }) recover {
-          case ex: Exception =>
-            Logger.error(s"[DeleteSessionItemsController][deleteSessionRelatedData] - recieved and error on recieving the authority - error: ${ex.getMessage}")
-            InternalServerError
+      implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers)
+      authConnector.currentAuthority flatMap {
+        _.fold(unauthorised){ _ =>
+          cancelService.deleteEligibilityData(regId) map (if(_) Ok else BadRequest)
         }
+      } recover {
+        case ex: Exception =>
+          logger.error(s"[deleteSessionRelatedData] - received and error on receiving the authority - error: ${ex.getMessage}")
+          InternalServerError
+      }
+  }
+
+  private def unauthorised: Future[Result] = {
+    logger.warn(s"[deleteSessionRelatedData] - Can't get Authority")
+    Future.successful(Unauthorized)
   }
 }

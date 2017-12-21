@@ -20,7 +20,7 @@ import fixtures.{S4LFixture, VatRegistrationFixture}
 import helpers.VatRegSpec
 import models.CurrentProfile
 import models.view.VoluntaryRegistrationReason
-import org.mockito.ArgumentMatchers
+import models.view.VoluntaryRegistrationReason._
 import org.mockito.Mockito._
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
@@ -32,14 +32,12 @@ import scala.concurrent.Future
 class VoluntaryRegistrationReasonControllerSpec extends VatRegSpec with VatRegistrationFixture with S4LFixture {
 
   class Setup {
-    val testController = new VoluntaryRegistrationReasonController()(mockMessages,
-      mockS4LService,
-      mockVatRegistrationService,
-      mockCurrentProfileService,
-      mockVatRegFrontendService,
-      mockEligibilityService
-      ) {
+    val testController = new VoluntaryRegistrationReasonController {
       override val authConnector: AuthConnector = mockAuthConnector
+      override val thresholdService = mockThresholdService
+      override val vatRegFrontendService = mockVatRegFrontendService
+      override val currentProfileService = mockCurrentProfileService
+      override val messagesApi = mockMessages
 
       override def withCurrentProfile(f: (CurrentProfile) => Future[Result])(implicit request: Request[_], hc: HeaderCarrier): Future[Result] = {
         f(currentProfile)
@@ -51,22 +49,50 @@ class VoluntaryRegistrationReasonControllerSpec extends VatRegSpec with VatRegis
 
   s"GET ${routes.VoluntaryRegistrationReasonController.show()}" should {
     val expectedText = "Which one applies to the company?"
+    "return 200 with HTML not prepopulated when there is no view data" in new Setup{
+        mockGetThresholdViewModel[VoluntaryRegistrationReason](Future.successful(None))
 
-    "return HTML Voluntary Registration Reason page with no Selection" in new Setup{
-      when(mockEligibilityService.getEligibilityChoice(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithVoluntarilyData.copy(voluntaryRegistrationReason = None)))
-
-      callAuthorised(testController.show()){
-        _ includesText expectedText
+      callAuthorised(testController.show()){ res =>
+        res includesText expectedText
+        res passJsoupTest { doc =>
+          doc.getElementsByAttribute("checked").size shouldBe 0
+        }
       }
     }
 
-    "return HTML when there's no data" in new Setup {
-      when(mockEligibilityService.getEligibilityChoice(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(emptyS4LEligibilityChoice))
+    "return 200 with HTML prepopulated with SELLS when there is view data" in new Setup {
+      mockGetThresholdViewModel[VoluntaryRegistrationReason](Future.successful(Some(validVoluntaryRegistrationReasonView.copy(reason = SELLS))))
 
       callAuthorised(testController.show) {
-        _ includesText expectedText
+        _ passJsoupTest { doc =>
+          val elements = doc.getElementsByAttribute("checked")
+          elements.size shouldBe 1
+          elements.first.attr("id") shouldBe "voluntaryRegistrationReasonRadio-alreadysellsvattaxablegoodsorservices"
+        }
+      }
+    }
+
+    "return 200 with HTML prepopulated with INTENDS when there is view data" in new Setup {
+      mockGetThresholdViewModel[VoluntaryRegistrationReason](Future.successful(Some(validVoluntaryRegistrationReasonView.copy(reason = INTENDS_TO_SELL))))
+
+      callAuthorised(testController.show) {
+        _ passJsoupTest { doc =>
+          val elements = doc.getElementsByAttribute("checked")
+          elements.size shouldBe 1
+          elements.first.attr("id") shouldBe "voluntaryRegistrationReasonRadio-intendstosellvattaxablegoodsorservices"
+        }
+      }
+    }
+
+    "return 200 with HTML prepopulated with NEITHER when there is view data" in new Setup {
+      mockGetThresholdViewModel[VoluntaryRegistrationReason](Future.successful(Some(validVoluntaryRegistrationReasonView.copy(reason = NEITHER))))
+
+      callAuthorised(testController.show) {
+        _ passJsoupTest { doc =>
+          val elements = doc.getElementsByAttribute("checked")
+          elements.size shouldBe 1
+          elements.first.attr("id") shouldBe "voluntaryRegistrationReasonRadio-wontsellvattaxablegoodsorservices"
+        }
       }
     }
   }
@@ -80,10 +106,10 @@ class VoluntaryRegistrationReasonControllerSpec extends VatRegSpec with VatRegis
 
   s"POST ${routes.VoluntaryRegistrationReasonController.submit()} with Voluntary Registration Reason selected Sells" should {
     "return 303" in new Setup {
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithVoluntarilyData))
+      mockSaveThreshold(Future.successful(validThresholdPreIncorp))
 
-      when(mockVatRegFrontendService.buildVatRegFrontendUrlEntry(ArgumentMatchers.any())).thenReturn(s"someUrl")
+      when(mockVatRegFrontendService.buildVatRegFrontendUrlEntry)
+        .thenReturn(s"someUrl")
 
       submitAuthorised(testController.submit(), fakeRequest.withFormUrlEncodedBody(
         "voluntaryRegistrationReasonRadio" -> VoluntaryRegistrationReason.SELLS
@@ -93,12 +119,14 @@ class VoluntaryRegistrationReasonControllerSpec extends VatRegSpec with VatRegis
 
   s"POST ${routes.VoluntaryRegistrationReasonController.submit()} with Voluntary Registration Reason selected Intends to sell" should {
     "return 303" in new Setup {
-      val reasonIntendsToSell = VoluntaryRegistrationReason(VoluntaryRegistrationReason.INTENDS_TO_SELL)
+      val validOtherThresholdPreIncorp = validThresholdPreIncorp.copy(
+        voluntaryRegistrationReason = Some(VoluntaryRegistrationReason(VoluntaryRegistrationReason.INTENDS_TO_SELL))
+      )
 
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithVoluntarilyData.copy(voluntaryRegistrationReason = Some(reasonIntendsToSell))))
+      mockSaveThreshold(Future.successful(validOtherThresholdPreIncorp))
 
-      when(mockVatRegFrontendService.buildVatRegFrontendUrlEntry(ArgumentMatchers.any())).thenReturn(s"someUrl")
+      when(mockVatRegFrontendService.buildVatRegFrontendUrlEntry)
+        .thenReturn(s"someUrl")
 
       submitAuthorised(testController.submit(), fakeRequest.withFormUrlEncodedBody(
         "voluntaryRegistrationReasonRadio" -> VoluntaryRegistrationReason.INTENDS_TO_SELL
@@ -108,12 +136,14 @@ class VoluntaryRegistrationReasonControllerSpec extends VatRegSpec with VatRegis
 
   s"POST ${routes.VoluntaryRegistrationReasonController.submit()} with Voluntary Registration selected Neither" should {
     "redirect to the welcome page" in new Setup {
-      val reasonNeither = VoluntaryRegistrationReason(VoluntaryRegistrationReason.NEITHER)
+      val validOtherThresholdPreIncorp = validThresholdPreIncorp.copy(
+        voluntaryRegistrationReason = Some(VoluntaryRegistrationReason(VoluntaryRegistrationReason.NEITHER))
+      )
 
-      when(mockEligibilityService.saveChoiceQuestion(ArgumentMatchers.any())(ArgumentMatchers.any(), ArgumentMatchers.any()))
-        .thenReturn(Future.successful(validS4LEligibilityChoiceWithVoluntarilyData.copy(voluntaryRegistrationReason = Some(reasonNeither))))
+      mockSaveThreshold(Future.successful(validOtherThresholdPreIncorp))
 
-      when(mockVatRegFrontendService.buildVatRegFrontendUrlWelcome(ArgumentMatchers.any())).thenReturn(s"someUrl")
+      when(mockVatRegFrontendService.buildVatRegFrontendUrlWelcome)
+        .thenReturn(s"someUrl")
 
       submitAuthorised(testController.submit(), fakeRequest.withFormUrlEncodedBody(
         "voluntaryRegistrationReasonRadio" -> VoluntaryRegistrationReason.NEITHER

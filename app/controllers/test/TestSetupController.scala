@@ -18,33 +18,37 @@ package controllers.test
 
 import javax.inject.Inject
 
-import common.enums.CacheKeys
+import common.enums.CacheKeys._
+import connectors.S4LConnector
 import controllers.VatRegistrationController
 import forms.test.TestSetupForm
 import models._
 import models.test.{TestSetup, VatEligibilityChoiceTestSetup, VatServiceEligibilityTestSetup}
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Format
 import play.api.mvc.{Action, AnyContent}
-import services.{CurrentProfileService, S4LService, VatRegistrationService}
+import services.CurrentProfileService
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 import utils.SessionProfile
 
 import scala.concurrent.Future
 
-class TestSetupController @Inject()(implicit s4LService: S4LService,
-                                    implicit val messagesApi: MessagesApi,
-                                    val currentProfileService: CurrentProfileService,
-                                    vatRegistrationService: VatRegistrationService,
-                                    s4LBuilder: TestS4LBuilder)
-  extends VatRegistrationController with SessionProfile {
+class TestSetupControllerImpl @Inject()(val s4LConnector: S4LConnector,
+                                        val messagesApi: MessagesApi,
+                                        val authConnector: AuthConnector,
+                                        val currentProfileService: CurrentProfileService,
+                                        val s4LBuilder: TestS4LBuilder) extends TestSetupController
+
+trait TestSetupController extends VatRegistrationController with SessionProfile {
+  val s4LConnector: S4LConnector
+  val s4LBuilder: TestS4LBuilder
 
   def show: Action[AnyContent] = authorised.async {
     implicit user =>
       implicit request =>
         withCurrentProfile { implicit profile =>
           for {
-            eligibilityChoice <- s4LService.fetchAndGet[S4LVatEligibilityChoice](CacheKeys.EligibilityChoice)
-            eligibility <- s4LService.fetchAndGet[S4LVatEligibility](CacheKeys.Eligibility)
+            eligibilityChoice <- s4LConnector.fetchAndGet[S4LVatEligibilityChoice](profile.registrationId, EligibilityChoice)
+            eligibility <- s4LConnector.fetchAndGet[S4LVatEligibility](profile.registrationId, Eligibility)
 
             testSetup = TestSetup(
               VatServiceEligibilityTestSetup(
@@ -83,12 +87,11 @@ class TestSetupController @Inject()(implicit s4LService: S4LService,
             }, {
               data: TestSetup => {
                 for {
-                  _ <- s4LService.save(CacheKeys.Eligibility, s4LBuilder.eligibilityFromData(data))
-                  _ <- s4LService.save(CacheKeys.EligibilityChoice, s4LBuilder.eligibilityChoiceFromData(data))
+                  _ <- s4LConnector.save(profile.registrationId, Eligibility, s4LBuilder.eligibilityFromData(data))
+                  _ <- s4LConnector.save(profile.registrationId, EligibilityChoice, s4LBuilder.eligibilityChoiceFromData(data))
                 } yield Ok("Test setup complete")
               }
             })
         }
   }
-
 }

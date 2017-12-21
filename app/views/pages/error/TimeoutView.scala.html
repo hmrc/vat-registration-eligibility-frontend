@@ -14,16 +14,16 @@
  * limitations under the License.
  *@
 
-@()(implicit request: Request[_], messagesApi: MessagesApi, messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
-@main_template(title = messagesApi("pages.timeout.title"), backEnabled = false) {
+@main_template(title = messages("pages.timeout.title"), backEnabled = false) {
     <header class="page-header">
-        <h1 class="form-title heading-xlarge" id="main-heading">@messagesApi("pages.timeout.heading")</h1>
+        <h1 class="form-title heading-xlarge" id="main-heading">@messages("pages.timeout.heading")</h1>
     </header>
 
-    <p>@messagesApi("pages.timeout.body.one")</p>
+    <p>@messages("pages.timeout.body.one")</p>
 
     <div class="form-group">
-        <p>@Html(messagesApi("pages.timeout.body.two", controllers.callbacks.routes.SignInOutController.postSignIn()))</p>
+        <p>@Html(messages("pages.timeout.body.two", controllers.callbacks.routes.SignInOutController.postSignIn()))</p>
     </div>
 }

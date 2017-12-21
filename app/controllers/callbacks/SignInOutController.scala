@@ -16,18 +16,24 @@
 
 package controllers.callbacks
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
 import controllers.VatRegistrationController
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.config.inject.ServicesConfig
+import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
 
-@Singleton
-class SignInOutController @Inject()(implicit val messagesApi: MessagesApi) extends VatRegistrationController with ServicesConfig {
+class SignInOutControllerImpl @Inject()(val messagesApi: MessagesApi,
+                                        val authConnector: AuthConnector,
+                                        config: ServicesConfig) extends SignInOutController {
+  lazy val compRegFEURL = config.getConfString("company-registration-frontend.www.url", "")
+  lazy val compRegFEURI = config.getConfString("company-registration-frontend.www.uri", "")
+}
 
-  lazy val compRegFEURL = getConfString("company-registration-frontend.www.url", "")
-  lazy val compRegFEURI = getConfString("company-registration-frontend.www.uri", "")
+trait SignInOutController extends VatRegistrationController {
+  val compRegFEURL: String
+  val compRegFEURI: String
 
   def postSignIn: Action[AnyContent] = authorised(implicit user => implicit request =>
     Redirect(s"$compRegFEURL$compRegFEURI/post-sign-in")
@@ -41,3 +47,6 @@ class SignInOutController @Inject()(implicit val messagesApi: MessagesApi) exten
     Redirect(s"$compRegFEURL$compRegFEURI/dashboard")
   }
 }
+
+
+

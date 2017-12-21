@@ -16,7 +16,7 @@
 
 package utils
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
 sealed trait FeatureSwitch {
   def name: String
@@ -25,8 +25,7 @@ sealed trait FeatureSwitch {
 
 case class BooleanFeatureSwitch(name: String, enabled: Boolean) extends FeatureSwitch
 
-@Singleton
-class FeatureSwitchManager extends FeatureManager
+class FeatureSwitchManager @Inject extends FeatureManager
 
 trait FeatureManager {
 
@@ -50,10 +49,8 @@ trait FeatureManager {
   def disable(fs: FeatureSwitch): FeatureSwitch = setProperty(fs.name, "false")
 }
 
-@Singleton
-class VREFEFeatureSwitch @Inject()(injManager: FeatureSwitchManager) extends VREFEFeatureSwitches {
+class VREFEFeatureSwitch @Inject()(val manager: FeatureManager) extends VREFEFeatureSwitches {
   val companyRegistration = "companyRegistration"
-  val manager = injManager
 }
 
 trait VREFEFeatureSwitches {

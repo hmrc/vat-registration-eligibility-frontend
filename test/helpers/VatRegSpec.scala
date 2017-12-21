@@ -50,15 +50,14 @@ class VatRegSpec extends UnitSpec with WithFakeApplication
 
   implicit val hc = HeaderCarrier()
 
-  implicit val currentProfile = CurrentProfile("Test Me", testRegId, "000-434-1",
-    VatRegStatus.draft,Some(LocalDate.of(2016, 12, 21)))
+  val incorpDate = LocalDate.of(2016, 12, 21)
+  implicit val currentProfile = CurrentProfile("Test Me", testRegId, "000-434-1", VatRegStatus.draft, Some(incorpDate))
 
   override implicit val patienceConfig = PatienceConfig(timeout = Span(1, Seconds), interval = Span(50, Millis))
 
   override def beforeEach() {
     reset(mockVatRegistrationService)
     reset(mockS4LConnector)
-    reset(mockS4LService)
     reset(mockKeystoreConnector)
     reset(mockAuthConnector)
     reset(mockSessionCache)
@@ -74,11 +73,6 @@ class VatRegSpec extends UnitSpec with WithFakeApplication
     reset(mockCancellationService)
   }
 
-  // Placeholder for custom configuration
-  // Use this if you want to configure the app
-  // implicit override lazy val app: Application = new GuiceApplicationBuilder().configure().build()
-
-
   def submitAuthorised(a: => Action[AnyContent], r: => FakeRequest[AnyContentAsFormUrlEncoded])
                       (test: Future[Result] => Assertion)
                       (implicit mockAuthConnector: AuthConnector): Unit =
@@ -86,5 +80,7 @@ class VatRegSpec extends UnitSpec with WithFakeApplication
 
   def callAuthorised(a: Action[AnyContent])(test: Future[Result] => Assertion): Unit =
     AuthBuilder.withAuthorisedUser(a)(test)
+
+
 
 }

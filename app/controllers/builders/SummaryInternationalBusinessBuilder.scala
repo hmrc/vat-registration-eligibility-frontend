@@ -16,40 +16,39 @@
 
 package controllers.builders
 
-import models.api.VatServiceEligibility
 import models.view.{SummaryRow, SummarySection}
 
-case class SummaryInternationalBusinessBuilder(vatServiceEligibility: VatServiceEligibility)
+case class SummaryInternationalBusinessBuilder(a:Option[Boolean])
   extends SummarySectionBuilder {
 
   override val sectionId: String = "internationalBusiness"
 
   val sellGoodsRow: SummaryRow = SummaryRow(
     s"$sectionId.sellGoods",
-    booleanToMessageKey(vatServiceEligibility.doingBusinessAbroad),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoingBusinessAbroad())
   )
   val buyGoodsRow: SummaryRow = SummaryRow(
     s"$sectionId.buyGoods",
-    booleanToMessageKey(vatServiceEligibility.doingBusinessAbroad),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoingBusinessAbroad())
   )
 
   val sellAssets: SummaryRow = SummaryRow(
     s"$sectionId.sellAssets",
-    booleanToMessageKey(vatServiceEligibility.doingBusinessAbroad),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoingBusinessAbroad())
   )
 
   val sellGoodsServices: SummaryRow = SummaryRow(
     s"$sectionId.sellGoodsServices",
-    booleanToMessageKey(vatServiceEligibility.doingBusinessAbroad),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoingBusinessAbroad())
   )
 
   val doBusiness : SummaryRow = SummaryRow(
     s"$sectionId.doBusiness",
-    booleanToMessageKey(vatServiceEligibility.doingBusinessAbroad),
+    booleanToMessageKey(a),
     Some(controllers.routes.EligibilityController.showDoingBusinessAbroad())
   )
 

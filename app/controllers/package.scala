@@ -14,17 +14,8 @@
  * limitations under the License.
  */
 
-package models.api
+import org.slf4j.{Logger, LoggerFactory}
 
-import java.time.LocalDate
-
-import play.api.libs.json.Json
-
-case class VatThresholdPostIncorp(overThresholdSelection: Boolean,
-                                  overThresholdDate: Option[LocalDate])
-
-object VatThresholdPostIncorp {
-
-  implicit val format = Json.format[VatThresholdPostIncorp]
-
+package object controllers {
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 }

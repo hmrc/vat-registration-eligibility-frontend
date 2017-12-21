@@ -40,26 +40,27 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   override lazy val contactFrontendPartialBaseUrl = loadConfig("microservice.services.contact-frontend.url")
 
-  override lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  override lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  override lazy val reportAProblemPartialUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val analyticsToken            = loadConfig(s"google-analytics.token")
+  override lazy val analyticsHost             = loadConfig(s"google-analytics.host")
+  override lazy val reportAProblemPartialUrl  = s"$contactFrontendPartialBaseUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl    = s"$contactFrontendPartialBaseUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
-  lazy val vatRegFrontendWelcomeUrl: String = loadConfig("microservice.services.vat-registration-frontend.www.url")
+  lazy val vatRegFrontendWelcomeUrl: String           = loadConfig("microservice.services.vat-registration-frontend.www.url")
   override lazy val vatRegFrontendFeedbackUrl: String = s"${loadConfig("microservice.services.vat-registration-frontend.www.url")}/feedback"
 
   override val timeoutInSeconds = loadConfig("timeoutInSeconds")
 
-  private def whitelistConfig(key: String): Seq[String] = Some(new String(Base64.getDecoder
-    .decode(loadConfig(key)), "UTF-8"))
-    .map(_.split(",")).getOrElse(Array.empty).toSeq
+  private def whitelistConfig(key: String): Seq[String] = Some(new String(Base64.getDecoder.decode(loadConfig(key)), "UTF-8"))
+    .map(_.split(","))
+    .getOrElse(Array.empty)
+    .toSeq
 
   private def loadStringConfigBase64(key : String) : String = {
     new String(Base64.getDecoder.decode(configuration.getString(key).getOrElse("")), Charset.forName("UTF-8"))
   }
 
-  lazy val whitelist = whitelistConfig("whitelist")
-  lazy val whitelistExcluded = whitelistConfig("whitelist-excluded")
+  lazy val whitelist          = whitelistConfig("whitelist")
+  lazy val whitelistExcluded  = whitelistConfig("whitelist-excluded")
 
   lazy val uriWhiteList     = configuration.getStringSeq("csrfexceptions.whitelist").getOrElse(Seq.empty).toSet
   lazy val csrfBypassValue  = loadStringConfigBase64("Csrf-Bypass-value")

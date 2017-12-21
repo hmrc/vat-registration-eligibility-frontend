@@ -21,8 +21,7 @@ import java.time.format.DateTimeFormatter
 
 import fixtures.VatRegistrationFixture
 import helpers.VatRegSpec
-import models.api.{VatExpectedThresholdPostIncorp, VatThresholdPostIncorp}
-import models.view.{SummaryRow, SummarySection}
+import models.view.{ExpectationOverThresholdView, OverThresholdView, SummaryRow, SummarySection}
 
 
 class   SummaryVatThresholdBuilderSpec extends VatRegSpec with VatRegistrationFixture {
@@ -32,11 +31,14 @@ class   SummaryVatThresholdBuilderSpec extends VatRegSpec with VatRegistrationFi
   val monthYearPresentationFormatter = DateTimeFormatter.ofPattern("MMMM y")
 
   "building a Summary vat threshold row" should {
-
+    val validOtherThresholdPostIncorp = validThresholdPostIncorp.copy(
+      overThreshold = Some(OverThresholdView(true, Some(specificDate))),
+      expectationOverThreshold = Some(ExpectationOverThresholdView(true, Some(specificDate)))
+    )
     "with ThresholdSelectionRow" should {
+      "return a summary row with 'YES' if overThreshold is true" in {
+        val postIncorpBuilder = SummaryVatThresholdBuilder(validOtherThresholdPostIncorp)
 
-      "return a summary row with 'YES' if post incorp is true" in {
-        val postIncorpBuilder = SummaryVatThresholdBuilder(Some(VatThresholdPostIncorp(true,Some(specificDate))))
         postIncorpBuilder.overThresholdSelectionRow shouldBe SummaryRow(
           "threshold.overThresholdSelection",
           "app.common.yes",
@@ -44,8 +46,8 @@ class   SummaryVatThresholdBuilderSpec extends VatRegSpec with VatRegistrationFi
         )
       }
 
-      "return a summary row with 'NO' if post incorp is FALSE" in {
-        val noPostIncorpBuilder = SummaryVatThresholdBuilder(Some(VatThresholdPostIncorp(false, None)))
+      "return a summary row with 'NO' if overThreshold is FALSE" in {
+        val noPostIncorpBuilder = SummaryVatThresholdBuilder(validThresholdPostIncorp)
         noPostIncorpBuilder.overThresholdSelectionRow shouldBe SummaryRow(
           "threshold.overThresholdSelection",
           "app.common.no",
@@ -55,9 +57,8 @@ class   SummaryVatThresholdBuilderSpec extends VatRegSpec with VatRegistrationFi
     }
 
     "with overThresholdDateRow" should {
-
       "return a summary row with 'November 2017' if a date is given" in {
-        val postIncorpBuilder = SummaryVatThresholdBuilder(Some(VatThresholdPostIncorp(true,Some(specificDate))))
+        val postIncorpBuilder = SummaryVatThresholdBuilder(validOtherThresholdPostIncorp)
         postIncorpBuilder.overThresholdDateRow shouldBe SummaryRow(
           "threshold.overThresholdDate",
           specificDate.format(monthYearPresentationFormatter),
@@ -66,7 +67,7 @@ class   SummaryVatThresholdBuilderSpec extends VatRegSpec with VatRegistrationFi
       }
 
       "return a summary row with '' if no date is given" in {
-        val noPostIncorpBuilder = SummaryVatThresholdBuilder(Some(VatThresholdPostIncorp(false, None)))
+        val noPostIncorpBuilder = SummaryVatThresholdBuilder(validThresholdPostIncorp)
         noPostIncorpBuilder.overThresholdDateRow shouldBe SummaryRow(
           "threshold.overThresholdDate",
           "",
@@ -75,12 +76,8 @@ class   SummaryVatThresholdBuilderSpec extends VatRegSpec with VatRegistrationFi
       }
 
       "Section" should {
-
-        "show the rows if post incorp is true for both Questions" in {
-          val postIncorpBuilder = SummaryVatThresholdBuilder(
-            Some(VatThresholdPostIncorp(true, Some(specificDate))),
-            Some(VatExpectedThresholdPostIncorp(true,Some(specificDate))))
-
+        "show the rows if overThreshold and ExpectedOverThreshold are true for both Questions" in {
+          val postIncorpBuilder = SummaryVatThresholdBuilder(validOtherThresholdPostIncorp)
           postIncorpBuilder.section shouldBe SummarySection(
             "threshold",
             Seq((postIncorpBuilder.overThresholdSelectionRow, true),
@@ -90,10 +87,8 @@ class   SummaryVatThresholdBuilderSpec extends VatRegSpec with VatRegistrationFi
           )
         }
 
-        "hide the rows if post incorp is false for both questions" in {
-          val noPostIncorpBuilder = SummaryVatThresholdBuilder(
-            Some(VatThresholdPostIncorp(false, None)),
-            Some(VatExpectedThresholdPostIncorp(false,None)))
+        "hide the rows if overThreshold and ExpectedOverThreshold are false for both questions" in {
+          val noPostIncorpBuilder = SummaryVatThresholdBuilder(validThresholdPostIncorp)
           noPostIncorpBuilder.section shouldBe SummarySection(
             "threshold",
             Seq((noPostIncorpBuilder.overThresholdSelectionRow, true),

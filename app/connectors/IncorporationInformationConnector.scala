@@ -16,32 +16,34 @@
 
 package connectors
 
-import javax.inject.Singleton
+import javax.inject.Inject
 
 import config.WSHttp
-import play.api.Logger
 import play.api.libs.json.JsValue
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.play.config.inject.ServicesConfig
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{CoreGet, HeaderCarrier, NotFoundException}
 
-@Singleton
-class IncorporationInformationConnector extends ServicesConfig {
-  val incorpInfoUrl = baseUrl("incorporation-information")
-  val incorpInfoUri = getConfString("incorporation-information.uri", "")
-  val http: CoreGet = WSHttp
+class IncorporationInformationConnectorImpl @Inject()(val http: WSHttp, config: ServicesConfig) extends IncorporationInformationConnector {
+  val incorpInfoUrl = config.baseUrl("incorporation-information")
+  val incorpInfoUri = config.getConfString("incorporation-information.uri", "")
+}
 
-  val className = this.getClass.getSimpleName
+trait IncorporationInformationConnector {
+  val incorpInfoUrl: String
+  val incorpInfoUri: String
+
+  val http: WSHttp
 
   def getCompanyName(regId: String, transactionId: String)(implicit hc: HeaderCarrier): Future[JsValue] = {
     http.GET[JsValue](s"$incorpInfoUrl$incorpInfoUri/$transactionId/company-profile") recover {
       case notFound: NotFoundException =>
-        Logger.error(s"[IncorporationInformationConnector] - [getCompanyName] - Could not find company name for regId $regId (txId: $transactionId)")
+        logger.error(s"[getCompanyName] - Could not find company name for regId $regId (txId: $transactionId)")
         throw notFound
       case e =>
-        Logger.error(s"[IncorporationInformationConnector] - [getCompanyName] - There was a problem getting company for regId $regId (txId: $transactionId)", e)
+        logger.error(s"[getCompanyName] - There was a problem getting company for regId $regId (txId: $transactionId)", e)
         throw e
     }
   }

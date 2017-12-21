@@ -39,7 +39,7 @@ object ExpectationThresholdForm {
   val RADIO_YES_NO = "expectationOverThresholdRadio"
 
   def bind(selection: Boolean, dateModel: Option[DayMonthYearModel]): ExpectationOverThresholdView =
-    ExpectationOverThresholdView(selection, dateModel.flatMap(_.toLocalDate))
+    ExpectationOverThresholdView(selection, dateModel.fold[Option[LocalDate]](None)(_.toLocalDate))
 
   def unbind(expect: ExpectationOverThresholdView): Option[(Boolean, Option[DayMonthYearModel])] =
     Try {

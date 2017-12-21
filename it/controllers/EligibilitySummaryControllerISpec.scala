@@ -16,11 +16,9 @@
 
 package controllers
 
-
-import common.enums.CacheKeys
+import common.enums.{CacheKeys, VatRegStatus}
 import helpers.RequestsFinder
-import models.api.VatServiceEligibility
-import models.S4LVatEligibility
+import models.view.Eligibility
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.concurrent.ScalaFutures
@@ -30,23 +28,21 @@ import play.api.libs.json.Json
 import support.AppAndStubs
 
 class EligibilitySummaryControllerISpec extends PlaySpec with AppAndStubs with RequestsFinder with ScalaFutures {
+  val json = Json.parse(
+    s"""
+       |{
+       |  "version": 1,
+       |  "result": "success"
+       |}
+     """.stripMargin)
 
-  val validEligibilityData = VatServiceEligibility(
-    haveNino                = Some(true),
-    doingBusinessAbroad     = Some(false),
-    doAnyApplyToYou         = Some(false),
-    applyingForAnyOf        = Some(false),
-    applyingForVatExemption = Some(false),
-    companyWillDoAnyOf      = Some(false)
-  )
-
-  val s4lData = Json.toJson(S4LVatEligibility(
-    haveNino                = Some(true),
-    doingBusinessAbroad     = Some(false),
-    doAnyApplyToYou         = Some(false),
-    applyingForAnyOf        = Some(false),
-    applyingForVatExemption = Some(false),
-    companyWillDoAnyOf      = Some(false)
+  val s4lData = Json.toJson(Eligibility(
+    Some(true),
+    Some(false),
+    Some(false),
+    Some(false),
+    Some(false),
+    Some(false)
   ))
 
   def validateEligibilitySummaryPage(document: Document) = {
@@ -96,7 +92,7 @@ class EligibilitySummaryControllerISpec extends PlaySpec with AppAndStubs with R
 
         given()
           .user.isAuthorised
-          .currentProfile.withProfileAndIncorpDate()
+          .currentProfile.withProfile()
           .vatScheme.isBlank
           .audit.writesAudit()
           .s4lContainer.contains(CacheKeys.Eligibility, s4lData)
@@ -109,7 +105,7 @@ class EligibilitySummaryControllerISpec extends PlaySpec with AppAndStubs with R
         }
       }
       "page is rendered with all data passed in if data is in backend" in {
-        val s4lData = S4LVatEligibility(
+        val s4lData = Eligibility(
           Some(true),
           Some(false),
           Some(false),
@@ -119,10 +115,10 @@ class EligibilitySummaryControllerISpec extends PlaySpec with AppAndStubs with R
         )
         given()
           .user.isAuthorised
-          .currentProfile.withProfileAndIncorpDate()
+          .currentProfile.withProfile()
           .audit.writesAudit()
           .s4lContainer.isEmpty
-          .vatScheme.hasValidEligibilityData
+          .vatScheme.has("eligibility", json)
           .s4lContainer.isUpdatedWith(CacheKeys.Eligibility, s4lData)
 
         val response = buildClient("/check-confirm-eligibility").get()
@@ -134,15 +130,13 @@ class EligibilitySummaryControllerISpec extends PlaySpec with AppAndStubs with R
       }
     }
   }
-  "Save and continue on eligibility summary" should {
-    "save the data to the back end and redirect to threshold page" in {
+  "Save and continue on eligibility summary for an incorporated company" should {
+    "redirect to threshold page" in {
       given()
         .user.isAuthorised
         .currentProfile.withProfileAndIncorpDate()
-        .vatScheme.isBlank
         .audit.writesAudit()
         .s4lContainer.contains(CacheKeys.Eligibility, s4lData)
-        .vatScheme.isUpdatedWith(validEligibilityData)
 
       val response = buildClient("/check-confirm-eligibility").post(Map("" -> Seq("")))
       whenReady(response) { res =>
@@ -152,26 +146,23 @@ class EligibilitySummaryControllerISpec extends PlaySpec with AppAndStubs with R
     }
   }
 
-  "Save and continue on eligibility summary without incorp date" should {
-    "save the data to the back end and redirect to taxable turnover page" in {
-      val profile = """
-                             |{
-                             | "companyName" : "testCompanyName",
-                             | "registrationID" : "1",
-                             | "transactionID" : "000-434-1",
-                             | "vatRegistrationStatus" : "${VatRegStatus.draft}"
-                             |}
-                           """.stripMargin
-
+  "Save and continue on eligibility summary for a none incorporated company" should {
+    "redirect to taxable turnover page" in {
+      val profile = Json.parse(s"""
+                      |{
+                      | "companyName" : "testCompanyName",
+                      | "registrationID" : "1",
+                      | "transactionID" : "000-434-1",
+                      | "vatRegistrationStatus" : "${VatRegStatus.draft}"
+                      |}
+                    """.stripMargin)
       given()
         .user.isAuthorised
-        .vatScheme.isBlank
         .currentProfile.withProfile()
         .company.incorporationStatusNotKnown()
-        .keystore.putKeyStoreValue(CacheKeys.CurrentProfile, profile)
+        .keystore.putKeyStoreValue(CacheKeys.CurrentProfile, profile.toString)
         .audit.writesAudit()
         .s4lContainer.contains(CacheKeys.Eligibility, s4lData)
-        .vatScheme.isUpdatedWith(validEligibilityData)
 
       val response = buildClient("/check-confirm-eligibility").post(Map("" -> Seq("")))
       whenReady(response) { res =>

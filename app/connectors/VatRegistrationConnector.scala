@@ -16,63 +16,76 @@
 
 package connectors
 
-import javax.inject.Singleton
+import javax.inject.Inject
 
-import cats.data.OptionT
-import cats.instances.FutureInstances
 import common.enums.VatRegStatus
 import config.WSHttp
-import models.api._
+import models.CurrentProfile
 import models.external.IncorporationInfo
-import play.api.libs.json.JsObject
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.http.{CoreDelete, CoreGet, CorePatch, HeaderCarrier, HttpReads, HttpResponse}
-
+import models.view.{Eligibility, Threshold}
+import play.api.http.Status._
+import play.api.libs.json.{JsObject, JsValue, Json}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.config.inject.ServicesConfig
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+
 import scala.concurrent.Future
 
-@Singleton
-class VatRegistrationConnector extends VatRegistrationConnect with ServicesConfig {
-  val vatRegUrl = baseUrl("vat-registration")
-  val http: CoreGet with CorePatch with CoreDelete = WSHttp
+class VatRegistrationConnectorImpl @Inject()(val http: WSHttp, config: ServicesConfig) extends VatRegistrationConnector {
+  val vatRegUrl = config.baseUrl("vat-registration")
 }
 
-trait VatRegistrationConnect extends FutureInstances {
-  self =>
+trait VatRegistrationConnector {
 
   val vatRegUrl: String
-  val http: CoreGet with CorePatch with CoreDelete
+  val http: WSHttp
 
-  val className = self.getClass.getSimpleName
-
-  def getRegistration(regId: String)(implicit hc: HeaderCarrier, rds: HttpReads[VatScheme]): Future[VatScheme] =
-    http.GET[VatScheme](s"$vatRegUrl/vatreg/$regId/get-scheme").recover{
-      case e: Exception => throw logResponse(e, className, "getRegistration")
+  def getEligibility(implicit currentProfile: CurrentProfile, hc: HeaderCarrier): Future[Option[(String, Int)]] = {
+    http.GET[HttpResponse](s"$vatRegUrl/vatreg/${currentProfile.registrationId}/eligibility") map { res =>
+      if (res.status == NO_CONTENT) None else Some(Json.fromJson(res.json)(Eligibility.apiReads).get)
+    } recover {
+      case e: Exception => throw logResponse(e, "getEligibility")
     }
+  }
 
-  def upsertVatEligibility(regId: String, vatServiceEligibility: VatServiceEligibility)
-                          (implicit hc: HeaderCarrier, rds: HttpReads[VatServiceEligibility]): Future[VatServiceEligibility] =
-    http.PATCH[VatServiceEligibility, VatServiceEligibility](s"$vatRegUrl/vatreg/$regId/service-eligibility", vatServiceEligibility).recover{
-      case e: Exception => throw logResponse(e, className, "upsertVatEligibility")
+  def getThreshold(implicit currentProfile: CurrentProfile, hc: HeaderCarrier): Future[Option[JsValue]] = {
+    http.GET[HttpResponse](s"$vatRegUrl/vatreg/${currentProfile.registrationId}/threshold").map { res =>
+      if (res.status == NO_CONTENT) None else Some(res.json)
+    } recover {
+      case e: Exception => throw logResponse(e,"getThreshold")
     }
+  }
 
-  def deleteVatScheme(regId: String)
-                     (implicit hc: HeaderCarrier, rds: HttpReads[Boolean]): Future[Unit] =
-    http.DELETE[HttpResponse](s"$vatRegUrl/vatreg/$regId/delete-scheme").recover {
-      case e: Exception => throw logResponse(e, className, "deleteVatScheme")
-    } map (_ => ())
+  def patchEligibility(result: String, version: Int)(implicit currentProfile: CurrentProfile, headerCarrier: HeaderCarrier): Future[JsValue] = {
+    val json = Json.toJson((result, version))(Eligibility.apiWrites)
+    http.PATCH[JsValue, JsValue](s"$vatRegUrl/vatreg/${currentProfile.registrationId}/eligibility", json) map { _ =>
+      json
+    } recover {
+      case e: Exception => throw logResponse(e, "patchEligibility")
+    }
+  }
 
-  def getIncorporationInfo(transactionId: String)(implicit hc: HeaderCarrier): OptionalResponse[IncorporationInfo] =
-    OptionT(http.GET[IncorporationInfo](s"$vatRegUrl/vatreg/incorporation-information/$transactionId").map(Some(_)).recover {
-      case _ => Option.empty[IncorporationInfo]
-    })
+  def patchThreshold(threshold: Threshold)(implicit currentProfile: CurrentProfile, headerCarrier: HeaderCarrier): Future[JsValue] = {
+    val json = Json.toJson(threshold)(Threshold.apiWrites)
+    http.PATCH[JsValue, JsValue](s"$vatRegUrl/vatreg/${currentProfile.registrationId}/threshold", json) map { _ =>
+      json
+    } recover {
+        case e: Exception => throw logResponse(e, "patchThreshold")
+    }
+  }
 
-  def getStatus(regId: String)(implicit hc: HeaderCarrier, rds: HttpReads[VatScheme]): Future[VatRegStatus.Value] =
+  def getIncorporationInfo(transactionId: String)(implicit hc: HeaderCarrier): Future[Option[IncorporationInfo]] = {
+    http.GET[IncorporationInfo](s"$vatRegUrl/vatreg/incorporation-information/$transactionId").map(Some(_)).recover {
+      case _ => None
+    }
+  }
+
+  def getStatus(regId: String)(implicit hc: HeaderCarrier): Future[VatRegStatus.Value] = {
     http.GET[JsObject](s"$vatRegUrl/vatreg/$regId/status") map { json =>
       (json \ "status").as[VatRegStatus.Value]
     } recover {
-      case e: Exception => throw logResponse(e, className, "getStatus")
+      case e: Exception => throw logResponse(e, "getStatus")
     }
-
+  }
 }
 
