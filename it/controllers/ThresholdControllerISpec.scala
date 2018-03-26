@@ -28,7 +28,7 @@ class ThresholdControllerISpec extends PlaySpec with AppAndStubs with RequestsFi
           .vatScheme.hasNoData("threshold")
           .s4lContainer.isUpdatedWith(CacheKeys.Threshold, s4lData)
 
-        val response = buildClient("/vat-taxable-sales-over-threshold").get()
+        val response = buildClient("/make-more-taxable-sales").get()
         whenReady(response)(_.status) mustBe 200
       }
     }
@@ -53,7 +53,7 @@ class ThresholdControllerISpec extends PlaySpec with AppAndStubs with RequestsFi
           .vatScheme.patched("threshold", json)
           .audit.writesAudit()
 
-        val response = buildClient("/vat-taxable-sales-over-threshold").post(Map("taxableTurnoverRadio" -> Seq(TAXABLE_YES)))
+        val response = buildClient("/make-more-taxable-sales").post(Map("taxableTurnoverRadio" -> Seq(TAXABLE_YES)))
         whenReady(response) { res =>
           res.status mustBe 303
           res.header(HeaderNames.LOCATION) mustBe Some("/vat-uri/who-is-registering-the-company-for-vat")
@@ -74,7 +74,7 @@ class ThresholdControllerISpec extends PlaySpec with AppAndStubs with RequestsFi
           .s4lContainer.isUpdatedWith(CacheKeys.Threshold, s4lData)
           .audit.writesAudit()
 
-        val response = buildClient("/vat-taxable-sales-over-threshold").post(Map("taxableTurnoverRadio" -> Seq(TAXABLE_NO)))
+        val response = buildClient("/make-more-taxable-sales").post(Map("taxableTurnoverRadio" -> Seq(TAXABLE_NO)))
         whenReady(response) { res =>
           res.status mustBe 303
           res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryRegistrationController.show().url)
@@ -181,7 +181,7 @@ class ThresholdControllerISpec extends PlaySpec with AppAndStubs with RequestsFi
           .s4lContainer.contains(CacheKeys.Threshold, s4lData)
           .audit.writesAudit()
 
-        val response = buildClient("/go-over-vat-threshold-period").get()
+        val response = buildClient("/go-over-threshold-period").get()
         whenReady(response)(_.status) mustBe 200
       }
     }
@@ -206,7 +206,7 @@ class ThresholdControllerISpec extends PlaySpec with AppAndStubs with RequestsFi
           .s4lContainer.contains(CacheKeys.Threshold, s4lData)
           .s4lContainer.isUpdatedWith(CacheKeys.Threshold, s4lDataUpdated)
 
-        val response = buildClient("/go-over-vat-threshold-period").post(Map("expectationOverThresholdRadio" -> Seq("false")))
+        val response = buildClient("/go-over-threshold-period").post(Map("expectationOverThresholdRadio" -> Seq("false")))
         whenReady(response) { res =>
           res.status mustBe 303
           res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdSummaryController.show().url)
@@ -238,7 +238,7 @@ class ThresholdControllerISpec extends PlaySpec with AppAndStubs with RequestsFi
           .vatScheme.patched("threshold", json)
           .s4lContainer.cleared
 
-        val response = buildClient("/go-over-vat-threshold-period").post(Map("expectationOverThresholdRadio" -> Seq("true"),
+        val response = buildClient("/go-over-threshold-period").post(Map("expectationOverThresholdRadio" -> Seq("true"),
                                                                              "expectationOverThreshold.day" -> Seq("06"),
                                                                              "expectationOverThreshold.month" -> Seq("08"),
                                                                              "expectationOverThreshold.year" -> Seq("2016")))
@@ -280,7 +280,7 @@ class ThresholdControllerISpec extends PlaySpec with AppAndStubs with RequestsFi
           .vatScheme.patched("threshold", json)
           .s4lContainer.cleared
 
-        val response = buildClient("/go-over-vat-threshold-period").post(Map("expectationOverThresholdRadio" -> Seq("false")))
+        val response = buildClient("/go-over-threshold-period").post(Map("expectationOverThresholdRadio" -> Seq("false")))
         whenReady(response) { res =>
           res.status mustBe 303
           res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdSummaryController.show().url)

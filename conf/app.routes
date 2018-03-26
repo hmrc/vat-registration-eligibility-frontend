@@ -30,16 +30,16 @@ GET         /apply-for-any                                    controllers.Eligib
 POST        /apply-for-any                                    controllers.EligibilityController.submitCompanyWillDoAnyOf
 
 ## TAXABLE TURNOVER PAGE
-GET         /vat-taxable-sales-over-threshold                 controllers.TaxableTurnoverController.show
-POST        /vat-taxable-sales-over-threshold                 controllers.TaxableTurnoverController.submit
+GET         /make-more-taxable-sales                          controllers.TaxableTurnoverController.show
+POST        /make-more-taxable-sales                          controllers.TaxableTurnoverController.submit
 
 ## Post incorp threshold question 1expectationOverShow
 GET         /vat-taxable-turnover-gone-over                   controllers.ThresholdController.goneOverShow
 POST        /vat-taxable-turnover-gone-over                   controllers.ThresholdController.goneOverSubmit
 
 #Post incorp threshold question 2
-GET        /go-over-vat-threshold-period                      controllers.ThresholdController.expectationOverShow
-POST       /go-over-vat-threshold-period                      controllers.ThresholdController.expectationOverSubmit
+GET        /go-over-threshold-period                           controllers.ThresholdController.expectationOverShow
+POST       /go-over-threshold-period                           controllers.ThresholdController.expectationOverSubmit
 ## Threshold summary
 GET         /check-confirm-threshold                            controllers.ThresholdSummaryController.show
 POST        /check-confirm-threshold                            controllers.ThresholdSummaryController.submit

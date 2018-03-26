@@ -31,7 +31,7 @@ class WhitelistFilterSpec extends PlaySpec with OneAppPerTest {
     .global(ProductionFrontendGlobal)
     .configure(Map(
       "whitelist-excluded" -> Base64.getEncoder.encodeToString("/ping/ping,/healthcheck".getBytes),
-      "whitelist" -> Base64.getEncoder.encodeToString("11.22.33.44".getBytes)
+      "whitelist" -> Base64.getEncoder.encodeToString("string".getBytes)
     ))
     .build
 
@@ -41,7 +41,7 @@ class WhitelistFilterSpec extends PlaySpec with OneAppPerTest {
         FrontendAppConfig.whitelistExcluded mustBe Seq("/ping/ping", "/healthcheck")
       }
       "the whitelist IPs are requested" in {
-        FrontendAppConfig.whitelist mustBe Seq("11.22.33.44")
+        FrontendAppConfig.whitelist mustBe Seq("string")
       }
     }
   }
@@ -49,14 +49,14 @@ class WhitelistFilterSpec extends PlaySpec with OneAppPerTest {
   "ProductionFrontendGlobal" must {
     "let requests passing" when {
       "coming from an IP in the white list must work as normal" in {
-        val request = FakeRequest(GET, "/check-if-you-can-register-for-vat/error/timeout").withHeaders("True-Client-IP" -> "11.22.33.44")
+        val request = FakeRequest(GET, "/check-if-you-can-register-for-vat/error/timeout").withHeaders("True-Client-IP" -> "string")
         val Some(result) = route(app, request)
 
         status(result) mustBe OK
       }
 
       "coming from a IP NOT in the white-list and not with a white-listed path must be redirected" in {
-        val request = FakeRequest(GET, "/check-if-you-can-register-for-vat").withHeaders("True-Client-IP" -> "93.00.33.33")
+        val request = FakeRequest(GET, "/check-if-you-can-register-for-vat").withHeaders("True-Client-IP" -> "redirect")
         val Some(result) = route(app, request)
 
         status(result) mustBe SEE_OTHER
@@ -65,7 +65,7 @@ class WhitelistFilterSpec extends PlaySpec with OneAppPerTest {
       }
 
       "coming from an IP NOT in the white-list, but with a white-listed path must work as normal" in {
-        val request = FakeRequest(GET, "/ping/ping").withHeaders("True-Client-IP" -> "93.00.33.33")
+        val request = FakeRequest(GET, "/ping/ping").withHeaders("True-Client-IP" -> "redirect")
         val Some(result) = route(app, request)
 
         status(result) mustBe OK

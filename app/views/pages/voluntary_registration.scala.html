@@ -27,10 +27,11 @@
         voluntaryRegistrationForm
     )
 
-    <h1 class="form-title heading-xlarge" id="pageHeading">@messages("pages.voluntary.registration.heading")</h1>
+    <h1 class="form-title heading-large" id="pageHeading">@messages("pages.voluntary.registration.heading")</h1>
 
     <p>@messages("pages.voluntary.registration.para1")</p>
-    <p>@messages("pages.voluntary.registration.para2")</p>
+
+    <h1 class="form-title heading-medium" id="pageHeading">@messages("pages.voluntary.registration.heading2")</h1>
 
     @govHelpers.form(action = controllers.routes.VoluntaryRegistrationController.submit()) {
         <div class="form-group">

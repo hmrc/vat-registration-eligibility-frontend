@@ -50,7 +50,7 @@ class TaxableTurnoverControllerSpec extends ControllerSpec with GuiceOneAppPerTe
   val fakeRequest = FakeRequest(routes.TaxableTurnoverController.show())
 
   s"GET ${routes.TaxableTurnoverController.show()}" should {
-    val expectedText = "VAT taxable sales of more than £85,000 in the 30 days"
+    val expectedText = "Over the next 30 days, do you think the company will make more than £85,000 in VAT-taxable sales?"
 
     "return 200 with HTML not prepopulated when there is no view data" in new Setup {
       mockGetThresholdViewModel[TaxableTurnover](Future.successful(None))

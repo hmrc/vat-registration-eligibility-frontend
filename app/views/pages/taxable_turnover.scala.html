@@ -31,6 +31,20 @@
 
   <p>@messages("pages.taxable.turnover.p1")</p>
 
+  <div class="panel panel-border-wide">
+    <p>@Html(messages("pages.taxable.turnover.p2"))</p>
+  </div>
+  <br/>
+
+ <div class="form-group">
+    <details role="group">
+        <summary role="button" aria-controls="details-content-1" aria-expanded="false"><span class="summary">@messages("pages.taxable.turnover.panel.title")</span></summary>
+        <div class="panel panel-border-narrow" id="details-content-1" aria-hidden="true">
+            <p>@messages("pages.taxable.turnover.panel.para")</p>
+        </div>
+    </details>
+ </div>
+
   @govHelpers.form(action = controllers.routes.TaxableTurnoverController.submit()) {
   <div class="form-group">
     @vatInputRadioGroup(

@@ -44,7 +44,7 @@ class ExpectedOverThresholdPageSpec extends UnitSpec with WithFakeApplication wi
 
   "Expected Over threshold page" should {
     "display the correct title" in {
-      document.getElementById("pageHeading").text shouldBe "Have you ever thought your company would go over the VAT threshold within a single 30-day period?"
+      document.getElementById("pageHeading").text shouldBe "In the past, have you ever thought the company's VAT-taxable sales would go over the threshold in a 30-day period?"
     }
   }
   "pre-select the correct radio" in {

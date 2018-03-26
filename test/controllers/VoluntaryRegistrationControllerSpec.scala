@@ -56,7 +56,7 @@ class VoluntaryRegistrationControllerSpec extends ControllerSpec with GuiceOneAp
   val fakeRequest = FakeRequest(routes.VoluntaryRegistrationController.show())
 
   s"GET ${routes.VoluntaryRegistrationController.show()}" should {
-    val expectedText = "Do you want to register voluntarily for VAT?"
+    val expectedText = "You can still choose to register it voluntarily. If you do, the company may be able to reclaim VAT on business-related purchases."
 
     "return 200 with HTML not prepopulated when there is no view data" in new Setup {
       mockGetThresholdViewModel[VoluntaryRegistration](Future.successful(None))

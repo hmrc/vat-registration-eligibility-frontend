@@ -12,7 +12,7 @@ app.common.errorSummaryLabel            = This page has errors
 app.common.change                       = Change
 app.common.gbp.symbol                   = £
 app.common.back                         = Back
-app.common.newHiddenHelperText          = (link opens in a new tab)
+app.common.newHiddenHelperText          = (opens in a new window)
 error.required                          = Select an option
 error.unknown                           = Invalid input
 validation.numeric                      = Enter a numeric value
@@ -95,11 +95,12 @@ pages.eligibility.doingBusinessAbroad.bullet5               = do business from a
 pages.eligibility.doAnyApplyToYou.title                     = Are you involved with more than one business or changing the legal status of your business?
 pages.eligibility.doAnyApplyToYou.heading                   = Are you involved with more than one business or changing the legal status of your business?
 pages.eligibility.doAnyApplyToYou.p1                        = Tell us if any of the following apply:
-pages.eligibility.doAnyApplyToYou.bullet1                   = you''ve been a sole trader, partner or director with another business in the last 2 years
-pages.eligibility.doAnyApplyToYou.bullet2                   = you want to
-pages.eligibility.doAnyApplyToYou.bullet2.1                 = set up a VAT group
-pages.eligibility.doAnyApplyToYou.bullet3                   = you''ve taken over a VAT-registered business which is operating and making a profit
-pages.eligibility.doAnyApplyToYou.bullet4                   = you changed the legal status of your business when you registered it with Companies House (for example, from sole trader to limited company)
+pages.eligibility.doAnyApplyToYou.bullet1                   = over the past 2 years, you''ve had another self-employed business (you don''t need to tell us if your only source of self-employed income was from being a landlord)
+pages.eligibility.doAnyApplyToYou.bullet2                   = over the past 2 years, you''ve been a partner or director with a different business
+pages.eligibility.doAnyApplyToYou.bullet3                   = you want to
+pages.eligibility.doAnyApplyToYou.bullet3.1                 = set up a VAT group
+pages.eligibility.doAnyApplyToYou.bullet4                   = you''ve taken over a VAT-registered business which is operating and making a profit
+pages.eligibility.doAnyApplyToYou.bullet5                   = you changed the legal status of your business when you registered it with Companies House (for example, from sole trader to limited company)
 
 ## Will you apply for any of the following?
 pages.eligibility.applyingForAnyOf.title                    = Is the company applying for either the Agricultural Flat Rate Scheme or the Annual Accounting Scheme?
@@ -129,13 +130,14 @@ pages.eligibility.companyWillDoAnyOf.title                   = Will the company 
 pages.eligibility.companyWillDoAnyOf.heading                 = Will the company do any of the following once it''s registered for VAT?
 pages.eligibility.companyWillDoAnyOf.p1                      = Tell us if the company will do either of the following:
 pages.eligibility.companyWillDoAnyOf.bullet2                 = own one or more racehorses
-pages.eligibility.companyWillDoAnyOf.bullet3                 = buy, sell or rent out land or property
+pages.eligibility.companyWillDoAnyOf.bullet3                 = buy, sell or rent out land or property as a business activity (not just to have its own premises)
+
 
 ## Voluntary Registration Page
-pages.voluntary.registration.title                            = Do you want to register voluntarily for VAT?
-pages.voluntary.registration.heading                          = Do you want to register voluntarily for VAT?
-pages.voluntary.registration.para1                            = Based on your answers, you don''t need to register for VAT right now.
-pages.voluntary.registration.para2                            = You can still register voluntarily if the company will supply VAT taxable goods or services in the UK.
+pages.voluntary.registration.title                            = The company doesn''t have to register for VAT
+pages.voluntary.registration.heading                          = The company doesn''t have to register for VAT
+pages.voluntary.registration.para1                            = You can still choose to register it voluntarily. If you do, the company may be able to reclaim VAT on business-related purchases.
+pages.voluntary.registration.heading2                         = Do you want to register it voluntarily?
 pages.voluntary.registration.reason.panels.neither.para       = If none of these apply you won’t be able to register voluntarily for VAT.
 validation.voluntary.registration.missing                     = Tell us if you want to register voluntarily for VAT
 
@@ -155,10 +157,13 @@ pages.voluntary.registration.reason.radio.neither             = Neither of these
 validation.voluntary.registration.reason.missing              = Tell us why you intend to register voluntarily for VAT
 
 ## Taxable Turnover Page
-pages.taxable.turnover.title                            = Do you expect the company to make VAT taxable sales of more than £85,000 in the 30 days after it''s registered with Companies House?
-pages.taxable.turnover.heading                          = Do you expect the company to make VAT taxable sales of more than £85,000 in the 30 days after it''s registered with Companies House?
-pages.taxable.turnover.p1                               = You must register immediately if you expect the company''s VAT taxable sales to be over £85,000 in the 30 days after it''s registered with Companies House.
-validation.taxable.turnover.missing                     = Tell us if you expect the company''s turnover to be more than £85,000 in the 30 days after it''s registered
+pages.taxable.turnover.title                            = Over the next 30 days, do you think the company will make more than £85,000 in VAT-taxable sales?
+pages.taxable.turnover.heading                          = Over the next 30 days, do you think the company will make more than £85,000 in VAT-taxable sales?
+pages.taxable.turnover.p1                               = £85,000 is the current VAT-registration threshold. It''s the amount of VAT-taxable sales the company can make before it has to register for VAT.
+pages.taxable.turnover.p2                               = We want to know if you think it will go over the threshold - even if it doesn''t.
+pages.taxable.turnover.panel.title                      = Show me an example
+pages.taxable.turnover.panel.para                       = You''re expecting new orders that will push the company''s VAT-taxable sales for the next 30 days over £85,000. You must answer ''yes'', even if the company''s VAT-taxable sales for the 30-day period don''t end up going over the threshold.
+validation.taxable.turnover.missing                     = Tell us if over the next 30 days, you think the company will make more than £85,000 in VAT-taxable sales
 
 ## Post Incorp Threshold Questions
 ## Over Threshold
@@ -174,26 +179,29 @@ validation.overThreshold.date.missing                     = Enter a valid date
 validation.overThreshold.selection.missing                = Tell us if since {0} the company''s VAT taxable turnover gone over £85,000
 validation.overThreshold.date.range.above                 = This date must be before the current month
 validation.overThreshold.date.range.below                 = Enter a date which is on or after the date the company was incorporated
+
 # Question 2
-pages.thresholdQuestion2.heading                          = Have you ever thought your company would go over the VAT threshold within a single 30-day period?
-pages.thresholdQuestion2.p1                               = This could be the date you received a large order or signed a new contract.
-pages.thresholdQuestion2.p2                               = Find a list of yearly
-pages.thresholdQuestion2.p2.1                             = VAT registration thresholds.
-pages.thresholdQuestion2.p3                               = We want to know about your expectation - even if your turnover for the 30-day period wasn''t (or won''t be) over the threshold.
-pages.thresholdQuestion2.example                          = Show me an example
+pages.thresholdQuestion2.heading                          = In the past, have you ever thought the company''s VAT-taxable sales would go over the threshold in a 30-day period?
+pages.thresholdQuestion2.p1                               = Again, we want to know if you ever thought it would go over - even if it didn''t.
+pages.thresholdQuestion2.p2                               = VAT-registration thresholds change every year. Recent ones include:
+pages.thresholdQuestion2.bullet1                          = 1 April 2016 to 31 March 2017: £83,000
+pages.thresholdQuestion2.bullet2                          = 1 April 2017 to present: £85,000
+pages.thresholdQuestion2.p3                               = Before this, use these
+pages.thresholdQuestion2.p3.1                             = previous VAT registration thresholds
+pages.thresholdQuestion2.example                          = What if the 30-day period has two different thresholds?
 pages.thresholdQuestion2.form.example                     = For example, {0} {1} {2}
-pages.thresholdQuestion2.example.content.pt1              = You received a large order on 24 July 2016. At the time you thought your company''s VAT taxable turnover between 24 July and 23 August would be more than the VAT registration threshold of £83,000.
-pages.thresholdQuestion2.example.content.pt2              = Alternatively, yesterday you received a large order. You expect this order to take your VAT taxable turnover for the next 30 days over the VAT registration threshold of £85,000.
+pages.thresholdQuestion2.example.content.pt1              = Use the one that applies on the date you thought the company would go over the threshold.
 pages.thresholdQuestion2.day                              = Day
 pages.thresholdQuestion2.month                            = Month
 pages.thresholdQuestion2.year                             = Year
 #validation messages Q2
 validation.expectationOverThreshold.date.invalid          = Enter a valid date
-validation.expectationOverThreshold.date.missing          = Enter a valid date
+validation.expectationOverThreshold.date.missing          = Enter a date for when you first thought it would
 validation.expectationOverThreshold.date.range.below      = Enter a date which is on or after the date the company was incorporated
 validation.expectationOverThreshold.date.range.above      = Enter a date which is not in the future
-validation.expectationOverThreshold.selection.missing     = Tell us if you''ve ever thought the company would go over the VAT threshold within a single 30-day period
-pages.thresholdQuestion2.panel.heading                    = When did this first happen?
+validation.expectationOverThreshold.selection.missing     = Tell us if In the past, you ever thought the company''s VAT-taxable sales would go over the threshold in a 30-day period
+pages.thresholdQuestion2.panel.heading                    = When did you first think that the company would go over the threshold?
+
 ## Threshold Summary Page
 pages.thresholdSummary.title                              = Check and confirm your answers
 pages.thresholdSummary.heading                            = Check and confirm your answers
