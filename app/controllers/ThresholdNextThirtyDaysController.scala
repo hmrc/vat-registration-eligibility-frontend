@@ -52,7 +52,7 @@ class ThresholdNextThirtyDaysController @Inject()(appConfig: FrontendAppConfig,
       Ok(thresholdNextThirtyDays(appConfig, preparedForm, NormalMode))
   }
 
-  def onSubmit() = (identify andThen getData andThen requireData).async {
+  def onSubmit() = (identify andThen getData).async {
     implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

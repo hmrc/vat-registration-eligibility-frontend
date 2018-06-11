@@ -134,3 +134,114 @@ thresholdNextThirtyDays.heading = Over VAT-registration threshold in the next 30
 thresholdNextThirtyDays.checkYourAnswersLabel = thresholdNextThirtyDays
 thresholdNextThirtyDays.error.required = Please give an answer for thresholdNextThirtyDays
 thresholdNextThirtyDays.text = £[85,000] is the current VAT-registration threshold. It’s the amount of VAT-taxable sales a business can make before it has to register for VAT.
+
+thresholdPreviousThirtyDays.title = Over VAT registration threshold in a 30-day period
+thresholdPreviousThirtyDays.heading = Over VAT registration threshold in a 30-day period
+thresholdPreviousThirtyDays.checkYourAnswersLabel = thresholdPreviousThirtyDays
+thresholdPreviousThirtyDays.error.required = Please give an answer for thresholdPreviousThirtyDays
+thresholdPreviousThirtyDays.text = Again, we want to know if the business ever expected to go over the threshold - even if it didn't.
+
+voluntaryRegistration.title = Do you want to register the business voluntarily?
+voluntaryRegistration.heading = Do you want to register the business voluntarily?
+voluntaryRegistration.checkYourAnswersLabel = voluntaryRegistration
+voluntaryRegistration.error.required = Please give an answer for voluntaryRegistration
+voluntaryRegistration.text = You can still register the business voluntarily, if it:
+
+choseNotToRegister.title = You have chosen not to register the business for VAT
+choseNotToRegister.heading = You have chosen not to register the business for VAT
+choseNotToRegister.text = Enter some guidance text here 
+choseNotToRegister.bullet1 = guidance bullet 1
+choseNotToRegister.bullet2 = guidance bullet 2
+
+thresholdInTwelveMonths.title = Over VAT-registration threshold in a 12-month period
+thresholdInTwelveMonths.heading = Over VAT-registration threshold in a 12-month period
+thresholdInTwelveMonths.checkYourAnswersLabel = thresholdInTwelveMonths
+thresholdInTwelveMonths.error.required = Please give an answer for thresholdInTwelveMonths
+thresholdInTwelveMonths.text = We want to know the month that VAT-taxable sales went above the threshold.
+
+turnoverEstimate.title = Estimate VAT-taxable turnover for the next 12 months
+turnoverEstimate.heading = Estimate VAT-taxable turnover for the next 12 months
+turnoverEstimate.zeropounds = £0
+turnoverEstimate.oneandtenthousand = �Between £1 and £10000
+turnoverEstimate.checkYourAnswersLabel = Estimate VAT-taxable turnover for the next 12 months
+turnoverEstimate.error.required = Please give an answer for turnoverEstimate
+
+completionCapacity.title = Which of the following people are you?
+completionCapacity.heading = Which of the following people are you?
+completionCapacity.herNameWasLola = Lola Mariboro
+completionCapacity.noneOfThese = None of these
+completionCapacity.checkYourAnswersLabel = Which of the following people are you?
+completionCapacity.error.required = Please give an answer for completionCapacity
+
+completionCapacityFillingInFor.title = Which company officer are you doing this application for?
+completionCapacityFillingInFor.heading = Which company officer are you doing this application for?
+completionCapacityFillingInFor.companyOfficer1 = CompanyOfficer 2
+completionCapacityFillingInFor.option2 = Option 2
+completionCapacityFillingInFor.checkYourAnswersLabel = Which company officer are you doing this application for?
+completionCapacityFillingInFor.error.required = Please give an answer for completionCapacityFillingInFor
+
+involvedInOtherBusiness.title = Have you been involved with another business or taken over a VAT-registered business?
+involvedInOtherBusiness.heading = Have you been involved with another business or taken over a VAT-registered business?
+involvedInOtherBusiness.checkYourAnswersLabel = involvedInOtherBusiness
+involvedInOtherBusiness.error.required = Please give an answer for involvedInOtherBusiness
+involvedInOtherBusiness.text = Tell us if any of the following apply:
+
+eligibilityDropout.title = You can’t register for VAT with this service
+eligibilityDropout.heading = You can’t register for VAT with this service
+eligibilityDropout.text = You'll need to register using another HMRC service.
+eligibilityDropout.bullet1 = guidance bullet 1
+eligibilityDropout.bullet2 = guidance bullet 2
+
+internationalActivities.title = Will the business be doing any of the following international activities over the next 12 months?
+internationalActivities.heading = Will the business be doing any of the following international activities over the next 12 months?
+internationalActivities.checkYourAnswersLabel = internationalActivities
+internationalActivities.error.required = Please give an answer for internationalActivities
+internationalActivities.text = Tell us if the business will:
+
+annualAccountingScheme.title = Is the business applying for the Annual Accounting Scheme?
+annualAccountingScheme.heading = Is the business applying for the Annual Accounting Scheme?
+annualAccountingScheme.checkYourAnswersLabel = annualAccountingScheme
+annualAccountingScheme.error.required = Please give an answer for annualAccountingScheme
+annualAccountingScheme.text = This scheme is an option for businesses with an estimated VAT-taxable turnover of £1.35 million or less.
+
+zeroRatedSales.title = Does the business sell mainly zero-rated goods or services?
+zeroRatedSales.heading = Does the business sell mainly zero-rated goods or services?
+zeroRatedSales.checkYourAnswersLabel = zeroRatedSales
+zeroRatedSales.error.required = Please give an answer for zeroRatedSales
+zeroRatedSales.text = Examples of zero-rated goods or services
+
+vATExemption.title = Do you want to apply for a VAT exemption?
+vATExemption.heading = Do you want to apply for a VAT exemption?
+vATExemption.checkYourAnswersLabel = vATExemption
+vATExemption.error.required = Please give an answer for vATExemption
+vATExemption.text = The business may not have to register for VAT if it sells mainly or only zero-rated goods or services.
+
+vATRegistrationException.title = Is the business applying for a VAT registration ‘exception’?
+vATRegistrationException.heading = Is the business applying for a VAT registration ‘exception’?
+vATRegistrationException.checkYourAnswersLabel = vATRegistrationException
+vATRegistrationException.error.required = Please give an answer for vATRegistrationException
+vATRegistrationException.text = You can get a registration exception if both of the following apply:
+
+applyInWriting.title = You must apply in writing
+applyInWriting.heading = You must apply in writing
+applyInWriting.text = Please use form VAT1 to apply for an exemption from VAT registration.
+applyInWriting.bullet1 = guidance bullet 1
+applyInWriting.bullet2 = guidance bullet 2
+
+agriculturalFlatRateScheme.title = Is the business applying for the Agricultural Flat Rate Scheme?
+agriculturalFlatRateScheme.heading = Is the business applying for the Agricultural Flat Rate Scheme?
+agriculturalFlatRateScheme.checkYourAnswersLabel = agriculturalFlatRateScheme
+agriculturalFlatRateScheme.error.required = Please give an answer for agriculturalFlatRateScheme
+agriculturalFlatRateScheme.text = The scheme is a different type of VAT registration for farmers.
+
+racehorses.title = Will the business be doing any of the following?
+racehorses.heading = Will the business be doing any of the following?
+racehorses.checkYourAnswersLabel = racehorses
+racehorses.error.required = Please give an answer for racehorses
+racehorses.text = Tell us if the business will:
+
+applicationUKNino.title = Do you have a UK National Insurance number?
+applicationUKNino.heading = Do you have a UK National Insurance number?
+applicationUKNino.checkYourAnswersLabel = applicationUKNino
+applicationUKNino.error.required = Please give an answer for applicationUKNino
+applicationUKNino.text = Some text to provide more info.

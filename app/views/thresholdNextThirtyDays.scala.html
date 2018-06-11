@@ -37,6 +37,15 @@
 
         @components.text("thresholdNextThirtyDays.text")
 
+        <div class="form-group">
+            <details>
+                <summary><span class="summary">@Messages("thresholdNextThirtyDays.dropdown")</span></summary>
+                <div class="panel panel-border-narrow">
+
+                </div>
+            </details>
+        </div>
+
         @components.vertical_input_radio(
             field = form("value"),
             radioOptions = Seq(

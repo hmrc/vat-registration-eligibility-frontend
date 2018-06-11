@@ -24,8 +24,7 @@ class IndexControllerSpec extends ControllerSpecBase {
   "Index Controller" must {
     "return 200 for a GET" in {
       val result = new IndexController(frontendAppConfig, messagesApi).onPageLoad()(fakeRequest)
-      status(result) mustBe OK
-//      redirectLocation(result) mustBe Some(routes.BeforeYouStartController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.ThresholdNextThirtyDaysController.onPageLoad().url)
     }
   }
 }

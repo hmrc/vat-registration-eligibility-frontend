@@ -14,3 +14,56 @@ GET        /feedback                                    controllers.FeedbackCont
 
 GET        /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onPageLoad()
 POST       /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onSubmit()
+
+GET        /gone-over-threshold-period                                   controllers.ThresholdPreviousThirtyDaysController.onPageLoad()
+POST       /gone-over-threshold-period                                   controllers.ThresholdPreviousThirtyDaysController.onSubmit()
+
+GET        /register-voluntarily                                   controllers.VoluntaryRegistrationController.onPageLoad()
+POST       /register-voluntarily                                   controllers.VoluntaryRegistrationController.onSubmit()
+
+GET        /chosen-not-to-register                       controllers.ChoseNotToRegisterController.onPageLoad()
+POST       /chosen-not-to-register                       controllers.ChoseNotToRegisterController.onSubmit()
+
+GET        /gone-over-threshold                                   controllers.ThresholdInTwelveMonthsController.onPageLoad()
+POST       /gone-over-threshold                                   controllers.ThresholdInTwelveMonthsController.onSubmit()
+
+GET        /vat-taxable-turnover               controllers.TurnoverEstimateController.onPageLoad(mode : Mode = NormalMode)
+POST       /vat-taxable-turnover               controllers.TurnoverEstimateController.onSubmit(mode : Mode = NormalMode)
+GET        /completionCapacity               controllers.CompletionCapacityController.onPageLoad()
+POST       /completionCapacity               controllers.CompletionCapacityController.onSubmit()
+
+GET        /completionCapacityFillingInFor               controllers.CompletionCapacityFillingInForController.onPageLoad()
+POST       /completionCapacityFillingInFor               controllers.CompletionCapacityFillingInForController.onSubmit()
+
+GET        /involved-more-business-changing-status                                   controllers.InvolvedInOtherBusinessController.onPageLoad()
+POST       /involved-more-business-changing-status                                   controllers.InvolvedInOtherBusinessController.onSubmit()
+
+GET        /eligibilityDropout                       controllers.EligibilityDropoutController.onPageLoad()
+POST       /eligibilityDropout                       controllers.EligibilityDropoutController.onSubmit()
+
+GET        /international-business                                   controllers.InternationalActivitiesController.onPageLoad()
+POST       /international-business                                   controllers.InternationalActivitiesController.onSubmit()
+
+GET        /annual-accounting                                   controllers.AnnualAccountingSchemeController.onPageLoad()
+POST       /annual-accounting                                   controllers.AnnualAccountingSchemeController.onSubmit()
+
+GET        /zero-rated-sales                                   controllers.ZeroRatedSalesController.onPageLoad()
+POST       /zero-rated-sales                                   controllers.ZeroRatedSalesController.onSubmit()
+
+GET        /vat-exemption                                   controllers.VATExemptionController.onPageLoad()
+POST       /vat-exemption                                   controllers.VATExemptionController.onSubmit()
+
+GET        /registration-exception                                   controllers.VATRegistrationExceptionController.onPageLoad()
+POST       /registration-exception                                   controllers.VATRegistrationExceptionController.onSubmit()
+
+GET        /apply-writing                       controllers.ApplyInWritingController.onPageLoad()
+POST       /apply-writing                       controllers.ApplyInWritingController.onSubmit()
+
+GET        /agricultural-flat-rate                                   controllers.AgriculturalFlatRateSchemeController.onPageLoad()
+POST       /agricultural-flat-rate                                   controllers.AgriculturalFlatRateSchemeController.onSubmit()
+
+GET        /own-racehorses-buy-sell-property                                   controllers.RacehorsesController.onPageLoad()
+POST       /own-racehorses-buy-sell-property                                   controllers.RacehorsesController.onSubmit()
+
+GET        /national-insurance-number                                   controllers.ApplicationUKNinoController.onPageLoad()
+POST       /national-insurance-number                                   controllers.ApplicationUKNinoController.onSubmit()
