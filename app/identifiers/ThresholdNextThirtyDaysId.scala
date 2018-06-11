@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package utils
+package identifiers
 
-import uk.gov.hmrc.http.cache.client.CacheMap
-import identifiers._
-import models._
-
-class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
-  def thresholdNextThirtyDays: Option[Boolean] = cacheMap.getEntry[Boolean](ThresholdNextThirtyDaysId.toString)
-
-
-  def getAnswer(id: Identifier): Option[Boolean] = cacheMap.getEntry[Boolean](id.toString)
+case object ThresholdNextThirtyDaysId extends Identifier {
+  override def toString: String = "thresholdNextThirtyDays"
 }

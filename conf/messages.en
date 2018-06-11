@@ -128,3 +128,9 @@ secureRegister.bullet2 = ''persons in significant control'' (PSCs) - that is, pe
 eligible.title = You can set up a company with this service
 eligible.heading = You can set up a company with this service
 eligible.text = On the next page you''ll set up an account for the company so you can use the service.
+
+thresholdNextThirtyDays.title = Over VAT-registration threshold in the next 30 days
+thresholdNextThirtyDays.heading = Over VAT-registration threshold in the next 30 days
+thresholdNextThirtyDays.checkYourAnswersLabel = thresholdNextThirtyDays
+thresholdNextThirtyDays.error.required = Please give an answer for thresholdNextThirtyDays
+thresholdNextThirtyDays.text = £[85,000] is the current VAT-registration threshold. It’s the amount of VAT-taxable sales a business can make before it has to register for VAT.

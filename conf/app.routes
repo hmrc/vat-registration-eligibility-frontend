@@ -11,3 +11,6 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
 GET        /feedback                                    controllers.FeedbackController.show()
+
+GET        /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onPageLoad()
+POST       /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onSubmit()

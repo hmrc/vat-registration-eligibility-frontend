@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package utils
+package forms
 
-import uk.gov.hmrc.http.cache.client.CacheMap
-import identifiers._
-import models._
+import javax.inject.Inject
 
-class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
-  def thresholdNextThirtyDays: Option[Boolean] = cacheMap.getEntry[Boolean](ThresholdNextThirtyDaysId.toString)
+import forms.mappings.Mappings
+import play.api.data.Form
 
+class ThresholdNextThirtyDaysFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def getAnswer(id: Identifier): Option[Boolean] = cacheMap.getEntry[Boolean](id.toString)
+  def apply(): Form[Boolean] =
+    Form(
+      "value" -> boolean("thresholdNextThirtyDays.error.required")
+    )
 }
