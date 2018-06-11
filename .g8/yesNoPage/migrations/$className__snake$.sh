@@ -16,6 +16,16 @@ echo "$className;format="decap"$.checkYourAnswersLabel = $className;format="deca
 echo "$className;format="decap"$.error.required = Please give an answer for $className;format="decap"$" >> ../conf/messages.en
 echo "$className;format="decap"$.text = $text$" >> ../conf/messages.en
 
+if [ ! -z "$yesHiddenContent$" ]
+then
+    echo "$className;format="decap"$.hiddenContent.yes = $yesHiddenContent$" >> ../conf/messages.en
+fi
+
+if [ ! -z "$noHiddenContent$" ]
+then
+    echo "$className;format="decap"$.hiddenContent.no = $noHiddenContent$" >> ../conf/messages.en
+fi
+
 echo "Adding helper line into UserAnswers"
 awk '/class/ {\
      print;\

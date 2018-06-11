@@ -22,6 +22,10 @@
 
 @(appConfig: FrontendAppConfig, form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
+@hiddenYesContent = {}
+
+@hiddenNoContent = {}
+
 @main_template(
     title = messages("thresholdNextThirtyDays.title"),
     appConfig = appConfig,
@@ -52,10 +56,10 @@
                 "true" -> messages("site.yes"),
                 "false" -> messages("site.no")
             ),
-            radioAdditionalInfo = Map("true" -> Html("TEST TRUE"), "false" -> Html("TEST FALSE")),
+            radioAdditionalInfo = Map("true" -> hiddenYesContent, "false" -> hiddenNoContent),
             '_labelAfter -> true,
             '_labelClass -> "block-label",
-            '_label -> messages("thresholdNextThirtyDays.heading"),
+            '_legend -> messages("thresholdNextThirtyDays.heading"),
             '_legendClass -> "visually-hidden"
         )
 
