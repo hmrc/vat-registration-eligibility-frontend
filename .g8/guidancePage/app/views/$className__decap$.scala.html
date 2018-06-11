@@ -1,0 +1,19 @@
+@import config.FrontendAppConfig
+@import uk.gov.hmrc.play.views.html.helpers.{form}
+
+@(appConfig: FrontendAppConfig)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("$className;format="decap"$.title"),
+    appConfig = appConfig,
+    bodyClasses = None) {
+
+    @components.heading("$className;format="decap"$.heading")
+
+    @components.text_with_bullets("$className;format="decap"$.text", Seq("$className;format="decap"$.bullet1", "$className;format="decap"$.bullet2"))
+
+    @form(action = controllers.routes.$className;format="cap"$Controller.onSubmit()) {
+        @components.button("site.continue", "submit")
+    }
+
+}
