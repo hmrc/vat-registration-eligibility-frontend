@@ -1,0 +1,86 @@
+@*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import utils.RadioOption
+
+@(field: Field,
+  radioOptions: Seq[RadioOption],
+  hiddenElem: Seq[(String, Html)],
+  args: (Symbol, Any)*)(implicit lang: play.api.i18n.Lang, messages: Messages)
+
+@import play.api.i18n._
+@import views.html.helper._
+
+@elements = @{new FieldElements(field.id, field, null, args.toMap, messages) }
+@fieldsetClass = {@elements.args.get('_groupClass)@if(elements.hasErrors){ form-group-error}}
+@labelAfter = @{ elements.args.get('_labelAfter).getOrElse(false).asInstanceOf[Boolean] }
+@idHidden = @{ elements.args.get('_idHidden).getOrElse("")}
+@classHidden = @{ elements.args.get('_classHidden).getOrElse("") }
+
+<fieldset class="form-group @fieldsetClass"
+@if(elements.args.get('_fieldsetAttributes).isDefined) {@elements.args.get('_fieldsetAttributes)}>
+@if(elements.args.get('_legend).isDefined) {
+    <legend @if(elements.args.get('_legendClass).isDefined) {class="@elements.args.get('_legendClass)"}>
+        @elements.args.get('_legend)
+    </legend>
+}
+@elements.errors.map{error => <span class="error-notification">@Messages(error)</span>}
+
+@radioOptions.map { input =>
+    @defining(s"${elements.field.name}-${input.value.toLowerCase.replace(" ","_")}")  { inputId =>
+        <div class="multiple-choice">
+            <input
+                type="radio"
+                id="@input.id"
+                name="@elements.field.name"
+                value="@input.value"
+                @elements.args.get('_inputClass).map{inputClass => class="@inputClass"}
+                @if(elements.args.contains('_dataAttributes) ){ @elements.args.get('_dataAttributes)}
+                @field.value.filter( _ == input.value).map{_ => checked="checked"}/>
+
+            <label for="@input.id"
+                @elements.args.get('_labelClass).map{labelClass => class="@labelClass@field.value.filter( _ == input.value).map{_ => selected}"}>
+                @if(!labelAfter) {
+                    @if(elements.args.get('_stackedLabel)) {
+                        @if(messages(input.messageKey).split(" ").length < 2) {<br>@messages(input.messageKey)
+                        } else {
+                            @for( (l, index) <- messages(input.messageKey).split(" ").zipWithIndex) {
+                                @if(index != 0) {<br>}@l
+                            }
+                        }
+                    } else { @messages(input.messageKey) }
+                }
+
+                @if(labelAfter) {
+                    @if(elements.args.get('_stackedLabel)) {
+                        @if(messages(input.messageKey).split(" ").length < 2) {<br>@messages(input.messageKey)
+                        } else {
+                            @for( (l, index) <- messages(input.messageKey).split(" ").zipWithIndex) {
+                                @if(index != 0) {<br>}@l
+                            }
+                        }
+                    } else { @messages(input.messageKey) }
+                }
+            </label>
+        </div>
+    }
+    @if(hiddenElem.find(_._1 == input.value).nonEmpty){
+        <div id="@hiddenElem.find(_._1 == input.value).get._1-hidden" class="@classHidden">
+            @hiddenElem.find(_._1 == input.value).get._2
+        </div>
+    }
+}
+</fieldset>

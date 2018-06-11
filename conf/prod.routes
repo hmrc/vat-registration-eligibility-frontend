@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->         /vat-registration-eligibility-frontend                    app.Routes
+->         /check-if-you-can-register-for-vat                    app.Routes
 ->         /                          health.Routes
 ->     	   /template                  template.Routes
 

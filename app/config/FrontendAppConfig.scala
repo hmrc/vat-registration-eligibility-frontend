@@ -1,3 +1,19 @@
+/*
+ * Copyright 2018 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package config
 
 import com.google.inject.{Inject, Singleton}
@@ -14,18 +30,26 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private lazy val contactHost = runModeConfiguration.getString("contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "vatregistrationeligibilityfrontend"
+  private val contactFormServiceIdentifier = "companyregistrationeligibilityfrontend"
 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
   lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
-  lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
-  lazy val authUrl = baseUrl("auth")
   lazy val loginUrl = loadConfig("urls.login")
   lazy val loginContinueUrl = loadConfig("urls.loginContinue")
+
+  private val configRoot = "microservice.services"
+
+  lazy val compRegFEURL     = loadConfig(s"$configRoot.company-registration-frontend.url")
+  lazy val compRegFEURI     = loadConfig(s"$configRoot.company-registration-frontend.uri")
+  lazy val postSignInUrl    = loadConfig(s"$configRoot.company-registration-frontend.postSignInUrl")
+  lazy val feedbackUrl      = loadConfig(s"$configRoot.company-registration-frontend.feedbackUrl")
+
+  lazy val webincsUrl       = getConfString("coho-service.web-incs", throw new Exception("Couldn't get webincs URL"))
+
+  lazy val ggMakeAccountUrl = loadConfig(s"$configRoot.gg-reg-fe.url")
 
   lazy val languageTranslationEnabled = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
   def languageMap: Map[String, Lang] = Map(
