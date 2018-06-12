@@ -16,22 +16,13 @@
 
 package base
 
-import config.FrontendAppConfig
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice._
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
-import play.api.test.FakeRequest
+import connectors.{DataCacheConnector, IncorporationInformationConnector}
+import org.scalatest.mockito.MockitoSugar
 
-trait SpecBase extends CommonSpecBase with GuiceOneAppPerSuite {
 
-  def injector: Injector = app.injector
+trait VATEligiblityMocks {
+  self: MockitoSugar =>
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
-  def fakeRequest = FakeRequest("", "")
-
-  def messages: Messages = messagesApi.preferred(fakeRequest)
+  val mockIIConnector = mock[IncorporationInformationConnector]
+  val mockDataCacheConnector = mock[DataCacheConnector]
 }

@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package base
+package config
 
-import config.FrontendAppConfig
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice._
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
-import play.api.test.FakeRequest
+import javax.inject.Inject
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.http.ws._
 
-trait SpecBase extends CommonSpecBase with GuiceOneAppPerSuite {
+trait WSHttp extends
+  HttpGet with WSGet with
+  HttpPut with WSPut with
+  HttpPatch with WSPatch with
+  HttpPost with WSPost with
+  HttpDelete with WSDelete
 
-  def injector: Injector = app.injector
-
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
-  def fakeRequest = FakeRequest("", "")
-
-  def messages: Messages = messagesApi.preferred(fakeRequest)
+class Http @Inject()(config: FrontendAppConfig) extends WSHttp {
+  override val hooks   = Seq()
 }

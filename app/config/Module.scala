@@ -17,8 +17,10 @@
 package config
 
 import com.google.inject.AbstractModule
+import connectors.{IncorporationInformationConnector, IncorporationInformationConnectorImpl}
 import controllers.{FeedbackController, FeedbackControllerImpl}
 import controllers.actions._
+import services.{IncorporationInformationService, IncorporationInformationServiceImpl}
 
 class Module extends AbstractModule {
 
@@ -28,9 +30,16 @@ class Module extends AbstractModule {
     bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
 
+    bind(classOf[WSHttp]).to(classOf[Http]).asEagerSingleton()
+
     // For session based storage instead of cred based, change to SessionActionImpl
     bind(classOf[CacheIdentifierAction]).to(classOf[SessionActionImpl]).asEagerSingleton()
     bind(classOf[FeedbackController]).to(classOf[FeedbackControllerImpl]).asEagerSingleton()
 
+    //connectors
+    bind(classOf[IncorporationInformationConnector]).to(classOf[IncorporationInformationConnectorImpl]).asEagerSingleton()
+
+    //services
+    bind(classOf[IncorporationInformationService]).to(classOf[IncorporationInformationServiceImpl]).asEagerSingleton()
   }
 }

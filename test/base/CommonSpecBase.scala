@@ -16,22 +16,13 @@
 
 package base
 
-import config.FrontendAppConfig
+import org.scalatest.BeforeAndAfterEach
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice._
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
-import play.api.test.FakeRequest
+import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.logging.SessionId
 
-trait SpecBase extends CommonSpecBase with GuiceOneAppPerSuite {
-
-  def injector: Injector = app.injector
-
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
-
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
-  def fakeRequest = FakeRequest("", "")
-
-  def messages: Messages = messagesApi.preferred(fakeRequest)
+trait CommonSpecBase extends PlaySpec with FutureAwaits with DefaultAwaitTimeout with BeforeAndAfterEach with MockitoSugar {
+  implicit val hc : HeaderCarrier = HeaderCarrier(sessionId = Option(SessionId("sess-ID")))
 }
