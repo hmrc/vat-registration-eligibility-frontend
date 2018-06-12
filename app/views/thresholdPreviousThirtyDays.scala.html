@@ -37,6 +37,12 @@
 
         @components.text("thresholdPreviousThirtyDays.text")
 
+        @components.text_with_bullets("thresholdPreviousThirtyDays.text1",Seq("thresholdPreviousThirtyDays.bullet1", "thresholdPreviousThirtyDays.bullet2"))
+
+        @components.text_with_link("thresholdPreviousThirtyDays.beforeLinkText","thresholdPreviousThirtyDays.linkText","thresholdPreviousThirtyDays.linkURL")
+
+
+
         @components.input_yes_no(
             field = form("value"),
             label = messages("thresholdPreviousThirtyDays.heading"),
