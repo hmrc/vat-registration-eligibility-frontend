@@ -16,23 +16,19 @@
 
 package base
 
-import config.WSHttp
 import org.mockito.Matchers
-import org.scalatest.mockito.MockitoSugar
-import org.scalatestplus.play.PlaySpec
-import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import org.mockito.Mockito._
-import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.{JsValue, Reads}
+import org.scalatest.mockito.MockitoSugar
+import play.api.libs.json.JsValue
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
 
 trait ConnectorSpecBase extends CommonSpecBase with MockitoSugar {
   def mockGet[T](url: String, thenReturn: T) = {
-    when(mockWSHttp.GET[Option[T]](Matchers.eq(url))(Matchers.any(), Matchers.any(), Matchers.any()))
-      .thenReturn(Future.successful(Some(thenReturn)))
+    when(mockWSHttp.GET[T](Matchers.eq(url))(Matchers.any(), Matchers.any(), Matchers.any()))
+      .thenReturn(Future.successful(thenReturn))
   }
 
   def mockGet(url: String, status: Int, body: Option[JsValue] = None) = {

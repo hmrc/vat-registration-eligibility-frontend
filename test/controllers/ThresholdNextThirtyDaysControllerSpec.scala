@@ -37,7 +37,7 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ThresholdNextThirtyDaysController(frontendAppConfig, messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+      dataRetrievalAction, formProvider)
 
   def viewAsString(form: Form[_] = form) = thresholdNextThirtyDays(frontendAppConfig, form, NormalMode)(fakeRequest, messages).toString
 

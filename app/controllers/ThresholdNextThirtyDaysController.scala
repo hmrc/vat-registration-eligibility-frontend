@@ -38,7 +38,6 @@ class ThresholdNextThirtyDaysController @Inject()(appConfig: FrontendAppConfig,
                                          navigator: Navigator,
                                          identify: CacheIdentifierAction,
                                          getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
                                          formProvider: ThresholdNextThirtyDaysFormProvider) extends FrontendController with I18nSupport {
 
   val form: Form[Boolean] = formProvider()

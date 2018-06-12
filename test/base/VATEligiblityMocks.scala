@@ -17,22 +17,24 @@
 package base
 
 import config.WSHttp
-import connectors.{DataCacheConnector, IncorporationInformationConnector}
+import connectors._
 import org.scalatest.mockito.MockitoSugar
-import services.{CurrentProfileService, IncorporationInformationService}
+import services._
 
 
 trait VATEligiblityMocks {
   self: MockitoSugar =>
 
   //Connectors
-  val mockIIConnector           = mock[IncorporationInformationConnector]
-  val mockDataCacheConnector    = mock[DataCacheConnector]
+  lazy val mockIIConnector           = mock[IncorporationInformationConnector]
+  lazy val mockDataCacheConnector    = mock[DataCacheConnector]
+  lazy val mockBusRegConnector       = mock[BusinessRegistrationConnector]
+  lazy val mockCompanyRegConnector   = mock[CompanyRegistrationConnector]
 
   //Services
-  val mockIIService             = mock[IncorporationInformationService]
-  val mockCurrentProfileService = mock[CurrentProfileService]
+  lazy val mockIIService             = mock[IncorporationInformationService]
+  lazy val mockCurrentProfileService = mock[CurrentProfileService]
 
   //Other
-  val mockWSHttp                = mock[WSHttp]
+  lazy val mockWSHttp                = mock[WSHttp]
 }

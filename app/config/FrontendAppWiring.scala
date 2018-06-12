@@ -17,8 +17,8 @@
 package config
 
 import javax.inject.Inject
+import org.slf4j.{Logger, LoggerFactory}
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.http.ws._
 
 trait WSHttp extends
@@ -30,4 +30,8 @@ trait WSHttp extends
 
 class Http @Inject()(config: FrontendAppConfig) extends WSHttp {
   override val hooks   = Seq()
+}
+
+trait Logging {
+  val logger: Logger = LoggerFactory.getLogger(getClass)
 }

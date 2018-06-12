@@ -1,7 +1,4 @@
 import sbt._
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object FrontendBuild extends Build with MicroService {
 
@@ -11,8 +8,8 @@ object FrontendBuild extends Build with MicroService {
 }
 
 private object AppDependencies {
-  import play.sbt.PlayImport._
   import play.core.PlayVersion
+  import play.sbt.PlayImport._
 
   private val playHealthVersion = "2.1.0"
   private val logbackJsonLoggerVersion = "3.1.0"
@@ -29,6 +26,10 @@ private object AppDependencies {
   private val playLanguageVersion = "3.4.0"
   private val bootstrapVersion = "1.4.0"
   private val scalacheckVersion = "1.13.4"
+  private val jsoupVersion = "1.11.2"
+  private val scoverageVersion = "1.3.1"
+  private val wireMockVersion = "2.6.0"
+  private val reactivemongoTestVersion = "3.1.0"
 
   val compile = Seq(
     ws,
@@ -44,24 +45,39 @@ private object AppDependencies {
   )
 
   trait TestDependencies {
-    lazy val scope: String = "test"
-    lazy val test : Seq[ModuleID] = ???
+    val scope: Configuration
+    val test : Seq[ModuleID]
   }
 
-  object Test {
-    def apply() = new TestDependencies {
-      override lazy val test = Seq(
-        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
-        "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
-        "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusPlayVersion % scope,
-        "org.pegdown" % "pegdown" % pegdownVersion % scope,
-        "org.jsoup" % "jsoup" % "1.10.3" % scope,
-        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
-        "org.mockito" % "mockito-all" % mockitoAllVersion % scope,
-        "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope
-      )
-    }.test
+  private object UnitTestDependencies extends TestDependencies {
+    override val scope: Configuration = Test
+    override val test: Seq[ModuleID] = Seq(
+      "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
+      "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
+      "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusPlayVersion % scope,
+      "org.pegdown" % "pegdown" % pegdownVersion % scope,
+      "org.jsoup" % "jsoup" % jsoupVersion % scope,
+      "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
+      "org.mockito" % "mockito-all" % mockitoAllVersion % scope,
+      "org.scalacheck" %% "scalacheck" % scalacheckVersion % scope
+    )
+
+    def apply(): Seq[ModuleID] = test
   }
 
-  def apply() = compile ++ Test()
+  private object IntegrationTestDependencies extends TestDependencies {
+    override val scope: Configuration = IntegrationTest
+    override val test: Seq[ModuleID] = Seq(
+      "uk.gov.hmrc"             %% "hmrctest"                      % hmrcTestVersion          % scope,
+      "org.scalatestplus.play"  %% "scalatestplus-play"            % scalaTestPlusPlayVersion % scope,
+      "com.github.tomakehurst"  %  "wiremock"                      % wireMockVersion          % scope,
+      "org.jsoup"               %  "jsoup"                         % jsoupVersion             % scope,
+      "org.scoverage"           %  "scalac-scoverage-runtime_2.11" % scoverageVersion         % scope,
+      "uk.gov.hmrc"             %% "reactivemongo-test"            % reactivemongoTestVersion % scope
+    )
+
+    def apply(): Seq[ModuleID] = test
+  }
+
+  def apply() = compile ++ UnitTestDependencies() ++ IntegrationTestDependencies()
 }

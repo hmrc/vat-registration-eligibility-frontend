@@ -16,10 +16,10 @@
 
 package config
 
-import com.google.inject.{Inject, Singleton}
 import play.api.{Configuration, Environment}
 import play.api.i18n.Lang
 import controllers.routes
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.play.config.ServicesConfig
 
 @Singleton
@@ -30,7 +30,7 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
   private def loadConfig(key: String) = runModeConfiguration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private lazy val contactHost = runModeConfiguration.getString("contact-frontend.host").getOrElse("")
-  private val contactFormServiceIdentifier = "companyregistrationeligibilityfrontend"
+  private val contactFormServiceIdentifier = "SCRS"
 
   lazy val analyticsToken = loadConfig(s"google-analytics.token")
   lazy val analyticsHost = loadConfig(s"google-analytics.host")
@@ -42,10 +42,10 @@ class FrontendAppConfig @Inject() (override val runModeConfiguration: Configurat
 
   private val configRoot = "microservice.services"
 
-  lazy val compRegFEURL     = loadConfig(s"$configRoot.company-registration-frontend.url")
-  lazy val compRegFEURI     = loadConfig(s"$configRoot.company-registration-frontend.uri")
-  lazy val postSignInUrl    = loadConfig(s"$configRoot.company-registration-frontend.postSignInUrl")
-  lazy val feedbackUrl      = loadConfig(s"$configRoot.company-registration-frontend.feedbackUrl")
+  lazy val vatRegFEURL     = loadConfig(s"$configRoot.vat-registration-frontend.url")
+  lazy val vatRegFEURI     = loadConfig(s"$configRoot.vat-registration-frontend.uri")
+  lazy val postSignInUrl    = loadConfig(s"$configRoot.vat-registration-frontend.postSignInUrl")
+  lazy val feedbackUrl      = loadConfig(s"$configRoot.vat-registration-frontend.feedbackUrl")
 
   lazy val webincsUrl       = getConfString("coho-service.web-incs", throw new Exception("Couldn't get webincs URL"))
 

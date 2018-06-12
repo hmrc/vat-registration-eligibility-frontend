@@ -17,14 +17,18 @@
 package config
 
 import com.google.inject.AbstractModule
-import connectors.{IncorporationInformationConnector, IncorporationInformationConnectorImpl}
+import connectors._
 import controllers.{FeedbackController, FeedbackControllerImpl}
 import controllers.actions._
 import services.{CurrentProfileService, CurrentProfileServiceImpl, IncorporationInformationService, IncorporationInformationServiceImpl}
+import uk.gov.hmrc.play.config.ServicesConfig
+import utils.{FeatureManager, FeatureSwitchManager, VATFeatureSwitch, VATFeatureSwitchImpl}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
+
+    bind(classOf[ServicesConfig]).to(classOf[FrontendAppConfig]).asEagerSingleton()
 
     // Bind the actions for DI
     bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
@@ -32,15 +36,23 @@ class Module extends AbstractModule {
 
     bind(classOf[WSHttp]).to(classOf[Http]).asEagerSingleton()
 
-    // For session based storage instead of cred based, change to SessionActionImpl
+    //controller action binders
     bind(classOf[CacheIdentifierAction]).to(classOf[AuthActionImpl]).asEagerSingleton()
+
+    //controllers
     bind(classOf[FeedbackController]).to(classOf[FeedbackControllerImpl]).asEagerSingleton()
 
     //connectors
     bind(classOf[IncorporationInformationConnector]).to(classOf[IncorporationInformationConnectorImpl]).asEagerSingleton()
+    bind(classOf[BusinessRegistrationConnector]).to(classOf[BusinessRegistrationConnectorImpl]).asEagerSingleton()
+    bind(classOf[CompanyRegistrationConnector]).to(classOf[CompanyRegistrationConnectorImpl]).asEagerSingleton()
 
     //services
     bind(classOf[IncorporationInformationService]).to(classOf[IncorporationInformationServiceImpl]).asEagerSingleton()
     bind(classOf[CurrentProfileService]).to(classOf[CurrentProfileServiceImpl]).asEagerSingleton()
+
+    //feature switch
+    bind(classOf[FeatureManager]).to(classOf[FeatureSwitchManager]).asEagerSingleton()
+    bind(classOf[VATFeatureSwitch]).to(classOf[VATFeatureSwitchImpl]).asEagerSingleton()
   }
 }

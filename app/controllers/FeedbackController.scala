@@ -28,7 +28,7 @@ import scala.concurrent.Future
 class FeedbackControllerImpl @Inject()(val appConfig: FrontendAppConfig,
                                        override val messagesApi: MessagesApi) extends FeedbackController {
   val feedbackUrl       = appConfig.feedbackUrl
-  val frontendUrl       = s"${appConfig.compRegFEURL}${appConfig.compRegFEURI}"
+  val frontendUrl       = s"${appConfig.vatRegFEURL}${appConfig.vatRegFEURI}"
 }
 
 trait FeedbackController extends FrontendController with I18nSupport {
