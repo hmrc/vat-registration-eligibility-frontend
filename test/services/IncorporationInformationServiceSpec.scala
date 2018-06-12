@@ -38,17 +38,6 @@ class IncorporationInformationServiceSpec extends CommonSpecBase with VATEligibl
 
   val testDate = Some(LocalDate.of(2010, 10, 10))
 
-  override protected def afterEach(): Unit = {
-    super.afterEach()
-    resetMocks()
-  }
-
-  def resetMocks() = {
-    reset(
-      mockIIConnector, mockDataCacheConnector
-    )
-  }
-
   "retrieveIncorporationDate" should {
     "find an incorp date" when {
       "it exists in II and was not cached" in new Setup {
@@ -90,7 +79,6 @@ class IncorporationInformationServiceSpec extends CommonSpecBase with VATEligibl
       "it is provided one" in new Setup {
         when(mockDataCacheConnector.save(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(CacheMap("id", Map("test" -> Json.obj()))))
-
 
         await(service.saveIncorpDateToDataCache(testDate)) mustBe testDate
       }

@@ -30,19 +30,6 @@ import scala.concurrent.Future
 
 
 trait ConnectorSpecBase extends CommonSpecBase with MockitoSugar {
-  val mockWSHttp = mock[WSHttp]
-
-  override protected def afterEach(): Unit = {
-    super.afterEach()
-    resetMocks()
-  }
-
-  def resetMocks() = {
-    reset(
-      mockWSHttp
-    )
-  }
-
   def mockGet[T](url: String, thenReturn: T) = {
     when(mockWSHttp.GET[Option[T]](Matchers.eq(url))(Matchers.any(), Matchers.any(), Matchers.any()))
       .thenReturn(Future.successful(Some(thenReturn)))
@@ -58,7 +45,7 @@ trait ConnectorSpecBase extends CommonSpecBase with MockitoSugar {
       .thenReturn(Future.failed(exception))
   }
 
-  def verifyGetCalled[T](url: String) = {
-    verify(mockWSHttp, times(1)).GET[Option[T]](Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
+  def verifyGetCalled[T](url: String, count: Int = 1) = {
+    verify(mockWSHttp, times(count)).GET[Option[T]](Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
   }
 }
