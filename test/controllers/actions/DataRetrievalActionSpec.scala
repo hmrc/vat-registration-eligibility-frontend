@@ -21,6 +21,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.mockito.MockitoSugar
 import base.SpecBase
 import connectors.DataCacheConnector
+import models.CurrentProfile
 import models.requests.{CacheIdentifierRequest, OptionalDataRequest}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -33,6 +34,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     def callTransform[A](request: CacheIdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
+  val testProfile = CurrentProfile("regId", "txId", None)
+
   "Data Retrieval Action" when {
     "there is no data in the cache" must {
       "set userAnswers to 'None' in the request" in {
@@ -40,7 +43,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
         when(dataCacheConnector.fetch("id")) thenReturn Future(None)
         val action = new Harness(dataCacheConnector)
 
-        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id"))
+        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id", testProfile))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isEmpty mustBe true
@@ -54,7 +57,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
         when(dataCacheConnector.fetch("id")) thenReturn Future(Some(new CacheMap("id", Map())))
         val action = new Harness(dataCacheConnector)
 
-        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id"))
+        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id", testProfile))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isDefined mustBe true

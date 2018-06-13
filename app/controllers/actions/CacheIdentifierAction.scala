@@ -23,14 +23,16 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.Retrievals
 import config.FrontendAppConfig
 import controllers.routes
+import models.CurrentProfile
 import models.requests.CacheIdentifierRequest
+import services.CurrentProfileService
 import uk.gov.hmrc.http.UnauthorizedException
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig)
+class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config: FrontendAppConfig, currentProfileService: CurrentProfileService)
                               (implicit ec: ExecutionContext) extends CacheIdentifierAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: (CacheIdentifierRequest[A]) => Future[Result]): Future[Result] = {
@@ -38,7 +40,9 @@ class AuthActionImpl @Inject()(override val authConnector: AuthConnector, config
 
     authorised().retrieve(Retrievals.internalId) {
       _.map {
-        internalId => block(CacheIdentifierRequest(request, internalId))
+        internalId => currentProfileService.fetchOrBuildCurrentProfile(internalId) flatMap( cp =>
+          block(CacheIdentifierRequest(request, internalId, cp))
+        )
       }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
     } recover {
       case ex: NoActiveSession =>
@@ -66,7 +70,7 @@ class SessionActionImpl @Inject()(config: FrontendAppConfig)
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     hc.sessionId match {
-      case Some(session) => block(CacheIdentifierRequest(request, session.value))
+      case Some(session) => block(CacheIdentifierRequest(request, session.value, CurrentProfile("", "", None)))
       case None => Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
     }
   }

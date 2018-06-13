@@ -33,8 +33,8 @@ class DataRetrievalActionImpl @Inject()(val dataCacheConnector: DataCacheConnect
     implicit val hc = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     dataCacheConnector.fetch(request.cacheId).map {
-      case None => OptionalDataRequest(request.request, request.cacheId, None)
-      case Some(data) => OptionalDataRequest(request.request, request.cacheId, Some(new UserAnswers(data)))
+      case None => OptionalDataRequest(request.request, request.cacheId, request.currentProfile, None)
+      case Some(data) => OptionalDataRequest(request.request, request.cacheId, request.currentProfile, Some(new UserAnswers(data)))
     }
   }
 }

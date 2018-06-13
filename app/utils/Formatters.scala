@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package controllers.actions
+package utils
 
-import models.CurrentProfile
-import play.api.mvc.{Request, Result}
-import models.requests.CacheIdentifierRequest
+import java.text.Normalizer
 
-import scala.concurrent.Future
+import play.api.libs.json._
 
-object FakeCacheIdentifierAction extends CacheIdentifierAction {
-  override def invokeBlock[A](request: Request[A], block: (CacheIdentifierRequest[A]) => Future[Result]): Future[Result] =
-    block(CacheIdentifierRequest(request, "id", CurrentProfile("", "", None)))
+object Formatters {
+
+  private def normalize(str: String): String = Normalizer.normalize(str, Normalizer.Form.NFKD)
+    .replaceAll("\\p{M}", "")
+    .trim
+
+  lazy val normalizeTrimmedHMRCReads = new Reads[String] {
+    override def reads(json: JsValue): JsResult[String] = Json.fromJson[String](json) flatMap {
+      str => JsSuccess(normalize(str).replaceAll("[^A-Za-z 0-9\\-']", ""))
+    }
+  }
 }
-

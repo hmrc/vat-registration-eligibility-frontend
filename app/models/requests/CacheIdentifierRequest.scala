@@ -16,6 +16,7 @@
 
 package models.requests
 
+import models.CurrentProfile
 import play.api.mvc.{Request, WrappedRequest}
 
-case class CacheIdentifierRequest[A] (request: Request[A], cacheId: String) extends WrappedRequest[A](request)
+case class CacheIdentifierRequest[A] (request: Request[A], cacheId: String, currentProfile: CurrentProfile) extends WrappedRequest[A](request)

@@ -16,10 +16,8 @@
 
 package services
 
-import java.time.LocalDate
-
 import base.{CommonSpecBase, VATEligiblityMocks}
-import connectors.{DataCacheConnector, IncorporationInformationConnector}
+import connectors.{DataCacheConnector}
 import models.CurrentProfile
 import org.mockito.Matchers
 import org.mockito.Mockito._
@@ -39,18 +37,19 @@ class CurrentProfileServiceSpec extends CommonSpecBase with VATEligiblityMocks {
 
   val regID   = "registrationID"
   val txID    = "transactionID"
+  val testIntId = "internalId"
 
   "buildCurrentProfile" should {
     "build a profile" when {
       "it hasn't been built" in new Setup {
         when(mockDataCacheConnector.getEntry[CurrentProfile](Matchers.any(), Matchers.any())(Matchers.any()))
             .thenReturn(Future.successful(None))
-        when(mockIIService.getIncorpDateFromII(Matchers.any())(Matchers.any()))
+        when(mockIIService.getIncorpDate(Matchers.any())(Matchers.any()))
             .thenReturn(Future.successful(None))
         when(mockDataCacheConnector.save[CurrentProfile](Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(CacheMap("test", Map("test" -> Json.obj()))))
 
-        await(service.fetchOrBuildCurrentProfile) mustBe CurrentProfile(regID, txID, None)
+        await(service.fetchOrBuildCurrentProfile(testIntId)) mustBe CurrentProfile(regID, txID, None)
       }
 
       "it has been built" in new Setup {
@@ -59,7 +58,7 @@ class CurrentProfileServiceSpec extends CommonSpecBase with VATEligiblityMocks {
         when(mockDataCacheConnector.getEntry[CurrentProfile](Matchers.any(), Matchers.any())(Matchers.any()))
             .thenReturn(Future.successful(Some(profile)))
 
-        await(service.fetchOrBuildCurrentProfile) mustBe profile
+        await(service.fetchOrBuildCurrentProfile(testIntId)) mustBe profile
       }
     }
   }

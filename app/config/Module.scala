@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule
 import connectors.{IncorporationInformationConnector, IncorporationInformationConnectorImpl}
 import controllers.{FeedbackController, FeedbackControllerImpl}
 import controllers.actions._
-import services.{IncorporationInformationService, IncorporationInformationServiceImpl}
+import services.{CurrentProfileService, CurrentProfileServiceImpl, IncorporationInformationService, IncorporationInformationServiceImpl}
 
 class Module extends AbstractModule {
 
@@ -33,7 +33,7 @@ class Module extends AbstractModule {
     bind(classOf[WSHttp]).to(classOf[Http]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionActionImpl
-    bind(classOf[CacheIdentifierAction]).to(classOf[SessionActionImpl]).asEagerSingleton()
+    bind(classOf[CacheIdentifierAction]).to(classOf[AuthActionImpl]).asEagerSingleton()
     bind(classOf[FeedbackController]).to(classOf[FeedbackControllerImpl]).asEagerSingleton()
 
     //connectors
@@ -41,5 +41,6 @@ class Module extends AbstractModule {
 
     //services
     bind(classOf[IncorporationInformationService]).to(classOf[IncorporationInformationServiceImpl]).asEagerSingleton()
+    bind(classOf[CurrentProfileService]).to(classOf[CurrentProfileServiceImpl]).asEagerSingleton()
   }
 }

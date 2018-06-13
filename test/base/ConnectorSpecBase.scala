@@ -46,6 +46,6 @@ trait ConnectorSpecBase extends CommonSpecBase with MockitoSugar {
   }
 
   def verifyGetCalled[T](url: String, count: Int = 1) = {
-    verify(mockWSHttp, times(count)).GET[Option[T]](Matchers.any())(Matchers.any(), Matchers.any(), Matchers.any())
+    verify(mockWSHttp, times(count)).GET[Option[T]](Matchers.eq(url))(Matchers.any(), Matchers.any(), Matchers.any())
   }
 }

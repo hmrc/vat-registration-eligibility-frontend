@@ -20,6 +20,9 @@ import java.time.LocalDate
 
 import connectors.{DataCacheConnector, IncorporationInformationConnector}
 import javax.inject.Inject
+import models.Officer
+import play.api.Logger
+import play.api.libs.json.JsResultException
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -34,28 +37,25 @@ trait IncorporationInformationService {
   val iiConnector : IncorporationInformationConnector
   val dataCacheConnector: DataCacheConnector
 
-  def retrieveIncorporationDate(transactionId : String)(implicit hc : HeaderCarrier) : Future[Option[LocalDate]] = {
-    dataCacheConnector.getEntry[LocalDate](hc.sessionId.get.value, "IncorporationDate").flatMap(
-      _.fold(
-        for {
-          incorpDate <- getIncorpDateFromII(transactionId)
-          _          <- saveIncorpDateToDataCache(incorpDate)
-        } yield incorpDate
-      )( x => Future.successful(Some(x)))
-    )
-  }
-
-  def getIncorpDateFromII(transactionId: String)(implicit hc: HeaderCarrier) : Future[Option[LocalDate]] =
+  def getIncorpDate(transactionId: String)(implicit hc: HeaderCarrier) : Future[Option[LocalDate]] =
     iiConnector.getIncorpData(transactionId) map {jsOpt =>
       jsOpt map {json =>
         (json \ "incorporationDate").as[LocalDate]
       }
     }
 
-  def saveIncorpDateToDataCache(incorpDate: Option[LocalDate])(implicit hc: HeaderCarrier) : Future[Option[LocalDate]] = incorpDate match {
-    case Some(date) => dataCacheConnector.save[LocalDate](hc.sessionId.get.value, "IncorporationDate", date).map(_ => incorpDate)
-    case _ => Future.successful(None)
-  }
-
-
+  def getOfficerList(transactionId: String)(implicit hc: HeaderCarrier) : Future[Seq[Officer]] =
+    iiConnector.getOfficerList(transactionId) map { json =>
+      (json \ "officers").validate[Seq[Officer]](Officer.seqReads)
+        .fold(_ => throw new Exception(s"Couldn't get officer list from JSON for txId: $transactionId"), identity)
+        .filter{
+          officer => officer.resignedOn.isEmpty && (officer.role.equals("director") || officer.role.equals("secretary"))
+        } match {
+        case Nil        => throw new RuntimeException(s"No eligible officer list found for txId: $transactionId")
+        case officers   => officers
+      }
+    } recover {
+      case e => Logger.error(s"[IncorporationInformationService] [getOfficerList] Failed to get officers - ${e.getMessage}")
+        throw e
+    }
 }

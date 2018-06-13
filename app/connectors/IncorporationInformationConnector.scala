@@ -19,8 +19,8 @@ package connectors
 import config.{FrontendAppConfig, WSHttp}
 import javax.inject.Inject
 import play.api.Logger
-import play.api.libs.json.{JsValue}
-import uk.gov.hmrc.http.{CoreGet, HeaderCarrier, HttpResponse}
+import play.api.libs.json.{JsValue, Json}
+import uk.gov.hmrc.http.{CoreGet, HeaderCarrier, HttpResponse, NotFoundException}
 
 import scala.concurrent.Future
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
@@ -36,7 +36,7 @@ trait IncorporationInformationConnector {
   val incorpInfoUri: String
 
   def getIncorpData(transactionId: String)(implicit hc: HeaderCarrier): Future[Option[JsValue]] = {
-    http.GET[HttpResponse](s"$incorpInfoUrl$incorpInfoUri/incorp-update").map {
+    http.GET[HttpResponse](s"$incorpInfoUrl$incorpInfoUri/$transactionId/incorporation-update").map {
       response =>
         if (response.status == 200) Some(response.json) else None
     } recover {
@@ -45,5 +45,13 @@ trait IncorporationInformationConnector {
     }
   }
 
-  def getOfficerList(transactionId: String)(implicit hc: HeaderCarrier): Future[Option[Seq[_]]] = ???
+  def getOfficerList(transactionId: String)(implicit hc: HeaderCarrier): Future[JsValue] = {
+    http.GET[HttpResponse](s"$incorpInfoUrl$incorpInfoUri/$transactionId/officer-list") map ( _.json
+      ) recover {
+      case e : NotFoundException => Logger.error(s"[IncorporationInformationConnector][getOfficerList] no officer list found for txId: $transactionId")
+        throw e
+      case e => Logger.error(s"[IncorporationInformationConnector][getOfficerList] an error occurred for txId: $transactionId with exception: ${e.getMessage}")
+        throw e
+    }
+  }
 }

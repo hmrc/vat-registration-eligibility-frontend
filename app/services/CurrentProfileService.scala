@@ -36,18 +36,18 @@ trait CurrentProfileService {
 //  val companyRegService: _ = ???
 //  val businessRegService: _ = ???
 
-  private def constructCurrentProfile(implicit hc: HeaderCarrier) = for {
+  private def constructCurrentProfile(internalID : String)(implicit headerCarrier: HeaderCarrier) = for {
     regID           <- Future.successful("registrationID")
     transId         <- Future.successful("transactionID")
-    incorpDate      <- incorporationInformationService.getIncorpDateFromII(transId)
+    incorpDate      <- incorporationInformationService.getIncorpDate(transId)
     currentProfile  = CurrentProfile(regID, transId, incorpDate)
-    _               <- dataCacheConnector.save(hc.sessionId.get.value, "CurrentProfile", currentProfile)
+    _               <- dataCacheConnector.save(internalID, "CurrentProfile", currentProfile)
   } yield currentProfile
 
-  def fetchOrBuildCurrentProfile(implicit headerCarrier: HeaderCarrier): Future[CurrentProfile] = {
-    dataCacheConnector.getEntry[CurrentProfile](headerCarrier.sessionId.get.value, "CurrentProfile") flatMap {
+  def fetchOrBuildCurrentProfile(internalID : String)(implicit headerCarrier: HeaderCarrier): Future[CurrentProfile] = {
+    dataCacheConnector.getEntry[CurrentProfile](internalID, "CurrentProfile") flatMap {
       case Some(currentProfile) => Future.successful(currentProfile)
-      case _                    => constructCurrentProfile
+      case _                    => constructCurrentProfile(internalID)
     }
   }
 }

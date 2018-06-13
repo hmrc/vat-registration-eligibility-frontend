@@ -31,5 +31,5 @@ trait VATRegistrationControllerHelpers {
   val currentProfileService : CurrentProfileService
 
   def withCurrentProfile(block: CurrentProfile => Future[Result])(implicit hc : HeaderCarrier): Future[Result] =
-    currentProfileService.fetchOrBuildCurrentProfile flatMap block
+    block(CurrentProfile("", "", None))
 }

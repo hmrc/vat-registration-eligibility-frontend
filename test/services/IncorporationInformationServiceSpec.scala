@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import base.{CommonSpecBase, VATEligiblityMocks}
 import connectors.{DataCacheConnector, IncorporationInformationConnector}
+import models.{Name, Officer}
 import org.mockito.Matchers
 import org.mockito.Mockito._
 import play.api.libs.json.Json
@@ -38,55 +39,105 @@ class IncorporationInformationServiceSpec extends CommonSpecBase with VATEligibl
 
   val testDate = Some(LocalDate.of(2010, 10, 10))
 
+  val tstFilteredOfficer = Seq(
+    Officer(Name(Some("first"), Some("middle"), "last", Some("Mr")), "director", None, None)
+  )
+
+  val tstOfficerListJson = Json.parse(
+    """
+      |{
+      |  "officers": [
+      |    {
+      |      "name_elements" : {
+      |        "forename" : "test1",
+      |        "other_forenames" : "test11",
+      |        "surname" : "testa",
+      |        "title" : "Mr"
+      |      },
+      |      "officer_role" : "cic-manager"
+      |    }, {
+      |      "name" : "test",
+      |      "name_elements" : {
+      |        "forename" : "test2",
+      |        "other_forenames" : "test22",
+      |        "surname" : "testb",
+      |        "title" : "Mr"
+      |      },
+      |      "officer_role" : "corporate-director"
+      |    }, {
+      |      "name" : "test",
+      |      "name_elements" : {
+      |        "forename" : "first",
+      |        "other_forenames" : "middle",
+      |        "surname" : "last",
+      |        "title" : "Mr"
+      |      },
+      |      "officer_role" : "director"
+      |    }
+      |  ]
+      |}""".stripMargin)
+
+  val tstOfficerListNoDirectorJson = Json.parse(
+    """
+      |{
+      |  "officers": [
+      |    {
+      |      "name_elements" : {
+      |        "forename" : "test1",
+      |        "other_forenames" : "test11",
+      |        "surname" : "testa",
+      |        "title" : "Mr"
+      |      },
+      |      "officer_role" : "cic-manager"
+      |    }
+      |  ]
+      |}""".stripMargin)
+
   "retrieveIncorporationDate" should {
     "find an incorp date" when {
-      "it exists in II and was not cached" in new Setup {
+      "it exists in II" in new Setup {
         when(mockIIConnector.getIncorpData(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(Some(Json.obj("incorporationDate" -> testDate.get))))
 
-        when(mockDataCacheConnector.getEntry(Matchers.any(), Matchers.any())(Matchers.any()))
-          .thenReturn(Future.successful(None))
-
-        when(mockDataCacheConnector.save(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any()))
-          .thenReturn(Future.successful(CacheMap("id", Map("test" -> Json.obj()))))
-
-        await(service.retrieveIncorporationDate("transID")) mustBe testDate
-      }
-
-      "it is cached" in new Setup {
-        when(mockDataCacheConnector.getEntry[LocalDate](Matchers.any(), Matchers.any())(Matchers.any()))
-          .thenReturn(Future.successful(testDate))
-
-        await(service.retrieveIncorporationDate("transID")) mustBe testDate
+        await(service.getIncorpDate("transID")) mustBe testDate
       }
     }
 
     "fail to find an incorp date" when {
-      "it does not exist in II nor was it saved in cache" in new Setup {
-        when(mockDataCacheConnector.getEntry(Matchers.any(), Matchers.any())(Matchers.any()))
-          .thenReturn(Future.successful(None))
-
+      "it does not exist in II" in new Setup {
         when(mockIIConnector.getIncorpData(Matchers.any())(Matchers.any()))
           .thenReturn(Future.successful(None))
 
-        await(service.retrieveIncorporationDate("transID")) mustBe None
+        await(service.getIncorpDate("transID")) mustBe None
       }
     }
   }
 
-  "saveIncorpDateToDataCache" should {
-    "save an incorp date to the data cache" when {
-      "it is provided one" in new Setup {
-        when(mockDataCacheConnector.save(Matchers.any(), Matchers.any(), Matchers.any())(Matchers.any()))
-          .thenReturn(Future.successful(CacheMap("id", Map("test" -> Json.obj()))))
+  val officer = Officer(Name(Some("TestFirst"), None, "TestSurname", None), "Director", None, None)
+  val officerNotDirector = Officer(Name(Some("TestFirst"), None, "TestSurname", None), "not a director", None, None)
 
-        await(service.saveIncorpDateToDataCache(testDate)) mustBe testDate
+  "retrieveOfficers" should {
+    "find officers" when {
+      "return an officer lists with only directors and secretaries" in new Setup {
+        when(mockIIConnector.getOfficerList(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(tstOfficerListJson))
+
+        await(service.getOfficerList("transID")) mustBe tstFilteredOfficer
       }
     }
 
-    "not save" when {
-      "it is not provided one" in new Setup {
-        await(service.saveIncorpDateToDataCache(None)) mustBe None
+    "fail to find officers" when {
+      "they are not available in II" in new Setup {
+        when(mockIIConnector.getOfficerList(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.failed(new RuntimeException("some exception")))
+
+        intercept[RuntimeException](await(service.getOfficerList("transID")))
+      }
+      "officer list contains no directors or secretaries" in new Setup {
+        when(mockIIConnector.getOfficerList(Matchers.any())(Matchers.any()))
+          .thenReturn(Future.successful(tstOfficerListNoDirectorJson))
+
+        intercept[RuntimeException](await(service.getOfficerList("transID")))
       }
     }
   }

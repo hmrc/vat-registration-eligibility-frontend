@@ -21,9 +21,12 @@ import java.time.LocalDate
 import base.ConnectorSpecBase
 import config.WSHttp
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{CoreGet, InternalServerException}
+import play.api.http.Status._
+import uk.gov.hmrc.http.{CoreGet, InternalServerException, NotFoundException}
 
 class IncorporationInformationConnectorSpec extends ConnectorSpecBase {
+
+  val txId      = "someTxId"
 
   class Setup {
     val fakeUrl = "testUrl"
@@ -32,9 +35,10 @@ class IncorporationInformationConnectorSpec extends ConnectorSpecBase {
       override val incorpInfoUrl: String = fakeUrl
       override val incorpInfoUri: String = ""
     }
-  }
 
-  val txId      = "someTxId"
+    val fetchIncorpDataUrl = s"$fakeUrl/$txId/incorporation-update"
+    val fetchOfficerUrl = s"$fakeUrl/$txId/officer-list"
+  }
 
   val validIncorpData = Json.parse(
     s"""
@@ -47,22 +51,69 @@ class IncorporationInformationConnectorSpec extends ConnectorSpecBase {
       |}
     """.stripMargin)
 
+  val tstOfficerListJson = Json.parse(
+    """
+      |{
+      |  "officers": [
+      |    {
+      |      "name" : "test",
+      |      "name_elements" : {
+      |        "forename" : "test1",
+      |        "other_forenames" : "test11",
+      |        "surname" : "testa",
+      |        "title" : "Mr"
+      |      },
+      |      "officer_role" : "cic-manager"
+      |    }, {
+      |      "name" : "test",
+      |      "name_elements" : {
+      |        "forename" : "test2",
+      |        "other_forenames" : "test22",
+      |        "surname" : "testb",
+      |        "title" : "Mr"
+      |      },
+      |      "officer_role" : "corporate-director"
+      |    }
+      |  ]
+      |}""".stripMargin)
+
   "getIncorpData" should {
     "return some data" in new Setup {
-      mockGet(s"$fakeUrl/incorp-update", 200, Some(validIncorpData))
+      mockGet(fetchIncorpDataUrl, OK, Some(validIncorpData))
       await(connector.getIncorpData(txId)) mustBe Some(validIncorpData)
-      verifyGetCalled("testUrl")
+      verifyGetCalled(fetchIncorpDataUrl)
     }
 
     "return none if not data present" in new Setup {
-      mockGet(s"$fakeUrl/incorp-update", 204, Some(validIncorpData))
+      mockGet(fetchIncorpDataUrl, NO_CONTENT, Some(validIncorpData))
       await(connector.getIncorpData(txId)) mustBe None
-      verifyGetCalled("testUrl")
+      verifyGetCalled(fetchIncorpDataUrl)
     }
 
     "throw and exception if occurs" in new Setup {
-      mockFailedGet(s"$fakeUrl/incorp-update", new InternalServerException("internal server error"))
+      mockFailedGet(fetchIncorpDataUrl, new InternalServerException("internal server error"))
       intercept[InternalServerException](await(connector.getIncorpData(txId)))
+      verifyGetCalled(fetchIncorpDataUrl)
+    }
+  }
+
+  "getOfficerList" should {
+    "return some data" in new Setup {
+      mockGet(fetchOfficerUrl, OK, Some(tstOfficerListJson))
+      await(connector.getOfficerList(txId)) mustBe tstOfficerListJson
+      verifyGetCalled(fetchOfficerUrl)
+    }
+
+    "throw exception if not data return form ii" in new Setup {
+      mockFailedGet(fetchOfficerUrl, new NotFoundException("internal server error"))
+      intercept[NotFoundException](await(connector.getOfficerList(txId)))
+      verifyGetCalled(fetchOfficerUrl)
+    }
+
+    "throw and exception if occurs" in new Setup {
+      mockFailedGet(fetchOfficerUrl, new InternalServerException("internal server error"))
+      intercept[InternalServerException](await(connector.getOfficerList(txId)))
+      verifyGetCalled(fetchOfficerUrl)
     }
   }
 }
