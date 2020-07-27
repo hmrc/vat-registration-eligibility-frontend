@@ -64,8 +64,5 @@ POST       /apply-writing                               controllers.ApplyInWriti
 GET        /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onPageLoad()
 POST       /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onSubmit()
 
-GET        /own-racehorses-buy-sell-property            controllers.RacehorsesController.onPageLoad()
-POST       /own-racehorses-buy-sell-property            controllers.RacehorsesController.onSubmit()
-
 GET        /national-insurance-number                   controllers.ApplicantUKNinoController.onPageLoad()
 POST       /national-insurance-number                   controllers.ApplicantUKNinoController.onSubmit()

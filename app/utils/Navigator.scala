@@ -46,7 +46,6 @@ class Navigator @Inject()() {
      case ApplyInWritingId                  => routes.ApplyInWritingController.onPageLoad()
      case EligibilityDropoutId(mode)        => routes.EligibilityDropoutController.onPageLoad(mode)
      case AgriculturalFlatRateSchemeId      => routes.AgriculturalFlatRateSchemeController.onPageLoad()
-     case RacehorsesId                      => routes.RacehorsesController.onPageLoad()
      case ApplicantUKNinoId                 => routes.ApplicantUKNinoController.onPageLoad()
      case page => {
        Logger.info(s"${page.toString} does not exist navigating to start of the journey")
@@ -115,8 +114,7 @@ class Navigator @Inject()() {
     nextOn(true, ZeroRatedSalesId, VATExemptionId, AgriculturalFlatRateSchemeId),
     nextOn(false, VATExemptionId, AgriculturalFlatRateSchemeId, ApplyInWritingId),
     nextOn(false, VATRegistrationExceptionId, TurnoverEstimateId, EligibilityDropoutId(VATRegistrationExceptionId.toString)),
-    nextOn(false, AgriculturalFlatRateSchemeId, RacehorsesId, EligibilityDropoutId(AgriculturalFlatRateSchemeId.toString)),
-    nextOn(false, RacehorsesId, ApplicantUKNinoId, EligibilityDropoutId(RacehorsesId.toString)),
+    nextOn(false, AgriculturalFlatRateSchemeId, ApplicantUKNinoId, EligibilityDropoutId(AgriculturalFlatRateSchemeId.toString)),
     toNextPage(ApplicantUKNinoId, EligibilityDropoutId(ApplicantUKNinoId.toString))
   )
 
