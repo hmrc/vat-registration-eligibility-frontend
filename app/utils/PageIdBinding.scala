@@ -62,7 +62,7 @@ object PageIdBinding {
     }
 
     def validateVoluntaryReason: Boolean = (userAnswers.thresholdNextThirtyDays, userAnswers.thresholdPreviousThirtyDays, userAnswers.thresholdInTwelveMonths) match {
-      case (Some(false), Some(ConditionalDateFormElement(false, _)), Some(ConditionalDateFormElement(false, _))) => true
+      case (Some(ConditionalDateFormElement(false, _)), Some(ConditionalDateFormElement(false, _)), Some(ConditionalDateFormElement(false, _))) => true
       case _ => false
     }
 

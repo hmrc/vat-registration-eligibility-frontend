@@ -41,7 +41,6 @@ class ThresholdInTwelveMonthsFormProviderSpec extends BooleanFieldBehaviours {
     val dateFieldName = "valueDate"
     val dateRequiredKey = "thresholdInTwelveMonths.error.date.required"
     val dateInFutureKey = "thresholdInTwelveMonths.error.date.inFuture"
-    val dateBeforeIncorpKey = "thresholdInTwelveMonths.error.date.beforeIncorp"
     val dateInvalidKey = "thresholdInTwelveMonths.error.date.invalid"
 
     "return errors" when {

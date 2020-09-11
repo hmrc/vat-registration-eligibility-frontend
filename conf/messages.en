@@ -60,10 +60,15 @@ footer.accessibilityStatement = Accessibility statement
 unauthorised.title = You can''t access this service with this account
 unauthorised.heading = You can''t access this service with this account
 
-thresholdNextThirtyDays.title                   = Over VAT-registration threshold in the next 30 days
-thresholdNextThirtyDays.heading                 = In the next 30 days alone, does the business expect to make more than £85,000 in VAT-taxable sales?
-thresholdNextThirtyDays.error.required          = Tell us if the business expects to make more than £85,000 in VAT-taxable sales over the next 30 days
-thresholdNextThirtyDays.text                    = For example, the business is expecting orders - or has signed a contract - that will generate VAT-taxable sales of £85,000 or more in the next 30 days.
+thresholdNextThirtyDays.title                       = Over VAT-registration threshold in the next 30 days
+thresholdNextThirtyDays.heading                     = In the next 30 days, does the business expect to exceed the £85,000 threshold?
+thresholdNextThirtyDays.heading2                    = What date did the business realise it would go over the threshold?
+thresholdNextThirtyDays.text                        = For example, the business is expecting orders - or has signed a contract - that will generate VAT-taxable sales of £85,000 or more in the next 30 days.
+thresholdNextThirtyDays.dateHint                    = For example, 13 02 2017
+thresholdNextThirtyDays.error.required              = Tell us if the business expects to make more than £85,000 in VAT-taxable sales over the next 30 days
+thresholdNextThirtyDays.error.date.required         = Enter a date for when the business first thought it would go over the threshold in the next 30 days
+thresholdNextThirtyDays.error.date.inFuture         = Enter a date that''s in the past
+thresholdNextThirtyDays.error.date.invalid          = Enter a valid date
 
 thresholdPreviousThirtyDays.title                   = Has the business ever expected to make more than £85,000 in VAT-taxable sales in a single 30-day period?
 thresholdPreviousThirtyDays.heading                 = Has the business ever expected to make more than £85,000 in VAT-taxable sales in a single 30-day period?
@@ -75,12 +80,11 @@ thresholdPreviousThirtyDays.bullet3                 = 1 April 2015 and 31 March 
 thresholdPreviousThirtyDays.beforeLinkText          = Before this, use these
 thresholdPreviousThirtyDays.linkText                = previous VAT registration thresholds (opens in a new window or tab)
 thresholdPreviousThirtyDays.dateHint                = For example, 13 02 2017
-thresholdPreviousThirtyDays.heading2                = When did the business first expect to go over the threshold?
+thresholdPreviousThirtyDays.heading2                = What date did the business first go over the threshold?
 thresholdPreviousThirtyDays.error.required          = Tell us if the business has ever thought it would go over the VAT-registration threshold in a single 30-day period
 thresholdPreviousThirtyDays.error.date.required     = Enter a date for when the business first thought it would go over the threshold in a 30-day period
-thresholdPreviousThirtyDays.error.date.inFuture         = Enter a date that''s in the past
-thresholdPreviousThirtyDays.error.date.beforeIncorp     = Enter a date that''s after the date the business was set up: {0}
-thresholdPreviousThirtyDays.error.date.invalid          = Enter a valid date
+thresholdPreviousThirtyDays.error.date.inFuture     = Enter a date that''s in the past
+thresholdPreviousThirtyDays.error.date.invalid      = Enter a valid date
 
 voluntaryRegistration.title                 = Does the business want to register voluntarily?
 voluntaryRegistration.heading               = The business doesn''t have to register for VAT

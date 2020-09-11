@@ -21,13 +21,14 @@ import java.time.format.DateTimeFormatter
 
 import forms.mappings.Mappings
 import identifiers.ThresholdPreviousThirtyDaysId
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 import models.ConditionalDateFormElement
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
 import utils.TimeMachine
 
+@Singleton
 class ThresholdPreviousThirtyDaysFormProvider @Inject()(timeMachine: TimeMachine) extends FormErrorHelper with Mappings {
 
   val thresholdPreviousThirtyDaysSelection = "value"

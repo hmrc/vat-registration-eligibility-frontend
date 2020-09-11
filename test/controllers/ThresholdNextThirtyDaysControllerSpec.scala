@@ -16,35 +16,43 @@
 
 package controllers
 
+import java.time.LocalDate
+
+import config.FrontendAppConfig
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import forms.ThresholdNextThirtyDaysFormProvider
 import identifiers.ThresholdNextThirtyDaysId
-import models.NormalMode
+import models.{ConditionalDateFormElement, NormalMode}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{times, verify, when}
 import play.api.data.Form
-import play.api.libs.json.JsBoolean
+import play.api.libs.json.Json
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
+import utils.{FakeNavigator, TimeMachine}
 import views.html.thresholdNextThirtyDays
 
 import scala.concurrent.Future
 
 class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.IndexController.onPageLoad()
 
-  val formProvider = new ThresholdNextThirtyDaysFormProvider()
-  val form = formProvider()
-  implicit val appConfig = frontendAppConfig
+  object TestTimeMachine extends TimeMachine {
+    override def today: LocalDate = LocalDate.parse("2020-01-01")
+  }
+
+  val formProvider = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)
+  val form: Form[ConditionalDateFormElement] = formProvider()
+  implicit val appConfig: FrontendAppConfig = frontendAppConfig
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ThresholdNextThirtyDaysController(messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, new DataRequiredActionImpl, mockThresholdService, formProvider)
 
-  def viewAsString(form: Form[_] = form) = thresholdNextThirtyDays(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
+  def viewAsString(form: Form[_] = form): String = thresholdNextThirtyDays(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
 
   "ThresholdNextThirtyDays Controller" must {
     when(mockThresholdService.returnThresholdDateResult[String](any())(any())).thenReturn("foo")
@@ -56,23 +64,37 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Map(ThresholdNextThirtyDaysId.toString -> JsBoolean(true))
+      val validData = Map(ThresholdNextThirtyDaysId.toString -> Json.toJson(ConditionalDateFormElement(value = true, Some(LocalDate.now))))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeDataRequestIncorped)
 
-      contentAsString(result) mustBe viewAsString(form.fill(true))
+      contentAsString(result) mustBe viewAsString(form.fill(ConditionalDateFormElement(value = true, Some(LocalDate.now))))
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted with answer true" in {
       when(mockThresholdService.removeVoluntaryRegistration(any())) thenReturn Future.successful(emptyCacheMap)
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      val date = LocalDate.parse("2020-01-01")
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true",
+        "thresholdNextThirtyDaysDate.year" -> date.getYear.toString,
+        "thresholdNextThirtyDaysDate.month" -> date.getMonthValue.toString,
+        "thresholdNextThirtyDaysDate.day" -> date.getDayOfMonth.toString
+      )
 
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(onwardRoute.url)
       verify(mockThresholdService, times(1)).removeVoluntaryRegistration(any())
+    }
+
+    "redirect to the next page when valid data is submitted with answer false" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "false")
+
+      val result = controller().onSubmit()(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
@@ -85,14 +107,14 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(boundForm)
     }
 
-    "redirect to Session Expired for a GET if no existing data is found" ignore {
+    "redirect to Session Expired for a GET if no existing data is found" in {
       val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
     }
 
-    "redirect to Session Expired for a POST if no existing data is found" ignore {
+    "redirect to Session Expired for a POST if no existing data is found" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
       val result = controller(dontGetAnyData).onSubmit()(postRequest)
 

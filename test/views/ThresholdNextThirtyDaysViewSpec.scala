@@ -16,26 +16,58 @@
 
 package views
 
-import controllers.routes
-import deprecated.DeprecatedConstants
+import java.time.LocalDate
+
 import forms.ThresholdNextThirtyDaysFormProvider
 import models.NormalMode
 import play.api.data.Form
-import views.newbehaviours.YesNoViewBehaviours
+import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import utils.TimeMachine
 import views.html.thresholdNextThirtyDays
+import views.newbehaviours.ViewBehaviours
 
-class ThresholdNextThirtyDaysViewSpec extends YesNoViewBehaviours {
-  val extraParamForLegend: String = DeprecatedConstants.fakeCompanyName
+class ThresholdNextThirtyDaysViewSpec extends ViewBehaviours {
+
   val messageKeyPrefix = "thresholdNextThirtyDays"
-  val form = new ThresholdNextThirtyDaysFormProvider()()
-  implicit val msgs = messages
 
-  def createView = () => thresholdNextThirtyDays(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig)
+  object TestTimeMachine extends TimeMachine {
+    override def today: LocalDate = LocalDate.parse("2020-01-01")
+  }
 
-  def createViewUsingForm = (form: Form[_]) => thresholdNextThirtyDays(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig)
+  object Selectors extends BaseSelectors
+
+  implicit val msgs: Messages = messages
+  val form = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)()
+
+  def createView: () => HtmlFormat.Appendable = () =>
+    thresholdNextThirtyDays(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig)
+
+  def createViewUsingForm: Form[_] => HtmlFormat.Appendable = (form: Form[_]) =>
+    thresholdNextThirtyDays(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig)
+
+  val testText = "For example, the business is expecting orders - or has signed a contract - that will generate VAT-taxable sales of £85,000 or more in the next 30 days."
+  val testLegend = "What date did the business realise it would go over the threshold?"
+  val testHint = "For example, 13 02 2017"
+  val testButton = "Save and continue"
 
   "ThresholdNextThirtyDays view" must {
-    behave like normalPage(createView(), messageKeyPrefix, Seq(DeprecatedConstants.fakeCompanyName))
-    behave like yesNoPage(form, createViewUsingForm, messageKeyPrefix, routes.ThresholdNextThirtyDaysController.onSubmit().url, headingArgs = Seq(DeprecatedConstants.fakeCompanyName))
+    behave like normalPage(createView(), messageKeyPrefix)
+    behave like pageWithBackLink(createView())
+    behave like pageWithSubmitButton(createView(), testButton)
+
+    val doc = asDocument(createViewUsingForm(form))
+
+    "have the correct text" in {
+      doc.select(Selectors.p(1)).text() mustBe testText
+    }
+
+    "have the correct legend" in {
+      doc.select(Selectors.legend(2)).text() mustBe testLegend
+    }
+
+    "have the correct hint" in {
+      doc.select(Selectors.hint).text() mustBe testHint
+    }
   }
 }

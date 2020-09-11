@@ -27,6 +27,17 @@
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
+@hiddenContent = {
+    @inputDate(
+        form = form,
+        legendContent = "thresholdNextThirtyDays.heading2",
+        hintText = Some("thresholdNextThirtyDays.dateHint"),
+        legendClasses = "govuk-fieldset__legend--m",
+        id = "thresholdNextThirtyDaysDate",
+        legendAsPageHeading = false
+    )
+}
+
 @layout(pageTitle = Some(title(form, messages("thresholdNextThirtyDays.title"))), backLink = true) {
 
     @errorSummary(form.errors)
@@ -35,15 +46,14 @@
     @p{ @messages("thresholdNextThirtyDays.text") }
 
     @helpers.form(action = ThresholdNextThirtyDaysController.onSubmit(), 'autoComplete -> "off") {
-        @yesNoRadio(
+        @conditionalYesNoRadio(
             form = form,
             headingKey = "thresholdNextThirtyDays.heading",
-            headingMessageArgs = Seq(DeprecatedConstants.fakeCompanyName),
+            ifYes = Some(hiddenContent),
             isPageHeading = false,
             classes = "govuk-visually-hidden"
         )
 
         @button(messages("site.save_and_continue"))
     }
-
 }

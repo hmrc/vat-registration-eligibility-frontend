@@ -62,7 +62,7 @@ class ThresholdPreviousThirtyDaysController @Inject()(override val messagesApi: 
           dataCacheConnector.save[ConditionalDateFormElement](request.internalId, ThresholdPreviousThirtyDaysId.toString, formValue).flatMap {
             cacheMap =>
               val userAnswers = new UserAnswers(cacheMap)
-              if (ThresholdHelper.q1DefinedAndTrue(userAnswers) | formValue.value | userAnswers.thresholdNextThirtyDays.getOrElse(false)) {
+              if (ThresholdHelper.q1DefinedAndTrue(userAnswers) | formValue.value | userAnswers.thresholdNextThirtyDays.fold(false)(_.value)) {
                 thresholdService.removeVoluntaryRegistration
               } else {
                 Future.successful(cacheMap)

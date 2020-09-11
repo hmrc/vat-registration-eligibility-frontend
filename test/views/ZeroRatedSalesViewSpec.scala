@@ -50,13 +50,12 @@ class ZeroRatedSalesViewSpec extends YesNoViewBehaviours {
     (form: Form[_]) => zeroRatedSales(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig)
 
   "ZeroRatedSales view" must {
-    behave like normalPage(createView(), messageKeyPrefix, Seq(DeprecatedConstants.fakeCompanyName))
+    behave like normalPage(createView(), messageKeyPrefix)
     behave like yesNoPage(
       form,
       createViewUsingForm,
       messageKeyPrefix,
-      routes.ZeroRatedSalesController.onSubmit().url,
-      headingArgs = Seq(DeprecatedConstants.fakeCompanyName)
+      routes.ZeroRatedSalesController.onSubmit().url
     )
 
     val doc = asDocument(createViewUsingForm(form))

@@ -16,30 +16,83 @@
 
 package forms
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+
 import forms.behaviours.BooleanFieldBehaviours
+import models.ConditionalDateFormElement
 import play.api.data.FormError
+import utils.TimeMachine
 
 class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
 
+  val testMaxDate: LocalDate = LocalDate.parse("2020-01-01")
+  val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+
+  object TestTimeMachine extends TimeMachine {
+    override def today: LocalDate = testMaxDate
+  }
+
+  val form = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)()
+
+  val selectionFieldName = s"value"
+  val dateFieldName = s"thresholdNextThirtyDaysDate"
   val requiredKey = "thresholdNextThirtyDays.error.required"
-  val invalidKey = "error.boolean"
+  val dateRequiredKey = "thresholdNextThirtyDays.error.date.required"
+  val dateInFutureKey = "thresholdNextThirtyDays.error.date.inFuture"
+  val dateInvalidKey = "thresholdNextThirtyDays.error.date.invalid"
 
-  val form = new ThresholdNextThirtyDaysFormProvider()()
+  "bind" should {
+    "return errors" when {
+      "nothing is selected" in {
+        form.bind(Map("" -> "")).errors shouldBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
+      }
 
-  ".value" must {
+      "yes is selected but no date is provided" in {
+        form.bind(Map(selectionFieldName -> "true")).errors shouldBe Seq(FormError(dateFieldName, dateRequiredKey, Seq()))
+      }
 
-    val fieldName = "value"
+      "yes is selected but an invalid date is provided" in {
+        val date = testMaxDate.plusMonths(3)
+        form.bind(
+          Map(
+            selectionFieldName -> "true",
+            s"$dateFieldName.day" -> s"${date.getDayOfMonth}",
+            s"$dateFieldName.month" -> s"sdsdf",
+            s"$dateFieldName.year" -> s"${date.getYear}"
+          )
+        ).errors shouldBe Seq(FormError(dateFieldName, dateInvalidKey))
+      }
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+      "yes is selected but a date in the future is provided" in {
+        val date = testMaxDate.plusMonths(3)
+        form.bind(
+          Map(
+            selectionFieldName -> "true",
+            s"$dateFieldName.day" -> s"${date.getDayOfMonth}",
+            s"$dateFieldName.month" -> s"${date.getMonthValue}",
+            s"$dateFieldName.year" -> s"${date.getYear}"
+          )
+        ).errors shouldBe Seq(FormError(dateFieldName, dateInFutureKey))
+      }
+    }
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    "return a ConditionalFormElement" when {
+      "yes is selected and a month and year is passed in" in {
+        val date = testMaxDate
+        form.bind(
+          Map(
+            selectionFieldName -> "true",
+            s"$dateFieldName.day" -> s"${date.getDayOfMonth}",
+            s"$dateFieldName.month" -> s"${date.getMonthValue}",
+            s"$dateFieldName.year" -> s"${date.getYear}"
+          )
+        ).value shouldBe Some(ConditionalDateFormElement(value = true, Some(date)))
+      }
+
+      "no is selected" in {
+        form.bind(Map(selectionFieldName -> "false")).value shouldBe Some(ConditionalDateFormElement(value = false, None))
+      }
+    }
   }
 }

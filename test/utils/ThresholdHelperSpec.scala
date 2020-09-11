@@ -44,14 +44,14 @@ class ThresholdHelperSpec extends SpecBase {
   "taxableTurnoverCheck" should {
     "return true if Q2 is defined and true, Q3 is defined and false" in {
       val cacheMap = CacheMap("1",Map(
-        ThresholdNextThirtyDaysId.toString -> JsBoolean(true),
+        ThresholdNextThirtyDaysId.toString -> Json.obj("value" -> true),
         ThresholdPreviousThirtyDaysId.toString -> Json.obj("value" -> false)))
       val userAnswers = new UserAnswers(cacheMap)
       ThresholdHelper.taxableTurnoverCheck(userAnswers) mustBe true
     }
     "return true if Q2 is defined and false, Q3 is defined and true" in {
       val cacheMap = CacheMap("1",Map(
-        ThresholdNextThirtyDaysId.toString -> JsBoolean(false),
+        ThresholdNextThirtyDaysId.toString -> Json.obj("value" -> false),
         ThresholdPreviousThirtyDaysId.toString ->  Json.obj("value" -> true)))
       val userAnswers = new UserAnswers(cacheMap)
       ThresholdHelper.taxableTurnoverCheck(userAnswers) mustBe true

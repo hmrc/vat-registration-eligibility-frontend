@@ -94,8 +94,8 @@ trait ThresholdService extends I18nSupport {
 
   def returnHeadingPrevious(enum: ThresholdDateResult)(implicit r: DataRequest[_]): String = {
     enum match {
-      case (limitedIncorpedEqualOrAfter20170401() | limitedIncorpedLessThan12MonthsAgo()) => messagesApi("thresholdPreviousThirtyDays.headingLtdAndIncorpAfterApr17", DeprecatedConstants.fakeCompanyName)
-      case _ => messagesApi("thresholdPreviousThirtyDays.heading", DeprecatedConstants.fakeCompanyName)
+      case (limitedIncorpedEqualOrAfter20170401() | limitedIncorpedLessThan12MonthsAgo()) => messagesApi("thresholdPreviousThirtyDays.headingLtdAndIncorpAfterApr17")
+      case _ => messagesApi("thresholdPreviousThirtyDays.heading")
     }
   }
 

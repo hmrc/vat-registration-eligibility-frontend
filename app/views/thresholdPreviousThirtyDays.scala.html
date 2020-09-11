@@ -52,7 +52,8 @@
 @hiddenYesContent = {
     @inputDate(form = form,
         legendContent = thresholdService.returnThresholdDateResult[String](thresholdService.returnHeadingForTwelveMonthsDateEntry),
-        legendClasses = "govuk-heading-small",
+        hintText = Some("thresholdPreviousThirtyDays.dateHint"),
+        legendClasses = "govuk-fieldset__legend--m",
         id = "thresholdPreviousThirtyDaysDate",
         legendAsPageHeading = false
     )

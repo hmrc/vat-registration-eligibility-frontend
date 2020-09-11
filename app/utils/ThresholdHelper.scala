@@ -23,7 +23,7 @@ object ThresholdHelper {
 
   val taxableTurnoverCheck = (userAns: UserAnswers) => {
     (userAns.thresholdNextThirtyDays, userAns.thresholdPreviousThirtyDays) match {
-      case (Some(true), Some(_)) | (Some(_), Some(ConditionalDateFormElement(true, _))) => true
+      case (Some(ConditionalDateFormElement(true, _)), Some(_)) | (Some(_), Some(ConditionalDateFormElement(true, _))) => true
       case _ => false
     }
   }

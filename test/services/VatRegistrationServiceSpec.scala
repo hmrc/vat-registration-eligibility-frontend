@@ -16,7 +16,7 @@
 
 package services
 
-import base.{CommonSpecBase, MockMessages, SpecBase, VATEligiblityMocks}
+import base.{SpecBase, VATEligiblityMocks}
 import connectors.{DataCacheConnector, VatRegistrationConnector}
 import identifiers._
 import models.requests.DataRequest
@@ -98,12 +98,12 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligiblityMocks {
       res mustBe JsonSummaryRow("involvedInOtherBusiness", "mocked message", "mocked message", JsBoolean(false))
     }
   }
-  ""
+
   "submitEligibility" should {
     val fullListMapHappyPathTwelveMonthsFalse: ListMap[String, JsValue] = ListMap[String, JsValue](
       "" -> JsString(""),
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
-      s"$ThresholdNextThirtyDaysId" -> JsBoolean(false),
+      s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
@@ -124,8 +124,10 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligiblityMocks {
           |{"sections":[
           |{"title":"VAT-taxable sales",
           | "data":[
-          | {"questionId":"thresholdInTwelveMonths-value","question":"foo","answer":"mocked message","answerValue":false}, {"questionId":"thresholdNextThirtyDays","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"thresholdPreviousThirtyDays-value","question":"foo","answer":"mocked message","answerValue":false},{"questionId":"voluntaryRegistration","question":"mocked message","answer":"mocked message","answerValue":true},
+          | {"questionId":"thresholdInTwelveMonths-value","question":"foo","answer":"mocked message","answerValue":false},
+          | {"questionId":"thresholdNextThirtyDays-value","question":"mocked message","answer":"mocked message","answerValue":false},
+          | {"questionId":"thresholdPreviousThirtyDays-value","question":"foo","answer":"mocked message","answerValue":false},
+          | {"questionId":"voluntaryRegistration","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"turnoverEstimate-value","question":"mocked message","answer":"£50,000","answerValue":50000}]},
           | {"title":"Special situations",
           | "data":[{"questionId":"internationalActivities","question":"mocked message","answer":"mocked message","answerValue":false},

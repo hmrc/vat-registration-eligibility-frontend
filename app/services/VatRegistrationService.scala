@@ -28,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.{JsonSummaryRow, PageIdBinding, UserAnswers}
+import utils.{JsonSummaryRow, PageIdBinding}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -89,6 +89,13 @@ trait VatRegistrationService extends I18nSupport {
     dataObj.foldLeft(value)((old, list) => old ++ list)
   }
 
+  private[services] def prepareDateData(key: String, data: ConditionalDateFormElement)()(implicit r: DataRequest[_]): List[JsValue] = {
+    val value = JsonSummaryRow(s"$key-value", messagesApi(s"$key.heading"), messagesApi(if (data.value) s"site.yes" else "site.no"), Json.toJson(data.value))
+    val dataObj = data.optionalData.map(date => JsonSummaryRow(s"$key-optionalData", messagesApi(s"$key.heading2"), date.format(formatter), Json.toJson(date)))
+
+    dataObj.foldLeft(value)((old, list) => old ++ list)
+  }
+
   private[services] def prepareQuestionData(key: String, data: TurnoverEstimateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
     JsonSummaryRow(s"$key-value", messagesApi(s"$key.heading"), s"£${"%,d".format(data.value.toLong)}", JsNumber(BigDecimal(data.value.toLong)))
   }
@@ -116,6 +123,7 @@ trait VatRegistrationService extends I18nSupport {
 
   private[services] def buildIndividualQuestion(officers: Seq[Officer], onBehalfOf: Option[String])(implicit r: DataRequest[_]): PartialFunction[(Identifier, Any), List[JsValue]] = {
     case (id@ThresholdInTwelveMonthsId, e: ConditionalDateFormElement) => prepareThresholdInTwelveMonths(id.toString, e)
+    case (id@ThresholdNextThirtyDaysId, e: ConditionalDateFormElement) => prepareDateData(id.toString, e)
     case (id@ThresholdPreviousThirtyDaysId, e: ConditionalDateFormElement) => prepareThresholdPreviousThirty(id.toString, e)
     case (id, e: ConditionalDateFormElement) => prepareQuestionData(id.toString, e)
     case (id, e: ConditionalNinoFormElement) => prepareQuestionData(id.toString, e, officers, onBehalfOf)

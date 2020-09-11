@@ -44,7 +44,7 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
 
   def thresholdPreviousThirtyDays: Option[ConditionalDateFormElement] = cacheMap.getEntry[ConditionalDateFormElement](ThresholdPreviousThirtyDaysId.toString)
 
-  def thresholdNextThirtyDays: Option[Boolean] = cacheMap.getEntry[Boolean](ThresholdNextThirtyDaysId.toString)
+  def thresholdNextThirtyDays: Option[ConditionalDateFormElement] = cacheMap.getEntry[ConditionalDateFormElement](ThresholdNextThirtyDaysId.toString)
 
   def getAnswer[T](id: Identifier)(implicit reads: Reads[T]): Option[T] = cacheMap.getEntry[T](id.toString)
 

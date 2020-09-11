@@ -22,9 +22,9 @@ import controllers.actions._
 import forms.ThresholdNextThirtyDaysFormProvider
 import identifiers.ThresholdNextThirtyDaysId
 import javax.inject.Inject
-import models.NormalMode
-import play.api.data.Form
+import models.{ConditionalDateFormElement, NormalMode}
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import services.ThresholdService
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
@@ -42,29 +42,28 @@ class ThresholdNextThirtyDaysController @Inject()(override val messagesApi: Mess
                                                   formProvider: ThresholdNextThirtyDaysFormProvider
                                                  )(implicit appConfig: FrontendAppConfig) extends FrontendController with I18nSupport {
 
-  val form: Form[Boolean] = formProvider()
-
-  def onPageLoad() = (identify andThen getData andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.thresholdNextThirtyDays match {
-        case None => form
-        case Some(value) => form.fill(value)
+        case None => formProvider()
+        case Some(value) => formProvider().fill(value)
       }
       Ok(thresholdNextThirtyDays(preparedForm, NormalMode))
   }
 
-  def onSubmit() = (identify andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+      formProvider().bindFromRequest().fold(
+        formWithErrors =>
           Future.successful(BadRequest(thresholdNextThirtyDays(formWithErrors, NormalMode))),
-        (formValue) =>
-          dataCacheConnector.save[Boolean](request.internalId, ThresholdNextThirtyDaysId.toString, formValue).flatMap{cacheMap =>
-          if(formValue) {
-            thresholdService.removeVoluntaryRegistration
-          } else {
-            Future.successful(cacheMap)
-          }
-        }.map(cMap => Redirect(navigator.nextPage(ThresholdNextThirtyDaysId, NormalMode)(new UserAnswers(cMap)))))
+        formValue =>
+          dataCacheConnector.save[ConditionalDateFormElement](request.internalId, ThresholdNextThirtyDaysId.toString, formValue).flatMap {
+            cacheMap =>
+              if (formValue.value) {
+                thresholdService.removeVoluntaryRegistration
+              } else {
+                Future.successful(cacheMap)
+              }
+          }.map(cMap => Redirect(navigator.nextPage(ThresholdNextThirtyDaysId, NormalMode)(new UserAnswers(cMap)))))
   }
 }

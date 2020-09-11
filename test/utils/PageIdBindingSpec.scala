@@ -21,14 +21,13 @@ import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-import scala.collection.immutable
 import scala.collection.immutable.ListMap
 
 class PageIdBindingSpec extends PlaySpec {
   val fullListMapHappyPathTwelveMonthsFalse: ListMap[String, JsValue] = ListMap[String, JsValue](
     "" -> JsString(""),
     s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
-    s"$ThresholdNextThirtyDaysId" -> JsBoolean(true),
+    s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
     s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
     s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
@@ -133,7 +132,7 @@ class PageIdBindingSpec extends PlaySpec {
   "no exception if ThresholdTwelveMonths == false, Exception does not exist" in {
     val mapOfValuesToBeTested = List(
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
-      s"$ThresholdNextThirtyDaysId" -> JsBoolean(false),
+      s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
