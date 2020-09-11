@@ -196,7 +196,7 @@ zeroRatedSales.linkText = VAT rates on different goods and services (opens in ne
 
 vatExemption.title = Does the business want to apply for a VAT exemption?
 vatExemption.heading = Does the business want to apply for a VAT exemption?
-vatExemption.error.required = Tell us if the business wants to apply for a VAT exemption
+vatExemption.error.required = Select yes if the business wants to apply for a VAT exemption.
 vatExemption.text = The business may not have to register for VAT if it sells mainly or only zero-rated goods or services.
 
 vatRegistrationException.title = Is the business applying for a VAT registration ''exception''?
