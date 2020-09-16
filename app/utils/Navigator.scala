@@ -19,11 +19,11 @@ package utils
 import controllers.routes
 import identifiers.{Identifier, _}
 import javax.inject.{Inject, Singleton}
-import models.{ConditionalDateFormElement, ConditionalNinoFormElement, Mode}
+import models.{ConditionalDateFormElement, Mode}
 import play.api.Logger
 import play.api.libs.json.Reads
 import play.api.mvc.Call
-import utils.DefaultImplicitJsonReads.{BooleanReads, StringReads}
+import utils.DefaultImplicitJsonReads.BooleanReads
 
 @Singleton
 class Navigator @Inject()() {
@@ -37,6 +37,7 @@ class Navigator @Inject()() {
     case TurnoverEstimateId => routes.TurnoverEstimateController.onPageLoad()
     case InvolvedInOtherBusinessId => routes.InvolvedInOtherBusinessController.onPageLoad()
     case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad()
+    case AnnualAccountingSchemeId => routes.AnnualAccountingSchemeController.onPageLoad()
     case ZeroRatedSalesId => routes.ZeroRatedSalesController.onPageLoad()
     case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad()
     case NinoId => routes.NinoController.onPageLoad()
@@ -98,9 +99,10 @@ class Navigator @Inject()() {
     nextOn(true, VoluntaryRegistrationId, TurnoverEstimateId, ChoseNotToRegisterId),
     toNextPage(TurnoverEstimateId, InvolvedInOtherBusinessId),
     nextOn(false, InvolvedInOtherBusinessId, InternationalActivitiesId, EligibilityDropoutId(InvolvedInOtherBusinessId.toString)),
-    nextOn(false, InternationalActivitiesId, ZeroRatedSalesId, EligibilityDropoutId(InternationalActivitiesId.toString)),
+    nextOn(false, InternationalActivitiesId, AnnualAccountingSchemeId, EligibilityDropoutId(InternationalActivitiesId.toString)),
+    nextOn(false, AnnualAccountingSchemeId, ZeroRatedSalesId, VATRegistrationExceptionId),
     nextOn(true, ZeroRatedSalesId, VATExemptionId, RegisteringBusinessId),
-    nextOn(true,RegisteringBusinessId,NinoId, EligibilityDropoutId(InvolvedInOtherBusinessId.toString)),
+    nextOn(true, RegisteringBusinessId, NinoId, EligibilityDropoutId(InvolvedInOtherBusinessId.toString)),
     nextOn(true, NinoId, AgriculturalFlatRateSchemeId, EligibilityDropoutId(NinoId.toString)),
     nextOn(false, VATExemptionId, AgriculturalFlatRateSchemeId, ApplyInWritingId),
     nextOn(false, VATRegistrationExceptionId, TurnoverEstimateId, EligibilityDropoutId(VATRegistrationExceptionId.toString)),

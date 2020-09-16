@@ -33,6 +33,7 @@ class PageIdBindingSpec extends PlaySpec {
     s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
+    s"$AnnualAccountingSchemeId" -> JsBoolean(false),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
     s"$VATExemptionId" -> JsBoolean(false),
     s"$VATRegistrationExceptionId" -> JsBoolean(false),

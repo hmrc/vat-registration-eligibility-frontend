@@ -47,6 +47,9 @@ POST       /international-business                      controllers.Internationa
 GET        /zero-rated-sales                            controllers.ZeroRatedSalesController.onPageLoad()
 POST       /zero-rated-sales                            controllers.ZeroRatedSalesController.onSubmit()
 
+GET        /annual-accounting                           controllers.AnnualAccountingSchemeController.onPageLoad()
+POST       /annual-accounting                           controllers.AnnualAccountingSchemeController.onSubmit()
+
 GET        /vat-exemption                               controllers.VATExemptionController.onPageLoad()
 POST       /vat-exemption                               controllers.VATExemptionController.onSubmit()
 

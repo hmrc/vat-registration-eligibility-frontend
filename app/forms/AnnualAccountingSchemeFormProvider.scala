@@ -20,12 +20,10 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class InvolvedInOtherBusinessFormProvider @Inject() extends FormErrorHelper with Mappings {
+class AnnualAccountingSchemeFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def form: Form[Boolean] = {
-    val key = "involvedInOtherBusiness.error.required"
+  def apply(): Form[Boolean] =
     Form(
-      "value" -> boolean(key)
+      "value" -> boolean("annualAccountingScheme.error.required")
     )
-  }
 }

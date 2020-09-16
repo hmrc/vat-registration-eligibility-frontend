@@ -80,6 +80,7 @@ object PageIdBinding {
         Seq(
           (InternationalActivitiesId, userAnswers.internationalActivities),
           (InvolvedInOtherBusinessId, userAnswers.involvedInOtherBusiness),
+          (AnnualAccountingSchemeId, userAnswers.annualAccountingScheme),
           (ZeroRatedSalesId, userAnswers.zeroRatedSales),
           (RegisteringBusinessId, userAnswers.registeringBusiness),
           (NinoId, userAnswers.nino),

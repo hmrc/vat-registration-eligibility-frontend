@@ -20,18 +20,20 @@ import controllers.routes
 import forms.InvolvedInOtherBusinessFormProvider
 import models.NormalMode
 import play.api.data.Form
+import play.twirl.api.HtmlFormat
 import views.newbehaviours.YesNoViewBehaviours
 import views.html.involvedInOtherBusiness
 
 class InvolvedInOtherBusinessViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "involvedInOtherBusiness"
-  val form = new InvolvedInOtherBusinessFormProvider().form()
+  val form = new InvolvedInOtherBusinessFormProvider().form
   implicit val msgs = messages
 
-  def createView(officer: Option[String] = None) = involvedInOtherBusiness(form, NormalMode, officer)(fakeRequest, messages, frontendAppConfig)
+  def createView(): HtmlFormat.Appendable = involvedInOtherBusiness(form, NormalMode)(fakeRequest, messages, frontendAppConfig)
 
-  def createViewUsingForm(officer: Option[String] = None) = (form: Form[_]) => involvedInOtherBusiness(form, NormalMode, officer)(fakeRequest, messages, frontendAppConfig)
+  def createViewUsingForm(): Form[_] => HtmlFormat.Appendable =
+    (form: Form[_]) => involvedInOtherBusiness(form, NormalMode)(fakeRequest, messages, frontendAppConfig)
 
   "InvolvedInOtherBusiness view with no acting on behalf of officer" must {
     behave like normalPage(createView(), messageKeyPrefix)

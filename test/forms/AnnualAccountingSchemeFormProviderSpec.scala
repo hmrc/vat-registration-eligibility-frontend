@@ -16,16 +16,30 @@
 
 package forms
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
+import forms.behaviours.BooleanFieldBehaviours
+import play.api.data.FormError
 
-class InvolvedInOtherBusinessFormProvider @Inject() extends FormErrorHelper with Mappings {
+class AnnualAccountingSchemeFormProviderSpec extends BooleanFieldBehaviours {
 
-  def form: Form[Boolean] = {
-    val key = "involvedInOtherBusiness.error.required"
-    Form(
-      "value" -> boolean(key)
+  val requiredKey = "annualAccountingScheme.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new AnnualAccountingSchemeFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
     )
   }
 }

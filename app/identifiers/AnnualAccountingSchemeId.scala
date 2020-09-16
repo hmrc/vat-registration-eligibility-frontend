@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package forms
+package identifiers
 
-import forms.mappings.Mappings
-import javax.inject.Inject
-import play.api.data.Form
-
-class InvolvedInOtherBusinessFormProvider @Inject() extends FormErrorHelper with Mappings {
-
-  def form: Form[Boolean] = {
-    val key = "involvedInOtherBusiness.error.required"
-    Form(
-      "value" -> boolean(key)
-    )
-  }
+case object AnnualAccountingSchemeId extends Identifier {
+  override def toString: String = "annualAccountingScheme"
 }

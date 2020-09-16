@@ -18,41 +18,52 @@ package controllers
 
 import connectors.FakeDataCacheConnector
 import controllers.actions._
-import forms.InvolvedInOtherBusinessFormProvider
-import identifiers.{InternationalActivitiesId, InvolvedInOtherBusinessId}
-import models.{Name, NormalMode, Officer}
+import forms.AnnualAccountingSchemeFormProvider
+import identifiers.AnnualAccountingSchemeId
+import models.NormalMode
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, JsString}
+import play.api.libs.json.JsBoolean
+import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
-import views.html.involvedInOtherBusiness
+import views.html.annualAccountingScheme
 
-class InvolvedInOtherBusinessControllerSpec extends ControllerSpecBase {
+class AnnualAccountingSchemeControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.IndexController.onPageLoad()
 
-  val formProvider = new InvolvedInOtherBusinessFormProvider()
-  val form = formProvider.form
-  implicit val appConfig = frontendAppConfig
-
-  val officersList: Seq[Officer] = Seq(
-    Officer(Name(Some("First"), Some("Middle"), "Last",Some("Mrs")),"director", None, Some("some-url")),
-    Officer(Name(Some("Second"), None, "VeryLast",Some("Mr")), "secretary", None, Some("some-url"))
-  )
+  val formProvider = new AnnualAccountingSchemeFormProvider()
+  val form: Form[Boolean] = formProvider()
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new InvolvedInOtherBusinessController(messagesApi, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
-      dataRetrievalAction, new DataRequiredActionImpl, formProvider)
+    new AnnualAccountingSchemeController(
+      messagesApi,
+      FakeDataCacheConnector,
+      new FakeNavigator(desiredRoute = onwardRoute),
+      FakeCacheIdentifierAction,
+      dataRetrievalAction,
+      new DataRequiredActionImpl,
+      formProvider
+    )(frontendAppConfig)
 
-  def viewAsString(form: Form[_] = form, officer: Option[String] = None) = involvedInOtherBusiness(form, NormalMode)(fakeRequest, messages, frontendAppConfig).toString
+  def viewAsString(form: Form[_] = form): String = annualAccountingScheme(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
 
-  "InvolvedInOtherBusiness Controller" must {
+  "AnnualAccountingScheme Controller" must {
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad()(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
+    }
+
+    "populate the view correctly on a GET when the question has previously been answered" in {
+      val validData = Map(AnnualAccountingSchemeId.toString -> JsBoolean(true))
+      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
+
+      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -64,7 +75,7 @@ class InvolvedInOtherBusinessControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
 
-    "return a Bad Request and errors when invalid data is submitted with no officer name" in {
+    "return a Bad Request and errors when invalid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "invalid value"))
       val boundForm = form.bind(Map("value" -> "invalid value"))
 

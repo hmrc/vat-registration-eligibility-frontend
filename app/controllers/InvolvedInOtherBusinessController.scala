@@ -19,14 +19,13 @@ package controllers
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import deprecated.DeprecatedConstants
 import forms.InvolvedInOtherBusinessFormProvider
 import identifiers.InvolvedInOtherBusinessId
 import javax.inject.Inject
-import models.requests.DataRequest
-import models.{NormalMode, Officer}
+import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.involvedInOtherBusiness
@@ -42,28 +41,21 @@ class InvolvedInOtherBusinessController @Inject()(override val messagesApi: Mess
                                                   formProvider: InvolvedInOtherBusinessFormProvider
                                                  )(implicit appConfig: FrontendAppConfig) extends FrontendController with I18nSupport {
 
-
-  //TODO - determine if this is needed as officers won't apply to most entity types
-  private def retrieveFillingInForName(implicit request: DataRequest[_]): Option[String] = Some(DeprecatedConstants.fakeOfficerName)
-
-
-  def onPageLoad() = (identify andThen getData andThen requireData).async {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val shortName = retrieveFillingInForName
       val preparedForm = request.userAnswers.involvedInOtherBusiness match {
-        case None => formProvider.form(shortName)
-        case Some(value) => formProvider.form(shortName).fill(value)
+        case None => formProvider.form
+        case Some(value) => formProvider.form.fill(value)
       }
-      Future.successful(Ok(involvedInOtherBusiness(preparedForm, NormalMode, None)))
+      Future.successful(Ok(involvedInOtherBusiness(preparedForm, NormalMode)))
   }
 
-  def onSubmit() = (identify andThen getData andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      val shortName = retrieveFillingInForName
-      formProvider.form(shortName).bindFromRequest().fold(
+      formProvider.form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(involvedInOtherBusiness(formWithErrors, NormalMode, None))),
-        (value) =>
+          Future.successful(BadRequest(involvedInOtherBusiness(formWithErrors, NormalMode))),
+        value =>
           dataCacheConnector.save[Boolean](request.internalId, InvolvedInOtherBusinessId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(InvolvedInOtherBusinessId, NormalMode)(new UserAnswers(cacheMap))))
       )

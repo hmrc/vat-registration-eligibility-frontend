@@ -23,13 +23,13 @@
 @import views.html.layouts.layout
 @import views.html.newcomponents._
 
-@(form: Form[_], mode: Mode, actingOnBehalfOfficer: Option[String])(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("involvedInOtherBusiness.title"))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1(actingOnBehalfOfficer.fold(messages("involvedInOtherBusiness.heading"))(x => messages("involvedInOtherBusiness.heading.onBehalfOf", x)))
+    @h1(messages("involvedInOtherBusiness.heading"))
     @p{ @messages("involvedInOtherBusiness.text") }
 
     <ul class="govuk-list govuk-list--bullet">
@@ -47,7 +47,6 @@
         @yesNoRadio(
             form = form,
             headingKey = "involvedInOtherBusiness.heading",
-            headingMessageArgs = Seq(actingOnBehalfOfficer.getOrElse("")),
             isPageHeading = false,
             classes = "govuk-visually-hidden"
         )

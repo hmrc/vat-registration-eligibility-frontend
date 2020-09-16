@@ -89,14 +89,6 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligiblityMocks {
           "answerValue" -> "officer"
         ))
     }
-    "return valid JsonSummaryRow for NOT acting on behalf for ID InvolvedInOtherBusinessId" in new Setup {
-      val res = service.prepareQuestionData("involvedInOtherBusiness", true, officersList, None)
-      res mustBe JsonSummaryRow("involvedInOtherBusiness", "mocked message", "mocked message", JsBoolean(true))
-    }
-    "return valid JsonSummaryRow for ACTING on behalf for ID InvolvedInOtherBusinessId" in new Setup {
-      val res = service.prepareQuestionData("involvedInOtherBusiness", false, officersList, Some(officersList.head.generateId))
-      res mustBe JsonSummaryRow("involvedInOtherBusiness", "mocked message", "mocked message", JsBoolean(false))
-    }
   }
 
   "submitEligibility" should {
@@ -109,6 +101,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligiblityMocks {
       s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
       s"$InternationalActivitiesId" -> JsBoolean(false),
       s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
+      s"$AnnualAccountingSchemeId" -> JsBoolean(false),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
@@ -134,6 +127,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligiblityMocks {
           | {"title":"Special situations",
           | "data":[{"questionId":"internationalActivities","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"involvedInOtherBusiness","question":"mocked message","answer":"mocked message","answerValue":false},
+          | {"questionId":"annualAccountingScheme","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"zeroRatedSales","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"registeringBusiness","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"nino","question":"mocked message","answer":"mocked message","answerValue":true},

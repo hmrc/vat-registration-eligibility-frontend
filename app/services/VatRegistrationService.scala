@@ -112,15 +112,6 @@ trait VatRegistrationService extends I18nSupport {
     dataObj.foldLeft(value)((oList, dList) => oList ++ dList)
   }
 
-  private[services] def prepareQuestionData(key: String, data: Boolean, officers: Seq[Officer], onBehalfOf: Option[String]): List[JsValue] = {
-    val heading = onBehalfOf.fold(messagesApi(s"$key.heading")) {
-      id =>
-        messagesApi(s"$key.heading.onBehalfOf", DeprecatedConstants.fakeOfficerName)
-    }
-    JsonSummaryRow(key, heading, messagesApi(if (data) s"site.yes" else "site.no"), Json.toJson(data))
-  }
-
-
   private[services] def buildIndividualQuestion(officers: Seq[Officer], onBehalfOf: Option[String])(implicit r: DataRequest[_]): PartialFunction[(Identifier, Any), List[JsValue]] = {
     case (id@ThresholdInTwelveMonthsId, e: ConditionalDateFormElement) => prepareThresholdInTwelveMonths(id.toString, e)
     case (id@ThresholdNextThirtyDaysId, e: ConditionalDateFormElement) => prepareDateData(id.toString, e)
@@ -129,7 +120,6 @@ trait VatRegistrationService extends I18nSupport {
     case (id, e: ConditionalNinoFormElement) => prepareQuestionData(id.toString, e, officers, onBehalfOf)
     case (id, e: TurnoverEstimateFormElement) => prepareQuestionData(id.toString, e)
     case (VoluntaryRegistrationId, e: Boolean) => getVoluntaryRegistrationJson(e)
-    case (id@InvolvedInOtherBusinessId, e: Boolean) => prepareQuestionData(id.toString, e, officers, onBehalfOf)
     case (id, e: Boolean) => prepareQuestionData(id.toString, e)
     case (id, e: String) => prepareQuestionData(id.toString, e)
   }
