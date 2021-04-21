@@ -35,7 +35,7 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase {
   implicit val msgs: Messages = messages
 
   val h1 = "Did the business expect its taxable-turnover to go over £85,000 in any 30 day period in the past?"
-  val legend = "When did the business go over the threshold?"
+  val legend = "When did the business expect to go over the threshold?"
   val paragraph = "This could happen if, for example, a business planned to run an exhibition and anticipated selling so many tickets it expected to go over the VAT threshold. The business must register for VAT when you expected it to go over the threshold, not when it actually went over the threshold."
 
   val view = app.injector.instanceOf[thresholdPreviousThirtyDays]
@@ -62,7 +62,7 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase {
     }
 
     "have the first paragraph" in {
-      doc.select(Selectors.p(3)).text() mustBe paragraph
+      doc.select(Selectors.p(1)).text() mustBe paragraph
     }
 
     "have the correct legend" in {

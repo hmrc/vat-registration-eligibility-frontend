@@ -40,19 +40,6 @@
 
     @h1(messages("thresholdPreviousThirtyDays.heading"))
 
-    @p { @messages("thresholdPreviousThirtyDays.text") }
-
-    @bullets(
-        messages("thresholdPreviousThirtyDays.bullet1"),
-        messages("thresholdPreviousThirtyDays.bullet2"),
-        messages("thresholdPreviousThirtyDays.bullet3")
-    )
-
-    @p {
-        @(messages("thresholdPreviousThirtyDays.beforeLinkText"))
-        @link(appConfig.VATNotice700_1supplementURL, messages("thresholdPreviousThirtyDays.linkText")).
-    }
-
     @p{ @messages("thresholdPreviousThirtyDays.p1") }
 
     @formWithCsrf(action = ThresholdPreviousThirtyDaysController.onSubmit(), 'autoComplete -> "off",'novalidate -> "novalidate") {
@@ -71,7 +58,7 @@
 
 @hiddenYesContent = {
     @inputDate(form = form,
-        legendContent = messages("thresholdInTwelveMonths.heading2"),
+        legendContent = messages("thresholdPreviousThirtyDays.heading2"),
         hintText = Some("thresholdPreviousThirtyDays.dateHint"),
         legendClasses = "govuk-fieldset__legend--m",
         id = "thresholdPreviousThirtyDaysDate",
