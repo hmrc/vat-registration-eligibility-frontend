@@ -90,10 +90,4 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
     "cymraeg" -> Lang("cy"))
 
   def routeToSwitchLanguage = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
-
-  //Footer Links
-  lazy val cookies: String = host + servicesConfig.getString("urls.footer.cookies")
-  lazy val privacy: String = host + servicesConfig.getString("urls.footer.privacy")
-  lazy val termsConditions: String = host + servicesConfig.getString("urls.footer.termsConditions")
-  lazy val govukHelp: String = servicesConfig.getString("urls.footer.govukHelp")
 }
