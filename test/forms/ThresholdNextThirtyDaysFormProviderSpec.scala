@@ -16,13 +16,13 @@
 
 package forms
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import forms.behaviours.BooleanFieldBehaviours
 import models.ConditionalDateFormElement
 import play.api.data.FormError
 import utils.TimeMachine
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
 

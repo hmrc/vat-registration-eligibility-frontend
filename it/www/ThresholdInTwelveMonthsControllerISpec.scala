@@ -1,8 +1,5 @@
 package www
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub, TrafficManagementStub}
 import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
 import models.{ConditionalDateFormElement, Draft, RegistrationInformation, VatReg}
@@ -10,6 +7,9 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub with TrafficManagementStub {
 

@@ -16,10 +16,10 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.data.validation.{Invalid, Valid}
+
+import java.time.LocalDate
 
 class ConstraintsSpec extends WordSpec with MustMatchers with Constraints {
 

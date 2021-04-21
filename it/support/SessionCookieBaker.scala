@@ -16,8 +16,6 @@
 
 package support
 
-import java.net.{URLDecoder, URLEncoder}
-
 import helpers.IntegrationSpecBase
 import play.api.Application
 import play.api.libs.crypto.CookieSigner
@@ -27,6 +25,8 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted, PlainText}
 import uk.gov.hmrc.http.SessionKeys
 import utils.ExtraSessionKeys
+
+import java.net.{URLDecoder, URLEncoder}
 
 object SessionCookieBaker extends IntegrationSpecBase {
 
@@ -61,7 +61,7 @@ object SessionCookieBaker extends IntegrationSpecBase {
     val decrypted = CompositeSymmetricCrypto.aesGCM(cookieKey, Seq()).decrypt(Crypted(cookieData)).value
     val result = decrypted.split("&")
       .map(_.split("="))
-      .map { case Array(k, v) => (k, URLDecoder.decode(v)) }
+      .map { case Array(k, v) => (k, URLDecoder.decode(v, "UTF-8")) }
       .toMap
 
     result

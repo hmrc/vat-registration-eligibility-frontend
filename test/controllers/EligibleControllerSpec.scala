@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import controllers.actions.{DataRequiredAction, FakeCacheIdentifierAction}
 import mocks.TrafficManagementServiceMock
 import models.requests.DataRequest
@@ -29,6 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.eligible
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class EligibleControllerSpec extends ControllerSpecBase with TrafficManagementServiceMock {

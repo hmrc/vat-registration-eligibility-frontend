@@ -18,16 +18,16 @@ package controllers.actions
 
 import base.SpecBase
 import connectors.DataCacheConnector
+import connectors.mocks.MockS4lConnector
 import models.CurrentProfile
 import models.requests.{CacheIdentifierRequest, OptionalDataRequest}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
-import connectors.mocks.MockS4lConnector
-import play.api.libs.json.Json
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with MockS4lConnector {
 

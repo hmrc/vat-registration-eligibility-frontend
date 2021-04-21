@@ -4,6 +4,7 @@ import play.sbt.routes.RoutesKeys
 import sbt.Resolver
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.SbtAutoBuildPlugin
+import uk.gov.hmrc.SbtBobbyPlugin.BobbyKeys.bobbyRulesURL
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning
@@ -30,7 +31,8 @@ lazy val microservice = Project(appName, file("."))
     PlayKeys.playDefaultPort := 9894,
     retrieveManaged := true,
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-    majorVersion := 0
+    majorVersion := 0,
+    bobbyRulesURL := Some(new URL("https://webstore.tax.service.gov.uk/bobby-config/deprecated-dependencies.json"))
   )
   .settings(defaultSettings(), scalaSettings, scoverageSettings, publishingSettings)
   .configs(IntegrationTest)

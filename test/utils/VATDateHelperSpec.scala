@@ -16,9 +16,9 @@
 
 package utils
 
-import java.time.LocalDate
-
 import org.scalatestplus.play.PlaySpec
+
+import java.time.LocalDate
 
 object VATDateHelperSpec extends PlaySpec{
   "dateEqualOrAfter201741" should {

@@ -16,8 +16,6 @@
 
 package utils
 
-import java.time.LocalDate
-
 import base.SpecBase
 import controllers.routes
 import identifiers._
@@ -25,6 +23,8 @@ import models._
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.cache.client.CacheMap
+
+import java.time.LocalDate
 
 class NavigatorSpec extends SpecBase {
 

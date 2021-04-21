@@ -20,11 +20,11 @@ import connectors.S4LConnector
 import models.S4LKey
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
+import org.mockito.{ArgumentMatchers => Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import org.mockito.{ArgumentMatchers => Matchers}
 
 import scala.concurrent.Future
 
@@ -45,7 +45,7 @@ trait MockS4lConnector {
 
   def mockS4LClear(mockS4LConnector: S4LConnector = mockS4LConnector): OngoingStubbing[Future[HttpResponse]] = {
     when(mockS4LConnector.clear(Matchers.anyString())(Matchers.any[HeaderCarrier]()))
-      .thenReturn(Future.successful(HttpResponse(200)))
+      .thenReturn(Future.successful(HttpResponse(200, "")))
   }
 
   def mockS4LSaveForm[T: S4LKey](cacheMap: CacheMap, mockS4LConnector: S4LConnector = mockS4LConnector): OngoingStubbing[Future[CacheMap]] = {

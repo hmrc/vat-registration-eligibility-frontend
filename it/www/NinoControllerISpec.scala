@@ -1,15 +1,16 @@
 package www
 
-import java.time.LocalDate
+import com.github.tomakehurst.wiremock.client.WireMock._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub, TrafficManagementStub}
 import models.{Draft, RegistrationInformation, VatReg}
-import play.api.{Application, data}
+import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.Helpers.{CREATED, OK, TOO_MANY_REQUESTS}
 import play.mvc.Http.HeaderNames
-import com.github.tomakehurst.wiremock.client.WireMock._
-import play.api.libs.json.Json
+
+import java.time.LocalDate
 
 class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub with FeatureSwitching with TrafficManagementStub {
 

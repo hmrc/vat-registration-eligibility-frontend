@@ -16,18 +16,19 @@
 
 package utils
 
+import config.Logging
 import controllers.routes
 import identifiers.{Identifier, _}
+
 import javax.inject.{Inject, Singleton}
 import models._
-import play.api.Logger
 import play.api.libs.json.Reads
 import play.api.mvc.Call
 import utils.DefaultImplicitJsonReads.BooleanReads
 
 //scalastyle:off
 @Singleton
-class Navigator @Inject()() {
+class Navigator @Inject()() extends Logging {
 
   def pageIdToPageLoad(pageId: Identifier): Call = pageId match {
     case FixedEstablishmentId => routes.FixedEstablishmentController.onPageLoad()
@@ -58,7 +59,7 @@ class Navigator @Inject()() {
     case MandatoryInformationId => routes.MandatoryInformationController.onPageLoad()
     case EligibleId => routes.EligibleController.onPageLoad()
     case page => {
-      Logger.info(s"${page.toString} does not exist navigating to start of the journey")
+      logger.info(s"${page.toString} does not exist navigating to start of the journey")
       routes.IntroductionController.onPageLoad()
     }
   }

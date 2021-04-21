@@ -18,8 +18,6 @@ package views
 
 import forms.InternationalActivitiesFormProvider
 import models.NormalMode
-import play.api.data.Form
-import play.twirl.api.HtmlFormat
 import views.html.internationalActivities
 
 class InternationalActivitiesViewSpec extends ViewSpecBase {

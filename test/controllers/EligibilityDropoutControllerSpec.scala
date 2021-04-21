@@ -16,16 +16,15 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import config.FrontendAppConfig
 import controllers.actions._
-import identifiers.{AgriculturalFlatRateSchemeId, InternationalActivitiesId}
+import identifiers.AgriculturalFlatRateSchemeId
 import mocks.TrafficManagementServiceMock
 import models.{Draft, RegistrationInformation, VatReg}
 import play.api.test.Helpers._
 import views.html.{agriculturalDropout, internationalActivityDropout, vatDivisionDropout}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class EligibilityDropoutControllerSpec extends ControllerSpecBase with TrafficManagementServiceMock {

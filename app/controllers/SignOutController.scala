@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.ExecutionContext
 
@@ -30,7 +30,6 @@ class SignOutController @Inject()(mcc: MessagesControllerComponents)
                                   val executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def signOut: Action[AnyContent] = Action {
-    implicit request =>
-      Redirect(appConfig.exitSurveyUrl).withNewSession
+    _ => Redirect(appConfig.exitSurveyUrl).withNewSession
   }
 }
