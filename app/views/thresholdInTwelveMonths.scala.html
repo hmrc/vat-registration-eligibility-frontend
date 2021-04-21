@@ -37,7 +37,7 @@
     @errorSummary(form.errors, Some(Map("valueDate" -> "month")))
 
     @h1(messages("thresholdInTwelveMonths.headingIncorpMore12m"))
-    @p{ @messages("thresholdInTwelveMonths.firstHelpTextIncorpMore12m") }
+    @p{ @messages("thresholdInTwelveMonths.p1") }
 
     @formWithCsrf(action = ThresholdInTwelveMonthsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
         @conditionalYesNoRadio(
