@@ -39,7 +39,7 @@ class VoluntaryRegistrationControllerSpec extends ControllerSpecBase {
 
   val dataRequiredAction = new DataRequiredAction
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+  def controller (dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new VoluntaryRegistrationController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 

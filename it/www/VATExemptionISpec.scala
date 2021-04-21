@@ -1,7 +1,7 @@
 package www
 
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
-import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId}
+import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId}
 import models.ConditionalDateFormElement
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder

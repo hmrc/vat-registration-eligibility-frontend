@@ -17,15 +17,16 @@
 package services
 
 import connectors.{DataCacheConnector, VatRegistrationConnector}
+
 import javax.inject.{Inject, Singleton}
 import models.CurrentProfile
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CurrentProfileService @Inject()(val dataCacheConnector: DataCacheConnector, val vatRegistrationConnector: VatRegistrationConnector) {
+class CurrentProfileService @Inject()(val dataCacheConnector: DataCacheConnector, val vatRegistrationConnector: VatRegistrationConnector)
+                                     (implicit ec: ExecutionContext) {
 
   private def constructCurrentProfile(internalID: String)(implicit headerCarrier: HeaderCarrier): Future[CurrentProfile] = for {
     regId <- vatRegistrationConnector.getRegistrationId()

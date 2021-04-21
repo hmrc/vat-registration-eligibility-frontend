@@ -17,7 +17,6 @@
 package views
 
 import forms.FixedEstablishmentFormProvider
-import models.NormalMode
 import views.html.fixedEstablishment
 
 class FixedEstablishmentViewSpec extends ViewSpecBase {

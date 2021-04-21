@@ -21,7 +21,7 @@ import controllers.actions.CacheIdentifierAction
 import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.introduction
 
 @Singleton
@@ -34,7 +34,7 @@ class IntroductionController @Inject()(mcc: MessagesControllerComponents,
     Ok(view())
   }
 
-  def onSubmit: Action[AnyContent] = identify { implicit request =>
+  def onSubmit: Action[AnyContent] = identify { _ =>
     Redirect(controllers.routes.FixedEstablishmentController.onPageLoad())
   }
 

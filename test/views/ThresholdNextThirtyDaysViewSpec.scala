@@ -16,12 +16,12 @@
 
 package views
 
-import java.time.LocalDate
-
 import forms.ThresholdNextThirtyDaysFormProvider
 import models.NormalMode
 import utils.TimeMachine
 import views.html.thresholdNextThirtyDays
+
+import java.time.LocalDate
 
 class ThresholdNextThirtyDaysViewSpec extends ViewSpecBase {
 

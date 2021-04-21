@@ -76,7 +76,7 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
   lazy val VATMandatoryInformationGroup = servicesConfig.getConfString("gov-uk.VATMandatoryInformationGroup",
     throw new Exception("Couldn't get VATMandatoryInformationGroup URL"))
   lazy val VATFileChanges = servicesConfig.getConfString("gov-uk.VATFileChanges", throw new Exception("Couldn't get VATFileChanges URL"))
-  lazy val languageTranslationEnabled = runModeConfiguration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
+  lazy val languageTranslationEnabled = runModeConfiguration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
 
   def trafficAllocationUrl(regId: String): String =
     servicesConfig.baseUrl("vat-registration") + s"/vatreg/traffic-management/$regId/allocate"

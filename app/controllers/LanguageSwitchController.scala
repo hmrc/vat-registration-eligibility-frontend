@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, Lang}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.language.LanguageUtils
 
 @Singleton
@@ -29,8 +29,6 @@ class LanguageSwitchController @Inject()(configuration: Configuration,
                                          mcc: MessagesControllerComponents,
                                          languageUtils: LanguageUtils
                                         )(implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with I18nSupport {
-
-  private def langToCall(lang: String): (String) => Call = appConfig.routeToSwitchLanguage
 
   private def fallbackURL: String = routes.IndexController.onPageLoad().url
 
@@ -49,5 +47,5 @@ class LanguageSwitchController @Inject()(configuration: Configuration,
   }
 
   private def isWelshEnabled: Boolean =
-    configuration.getBoolean("microservice.services.features.welsh-translation").getOrElse(true)
+    configuration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
 }

@@ -16,8 +16,6 @@
 
 package services
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.{Allocated, QuotaReached}
 import mocks.TrafficManagementConnectorMock
@@ -33,6 +31,7 @@ import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import utils.{FakeIdGenerator, FakeTimeMachine}
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrafficManagementServiceSpec extends SpecBase

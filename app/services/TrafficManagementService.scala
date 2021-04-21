@@ -16,12 +16,8 @@
 
 package services
 
-import java.time.LocalDate
-
-import config.FrontendAppConfig
+import config.{FrontendAppConfig, Logging}
 import connectors.{Allocated, AllocationResponse, QuotaReached, TrafficManagementConnector}
-import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import models._
 import play.api.libs.json.Json
 import play.api.mvc.Request
@@ -33,6 +29,8 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import utils.{IdGenerator, TimeMachine}
 
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -42,7 +40,7 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
                                          timeMachine: TimeMachine,
                                          idGenerator: IdGenerator
                                         )(implicit ec: ExecutionContext,
-                                          appConfig: FrontendAppConfig) extends AuthorisedFunctions {
+                                          appConfig: FrontendAppConfig) extends AuthorisedFunctions with Logging {
 
   def allocate(regId: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[AllocationResponse] =
     authorised().retrieve(Retrievals.credentials) {
@@ -61,13 +59,13 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
               eventId = idGenerator.createId
             )
 
-            Logger.info("Started registration journey")
+            logger.info("Started registration journey")
 
             auditConnector.sendExtendedEvent(auditEvent)
 
             Allocated
           case QuotaReached =>
-            Logger.info("Daily quota reached")
+            logger.info("Daily quota reached")
             QuotaReached //TODO To be finished in the traffic management intergation story
         }
       case None =>

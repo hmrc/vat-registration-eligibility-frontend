@@ -17,7 +17,6 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
-import models.{TurnoverEstimate, TurnoverEstimateFormElement}
 import play.api.data.FormError
 
 class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
@@ -25,12 +24,10 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
   val form = new TurnoverEstimateFormProvider().apply()
 
   "bind" should {
-    val selectionFieldName = s"turnoverEstimateSelection"
     val amountFieldName = s"turnoverEstimateAmount"
     val errorKeyRoot = s"turnoverEstimate.error"
     val turnoverEstimateRequired = s"$errorKeyRoot.required"
     val turnoverEstimateAmountLessThan = s"$errorKeyRoot.amount.giveLessThan"
-    val turnoverEstimateAmountMoreThan = s"$errorKeyRoot.amount.giveMoreThan"
     val turnoverEstimateNeedsNumbers = s"$errorKeyRoot.amount.numbers"
 
     "return errors" when {

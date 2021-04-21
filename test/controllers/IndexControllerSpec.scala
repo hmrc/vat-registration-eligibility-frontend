@@ -55,5 +55,6 @@ class IndexControllerSpec extends ControllerSpecBase with MockS4lConnector with 
   }
   "navigateToPage with a page id takes user to page in navigator" in new Setup {
     val result = controller.navigateToPageId("foo")(fakeRequest)
+    redirectLocation(result) mustBe Some(routes.IntroductionController.onPageLoad().url)
   }
 }

@@ -16,14 +16,13 @@
 
 package controllers
 
-import java.time.LocalDate
 import config.FrontendAppConfig
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
 import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId}
 import mocks.TrafficManagementServiceMock
-import models.{ConditionalDateFormElement, Draft, NormalMode, RegistrationInformation, VatReg}
+import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
@@ -34,6 +33,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeNavigator, TimeMachine}
 import views.html.thresholdInTwelveMonths
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 

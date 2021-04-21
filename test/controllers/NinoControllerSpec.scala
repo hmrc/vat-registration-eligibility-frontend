@@ -16,19 +16,18 @@
 
 package controllers
 
-import java.time.LocalDate
 import connectors.{Allocated, FakeDataCacheConnector, QuotaReached}
 import controllers.actions._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import forms.NinoFormProvider
 import identifiers.NinoId
 import mocks.{MockS4LService, TrafficManagementServiceMock}
-import models.requests.DataRequest
 import models._
+import models.requests.DataRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.data.Form
-import play.api.libs.json.{Format, JsBoolean, Json}
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.Credentials
@@ -38,6 +37,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeIdGenerator, FakeNavigator, FakeTimeMachine, UserAnswers}
 import views.html.nino
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with TrafficManagementServiceMock with MockS4LService {

@@ -16,21 +16,20 @@
 
 package repositories
 
-import javax.inject.{Inject, Singleton}
 import org.joda.time.{DateTime, DateTimeZone}
+import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
-import play.api.{Configuration, Logger}
-import play.modules.reactivemongo.MongoDbConnection
-import reactivemongo.api.DefaultDB
+import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.{BSONDocument, BSONObjectID}
+import reactivemongo.bson.{BSONDocument, BSONInteger, BSONObjectID}
 import reactivemongo.play.json.ImplicitBSONHandlers._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.ReactiveRepository
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
+import uk.gov.hmrc.play.http.logging.Mdc
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
@@ -43,56 +42,49 @@ object DatedCacheMap {
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 }
 
-class ReactiveMongoRepository(config: Configuration, mongo: () => DefaultDB)
-  extends ReactiveRepository[DatedCacheMap, BSONObjectID](config.getString("appName").get, mongo, DatedCacheMap.formats) {
+@Singleton
+class SessionRepository @Inject()(config: Configuration,
+                                  mongo: ReactiveMongoComponent)
+                                 (implicit ec: ExecutionContext)
+  extends ReactiveRepository[DatedCacheMap, BSONObjectID](
+    config.get[String]("appName"),
+    mongo.mongoConnector.db,
+    DatedCacheMap.formats) {
 
   val fieldName = "lastUpdated"
   val createdIndexName = "userAnswersExpiry"
   val expireAfterSeconds = "expireAfterSeconds"
-  val timeToLiveInSeconds: Int = config.getInt("mongodb.timeToLiveInSeconds").get
+  val timeToLiveInSeconds: Int = config.get[Int]("mongodb.timeToLiveInSeconds")
 
-  dropCollectionIndexTemp.map(_ => createIndex(fieldName, createdIndexName, timeToLiveInSeconds))
+  val lastModifiedIndex = Index(
+    name = Some(createdIndexName),
+    key = Seq(fieldName -> IndexType.Ascending),
+    options = BSONDocument(expireAfterSeconds -> BSONInteger(timeToLiveInSeconds))
+  )
 
-  private[repositories] def createIndex(field: String, indexName: String, ttl: Int): Future[Boolean] = {
-    collection.indexesManager.ensure(Index(Seq((field, IndexType.Ascending)), Some(indexName),
-      options = BSONDocument(expireAfterSeconds -> ttl))) map {
-      result => {
-        Logger.debug(s"set [$indexName] with value $ttl -> result : $result")
-        result
+  override def indexes: Seq[Index] = Seq(lastModifiedIndex)
+
+  override def ensureIndexes(implicit ec: ExecutionContext): Future[Seq[Boolean]] = {
+    def deleteLastUpdatedIndex(indexes: List[Index])(implicit ec: ExecutionContext): Future[Int] = {
+      indexes.find(index => index.eventualName == "lastModified") match {
+        case Some(index) => collection.indexesManager.drop(index.eventualName)
+        case None => Future.successful(0)
       }
-    } recover {
-      case e => Logger.error("Failed to set TTL index", e)
-        false
     }
+
+    for {
+      currentIndexes <- collection.indexesManager.list()
+      _<- deleteLastUpdatedIndex(currentIndexes)
+      indexes = currentIndexes :+ lastModifiedIndex
+      updated <- Future.sequence(indexes.map(collection.indexesManager.ensure))
+    } yield updated
   }
 
-  def dropCollectionIndexTemp = collection.indexesManager.drop(createdIndexName).map { res =>
-    Logger.warn(s"[$createdIndexName dropped successfully finding a count of $res before dropping this index")
-    true
-  }.recoverWith {
-    case e =>
-      Future.successful {
-        Logger.warn(s"[$expireAfterSeconds did not drop as expected] and threw an exception with message ${e.getMessage}")
-        false
-      }
+  def get(id: String): Future[Option[CacheMap]] = Mdc.preservingMdc {
+    collection.find(Json.obj("id" -> id)).one[CacheMap]
   }
 
-  def removeEntry(id: String, key: String): Future[CacheMap] = {
-    val selector = BSONDocument("id" -> id)
-    val update = BSONDocument("$unset" -> BSONDocument(s"data.$key" -> 1))
-
-    collection.findAndModify(selector, collection.updateModifier(update, true, false)).map {
-      res => res.value.map(_.as[CacheMap]).getOrElse(throw new Exception(s"[removeEntry] Attempted to remove $key but document did not exist"))
-    }
-  }
-
-  def delete(id: String): Future[Boolean] = {
-    val selector = BSONDocument("id" -> id)
-
-    collection.delete.one(selector).map(_.ok)
-  }
-
-  def upsert(cm: CacheMap): Future[Boolean] = {
+  def upsert(cm: CacheMap): Future[Boolean] = Mdc.preservingMdc {
     val selector = BSONDocument("id" -> cm.id)
     val cmDocument = Json.toJson(DatedCacheMap(cm))
     val modifier = BSONDocument("$set" -> cmDocument)
@@ -102,16 +94,20 @@ class ReactiveMongoRepository(config: Configuration, mongo: () => DefaultDB)
     }
   }
 
-  def get(id: String): Future[Option[CacheMap]] =
-    collection.find(Json.obj("id" -> id)).one[CacheMap]
+  def removeEntry(id: String, key: String): Future[CacheMap] = Mdc.preservingMdc {
+    val selector = BSONDocument("id" -> id)
+    val update = BSONDocument("$unset" -> BSONDocument(s"data.$key" -> 1))
+
+    collection.findAndModify(selector, collection.updateModifier(update, true, false)).map {
+      res => res.value.map(_.as[CacheMap]).getOrElse(throw new Exception(s"[removeEntry] Attempted to remove $key but document did not exist"))
+    }
+  }
+
+  def delete(id: String): Future[Boolean] = Mdc.preservingMdc {
+    val selector = BSONDocument("id" -> id)
+
+    collection.delete.one(selector).map(_.ok)
+  }
+
 }
 
-@Singleton
-class SessionRepository @Inject()(config: Configuration) {
-
-  class DbConnection extends MongoDbConnection
-
-  private lazy val sessionRepository = new ReactiveMongoRepository(config, new DbConnection().db)
-
-  def apply(): ReactiveMongoRepository = sessionRepository
-}

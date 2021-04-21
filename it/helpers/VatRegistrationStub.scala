@@ -1,10 +1,8 @@
 package helpers
 
 import com.github.tomakehurst.wiremock.client.WireMock.{ok, patch, stubFor, urlMatching}
-import identifiers.{AgriculturalFlatRateSchemeId, AnnualAccountingSchemeId, InternationalActivitiesId, InvolvedInOtherBusinessId, NinoId, RacehorsesId, RegisteringBusinessId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, TurnoverEstimateId, VATExemptionId, VoluntaryRegistrationId, ZeroRatedSalesId}
-import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
-
-import scala.collection.immutable.ListMap
+import identifiers._
+import play.api.libs.json.{JsBoolean, JsString, Json}
 
 trait VatRegistrationStub {
 

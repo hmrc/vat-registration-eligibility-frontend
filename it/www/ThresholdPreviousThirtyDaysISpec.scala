@@ -1,8 +1,5 @@
 package www
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import helpers.{AuthHelper, FakeTimeMachine, IntegrationSpecBase, SessionStub}
 import identifiers.{ThresholdInTwelveMonthsId, ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
 import models.ConditionalDateFormElement
@@ -12,6 +9,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 import utils.TimeMachine
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelper with SessionStub {
 
@@ -57,7 +57,6 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
 
   s"POST ${controllers.routes.ThresholdPreviousThirtyDaysController.onSubmit().url}" should {
     val incorpDate = LocalDate.of(2020, 1, 1).minusMonths(14)
-    val dateBeforeIncorp = incorpDate.minusMonths(2)
     val dateAfterIncorp = incorpDate.plusMonths(2)
 
     s"redirect to ${controllers.routes.VATRegistrationExceptionController.onPageLoad().url}" when {
@@ -68,7 +67,7 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
         cacheSessionData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, ConditionalDateFormElement(true, Some(localDate)))
         cacheSessionData[Boolean](internalId, VoluntaryRegistrationId.toString, true)
 
-        val request = buildClient("/gone-over-threshold-period").withHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        val request = buildClient("/gone-over-threshold-period").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
           .post(Map(
             selectionFieldName -> Seq("true"),
             s"$dateFieldName.day" -> Seq(s"${dateAfterIncorp.getDayOfMonth}"),

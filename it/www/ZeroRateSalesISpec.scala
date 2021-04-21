@@ -1,7 +1,5 @@
 package www
 
-import java.time.LocalDate
-
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
 import identifiers.{RegisteringBusinessId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ZeroRatedSalesId}
 import models.ConditionalDateFormElement
@@ -9,6 +7,8 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Format._
 import play.mvc.Http.HeaderNames
+
+import java.time.LocalDate
 
 class ZeroRateSalesISpec extends IntegrationSpecBase with AuthHelper with SessionStub {
 

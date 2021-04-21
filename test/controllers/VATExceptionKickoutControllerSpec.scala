@@ -16,8 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
-
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import forms.VATExceptionKickoutFormProvider
@@ -31,6 +29,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import views.html.vatExceptionKickout
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class VATExceptionKickoutControllerSpec extends ControllerSpecBase with TrafficManagementServiceMock {

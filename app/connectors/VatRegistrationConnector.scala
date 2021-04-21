@@ -17,7 +17,6 @@
 package connectors
 
 import javax.inject.{Inject, Singleton}
-import play.api.Logger
 import play.api.libs.json.{JsObject, JsValue}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -42,9 +41,9 @@ class VatRegistrationConnector @Inject()(val http: HttpClient,
 
   def saveEligibility(regId: String, eligibility: JsValue)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
     http.PATCH[JsValue, HttpResponse](s"$vatRegistrationUrl$vatRegistrationUri/$regId/eligibility-data", eligibility).map(_.json) recover {
-      case e: NotFoundException => Logger.error(s"[VatRegistrationConnector][saveEligibility] No vat registration found for regId: $regId")
+      case e: NotFoundException => logger.error(s"[VatRegistrationConnector][saveEligibility] No vat registration found for regId: $regId")
         throw e
-      case e => Logger.error(s"[VatRegistrationConnector][saveEligibility] an error occurred for regId: $regId with exception: ${e.getMessage}")
+      case e => logger.error(s"[VatRegistrationConnector][saveEligibility] an error occurred for regId: $regId with exception: ${e.getMessage}")
         throw e
     }
   }

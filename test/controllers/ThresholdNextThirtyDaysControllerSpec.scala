@@ -16,7 +16,6 @@
 
 package controllers
 
-import java.time.LocalDate
 import config.FrontendAppConfig
 import connectors.FakeDataCacheConnector
 import controllers.actions._
@@ -24,8 +23,8 @@ import forms.ThresholdNextThirtyDaysFormProvider
 import identifiers.{ThresholdNextThirtyDaysId, VoluntaryRegistrationId}
 import models.{ConditionalDateFormElement, NormalMode}
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito.{times, verify, when}
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.when
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
@@ -34,6 +33,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeNavigator, TimeMachine}
 import views.html.thresholdNextThirtyDays
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {

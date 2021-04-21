@@ -18,7 +18,7 @@ package utils
 
 import base.SpecBase
 import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId}
-import play.api.libs.json.{JsBoolean, Json}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 class ThresholdHelperSpec extends SpecBase {

@@ -1,7 +1,5 @@
 package www
 
-import java.time.LocalDate
-
 import helpers._
 import identifiers._
 import models._
@@ -9,6 +7,8 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
+
+import java.time.LocalDate
 
 class EligibleControllerISpec extends IntegrationSpecBase
   with AuthHelper
