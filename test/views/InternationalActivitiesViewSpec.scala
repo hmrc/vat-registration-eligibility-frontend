@@ -26,6 +26,7 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
   val form = new InternationalActivitiesFormProvider()()
 
   val h1 = "Will the business do any of the following activities over the next 12 months?"
+  val linkParagraph ="Use the GOV.UK Brexit checker (opens in new tab) to find out if the EU exit will impact your business."
   val paragraph = "Tell us if the business will:"
   val bullet1 = "do all its business outside the UK"
   val bullet2 = "have its head office outside the UK"
@@ -62,8 +63,12 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
       doc.select(Selectors.legend(1)).text() mustBe h1
     }
 
+    "have the correct link paragraph text" in {
+      doc.select(Selectors.p(1)).text() mustBe linkParagraph
+    }
+
     "have the correct paragraph" in {
-      doc.select(Selectors.p(1)).text() mustBe paragraph
+      doc.select(Selectors.p(2)).text() mustBe paragraph
     }
 
     "display the bullet text correctly" in {
