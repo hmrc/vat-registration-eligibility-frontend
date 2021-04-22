@@ -27,9 +27,9 @@
     bullets: components.bullets,
     formWithCsrf: FormWithCSRF,
     yesNoRadio: components.yesNoRadio,
-    button: components.button
+    button: components.button,
+    link: components.link
 )
-
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("internationalActivities.heading"))), backLink = true) {
@@ -37,6 +37,12 @@
     @errorSummary(form.errors)
 
     @h1(messages("internationalActivities.heading"))
+
+    @p{
+        @link("https://www.gov.uk/transition", messages("internationalActivities.linkText") , isExternal = true)
+        @messages("internationalActivities.linkParagraph")
+    }
+
     @p{ @messages("internationalActivities.bulletText") }
 
     @bullets(

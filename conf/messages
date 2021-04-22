@@ -165,6 +165,8 @@ eligibility.international.link6 = register using form VAT1A
 
 internationalActivities.heading = Will the business do any of the following activities over the next 12 months?
 internationalActivities.error.required = Tell us if the business will do any of these international activities over the next 12 months
+internationalActivities.linkText = Use the GOV.UK Brexit checker
+internationalActivities.linkParagraph = to find out if the EU exit will impact your business.
 internationalActivities.bulletText = Tell us if the business will:
 internationalActivities.bullet1 = do all its business outside the UK
 internationalActivities.bullet2 = have its head office outside the UK
