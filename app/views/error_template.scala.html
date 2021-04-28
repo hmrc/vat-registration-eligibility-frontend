@@ -17,25 +17,17 @@
 @import config.FrontendAppConfig
 
 @this(
-    layout: views.html.layouts.layout,
-    h1: components.h1,
-    p: components.p
+        layout: views.html.layouts.layout,
+        h1: components.h1,
+        p: components.p
 )
 
 @(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@contentHeader = {
-  <h1>@heading</h1>
+@layout(pageTitle = Some(titleNoForm(pageTitle)), backLink = true) {
+
+    @h1(heading)
+
+    @p{ @message }
+
 }
-
-@mainContent = {
-  <p>@message</p>
-}
-
- @layout(pageTitle = Some(titleNoForm(pageTitle)), backLink = true) {
-
-  @h1(heading)
-
-  @p{ @messages }
-
- }
