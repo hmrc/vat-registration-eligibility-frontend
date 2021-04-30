@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import models.RegistrationInformation
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException, Upstream4xxResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.HttpClient
 import play.api.http.Status._
 import play.api.libs.json.{Json, Reads, Writes}
 

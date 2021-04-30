@@ -18,17 +18,19 @@ package utils
 
 import config.Logging
 import controllers.routes
+import featureswitch.core.config.{EnableAAS, FeatureSwitching}
+import featureswitch.core.models.FeatureSwitch
 import identifiers.{Identifier, _}
-
-import javax.inject.{Inject, Singleton}
 import models._
 import play.api.libs.json.Reads
 import play.api.mvc.Call
 import utils.DefaultImplicitJsonReads.BooleanReads
 
+import javax.inject.{Inject, Singleton}
+
 //scalastyle:off
 @Singleton
-class Navigator @Inject()() extends Logging {
+class Navigator @Inject()() extends Logging with FeatureSwitching {
 
   def pageIdToPageLoad(pageId: Identifier): Call = pageId match {
     case FixedEstablishmentId => routes.FixedEstablishmentController.onPageLoad()
@@ -104,7 +106,7 @@ class Navigator @Inject()() extends Logging {
           pageIdToPageLoad(mandatoryFalse)
         }
       }
-     else if (userAns.zeroRatedSales.contains(true) && userAns.vatRegistrationException.contains(true)) {
+      else if (userAns.zeroRatedSales.contains(true) && userAns.vatRegistrationException.contains(true)) {
         pageIdToPageLoad(mandatoryTrue)
       }
       else if (userAns.zeroRatedSales.contains(true) && ThresholdHelper.nextThirtyDaysDefinedAndFalse(userAns)) {
@@ -146,6 +148,21 @@ class Navigator @Inject()() extends Logging {
     }
   }
 
+  private[utils] def nextOnWithFeatureSwitch[T](condition: T,
+                                                featureSwitch: FeatureSwitch,
+                                                fromPage: Identifier, onSuccessPage: Identifier,
+                                                featureSwitchSuccessPage: Identifier,
+                                                onFailPage: Identifier
+                                               )(implicit reads: Reads[T]): (Identifier, UserAnswers => Call) = {
+    fromPage -> {
+      _.getAnswer[T](fromPage) match {
+        case Some(`condition`) if isEnabled(featureSwitch) => pageIdToPageLoad(featureSwitchSuccessPage)
+        case Some(`condition`) => pageIdToPageLoad(onSuccessPage)
+        case _ => pageIdToPageLoad(onFailPage)
+      }
+    }
+  }
+
   private[utils] def toNextPage(fromPage: Identifier, toPage: Identifier): (Identifier, UserAnswers => Call) =
     fromPage -> { _ => pageIdToPageLoad(toPage) }
 
@@ -183,9 +200,11 @@ class Navigator @Inject()() extends Logging {
       onSuccessPage = RacehorsesId,
       onFailPage = VATExceptionKickoutId
     ),
-    nextOn(false,
+    nextOnWithFeatureSwitch(false,
+      featureSwitch = EnableAAS,
       fromPage = RacehorsesId,
       onSuccessPage = AnnualAccountingSchemeId,
+      featureSwitchSuccessPage = RegisteringBusinessId,
       onFailPage = VATExceptionKickoutId
     ),
     nextOn(false,

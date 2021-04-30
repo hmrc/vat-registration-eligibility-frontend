@@ -24,7 +24,7 @@ import featureswitch.core.models.FeatureSwitch
 @Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
-  val switches = Seq(TrafficManagement)
+  val switches = Seq(TrafficManagement, EnableAAS)
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
     Seq(
@@ -36,4 +36,9 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 case object TrafficManagement extends FeatureSwitch {
   override val configName: String = "feature-switch.traffic-management"
   override val displayName: String = "Use traffic management"
+}
+
+case object EnableAAS extends FeatureSwitch {
+  override val configName: String = "feature-switch.enable-aas"
+  override val displayName: String = "Enable AAS (only use with the frontend AAS feature switch)"
 }

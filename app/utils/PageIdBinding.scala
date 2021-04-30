@@ -17,12 +17,13 @@
 package utils
 
 import akka.util.Helpers.Requiring
+import featureswitch.core.config.{EnableAAS, FeatureSwitching}
 import identifiers.{Identifier, _}
 import models.ConditionalDateFormElement
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 //scalastyle:off
-object PageIdBinding {
+object PageIdBinding extends FeatureSwitching {
   def sectionBindings(map: CacheMap): Map[String, Seq[(Identifier, Option[Any])]] = {
 
     val userAnswers = new UserAnswers(map)
@@ -68,6 +69,7 @@ object PageIdBinding {
           e
         }
       case e@(VATExemptionId, None) if (!userAnswers.zeroRatedSales.contains(false) && userAnswers.vatRegistrationException.contains(false)) => elemMiss(e._1)
+      case e@(AnnualAccountingSchemeId, None) if isEnabled(EnableAAS) => e
       case e if (e._1 != VATExemptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
     }
 
