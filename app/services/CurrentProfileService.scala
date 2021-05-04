@@ -17,27 +17,32 @@
 package services
 
 import connectors.{DataCacheConnector, VatRegistrationConnector}
-
-import javax.inject.{Inject, Singleton}
 import models.CurrentProfile
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.CacheMap
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CurrentProfileService @Inject()(val dataCacheConnector: DataCacheConnector, val vatRegistrationConnector: VatRegistrationConnector)
+class CurrentProfileService @Inject()(val dataCacheConnector: DataCacheConnector,
+                                      val vatRegistrationConnector: VatRegistrationConnector,
+                                      s4LService: S4LService)
                                      (implicit ec: ExecutionContext) {
-
-  private def constructCurrentProfile(internalID: String)(implicit headerCarrier: HeaderCarrier): Future[CurrentProfile] = for {
-    regId <- vatRegistrationConnector.getRegistrationId()
-    currentProfile = CurrentProfile(regId)
-    _ <- dataCacheConnector.save(internalID, "CurrentProfile", currentProfile)
-  } yield currentProfile
 
   def fetchOrBuildCurrentProfile(internalID: String)(implicit headerCarrier: HeaderCarrier): Future[CurrentProfile] = {
     dataCacheConnector.getEntry[CurrentProfile](internalID, "CurrentProfile") flatMap {
       case Some(currentProfile) => Future.successful(currentProfile)
-      case _ => constructCurrentProfile(internalID)
+      case None => for {
+        regId <- vatRegistrationConnector.getRegistrationId()
+        optCacheMap <- s4LService.fetchAndGet[CacheMap](regId, "eligibility-data")
+        currentProfile = optCacheMap.fold(CurrentProfile(regId))(cacheMap =>
+          cacheMap.getEntry[CurrentProfile]("CurrentProfile").getOrElse(CurrentProfile(regId)))
+        _ <- optCacheMap match {
+          case Some(cacheMap) => dataCacheConnector.save(cacheMap)
+          case None => dataCacheConnector.save(internalID, "CurrentProfile", currentProfile)
+        }
+      } yield currentProfile
     }
   }
 }

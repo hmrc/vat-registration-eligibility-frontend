@@ -17,6 +17,7 @@
 package services
 
 import base.CommonSpecBase
+import mocks.S4LServiceMock
 import models.CurrentProfile
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
@@ -27,10 +28,10 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CurrentProfileServiceSpec extends CommonSpecBase {
+class CurrentProfileServiceSpec extends CommonSpecBase with S4LServiceMock {
 
   class Setup {
-    val service = new CurrentProfileService(mockDataCacheConnector, mockVatRegConnector)
+    val service = new CurrentProfileService(mockDataCacheConnector, mockVatRegConnector, mockS4LService)
   }
 
   val testIntId = "internalId"
@@ -44,6 +45,21 @@ class CurrentProfileServiceSpec extends CommonSpecBase {
           .thenReturn(Future.successful(regId))
         when(mockDataCacheConnector.save[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(CacheMap("test", Map("test" -> Json.obj()))))
+        mockS4LFetchAndGet(regId, "eligibility-data")(None)
+
+        await(service.fetchOrBuildCurrentProfile(testIntId)) mustBe CurrentProfile(regId)
+      }
+
+      "it has been built with S4L" in new Setup {
+        private val testCacheMap = CacheMap(regId, Map("CurrentProfile" -> Json.toJson(CurrentProfile(regId))))
+
+        when(mockDataCacheConnector.getEntry[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
+          .thenReturn(Future.successful(None))
+        when(mockVatRegConnector.getRegistrationId()(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext]))
+          .thenReturn(Future.successful(regId))
+        when(mockDataCacheConnector.save(ArgumentMatchers.eq(testCacheMap)))
+          .thenReturn(Future.successful(testCacheMap))
+        mockS4LFetchAndGet(regId, "eligibility-data")(Some(testCacheMap))
 
         await(service.fetchOrBuildCurrentProfile(testIntId)) mustBe CurrentProfile(regId)
       }

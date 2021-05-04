@@ -31,7 +31,7 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with MockS4lConnector {
 
-  class Harness(dataCacheConnector: DataCacheConnector) extends DataRetrievalActionImpl(dataCacheConnector, mockS4LConnector) {
+  class Harness(dataCacheConnector: DataCacheConnector) extends DataRetrievalActionImpl(dataCacheConnector) {
     def callTransform[A](request: CacheIdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
@@ -40,35 +40,17 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
   "Data Retrieval Action" when {
     "there is no data in the cache" when {
-      "when there is data in S4L" must {
-        "set userAnswers to 'None' in the request" in {
-          val dataCacheConnector = mock[DataCacheConnector]
-          when(dataCacheConnector.fetch("id")) thenReturn Future(None)
-          mockS4LFetchAll(Some(testCacheMap))
-          when(dataCacheConnector.save(testCacheMap)) thenReturn Future(testCacheMap)
+      "set userAnswers to 'None' in the request" in {
+        val dataCacheConnector = mock[DataCacheConnector]
+        when(dataCacheConnector.fetch("id")) thenReturn Future(None)
+        mockS4LFetchAll(None)
 
-          val action = new Harness(dataCacheConnector)
+        val action = new Harness(dataCacheConnector)
 
-          val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id", testProfile))
+        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id", testProfile))
 
-          whenReady(futureResult) { result =>
-            result.userAnswers.isEmpty mustBe false
-          }
-        }
-      }
-      "when there is no data in S4L" must {
-        "set userAnswers to 'None' in the request" in {
-          val dataCacheConnector = mock[DataCacheConnector]
-          when(dataCacheConnector.fetch("id")) thenReturn Future(None)
-          mockS4LFetchAll(None)
-
-          val action = new Harness(dataCacheConnector)
-
-          val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id", testProfile))
-
-          whenReady(futureResult) { result =>
-            result.userAnswers.isEmpty mustBe true
-          }
+        whenReady(futureResult) { result =>
+          result.userAnswers.isEmpty mustBe true
         }
       }
     }

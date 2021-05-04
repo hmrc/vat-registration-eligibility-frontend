@@ -16,7 +16,6 @@
 
 package mocks
 
-import models.{CurrentProfile, S4LKey}
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.mockito.{ArgumentMatchers => Matchers}
@@ -29,44 +28,34 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
-trait MockS4LService {
+trait S4LServiceMock {
   this: MockitoSugar =>
 
   lazy val mockS4LService: S4LService = mock[S4LService]
 
   def mockS4LFetchAndGet[T](regId: String, key: String)(response: Option[T]): OngoingStubbing[Future[Option[T]]] =
     when(mockS4LService.fetchAndGet[T](
+      Matchers.eq(regId),
       Matchers.eq(key)
     )(
-      Matchers.eq(CurrentProfile(regId)),
       Matchers.any[HeaderCarrier](),
       Matchers.any[Format[T]]())
     ).thenReturn(Future.successful(response))
 
   def mockS4LClear(regId: String): OngoingStubbing[Future[HttpResponse]] =
     when(mockS4LService.clear(
-      Matchers.any[HeaderCarrier](),
-      Matchers.eq(CurrentProfile(regId)))
+      Matchers.eq(regId)
+    )(
+      Matchers.any[HeaderCarrier]())
     ).thenReturn(Future.successful(HttpResponse(OK, "")))
 
   def mockS4LSave[T](regId: String, key: String, data: T)(response: Future[CacheMap]): OngoingStubbing[Future[CacheMap]] =
     when(mockS4LService.save[T](
+      Matchers.eq(regId),
       Matchers.contains(key),
       Matchers.eq[T](data)
     )(
-      Matchers.eq(CurrentProfile(regId)),
       Matchers.any[HeaderCarrier](),
       Matchers.any[Format[T]]())
     ).thenReturn(response)
-
-  def mockS4LSave[T: S4LKey](regId: String, data: T)(response: Future[CacheMap]): OngoingStubbing[Future[CacheMap]] =
-    when(mockS4LService.save[T](
-      Matchers.eq[T](data)
-    )(
-      Matchers.any[S4LKey[T]],
-      Matchers.eq(CurrentProfile(regId)),
-      Matchers.any[HeaderCarrier](),
-      Matchers.any[Format[T]]())
-    ).thenReturn(response)
-
 }
