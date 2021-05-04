@@ -21,7 +21,7 @@ import controllers.actions._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import forms.NinoFormProvider
 import identifiers.NinoId
-import mocks.{MockS4LService, TrafficManagementServiceMock}
+import mocks.{S4LServiceMock, TrafficManagementServiceMock}
 import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers
@@ -40,7 +40,7 @@ import views.html.nino
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with TrafficManagementServiceMock with MockS4LService {
+class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with TrafficManagementServiceMock with S4LServiceMock {
 
   def onwardRoute: Call = routes.ThresholdInTwelveMonthsController.onPageLoad()
 

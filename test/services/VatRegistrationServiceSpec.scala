@@ -16,7 +16,7 @@
 
 package services
 
-import base.{SpecBase, VATEligiblityMocks}
+import base.{SpecBase, VATEligibilityMocks}
 import identifiers._
 import models.UKCompany
 import models.requests.DataRequest
@@ -31,7 +31,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
-class VatRegistrationServiceSpec extends SpecBase with VATEligiblityMocks {
+class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
 
   class Setup {
     val service = new VatRegistrationService(

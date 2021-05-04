@@ -16,25 +16,24 @@
 
 package controllers
 
-import java.time.LocalDate
 import config.FrontendAppConfig
 import connectors.{Allocated, DataCacheConnector, QuotaReached}
 import controllers.actions._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import forms.NinoFormProvider
 import identifiers.NinoId
-
-import javax.inject.{Inject, Singleton}
 import models.{Draft, NormalMode, RegistrationInformation, VatReg}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{S4LService, TrafficManagementService}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.nino
 
+import java.time.LocalDate
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -80,7 +79,7 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
                   case _ =>
                     trafficManagementService.allocate(request.currentProfile.registrationID) flatMap {
                       case Allocated =>
-                        s4LService.save("eligibility-data", Json.toJson(cacheMap)) map { _ =>
+                        s4LService.save[CacheMap](request.currentProfile.registrationID, "eligibility-data", cacheMap) map { _ =>
                           Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap)))
                         }
                       case QuotaReached =>

@@ -25,7 +25,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.http.HttpClient
 
-trait VATEligiblityMocks {
+trait VATEligibilityMocks {
   self: MockitoSugar =>
 
   //Connectors
