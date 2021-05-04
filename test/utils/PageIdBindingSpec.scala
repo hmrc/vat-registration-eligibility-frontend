@@ -16,6 +16,7 @@
 
 package utils
 
+import featureswitch.core.config.{EnableAAS, FeatureSwitching}
 import identifiers.{ThresholdInTwelveMonthsId, _}
 import models.UKCompany
 import org.scalatestplus.play.PlaySpec
@@ -24,9 +25,10 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.collection.immutable.ListMap
 
-class PageIdBindingSpec extends PlaySpec {
+class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   val fullListMapHappyPathTwelveMonthsFalse: ListMap[String, JsValue] = ListMap[String, JsValue](
     "" -> JsString(""),
+    s"$FixedEstablishmentId" -> JsBoolean(true),
     s"$BusinessEntityId" -> JsString(UKCompany.toString),
     s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
     s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
@@ -35,6 +37,9 @@ class PageIdBindingSpec extends PlaySpec {
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
     s"$AnnualAccountingSchemeId" -> JsBoolean(false),
+    s"$RegisteringBusinessId" -> JsBoolean(true),
+    s"$NinoId" -> JsBoolean(true),
+    s"$ZeroRatedSalesId" -> JsBoolean(true),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
     s"$VATExemptionId" -> JsBoolean(false),
     s"$VATRegistrationExceptionId" -> JsBoolean(false),
@@ -48,7 +53,7 @@ class PageIdBindingSpec extends PlaySpec {
       }
       mockedReturn + currentItem
   }
-  val listMapWithoutFieldsToBeTested = fullListMapHappyPathTwelveMonthsFalse.filterNot { s =>
+  val listMapWithoutFieldsToBeTested: Map[String, JsValue] = fullListMapHappyPathTwelveMonthsFalse.filterNot { s =>
     s._1 match {
       case x if x == ThresholdInTwelveMonthsId.toString || x == ThresholdNextThirtyDaysId.toString ||
         x == ThresholdPreviousThirtyDaysId.toString || x == VoluntaryRegistrationId.toString ||
@@ -184,5 +189,18 @@ class PageIdBindingSpec extends PlaySpec {
 
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested)))
+  }
+  "throw exception if annual accounting scheme answer doesn't exist when EnableAAS is off" in {
+    disable(EnableAAS)
+    intercept[NoSuchElementException](PageIdBinding.sectionBindings(
+      new CacheMap("test", fullListMapHappyPathTwelveMonthsFalse.-(s"$AnnualAccountingSchemeId")))
+    )
+    println(fullListMapHappyPathTwelveMonthsFalse)
+  }
+  "no exception if annual accounting scheme answer doesn't exist when EnableAAS is on" in {
+    enable(EnableAAS)
+    PageIdBinding.sectionBindings(
+      new CacheMap("test", fullListMapHappyPathTwelveMonthsFalse.-(s"$AnnualAccountingSchemeId"))
+    )
   }
 }
