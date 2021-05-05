@@ -18,14 +18,15 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
-import javax.inject.{Inject, Singleton}
 import models.RegistrationInformation
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{TrafficManagementService, VatRegistrationService}
+import services.{S4LService, TrafficManagementService, VatRegistrationService}
+import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.eligible
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -35,7 +36,8 @@ class EligibleController @Inject()(mcc: MessagesControllerComponents,
                                    requireData: DataRequiredAction,
                                    vatRegistrationService: VatRegistrationService,
                                    trafficManagementService: TrafficManagementService,
-                                   view: eligible
+                                   view: eligible,
+                                   s4LService: S4LService
                                   )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
@@ -47,9 +49,11 @@ class EligibleController @Inject()(mcc: MessagesControllerComponents,
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     vatRegistrationService.submitEligibility(request.internalId)(hc, implicitly[ExecutionContext], request).flatMap { _ =>
-      trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = false).map {
+      trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = false).flatMap {
         case RegistrationInformation(_, _, _, _, _) =>
-          Redirect(frontendUrl)
+          s4LService.save[CacheMap](request.currentProfile.registrationID, "eligibility-data", request.userAnswers.cacheMap).map { _ =>
+            Redirect(frontendUrl)
+          }
       }
     }
   }
