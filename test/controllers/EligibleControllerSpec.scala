@@ -16,43 +16,49 @@
 
 package controllers
 
-import controllers.actions.{DataRequiredAction, FakeCacheIdentifierAction}
-import mocks.TrafficManagementServiceMock
+import config.FrontendAppConfig
+import controllers.actions.{DataRequiredAction, FakeCacheIdentifierAction, FakeDataRetrievalAction}
+import identifiers.NinoId
+import mocks.{S4LServiceMock, TrafficManagementServiceMock}
 import models.requests.DataRequest
 import models.{Draft, RegistrationInformation, VatReg}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.CacheMap
 import views.html.eligible
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
-class EligibleControllerSpec extends ControllerSpecBase with TrafficManagementServiceMock {
+class EligibleControllerSpec extends ControllerSpecBase with TrafficManagementServiceMock with S4LServiceMock {
 
-  implicit val appConfig = frontendAppConfig
+  implicit val appConfig: FrontendAppConfig = frontendAppConfig
 
-  val view = app.injector.instanceOf[eligible]
+  val view: eligible = app.injector.instanceOf[eligible]
+
+  def viewAsString: String = view()(fakeRequest, messages, frontendAppConfig).toString
+
+  val testInternalId = "id"
+  val testRegId = "regId"
+  val testDate: LocalDate = LocalDate.now
+  val testCacheMap: CacheMap = CacheMap(testRegId, Map(NinoId.toString -> JsBoolean(true)))
 
   val dataRequiredAction = new DataRequiredAction
+  val dataRetrievalAction = new FakeDataRetrievalAction(Some(testCacheMap))
 
   object Controller extends EligibleController(
     controllerComponents,
     identify = FakeCacheIdentifierAction,
-    getData = fakeDataRetrievalAction,
+    getData = dataRetrievalAction,
     requireData = dataRequiredAction,
     vatRegistrationService = mockVRService,
     mockTrafficManagementService,
-    view
+    view,
+    mockS4LService
   )
-
-  def viewAsString = view()(fakeRequest, messages, frontendAppConfig).toString
-
-  val testInternalId = "id"
-  val testRegId = "regId"
-  val testDate = LocalDate.now
 
   "onPageLoad" must {
     "return OK with the correct view" in {
@@ -64,12 +70,17 @@ class EligibleControllerSpec extends ControllerSpecBase with TrafficManagementSe
 
   "onSubmit" must {
     "redirect to VAT reg frontend" in {
-      when(mockVRService.submitEligibility(ArgumentMatchers.any[String])(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext], ArgumentMatchers.any[DataRequest[_]]))
-        .thenReturn(Future.successful(Json.obj()))
+      when(mockVRService.submitEligibility(ArgumentMatchers.any[String])(
+        ArgumentMatchers.any[HeaderCarrier],
+        ArgumentMatchers.any[ExecutionContext],
+        ArgumentMatchers.any[DataRequest[_]])
+      ).thenReturn(Future.successful(Json.obj()))
 
-      mockUpsertRegistrationInformation(testInternalId, testRegId, false)(
+      mockUpsertRegistrationInformation(testInternalId, testRegId, isOtrs = false)(
         Future.successful(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg))
       )
+
+      mockS4LSave[CacheMap](testRegId, "eligibility-data", testCacheMap)(Future.successful(testCacheMap))
 
       val res = Controller.onSubmit()(fakeRequest)
 
