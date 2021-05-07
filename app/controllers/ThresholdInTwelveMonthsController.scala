@@ -48,11 +48,15 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.thresholdInTwelveMonths match {
-        case None => formProvider()
-        case Some(value) => formProvider().fill(value)
+      (request.userAnswers.fixedEstablishment, request.userAnswers.nino) match {
+        case (Some(true), Some(true)) =>
+          val preparedForm = request.userAnswers.thresholdInTwelveMonths match {
+            case None => formProvider()
+            case Some(value) => formProvider().fill(value)
+          }
+          Ok(view(preparedForm, NormalMode))
+        case _ => Redirect(routes.IntroductionController.onPageLoad())
       }
-      Ok(view(preparedForm, NormalMode))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {

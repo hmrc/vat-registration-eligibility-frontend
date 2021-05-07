@@ -17,8 +17,6 @@ class TrafficManagementConnectorISpec extends IntegrationSpecBase
     .configure(fakeConfig())
     .build()
 
-  val testRegId = "1"
-
   val connector = app.injector.instanceOf[TrafficManagementConnector]
 
   "POST /traffic-management/:regId/allocate" must {

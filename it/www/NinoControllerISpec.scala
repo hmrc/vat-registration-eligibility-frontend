@@ -18,7 +18,6 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
     .configure(fakeConfig())
     .build()
 
-  val testRegId = "testRegId"
   val testInternalId = "testInternalId"
   val testDate = LocalDate.now
 
