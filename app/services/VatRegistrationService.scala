@@ -54,7 +54,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
 
   private[services] def getVoluntaryRegistrationJson(data: Boolean)(implicit r: DataRequest[_]): List[JsValue] = {
     val key = VoluntaryRegistrationId.toString
-    JsonSummaryRow(key, messages(s"$key.summary.heading"), messages(s"site.${if (data) "yes" else "no"}"), Json.toJson(data))
+    JsonSummaryRow(key, messages(s"$key.heading"), messages(s"site.${if (data) "yes" else "no"}"), Json.toJson(data))
   }
 
   private[services] def getVoluntaryInformationJson(data: Boolean)(implicit r: DataRequest[_]): List[JsValue] = {
