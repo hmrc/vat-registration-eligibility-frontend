@@ -1,7 +1,7 @@
 package www
 
-import helpers.{AuthHelper, IntegrationSpecBase, SessionStub, TrafficManagementStub}
-import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
+import helpers.{AuthHelper, IntegrationSpecBase, S4LStub, SessionStub, TrafficManagementStub}
+import identifiers._
 import models.{ConditionalDateFormElement, Draft, RegistrationInformation, VatReg}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -11,7 +11,7 @@ import play.mvc.Http.HeaderNames
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub with TrafficManagementStub {
+class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub with TrafficManagementStub with S4LStub {
 
   val selectionFieldName = "value"
   val dateFieldName = "valueDate"
@@ -25,26 +25,47 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
 
   s"GET ${controllers.routes.ThresholdInTwelveMonthsController.onPageLoad().url}" should {
     "render the page" when {
-      "no data is present in mongo" in {
+      "no prepop data is present in mongo" in {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
+        stubS4LGetNothing(testRegId)
+
+        cacheSessionData[Boolean](internalId, s"$FixedEstablishmentId", true)
+        cacheSessionData[Boolean](internalId, s"$NinoId", true)
 
         val request = buildClient("/gone-over-threshold").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie()).get()
         val response = await(request)
         response.status mustBe OK
       }
 
-      "data is present in mongo" in {
+      "prepop data is present in mongo" in {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
+        stubS4LGetNothing(testRegId)
 
+        cacheSessionData[Boolean](internalId, s"$FixedEstablishmentId", true)
+        cacheSessionData[Boolean](internalId, s"$NinoId", true)
         cacheSessionData[ConditionalDateFormElement](internalId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, Some(LocalDate.of(2017, 12, 1))))
 
         val request = buildClient("/gone-over-threshold").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie()).get()
         val response = await(request)
         response.status mustBe OK
+      }
+    }
+
+    "redirect to introduction" when {
+      "no data is present in mongo" in {
+        stubSuccessfulLogin()
+        stubSuccessfulRegIdGet()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+
+        val request = buildClient("/gone-over-threshold").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie()).get()
+        val response = await(request)
+        response.status mustBe SEE_OTHER
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.IntroductionController.onPageLoad().url)
       }
     }
   }
@@ -59,6 +80,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
+        stubS4LGetNothing(testRegId)
 
         val request = buildClient("/gone-over-threshold").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
           .post(Map(
@@ -77,6 +99,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubSuccessfulRegIdGet()
         stubAudits()
         stubUpsertRegistrationInformation(RegistrationInformation("testInternalId", "testRegId", Draft, Some(LocalDate.now), VatReg))
+        stubS4LGetNothing(testRegId)
 
         cacheSessionData[ConditionalDateFormElement](internalId, ThresholdNextThirtyDaysId.toString, ConditionalDateFormElement(false, None))
         cacheSessionData[Boolean](internalId, VoluntaryRegistrationId.toString, true)
@@ -104,6 +127,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
+        stubS4LGetNothing(testRegId)
 
         stubUpsertRegistrationInformation(RegistrationInformation("testInternalId", "testRegId", Draft, Some(LocalDate.now), VatReg))
 

@@ -20,14 +20,14 @@ import config.FrontendAppConfig
 import connectors.FakeDataCacheConnector
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
-import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId}
+import identifiers._
 import mocks.TrafficManagementServiceMock
 import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeNavigator, TimeMachine}
@@ -52,8 +52,10 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
   implicit val appConfig: FrontendAppConfig = frontendAppConfig
 
   val dataRequiredAction = new DataRequiredAction
+  val data: Map[String, JsValue] = Map(FixedEstablishmentId.toString -> JsBoolean(true), NinoId.toString -> JsBoolean(true))
+  val getRequiredCacheMap: FakeDataRetrievalAction = getWithCacheMap(CacheMap(cacheMapId, data))
 
-  def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
+  def controller(dataRetrievalAction: DataRetrievalAction = getRequiredCacheMap) =
     new ThresholdInTwelveMonthsController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
 
@@ -73,9 +75,16 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
       contentAsString(result) mustBe viewAsString()
     }
 
+    "redirect to start of the journey if user is missing data" in {
+      val result = controller(getEmptyCacheMap).onPageLoad()(fakeRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.IntroductionController.onPageLoad().url)
+    }
+
     "populate the view correctly on a GET when the question has previously been answered" in {
       val jsValue = Json.toJson(ConditionalDateFormElement(true, Some(LocalDate.now)))
-      val validData = Map(ThresholdInTwelveMonthsId.toString -> jsValue)
+      val validData = data + (ThresholdInTwelveMonthsId.toString -> jsValue)
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)

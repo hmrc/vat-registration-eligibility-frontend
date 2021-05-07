@@ -12,6 +12,7 @@ trait AuthHelper {
   private[helpers] val defaultUser = "/foo/bar"
 
   val sessionId = "session-ac4ed3e7-dbc3-4150-9574-40771c4285c1"
+  val testRegId = "testRegId"
 
   private def cookieData(additionalData: Map[String, String], userId: String = defaultUser): Map[String, String] = {
     Map(
@@ -69,6 +70,6 @@ trait AuthHelper {
     stubFor(
       get(
         urlMatching("/vatreg/scheme")
-      ).willReturn(ok("""{"registrationId":"testRegId"}""")))
+      ).willReturn(ok(s"""{"registrationId":"$testRegId"}""")))
   }
 }
