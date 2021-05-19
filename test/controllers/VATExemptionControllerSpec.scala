@@ -24,6 +24,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.JsBoolean
 import play.api.test.Helpers._
+import services.TrafficManagementService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import views.html.vatExemption
@@ -33,6 +34,7 @@ class VATExemptionControllerSpec extends ControllerSpecBase {
   def onwardRoute = routes.IndexController.onPageLoad()
 
   val view = app.injector.instanceOf[vatExemption]
+  val txm = app.injector.instanceOf[TrafficManagementService]
 
   val formProvider = new VATExemptionFormProvider()
   val form = formProvider()
@@ -42,7 +44,7 @@ class VATExemptionControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new VATExemptionController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
-      dataRetrievalAction, dataRequiredAction, formProvider, view)
+      dataRetrievalAction, dataRequiredAction, formProvider, txm, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
 

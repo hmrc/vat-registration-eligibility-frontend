@@ -236,9 +236,10 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
       onSuccessPage = VATRegistrationExceptionId,
       onFailPage = VoluntaryRegistrationId
     ),
-    toNextPage(
+    nextOn(true,
       fromPage = VATRegistrationExceptionId,
-      toPage = TurnoverEstimateId
+      onSuccessPage = EligibilityDropoutId(VATExceptionKickoutId.toString),
+      onFailPage = TurnoverEstimateId
     ),
     toNextPage(
       fromPage = TurnoverEstimateId,
@@ -250,10 +251,10 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
       VoluntaryInformationId,
       VATExemptionId
     ),
-    checkVoluntaryQuestion(
+    nextOn(true,
       fromPage = VATExemptionId,
-      mandatoryTrue = MandatoryInformationId,
-      mandatoryFalse = VoluntaryInformationId
+      onSuccessPage = EligibilityDropoutId(OTRS.toString),
+      onFailPage = MandatoryInformationId
     ),
     nextOn(true,
       fromPage = VoluntaryRegistrationId,
