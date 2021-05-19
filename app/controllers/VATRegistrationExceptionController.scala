@@ -21,11 +21,13 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import forms.VATRegistrationExceptionFormProvider
 import identifiers.VATRegistrationExceptionId
+
 import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.TrafficManagementService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.vatRegistrationException
@@ -40,6 +42,7 @@ class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerCompon
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
                                                    formProvider: VATRegistrationExceptionFormProvider,
+                                                   trafficManagementService: TrafficManagementService,
                                                    view: vatRegistrationException
                                                   )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
@@ -59,8 +62,12 @@ class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerCompon
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, VATRegistrationExceptionId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(VATRegistrationExceptionId, NormalMode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[Boolean](request.internalId, VATRegistrationExceptionId.toString, value).map { cacheMap =>
+            if (value) {
+              trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = true)
+            }
+            Redirect(navigator.nextPage(VATRegistrationExceptionId, NormalMode)(new UserAnswers(cacheMap)))
+          }
       )
   }
 }

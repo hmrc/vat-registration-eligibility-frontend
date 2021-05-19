@@ -21,11 +21,13 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import forms.VATExemptionFormProvider
 import identifiers.VATExemptionId
+
 import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.TrafficManagementService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.vatExemption
@@ -40,6 +42,7 @@ class VATExemptionController @Inject()(mcc: MessagesControllerComponents,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        formProvider: VATExemptionFormProvider,
+                                       trafficManagementService: TrafficManagementService,
                                        view: vatExemption
                                       )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
@@ -59,8 +62,12 @@ class VATExemptionController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, VATExemptionId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(VATExemptionId, NormalMode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[Boolean](request.internalId, VATExemptionId.toString, value).map { cacheMap =>
+            if (value) {
+              trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = true)
+            }
+            Redirect(navigator.nextPage(VATExemptionId, NormalMode)(new UserAnswers(cacheMap)))
+          }
       )
   }
 }
