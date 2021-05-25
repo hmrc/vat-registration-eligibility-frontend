@@ -15,6 +15,7 @@
  *@
 
 @import config.FrontendAppConfig
+@import models.BusinessEntity._
 
 @this(
         layout: views.html.layouts.layout,
@@ -36,30 +37,30 @@
             form = businessEntityForm,
             legend = Messages("businessEntity.heading"),
             items = Seq(
-                RadioItem(id = Some("uk-company"),
-                    value = Some("uk-company"),
+                RadioItem(id = Some(ukCompanyKey),
+                    value = Some(ukCompanyKey),
                     content = Text(Messages("businessEntity.ukcompany")),
-                    checked = businessEntityForm("value").value.contains("uk-company")
+                    checked = businessEntityForm("value").value.contains(ukCompanyKey)
                 ),
-                RadioItem(id = Some("sole-trader"),
-                    value = Some("sole-trader"),
+                RadioItem(id = Some(soleTraderKey),
+                    value = Some(soleTraderKey),
                     content = Text(Messages("businessEntity.soletrader")),
-                    checked = businessEntityForm("value").value.contains("sole-trader")
+                    checked = businessEntityForm("value").value.contains(soleTraderKey)
                 ),
-                RadioItem(id = Some("partnership"),
-                    value = Some("partnership"),
+                RadioItem(id = Some(partnershipKey),
+                    value = Some(partnershipKey),
                     content = Text(Messages("businessEntity.partnership")),
-                    checked = businessEntityForm("value").value.contains("partnership")
+                    checked = businessEntityForm("value").value.contains(partnershipKey)
                 ),
-                RadioItem(id = Some("division"),
-                    value = Some("division"),
+                RadioItem(id = Some(divisionKey),
+                    value = Some(divisionKey),
                     content = Text(Messages("businessEntity.division")),
-                    checked = businessEntityForm("value").value.contains("division")
+                    checked = businessEntityForm("value").value.contains(divisionKey)
                 ),
-                RadioItem(id = Some("other"),
-                    value = Some("other"),
+                RadioItem(id = Some(otherKey),
+                    value = Some(otherKey),
                     content = Text(Messages("businessEntity.other")),
-                    checked = businessEntityForm("value").value.contains("other")
+                    checked = businessEntityForm("value").value.contains(otherKey)
                 )
             )
         )

@@ -20,9 +20,10 @@ import connectors.FakeDataCacheConnector
 import controllers.actions._
 import forms.BusinessEntityFormProvider
 import identifiers.BusinessEntityId
-import models.{BusinessEntity, UKCompany}
+import models.BusinessEntity.ukCompanyKey
+import models.{BusinessEntity, Division, Other, Partnership, ScottishPartnership, UKCompany, VatGroup}
 import play.api.data.Form
-import play.api.libs.json.JsString
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -32,6 +33,7 @@ import views.html.businessEntity
 class BusinessEntityControllerSpec extends ControllerSpecBase {
 
   def onwardRoute = routes.IndexController.onPageLoad()
+
   val view = app.injector.instanceOf[businessEntity]
 
   val formProvider = new BusinessEntityFormProvider()
@@ -59,7 +61,7 @@ class BusinessEntityControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Map(BusinessEntityId.toString -> JsString(UKCompany.toString))
+      val validData = Map(BusinessEntityId.toString -> Json.toJson(UKCompany))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad()(fakeRequest)
@@ -67,8 +69,26 @@ class BusinessEntityControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(form.fill(UKCompany))
     }
 
+    "populate the view with a partnership on a GET when the user is a scottish partnership" in {
+      val validData = Map(BusinessEntityId.toString -> Json.toJson(ScottishPartnership))
+      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
+
+      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(form.fill(Partnership()))
+    }
+
+    "populate the view with a partnership on a GET when the user is a division" in {
+      val validData = Map(BusinessEntityId.toString -> Json.toJson(VatGroup))
+      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
+
+      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+
+      contentAsString(result) mustBe viewAsString(form.fill(Other()))
+    }
+
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", UKCompany.toString))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ukCompanyKey))
 
       val result = controller().onSubmit()(postRequest)
 
@@ -94,7 +114,7 @@ class BusinessEntityControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", UKCompany.toString))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", Json.toJson(UKCompany).toString))
       val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER

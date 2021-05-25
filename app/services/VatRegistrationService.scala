@@ -102,7 +102,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
   }
 
   private[services] def prepareBusinessEntity(key: String, data: BusinessEntity)(implicit r: DataRequest[_]): List[JsValue] = {
-    JsonSummaryRow(s"$key-value", messages(s"$key.heading"), businessEntityToString(data)(messages), Json.toJson(data.toString))
+    JsonSummaryRow(s"$key-value", messages(s"$key.heading"), businessEntityToString(data)(messages), Json.toJson(data))
   }
 
   private[services] def prepareDateData(key: String, data: ConditionalDateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {

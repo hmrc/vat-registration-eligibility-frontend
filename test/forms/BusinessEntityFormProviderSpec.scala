@@ -17,6 +17,7 @@
 package forms
 
 import base.SpecBase
+import models.BusinessEntity._
 import models._
 import play.api.data.FormError
 
@@ -30,29 +31,20 @@ class BusinessEntityFormProviderSpec extends SpecBase {
 
     val businessEntityErrorKey = "businessEntity.error.required"
 
-    "successfully parse a UK Company entity" in {
-      val res = form.bind(Map(businessEntity -> UKCompany.toString))
-      res.value must contain(UKCompany)
-    }
+    "successfully parse any of the entities" in {
+      val entityList = Seq(
+        (UKCompany, ukCompanyKey),
+        (SoleTrader, soleTraderKey),
+        (Partnership(), partnershipKey),
+        (Other(), otherKey),
+        (Division, divisionKey)
+      )
 
-    "successfully parse a Sole trader entity" in {
-      val res = form.bind(Map(businessEntity -> SoleTrader.toString))
-      res.value must contain(SoleTrader)
-    }
-
-    "successfully parse a Partnership entity" in {
-      val res = form.bind(Map(businessEntity -> Partnership.toString))
-      res.value must contain(Partnership)
-    }
-
-    "successfully parse a Division entity" in {
-      val res = form.bind(Map(businessEntity -> Division.toString))
-      res.value must contain(Division)
-    }
-
-    "successfully parse a Other entity" in {
-      val res = form.bind(Map(businessEntity -> Other.toString))
-      res.value must contain(Other)
+      entityList.map {
+        case (entity, key) =>
+          val res = form.bind(Map(businessEntity -> key))
+          res.value must contain(entity)
+      }
     }
 
     "fail when nothing has been entered in the view" in {
