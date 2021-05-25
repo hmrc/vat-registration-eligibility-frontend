@@ -47,6 +47,9 @@ class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
     implicit request =>
       val preparedForm = request.userAnswers.businessEntity match {
         case None => formProvider()
+        case Some(otherEntity: Other) => formProvider().fill(Other())
+        case Some(partnershipEntity: Partnership) => formProvider().fill(Partnership())
+          //TODO may not be necessasry, check when doing SAR-7632
         case Some(businessEntity) => formProvider().fill(businessEntity)
       }
       Ok(view(preparedForm, controllers.routes.BusinessEntityController.onSubmit()))

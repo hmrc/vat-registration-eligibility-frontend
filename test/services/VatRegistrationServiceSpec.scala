@@ -82,7 +82,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
     val fullListMapHappyPathTwelveMonthsFalse: ListMap[String, JsValue] = ListMap[String, JsValue](
       "" -> JsString(""),
       s"$FixedEstablishmentId" -> JsBoolean(true),
-      s"$BusinessEntityId" -> JsString(UKCompany.toString),
+      s"$BusinessEntityId" -> Json.toJson(UKCompany),
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
       s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),

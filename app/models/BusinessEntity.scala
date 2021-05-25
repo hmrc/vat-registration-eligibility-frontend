@@ -19,65 +19,99 @@ package models
 import play.api.i18n.Messages
 import play.api.libs.json._
 
-sealed trait BusinessEntity {
-
-  import BusinessEntity._
-
-  override def toString: String = this match {
-    case UKCompany => UKCompanyKey
-    case SoleTrader => SoleTraderKey
-    case Partnership => PartnershipKey
-    case Division => DivisionKey
-    case Other => OtherKey
-  }
-}
+sealed trait BusinessEntity
 
 object UKCompany extends BusinessEntity
-
 object SoleTrader extends BusinessEntity
-
-object Partnership extends BusinessEntity
-
-object Division extends BusinessEntity
-
-object Other extends BusinessEntity
+case class Partnership() extends BusinessEntity
+object GeneralPartnership extends Partnership
+object LimitedPartnership extends Partnership
+object ScottishPartnership extends Partnership
+object ScottishLimitedPartnership extends Partnership
+object LimitedLiabilityPartnership extends Partnership
+case class Other() extends BusinessEntity
+object CharitableIncorporatedOrganisation extends Other
+object NonIncorporatedTrust extends Other
+object RegisteredSociety extends Other
+object UnincorporatedAssociation extends Other
+object GovernmentOrganisationOrPublicBody extends Other
+object Division extends BusinessEntity //TODO Change to extends Other for SAR-7632
+object VatGroup extends Other
 
 object BusinessEntity {
-  val UKCompanyKey = "uk-company"
-  val SoleTraderKey = "sole-trader"
-  val PartnershipKey = "partnership"
-  val DivisionKey = "division"
-  val OtherKey = "other"
-
-
-  private def stringToBusinessEntity(businessEntity: String): BusinessEntity = businessEntity match {
-    case UKCompanyKey => UKCompany
-    case SoleTraderKey => SoleTrader
-    case PartnershipKey => Partnership
-    case DivisionKey => Division
-    case OtherKey => Other
-    case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
-  }
+  val ukCompanyKey = "uk-company"
+  val soleTraderKey = "sole-trader"
+  val partnershipKey = "partnership"
+  val generalPartnershipKey = "general-partnership"
+  val limitedPartnershipKey = "limited-partnership"
+  val scottishPartnershipKey = "scottish-partnership"
+  val scottishLimitedPartnershipKey = "scottish-limited-partnership"
+  val limitedLiabilityPartnershipKey = "limited-liability-partnership"
+  val otherKey = "other"
+  val charitableIncorporatedOrganisationKey = "charitable-incorporated-organisation"
+  val nonIncorporatedTrustKey = "non-incorporated-trust"
+  val registeredSocietyKey = "registered-society"
+  val unincorporatedAssociationKey = "unincorporated-association"
+  val governmentOrganisationOrPublicBodyKey = "government-organisation-or-public-body"
+  val divisionKey = "division"
+  val vatGroupKey = "vat-group"
 
   def businessEntityToString(businessEntity: BusinessEntity)(implicit messages: Messages): String = businessEntity match {
     case UKCompany => messages("businessEntity.ukcompany")
     case SoleTrader => messages("businessEntity.soletrader")
-    case Partnership => messages("businessEntity.partnership")
+    case Partnership() => messages("businessEntity.partnership")
+    case GeneralPartnership => messages("businessEntity.general-partnership")
+    case LimitedPartnership => messages("businessEntity.limited-partnership")
+    case ScottishPartnership => messages("businessEntity.scottish-partnership")
+    case ScottishLimitedPartnership => messages("businessEntity.scottish-limited-partnership")
+    case LimitedLiabilityPartnership => messages("businessEntity.limited-liability-partnership")
+    case Other() => messages("businessEntity.other")
+    case CharitableIncorporatedOrganisation => messages("businessEntity.charitable-incorporated-organisation")
+    case NonIncorporatedTrust => messages("businessEntity.non-incorporated-trust")
+    case RegisteredSociety => messages("businessEntity.registered-society")
+    case UnincorporatedAssociation => messages("businessEntity.unincorporated-association")
+    case GovernmentOrganisationOrPublicBody => messages("businessEntity.government-organisation-or-public-body")
     case Division => messages("businessEntity.division")
-    case Other => messages("businessEntity.other")
+    case VatGroup => messages("businessEntity.vat-group")
   }
 
-  implicit val jsonReads: Reads[BusinessEntity] = new Reads[BusinessEntity] {
-    override def reads(json: JsValue): JsResult[BusinessEntity] =
-      json.validate[String] map stringToBusinessEntity
+  implicit val jsonReads: Reads[BusinessEntity] = Reads[BusinessEntity] {
+    case JsString(`ukCompanyKey`) => JsSuccess(UKCompany)
+    case JsString(`soleTraderKey`) => JsSuccess(SoleTrader)
+    case JsString(`partnershipKey`) => JsSuccess(Partnership())
+    case JsString(`generalPartnershipKey`) => JsSuccess(GeneralPartnership)
+    case JsString(`limitedPartnershipKey`) => JsSuccess(LimitedPartnership)
+    case JsString(`scottishPartnershipKey`) => JsSuccess(ScottishPartnership)
+    case JsString(`scottishLimitedPartnershipKey`) => JsSuccess(ScottishLimitedPartnership)
+    case JsString(`limitedLiabilityPartnershipKey`) => JsSuccess(LimitedLiabilityPartnership)
+    case JsString(`otherKey`) => JsSuccess(Other())
+    case JsString(`charitableIncorporatedOrganisationKey`) => JsSuccess(CharitableIncorporatedOrganisation)
+    case JsString(`nonIncorporatedTrustKey`) => JsSuccess(NonIncorporatedTrust)
+    case JsString(`registeredSocietyKey`) => JsSuccess(RegisteredSociety)
+    case JsString(`unincorporatedAssociationKey`) => JsSuccess(UnincorporatedAssociation)
+    case JsString(`governmentOrganisationOrPublicBodyKey`) => JsSuccess(GovernmentOrganisationOrPublicBody)
+    case JsString(`divisionKey`) => JsSuccess(Division)
+    case JsString(`vatGroupKey`) => JsSuccess(VatGroup)
+    case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 
   implicit val jsonWrites: Writes[BusinessEntity] = Writes[BusinessEntity] {
-    case UKCompany => JsString(UKCompanyKey)
-    case SoleTrader => JsString(SoleTraderKey)
-    case Partnership => JsString(PartnershipKey)
-    case Division => JsString(DivisionKey)
-    case Other => JsString(OtherKey)
+    case UKCompany => JsString(ukCompanyKey)
+    case SoleTrader => JsString(soleTraderKey)
+    case Partnership() => JsString(partnershipKey)
+    case GeneralPartnership => JsString(generalPartnershipKey)
+    case LimitedPartnership => JsString(limitedPartnershipKey)
+    case ScottishPartnership => JsString(scottishPartnershipKey)
+    case ScottishLimitedPartnership => JsString(scottishLimitedPartnershipKey)
+    case LimitedLiabilityPartnership => JsString(limitedLiabilityPartnershipKey)
+    case Other() => JsString(otherKey)
+    case CharitableIncorporatedOrganisation => JsString(charitableIncorporatedOrganisationKey)
+    case NonIncorporatedTrust => JsString(nonIncorporatedTrustKey)
+    case RegisteredSociety => JsString(registeredSocietyKey)
+    case UnincorporatedAssociation => JsString(unincorporatedAssociationKey)
+    case GovernmentOrganisationOrPublicBody => JsString(governmentOrganisationOrPublicBodyKey)
+    case Division => JsString(divisionKey)
+    case VatGroup => JsString(vatGroupKey)
     case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 

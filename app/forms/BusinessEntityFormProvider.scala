@@ -19,6 +19,7 @@ package forms
 import forms.mappings.Mappings
 import javax.inject.Singleton
 import models._
+import models.BusinessEntity._
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError}
@@ -27,19 +28,7 @@ import play.api.data.{Form, FormError}
 class BusinessEntityFormProvider extends FormErrorHelper with Mappings {
 
   val businessEntity: String = "value"
-
-  val ukCompany: String = "uk-company"
-
-  val soleTrader: String = "sole-trader"
-
-  val partnership: String = "partnership"
-
-  val division: String = "division"
-
-  val other: String = "other"
-
   val businessEntityError: String = "businessEntity.error.required"
-
 
   def apply(): Form[BusinessEntity] = Form(
     single(
@@ -50,22 +39,22 @@ class BusinessEntityFormProvider extends FormErrorHelper with Mappings {
   def formatter: Formatter[BusinessEntity] = new Formatter[BusinessEntity] {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BusinessEntity] = {
       data.get(key) match {
-        case Some(`ukCompany`) => Right(UKCompany)
-        case Some(`soleTrader`) => Right(SoleTrader)
-        case Some(`partnership`) => Right(Partnership)
-        case Some(`division`) => Right(Division)
-        case Some(`other`) => Right(Other)
+        case Some(`ukCompanyKey`) => Right(UKCompany)
+        case Some(`soleTraderKey`) => Right(SoleTrader)
+        case Some(`partnershipKey`) => Right(Partnership())
+        case Some(`divisionKey`) => Right(Division)
+        case Some(`otherKey`) => Right(Other())
         case _ => Left(Seq(FormError(key, businessEntityError)))
       }
     }
 
     override def unbind(key: String, value: BusinessEntity): Map[String, String] = {
       val stringValue = value match {
-        case UKCompany => ukCompany
-        case SoleTrader => soleTrader
-        case Partnership => partnership
-        case Division => division
-        case Other => other
+        case UKCompany => ukCompanyKey
+        case SoleTrader => soleTraderKey
+        case Partnership() => partnershipKey
+        case Division => divisionKey
+        case Other() => otherKey
       }
       Map(key -> stringValue)
     }

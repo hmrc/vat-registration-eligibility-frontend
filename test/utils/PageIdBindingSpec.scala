@@ -29,7 +29,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   val fullListMapHappyPathTwelveMonthsFalse: ListMap[String, JsValue] = ListMap[String, JsValue](
     "" -> JsString(""),
     s"$FixedEstablishmentId" -> JsBoolean(true),
-    s"$BusinessEntityId" -> JsString(UKCompany.toString),
+    s"$BusinessEntityId" -> Json.toJson(UKCompany),
     s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
     s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
@@ -65,7 +65,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   "no exception should be thrown when a cacheMap containing ThresholdTwelveMonths == true, ThresholdNextThirty doesn't exist" in {
     val mapOfValuesToBeTested = List(
       s"$FixedEstablishmentId" -> JsBoolean(true),
-      s"$BusinessEntityId" -> JsString(UKCompany.toString),
+      s"$BusinessEntityId" -> Json.toJson(UKCompany),
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(true)),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VATExemptionId" -> JsBoolean(false),
@@ -79,7 +79,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   "exception should be thrown when a cacheMap containing ThresholdTwelveMonths == true, ThresholdNextThirty does exist" in {
     val mapOfValuesToBeTested = List(
       s"$FixedEstablishmentId" -> JsBoolean(true),
-      s"$BusinessEntityId" -> JsString(UKCompany.toString),
+      s"$BusinessEntityId" -> Json.toJson(UKCompany),
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(true)),
       s"$ThresholdNextThirtyDaysId" -> JsBoolean(true),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
@@ -102,7 +102,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   "no exception should be thrown when a cacheMap containing zero rated sales == false, Vat exemption does not exist" in {
     val mapOfValuesToBeTested = List(
       s"$FixedEstablishmentId" -> JsBoolean(true),
-      s"$BusinessEntityId" -> JsString(UKCompany.toString),
+      s"$BusinessEntityId" -> Json.toJson(UKCompany),
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(true)),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$ZeroRatedSalesId" -> JsBoolean(false),
@@ -178,7 +178,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   "no exception if ThresholdTwelveMonths == false, Exception does not exist" in {
     val mapOfValuesToBeTested = List(
       s"$FixedEstablishmentId" -> JsBoolean(true),
-      s"$BusinessEntityId" -> JsString(UKCompany.toString),
+      s"$BusinessEntityId" -> Json.toJson(UKCompany),
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
       s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
