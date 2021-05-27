@@ -26,6 +26,12 @@ POST       /fixed-establishment                         controllers.FixedEstabli
 GET        /business-entity                             controllers.BusinessEntityController.onPageLoad()
 POST       /business-entity                             controllers.BusinessEntityController.onSubmit()
 
+GET        /business-entity-partnership                 controllers.BusinessEntityPartnershipController.onPageLoad()
+POST       /business-entity-partnership                 controllers.BusinessEntityPartnershipController.onSubmit()
+
+GET        /business-entity-other                       controllers.BusinessEntityOtherController.onPageLoad()
+POST       /business-entity-other                       controllers.BusinessEntityOtherController.onSubmit()
+
 GET        /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onPageLoad()
 POST       /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onSubmit()
 

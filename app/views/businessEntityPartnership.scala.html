@@ -1,0 +1,95 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import models.BusinessEntity._
+
+@this(
+        layout: views.html.layouts.layout,
+        errorSummary: components.errorSummary,
+        h1: components.h1,
+        strong: components.strong,
+        p: components.p,
+        formWithCsrf: FormWithCSRF,
+        button: components.button,
+        inputRadio: components.inputRadio,
+        details: components.details
+)
+
+@(businessEntityForm: Form[PartnershipType], postAction: Call)(implicit request: Request[_], messages: Messages, appconfig: FrontendAppConfig)
+
+@layout(pageTitle = Some(title(businessEntityForm, messages("businessEntityPartnership.heading"))), backLink = true) {
+
+    @errorSummary(businessEntityForm.errors, errorId = Some("uk-company"))
+
+    @h1("businessEntityPartnership.heading")
+
+    @details(
+        messages("businessEntityPartnership.details"),
+        detailsBlock
+    )
+
+    @formWithCsrf(action = postAction) {
+        @inputRadio(
+            form = businessEntityForm,
+            legend = Messages("businessEntityPartnership.heading"),
+            legendAsHeading = false,
+            classes = "govuk-visually-hidden",
+            items = Seq(
+                RadioItem(id = Some(generalPartnershipKey),
+                    value = Some(generalPartnershipKey),
+                    content = Text(Messages("businessEntity.general-partnership")),
+                    checked = businessEntityForm("value").value.contains(generalPartnershipKey)
+                ),
+                RadioItem(id = Some(limitedPartnershipKey),
+                    value = Some(limitedPartnershipKey),
+                    content = Text(Messages("businessEntity.limited-partnership")),
+                    checked = businessEntityForm("value").value.contains(limitedPartnershipKey)
+                ),
+                RadioItem(id = Some(scottishPartnershipKey),
+                    value = Some(scottishPartnershipKey),
+                    content = Text(Messages("businessEntity.scottish-partnership")),
+                    checked = businessEntityForm("value").value.contains(scottishPartnershipKey)
+                ),
+                RadioItem(id = Some(scottishLimitedPartnershipKey),
+                    value = Some(scottishLimitedPartnershipKey),
+                    content = Text(Messages("businessEntity.scottish-limited-partnership")),
+                    checked = businessEntityForm("value").value.contains(scottishLimitedPartnershipKey)
+                ),
+                RadioItem(id = Some(limitedLiabilityPartnershipKey),
+                    value = Some(limitedLiabilityPartnershipKey),
+                    content = Text(Messages("businessEntity.limited-liability-partnership")),
+                    checked = businessEntityForm("value").value.contains(limitedLiabilityPartnershipKey)
+                )
+            )
+        )
+
+        @button(messages("site.continue"))
+    }
+}
+
+@detailsBlock = {
+    @strong{ @messages("businessEntity.general-partnership") }
+    @p{ @messages("businessEntityPartnership.general-partnership") }
+    @strong{ @messages("businessEntity.limited-partnership") }
+    @p{ @messages("businessEntityPartnership.limited-partnership") }
+    @strong{ @messages("businessEntity.scottish-partnership") }
+    @p{ @messages("businessEntityPartnership.scottish-partnership") }
+    @strong{ @messages("businessEntity.scottish-limited-partnership") }
+    @p{ @messages("businessEntityPartnership.scottish-limited-partnership") }
+    @strong{ @messages("businessEntity.limited-liability-partnership") }
+    @p{ @messages("businessEntityPartnership.limited-liability-partnership") }
+}

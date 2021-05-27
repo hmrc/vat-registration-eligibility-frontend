@@ -21,22 +21,23 @@ import models.BusinessEntity._
 import models._
 import play.api.data.FormError
 
+class BusinessEntityOtherFormProviderSpec extends SpecBase {
+  val form = new BusinessEntityOtherFormProvider()()
 
-class BusinessEntityFormProviderSpec extends SpecBase {
-  val form = new BusinessEntityFormProvider()()
-
-  "businessEntityForm" must {
+  "businessEntityOtherForm" must {
 
     val businessEntity = "value"
 
-    val businessEntityErrorKey = "businessEntity.error.required"
+    val businessEntityErrorKey = "businessEntityOther.error.required"
 
     "successfully parse any of the entities" in {
       val entityList = Seq(
-        (UKCompany, ukCompanyKey),
-        (SoleTrader, soleTraderKey),
-        (Partnership, partnershipKey),
-        (Other, otherKey)
+        (CharitableIncorporatedOrganisation, charitableIncorporatedOrganisationKey),
+        (NonIncorporatedTrust, nonIncorporatedTrustKey),
+        (RegisteredSociety, registeredSocietyKey),
+        (UnincorporatedAssociation, unincorporatedAssociationKey),
+        (Division, divisionKey),
+        (VatGroup, vatGroupKey)
       )
 
       entityList.map {

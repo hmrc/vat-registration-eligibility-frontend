@@ -17,12 +17,13 @@
 package forms
 
 import forms.mappings.Mappings
-import javax.inject.Singleton
-import models._
 import models.BusinessEntity._
+import models._
 import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError}
+
+import javax.inject.Singleton
 
 @Singleton
 class BusinessEntityFormProvider extends FormErrorHelper with Mappings {
@@ -41,9 +42,8 @@ class BusinessEntityFormProvider extends FormErrorHelper with Mappings {
       data.get(key) match {
         case Some(`ukCompanyKey`) => Right(UKCompany)
         case Some(`soleTraderKey`) => Right(SoleTrader)
-        case Some(`partnershipKey`) => Right(Partnership())
-        case Some(`divisionKey`) => Right(Division)
-        case Some(`otherKey`) => Right(Other())
+        case Some(`partnershipKey`) => Right(Partnership)
+        case Some(`otherKey`) => Right(Other)
         case _ => Left(Seq(FormError(key, businessEntityError)))
       }
     }
@@ -52,18 +52,11 @@ class BusinessEntityFormProvider extends FormErrorHelper with Mappings {
       val stringValue = value match {
         case UKCompany => ukCompanyKey
         case SoleTrader => soleTraderKey
-        case Partnership() => partnershipKey
-        case Division => divisionKey
-        case Other() => otherKey
+        case Partnership => partnershipKey
+        case Other => otherKey
       }
       Map(key -> stringValue)
     }
   }
-
-  def businessEntityForm: Form[BusinessEntity] = Form(
-    single(
-      businessEntity -> of(formatter)
-    )
-  )
 
 }

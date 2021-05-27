@@ -169,8 +169,22 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
   private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
     BusinessEntityId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
-        case Some(Division) => routes.EligibilityDropoutController.onPageLoad(BusinessEntityId.toString)
+        case Some(Other) => routes.BusinessEntityOtherController.onPageLoad()
+        case Some(Partnership) => routes.BusinessEntityPartnershipController.onPageLoad()
         case Some(_) => routes.AgriculturalFlatRateSchemeController.onPageLoad()
+        case _ => routes.BusinessEntityController.onPageLoad()
+      }
+    },
+    BusinessEntityPartnershipId -> { userAnswers =>
+      userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
+        case Some(_: PartnershipType) => routes.AgriculturalFlatRateSchemeController.onPageLoad()
+        case _ => routes.BusinessEntityController.onPageLoad()
+      }
+    },
+    BusinessEntityOtherId -> { userAnswers =>
+      userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
+        case Some(Division) => routes.EligibilityDropoutController.onPageLoad(BusinessEntityId.toString)
+        case Some(_: OtherType) => routes.AgriculturalFlatRateSchemeController.onPageLoad()
         case _ => routes.BusinessEntityController.onPageLoad()
       }
     },

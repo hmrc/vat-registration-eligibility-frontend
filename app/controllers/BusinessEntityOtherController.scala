@@ -19,50 +19,48 @@ package controllers
 import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
-import forms.BusinessEntityFormProvider
-import identifiers.BusinessEntityId
+import forms.BusinessEntityOtherFormProvider
+import identifiers.{BusinessEntityId, BusinessEntityOtherId}
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.businessEntity
+import views.html.businessEntityOther
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
-                                         dataCacheConnector: DataCacheConnector,
-                                         navigator: Navigator,
-                                         identify: CacheIdentifierAction,
-                                         getData: DataRetrievalAction,
-                                         requireData: DataRequiredAction,
-                                         formProvider: BusinessEntityFormProvider,
-                                         view: businessEntity
-                                        )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
+class BusinessEntityOtherController @Inject()(mcc: MessagesControllerComponents,
+                                              dataCacheConnector: DataCacheConnector,
+                                              navigator: Navigator,
+                                              identify: CacheIdentifierAction,
+                                              getData: DataRetrievalAction,
+                                              requireData: DataRequiredAction,
+                                              formProvider: BusinessEntityOtherFormProvider,
+                                              view: businessEntityOther
+                                             )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.businessEntity match {
-        case None => formProvider()
-        case Some(_: OtherType) => formProvider().fill(Other)
-        case Some(_: PartnershipType) => formProvider().fill(Partnership)
-        case Some(businessEntity) => formProvider().fill(businessEntity)
+        case Some(businessEntity: OtherType) => formProvider().fill(businessEntity)
+        case _ => formProvider()
       }
-      Ok(view(preparedForm, controllers.routes.BusinessEntityController.onSubmit()))
+      Ok(view(preparedForm, controllers.routes.BusinessEntityOtherController.onSubmit()))
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     formProvider().bindFromRequest.fold(
       formWithErrors =>
         Future.successful(
-          BadRequest(view(formWithErrors, routes.BusinessEntityController.onSubmit()))
+          BadRequest(view(formWithErrors, routes.BusinessEntityOtherController.onSubmit()))
         ),
       entityType => {
         dataCacheConnector.save[BusinessEntity](request.internalId, BusinessEntityId.toString, entityType) map { cacheMap =>
-          Redirect(navigator.nextPage(BusinessEntityId, NormalMode)(new UserAnswers(cacheMap)))
+          Redirect(navigator.nextPage(BusinessEntityOtherId, NormalMode)(new UserAnswers(cacheMap)))
         }
       }
     )
