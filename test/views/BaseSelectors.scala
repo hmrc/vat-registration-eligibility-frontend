@@ -40,6 +40,6 @@ trait BaseSelectors {
   val detailsContent = ".govuk-details__text"
   val radioYes = "label[for=value]"
   val radioNo = "label[for=value-no]"
-
+  def radio(n: Int) = s"div.govuk-radios__item:nth-of-type($n) label"
 
 }

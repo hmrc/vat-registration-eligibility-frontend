@@ -18,25 +18,25 @@ package forms
 
 import base.SpecBase
 import models.BusinessEntity._
-import models._
+import models.{LimitedLiabilityPartnership, _}
 import play.api.data.FormError
 
+class BusinessEntityPartnershipFormProviderSpec extends SpecBase {
+  val form = new BusinessEntityPartnershipFormProvider()()
 
-class BusinessEntityFormProviderSpec extends SpecBase {
-  val form = new BusinessEntityFormProvider()()
-
-  "businessEntityForm" must {
+  "businessEntityPartnershipForm" must {
 
     val businessEntity = "value"
 
-    val businessEntityErrorKey = "businessEntity.error.required"
+    val businessEntityErrorKey = "businessEntityPartnership.error.required"
 
     "successfully parse any of the entities" in {
       val entityList = Seq(
-        (UKCompany, ukCompanyKey),
-        (SoleTrader, soleTraderKey),
-        (Partnership, partnershipKey),
-        (Other, otherKey)
+        (GeneralPartnership, generalPartnershipKey),
+        (LimitedPartnership, limitedPartnershipKey),
+        (ScottishPartnership, scottishPartnershipKey),
+        (ScottishLimitedPartnership, scottishLimitedPartnershipKey),
+        (LimitedLiabilityPartnership, limitedLiabilityPartnershipKey)
       )
 
       entityList.map {

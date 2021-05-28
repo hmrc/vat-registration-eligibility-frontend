@@ -48,12 +48,42 @@ unauthorised.title = You can''t access this service with this account
 unauthorised.heading = You can''t access this service with this account
 
 businessEntity.heading = What type of business do you want to register for VAT?
-businessEntity.ukcompany = UK company
+businessEntity.error.required = Select the type of business you want to register for VAT
+
+businessEntityOther.heading = What type of business do you want to register for VAT?
+businessEntityOther.details = Business type descriptions
+businessEntityOther.charitable-incorporated-organisation = A legal entity for a registered charity. CIOs provide the benefits of incorporation but the organisation only needs to be registered with the Charity Commission and not Companies House.
+businessEntityOther.non-incorporated-trust = Unincorporated with no legal identity of its own. A trust holds assets on behalf of an individual or another organisation and governs how they are to be used. Run by a group of people called trustees.
+businessEntityOther.registered-society = There are different kinds of registered societies, for example, Industrial and Provident Society, Co-operative Society (Co-op) and Community Benefit Society (BenCom). They have limited liability in the same way as companies.
+businessEntityOther.unincorporated-association = Groups that agree, or ‘contract’, to come together for a specific purpose. They normally have a constitution setting out the purpose for which the association has been set up and the rules for the association and its members.
+businessEntityOther.division = A business entity which is part of a larger group. It has 2 or more branches performing different functions or trading in different geographical regions.
+businessEntityOther.vat-group = A group of related companies (where one is under the control of the others) registering to submit a VAT return together. For example, a parent company that has a subsidiary or subsidiaries.
+businessEntityOther.error.required = Select the type of business you want to register for VAT
+
+businessEntityPartnership.heading = What type of partnership are you registering?
+businessEntityPartnership.details = Partnership type descriptions
+businessEntityPartnership.general-partnership = Made up of 2 or more people, usually sole traders. One of the partners will be ‘nominated’ to deal with HMRC. Has no legal existence distinct from the partners themselves. Most partnerships are of this type.
+businessEntityPartnership.limited-partnership = Made up of general and limited partners. Must register with Companies House but does not have to file an annual return. The limited partners will have limited liability for debts.
+businessEntityPartnership.scottish-partnership = Same as a general partnership but is a separate legal entity distinct from the partners themselves. The business address must be registered in Scotland.
+businessEntityPartnership.scottish-limited-partnership = Similar to a limited partnership. Made up of general and limited partners. It has a separate legal entity and the limited partners have limited liability for debts. The business address must be registered in Scotland.
+businessEntityPartnership.limited-liability-partnership = Must be registered at Companies House. Taxed as partnerships but have the benefits of being a corporate entity. All the partners have limited liability for debts.
+businessEntityPartnership.error.required = Select the type of partnership you want to register for VAT
+
+businessEntity.ukcompany = UK company (includes Limited Company)
 businessEntity.soletrader = Sole trader
 businessEntity.partnership = Partnership
-businessEntity.division = Division
+businessEntity.general-partnership = General partnership
+businessEntity.limited-partnership = Limited partnership
+businessEntity.scottish-partnership = Scottish partnership
+businessEntity.scottish-limited-partnership = Scottish limited partnership
+businessEntity.limited-liability-partnership = Limited liability partnership
 businessEntity.other = Other
-businessEntity.error.required = Select the type of business you want to register for VAT
+businessEntity.charitable-incorporated-organisation = Charitable Incorporated Organisation (CIO)
+businessEntity.non-incorporated-trust = Trust (non-incorporated)
+businessEntity.registered-society = Registered Society
+businessEntity.unincorporated-association = Unincorporated Association
+businessEntity.division = Division
+businessEntity.vat-group = VAT group
 
 introduction.heading                                = Check if you can register for VAT online
 introduction.p1                                     = We will ask you some questions about the nature of the business to check if this is the best way for you to register.

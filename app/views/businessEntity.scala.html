@@ -52,11 +52,6 @@
                     content = Text(Messages("businessEntity.partnership")),
                     checked = businessEntityForm("value").value.contains(partnershipKey)
                 ),
-                RadioItem(id = Some(divisionKey),
-                    value = Some(divisionKey),
-                    content = Text(Messages("businessEntity.division")),
-                    checked = businessEntityForm("value").value.contains(divisionKey)
-                ),
                 RadioItem(id = Some(otherKey),
                     value = Some(otherKey),
                     content = Text(Messages("businessEntity.other")),

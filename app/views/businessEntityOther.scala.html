@@ -1,0 +1,102 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import models.BusinessEntity._
+
+@this(
+        layout: views.html.layouts.layout,
+        errorSummary: components.errorSummary,
+        h1: components.h1,
+        strong: components.strong,
+        p: components.p,
+        formWithCsrf: FormWithCSRF,
+        button: components.button,
+        inputRadio: components.inputRadio,
+        details: components.details
+)
+
+@(businessEntityForm: Form[OtherType], postAction: Call)(implicit request: Request[_], messages: Messages, appconfig: FrontendAppConfig)
+
+@layout(pageTitle = Some(title(businessEntityForm, messages("businessEntityOther.heading"))), backLink = true) {
+
+    @errorSummary(businessEntityForm.errors, errorId = Some("uk-company"))
+
+    @h1("businessEntityOther.heading")
+
+    @details(
+        messages("businessEntityOther.details"),
+        detailsBlock
+    )
+
+    @formWithCsrf(action = postAction) {
+        @inputRadio(
+            form = businessEntityForm,
+            legend = Messages("businessEntityOther.heading"),
+            legendAsHeading = false,
+            classes = "govuk-visually-hidden",
+            items = Seq(
+                RadioItem(id = Some(charitableIncorporatedOrganisationKey),
+                    value = Some(charitableIncorporatedOrganisationKey),
+                    content = Text(Messages("businessEntity.charitable-incorporated-organisation")),
+                    checked = businessEntityForm("value").value.contains(charitableIncorporatedOrganisationKey)
+                ),
+                RadioItem(id = Some(nonIncorporatedTrustKey),
+                    value = Some(nonIncorporatedTrustKey),
+                    content = Text(Messages("businessEntity.non-incorporated-trust")),
+                    checked = businessEntityForm("value").value.contains(nonIncorporatedTrustKey)
+                ),
+                RadioItem(id = Some(registeredSocietyKey),
+                    value = Some(registeredSocietyKey),
+                    content = Text(Messages("businessEntity.registered-society")),
+                    checked = businessEntityForm("value").value.contains(registeredSocietyKey)
+                ),
+                RadioItem(id = Some(unincorporatedAssociationKey),
+                    value = Some(unincorporatedAssociationKey),
+                    content = Text(Messages("businessEntity.unincorporated-association")),
+                    checked = businessEntityForm("value").value.contains(unincorporatedAssociationKey)
+                ),
+                RadioItem(id = Some(divisionKey),
+                    value = Some(divisionKey),
+                    content = Text(Messages("businessEntity.division")),
+                    checked = businessEntityForm("value").value.contains(divisionKey)
+                ),
+                RadioItem(id = Some(vatGroupKey),
+                    value = Some(vatGroupKey),
+                    content = Text(Messages("businessEntity.vat-group")),
+                    checked = businessEntityForm("value").value.contains(vatGroupKey)
+                )
+            )
+        )
+
+        @button(messages("site.continue"))
+    }
+}
+
+@detailsBlock = {
+    @strong{ @messages("businessEntity.charitable-incorporated-organisation") }
+    @p{ @messages("businessEntityOther.charitable-incorporated-organisation") }
+    @strong{ @messages("businessEntity.non-incorporated-trust") }
+    @p{ @messages("businessEntityOther.non-incorporated-trust") }
+    @strong{ @messages("businessEntity.registered-society") }
+    @p{ @messages("businessEntityOther.registered-society") }
+    @strong{ @messages("businessEntity.unincorporated-association") }
+    @p{ @messages("businessEntityOther.unincorporated-association") }
+    @strong{ @messages("businessEntity.division") }
+    @p{ @messages("businessEntityOther.division") }
+    @strong{ @messages("businessEntity.vat-group") }
+    @p{ @messages("businessEntityOther.vat-group") }
+}

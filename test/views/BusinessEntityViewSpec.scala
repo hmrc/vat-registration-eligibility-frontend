@@ -16,6 +16,7 @@
 
 package views
 
+import config.FrontendAppConfig
 import forms.BusinessEntityFormProvider
 import org.jsoup.Jsoup
 import play.api.mvc.{AnyContentAsEmpty, Call}
@@ -25,13 +26,12 @@ import views.html.businessEntity
 
 class BusinessEntityViewSpec extends ViewSpecBase {
 
-  val messageKeyPrefix = "businessEntity"
   val formProvider = new BusinessEntityFormProvider()()
-  implicit val appConfig = frontendAppConfig
+  implicit val appConfig: FrontendAppConfig = frontendAppConfig
 
-  val testCall = Call("POST", "/test-url")
+  val testCall: Call = Call("POST", "/test-url")
   val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val view = app.injector.instanceOf[businessEntity]
+  val view: businessEntity = app.injector.instanceOf[businessEntity]
 
   lazy val page: HtmlFormat.Appendable = view(
     formProvider,
@@ -98,26 +98,6 @@ class BusinessEntityViewSpec extends ViewSpecBase {
 
           "have the id 'partnership'" in {
             optionLabel.attr("id") mustEqual "partnership"
-          }
-
-          "be of type radio" in {
-            optionLabel.attr("type") mustEqual "radio"
-          }
-        }
-      }
-
-      "for the option 'Division'" should {
-
-        "have the text 'Division'" in {
-          doc.select("label[for=division]").text() mustEqual messages("businessEntity.division")
-        }
-
-        "have an input under the label that" should {
-
-          lazy val optionLabel = doc.select("#division")
-
-          "have the id 'division'" in {
-            optionLabel.attr("id") mustEqual "division"
           }
 
           "be of type radio" in {
