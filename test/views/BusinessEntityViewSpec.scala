@@ -57,7 +57,7 @@ class BusinessEntityViewSpec extends ViewSpecBase {
 
           lazy val optionLabel = doc.select("#uk-company")
 
-          "have the id 'sole-trader'" in {
+          "have the id 'uk-company'" in {
             optionLabel.attr("id") mustEqual "uk-company"
           }
 
