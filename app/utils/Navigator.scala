@@ -18,7 +18,7 @@ package utils
 
 import config.Logging
 import controllers.routes
-import featureswitch.core.config.{EnableAAS, FeatureSwitching}
+import featureswitch.core.config.{EnableAAS, FeatureSwitching, SoleTraderFlow}
 import featureswitch.core.models.FeatureSwitch
 import identifiers.{Identifier, _}
 import models._
@@ -118,36 +118,6 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
     }
   }
 
-  private def checkVoluntaryQuestion(fromPage: Identifier, mandatoryTrue: Identifier, mandatoryFalse: Identifier):
-  (Identifier, UserAnswers => Call) = {
-    fromPage -> { userAns =>
-      if (ThresholdHelper.q1DefinedAndTrue(userAns) || ThresholdHelper.nextThirtyDaysDefinedAndTrue(userAns)) {
-        pageIdToPageLoad(mandatoryTrue)
-      } else {
-        pageIdToPageLoad(mandatoryFalse)
-      }
-    }
-  }
-
-  private def checkBusinessEntity(fromPage: Identifier, ukCompanyTrue: Identifier, ukCompanyFalse: Identifier, onFailPage: Identifier):
-  (Identifier, UserAnswers => Call) = {
-    fromPage -> { userAns =>
-      if (userAns.businessEntity.contains(UKCompany)) {
-        if (userAns.internationalActivities.contains(false)) {
-          pageIdToPageLoad(ukCompanyTrue)
-        } else {
-          pageIdToPageLoad(onFailPage)
-        }
-      }
-      else if (userAns.internationalActivities.contains(false)) {
-        pageIdToPageLoad(ukCompanyFalse)
-      }
-      else {
-        pageIdToPageLoad(onFailPage)
-      }
-    }
-  }
-
   private[utils] def nextOnWithFeatureSwitch[T](condition: T,
                                                 featureSwitch: FeatureSwitch,
                                                 fromPage: Identifier, onSuccessPage: Identifier,
@@ -198,12 +168,14 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
       onSuccessPage = BusinessEntityId,
       onFailPage = EligibilityDropoutId(InternationalActivitiesId.toString)
     ),
-    checkBusinessEntity(
-      fromPage = InternationalActivitiesId,
-      ukCompanyTrue = InvolvedInOtherBusinessId,
-      ukCompanyFalse = VATExceptionKickoutId,
-      onFailPage = EligibilityDropoutId(InternationalActivitiesId.toString)
-    ),
+    InternationalActivitiesId -> { userAnswers =>
+      userAnswers.businessEntity match {
+        case Some(_) if userAnswers.internationalActivities.contains(true) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
+        case Some(UKCompany) => pageIdToPageLoad(InvolvedInOtherBusinessId)
+        case Some(SoleTrader) if isEnabled(SoleTraderFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
+        case _ => pageIdToPageLoad(VATExceptionKickoutId)
+      }
+    },
     nextOn(true,
       fromPage = VATExceptionKickoutId,
       onSuccessPage = EligibilityDropoutId(VATExceptionKickoutId.toString),
