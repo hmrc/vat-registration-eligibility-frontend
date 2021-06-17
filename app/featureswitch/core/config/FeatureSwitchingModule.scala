@@ -45,5 +45,10 @@ case object EnableAAS extends FeatureSwitch {
 
 case object SoleTraderFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.soletrader-flow"
-  override val displayName: String = "Enable soletrader flow"
+  override val displayName: String = "Enable Sole Trader flow"
+}
+
+case object GeneralPartnershipFlow extends FeatureSwitch {
+  override val configName: String = "feature-switch.general-partnership-flow"
+  override val displayName: String = "Enable General Partnership flow"
 }
