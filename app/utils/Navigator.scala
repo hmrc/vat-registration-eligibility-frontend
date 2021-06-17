@@ -18,7 +18,7 @@ package utils
 
 import config.Logging
 import controllers.routes
-import featureswitch.core.config.{EnableAAS, FeatureSwitching, SoleTraderFlow}
+import featureswitch.core.config.{EnableAAS, FeatureSwitching, GeneralPartnershipFlow, SoleTraderFlow}
 import featureswitch.core.models.FeatureSwitch
 import identifiers.{Identifier, _}
 import models._
@@ -173,6 +173,7 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
         case Some(_) if userAnswers.internationalActivities.contains(true) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
         case Some(UKCompany) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(SoleTrader) if isEnabled(SoleTraderFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
+        case Some(GeneralPartnership) if isEnabled(GeneralPartnershipFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case _ => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
