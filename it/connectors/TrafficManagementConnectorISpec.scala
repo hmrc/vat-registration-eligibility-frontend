@@ -2,6 +2,7 @@ package connectors
 
 import featureswitch.core.config.FeatureSwitching
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub, TrafficManagementStub}
+import models.UKCompany
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
@@ -24,7 +25,7 @@ class TrafficManagementConnectorISpec extends IntegrationSpecBase
       stubSuccessfulLogin()
       stubAllocation(testRegId)(CREATED)
 
-      val res = await(connector.allocate(testRegId)(HeaderCarrier()))
+      val res = await(connector.allocate(testRegId, UKCompany, isEnrolled = true)(HeaderCarrier()))
 
       res mustBe Allocated
     }
@@ -32,7 +33,7 @@ class TrafficManagementConnectorISpec extends IntegrationSpecBase
       stubSuccessfulLogin()
       stubAllocation(testRegId)(TOO_MANY_REQUESTS)
 
-      val res = await(connector.allocate(testRegId)(HeaderCarrier()))
+      val res = await(connector.allocate(testRegId, UKCompany, isEnrolled = true)(HeaderCarrier()))
 
       res mustBe QuotaReached
     }
@@ -41,7 +42,7 @@ class TrafficManagementConnectorISpec extends IntegrationSpecBase
       stubAllocation(testRegId)(IM_A_TEAPOT)
 
       intercept[Exception] {
-        await(connector.allocate(testRegId)(HeaderCarrier()))
+        await(connector.allocate(testRegId, UKCompany, isEnrolled = true)(HeaderCarrier()))
       }
     }
   }

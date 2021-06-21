@@ -2,8 +2,9 @@ package helpers
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.http.HeaderNames
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, JsObject, Json}
 import support.SessionCookieBaker
+import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.http.SessionKeys
 import utils.ExtraSessionKeys
 
@@ -28,7 +29,7 @@ trait AuthHelper {
     SessionCookieBaker.cookieValue(cookieData(additionalData, userId))
   }
 
-  def stubSuccessfulLogin(userId: String = defaultUser, withSignIn: Boolean = false) = {
+  def stubSuccessfulLogin(userId: String = defaultUser, withSignIn: Boolean = false, enrolments: JsArray = Json.arr()) = {
     if (withSignIn) {
       val continueUrl = "/wibble"
       stubFor(get(urlEqualTo(s"/gg/sign-in?continue=${continueUrl}"))
@@ -45,7 +46,8 @@ trait AuthHelper {
             "providerId" -> "testProviderID",
             "providerType" -> "GovernmentGateway"
           ),
-          "internalId" -> "testInternalId"
+          "internalId" -> "testInternalId",
+          "allEnrolments" -> enrolments
         ).toString())))
   }
 

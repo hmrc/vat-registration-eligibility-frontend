@@ -76,6 +76,16 @@ object BusinessEntity {
     case VatGroup => messages("businessEntity.vat-group")
   }
 
+  def businessEntityToPartyType(businessEntity: BusinessEntity): String = businessEntity match {
+    case UKCompany => "50"
+    case LimitedLiabilityPartnership => "52"
+    case ScottishPartnership => "58"
+    case ScottishLimitedPartnership => "59"
+    case GeneralPartnership => "61"
+    case LimitedPartnership => "62"
+    case SoleTrader => "Z1"
+  }
+
   implicit val jsonReads: Reads[BusinessEntity] = Reads[BusinessEntity] {
     case JsString(`ukCompanyKey`) => JsSuccess(UKCompany)
     case JsString(`soleTraderKey`) => JsSuccess(SoleTrader)

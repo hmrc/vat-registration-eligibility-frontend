@@ -19,13 +19,15 @@ package services
 import base.SpecBase
 import connectors.{Allocated, QuotaReached}
 import mocks.TrafficManagementConnectorMock
-import models.{Draft, RegistrationInformation, VatReg}
+import models.{BusinessEntity, Draft, RegistrationInformation, SoleTrader, UKCompany, VatReg}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.Json
 import play.api.mvc.Request
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+import services.TrafficManagementService.ukCompanyEnrolment
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
+import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
@@ -56,19 +58,20 @@ class TrafficManagementServiceSpec extends SpecBase
   val testDate = LocalDate.now
 
   implicit val request: Request[_] = fakeRequest
+  val testEnrolments: Enrolments = Enrolments(Set(Enrolment(ukCompanyEnrolment)))
 
   "allocate" must {
     "pass through the value when the connector returns an Allocated response" in {
-      mockAllocation(testRegId)(Future.successful(Allocated))
+      mockAllocation(testRegId, UKCompany, isEnrolled = true)(Future.successful(Allocated))
       when(
         mockAuthConnector.authorise(
           ArgumentMatchers.any,
-          ArgumentMatchers.eq(Retrievals.credentials)
+          ArgumentMatchers.eq(Retrievals.credentials and Retrievals.allEnrolments)
         )(
           ArgumentMatchers.any[HeaderCarrier],
           ArgumentMatchers.any[ExecutionContext]
         )
-      ).thenReturn(Future.successful(Some(testCredentials)))
+      ).thenReturn(Future.successful(new ~(Some(testCredentials), testEnrolments)))
 
       val testAuditEvent = ExtendedDataEvent(
         auditSource = frontendAppConfig.appName,
@@ -82,9 +85,46 @@ class TrafficManagementServiceSpec extends SpecBase
         eventId = idGenerator.createId
       )
 
-      val res = await(Service.allocate(testRegId))
+      val res = await(Service.allocate(testRegId, UKCompany))
 
       res mustBe Allocated
+
+      verify(mockAuditConnector).sendExtendedEvent(
+        ArgumentMatchers.eq(testAuditEvent)
+      )(
+        ArgumentMatchers.any[HeaderCarrier],
+        ArgumentMatchers.any[ExecutionContext]
+      )
+    }
+
+    "pass through the value when the connector returns an Allocated response for an unenrolled sole trader" in {
+      mockAllocation(testRegId, SoleTrader, isEnrolled = false)(Future.successful(Allocated))
+      when(
+        mockAuthConnector.authorise(
+          ArgumentMatchers.any,
+          ArgumentMatchers.eq(Retrievals.credentials and Retrievals.allEnrolments)
+        )(
+          ArgumentMatchers.any[HeaderCarrier],
+          ArgumentMatchers.any[ExecutionContext]
+        )
+      ).thenReturn(Future.successful(new ~(Some(testCredentials), Enrolments(Set()))))
+
+      val testAuditEvent = ExtendedDataEvent(
+        auditSource = frontendAppConfig.appName,
+        auditType = "StartRegistration",
+        tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags("start-tax-registration", request.path),
+        detail = Json.obj(
+          "authProviderId" -> testProviderId,
+          "journeyId" -> testRegId
+        ),
+        generatedAt = timeMachine.instant,
+        eventId = idGenerator.createId
+      )
+
+      val res = await(Service.allocate(testRegId, SoleTrader))
+
+      res mustBe Allocated
+
       verify(mockAuditConnector).sendExtendedEvent(
         ArgumentMatchers.eq(testAuditEvent)
       )(
@@ -94,17 +134,18 @@ class TrafficManagementServiceSpec extends SpecBase
     }
 
     "pass through the value when the connector returns an QuotaReached response" in {
-      mockAllocation(testRegId)(Future.successful(QuotaReached))
+      mockAllocation(testRegId, UKCompany, isEnrolled = true)(Future.successful(QuotaReached))
       when(
         mockAuthConnector.authorise(
           ArgumentMatchers.any,
-          ArgumentMatchers.eq(Retrievals.credentials)
+          ArgumentMatchers.eq(Retrievals.credentials and Retrievals.allEnrolments)
         )(
           ArgumentMatchers.any[HeaderCarrier],
-          ArgumentMatchers.any[ExecutionContext])
-      ).thenReturn(Future.successful(Some(testCredentials)))
+          ArgumentMatchers.any[ExecutionContext]
+        )
+      ).thenReturn(Future.successful(new ~(Some(testCredentials), testEnrolments)))
 
-      val res = await(Service.allocate(testRegId))
+      val res = await(Service.allocate(testRegId, UKCompany))
 
       res mustBe QuotaReached
     }

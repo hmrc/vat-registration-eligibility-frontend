@@ -11,7 +11,7 @@ trait TrafficManagementStub {
 
   private def getRegInfoURl = "/vatreg/traffic-management/reg-info"
 
-  def stubAllocation(regId: String)(status: Int) =
+  def stubAllocation(regId: String)(status: Int): StubMapping =
     stubFor(post(urlMatching(trafficManagementUrl(regId)))
       .willReturn(aResponse.withStatus(status)))
 
