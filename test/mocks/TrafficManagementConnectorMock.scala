@@ -17,9 +17,10 @@
 package mocks
 
 import connectors.{AllocationResponse, TrafficManagementConnector}
-import models.RegistrationInformation
+import models.{BusinessEntity, RegistrationInformation}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.Suite
 import org.scalatestplus.mockito.MockitoSugar
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,18 +30,27 @@ import scala.concurrent.Future
 trait TrafficManagementConnectorMock extends MockitoSugar {
   self: Suite =>
 
-  val mockTrafficManagementConnector = mock[TrafficManagementConnector]
+  val mockTrafficManagementConnector: TrafficManagementConnector = mock[TrafficManagementConnector]
 
-  def mockAllocation(regId: String)(response: Future[AllocationResponse]) =
-    when(mockTrafficManagementConnector.allocate(ArgumentMatchers.eq(regId))(ArgumentMatchers.any[HeaderCarrier]))
-      .thenReturn(response)
+  def mockAllocation(regId: String, businessEntity: BusinessEntity, isEnrolled: Boolean
+                    )(response: Future[AllocationResponse]): OngoingStubbing[Future[AllocationResponse]] =
+    when(mockTrafficManagementConnector.allocate(
+      ArgumentMatchers.eq(regId),
+      ArgumentMatchers.eq(businessEntity),
+      ArgumentMatchers.eq(isEnrolled)
+    )(ArgumentMatchers.any[HeaderCarrier])
+    ).thenReturn(response)
 
-  def mockGetRegistrationInformation()(response: Future[Option[RegistrationInformation]]) =
+  def mockGetRegistrationInformation()(response: Future[Option[RegistrationInformation]]): OngoingStubbing[Future[Option[RegistrationInformation]]] =
     when(mockTrafficManagementConnector.getRegistrationInformation()(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(response)
 
-  def mockUpsertRegistrationInformation(regInfo: RegistrationInformation)(response: Future[RegistrationInformation]) =
-    when(mockTrafficManagementConnector.upsertRegistrationInformation(ArgumentMatchers.eq(regInfo))(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any()))
-      .thenReturn(response)
+  def mockUpsertRegistrationInformation(regInfo: RegistrationInformation
+                                       )(response: Future[RegistrationInformation]): OngoingStubbing[Future[RegistrationInformation]] =
+    when(mockTrafficManagementConnector.upsertRegistrationInformation(
+      ArgumentMatchers.eq(regInfo)
+    )(ArgumentMatchers.any[HeaderCarrier],
+      ArgumentMatchers.any())
+    ).thenReturn(response)
 
 }

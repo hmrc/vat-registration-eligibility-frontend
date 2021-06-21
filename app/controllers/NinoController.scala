@@ -27,6 +27,7 @@ import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{S4LService, TrafficManagementService}
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
@@ -62,7 +63,6 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      implicit val profile = request.currentProfile
       formProvider().bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
@@ -77,7 +77,10 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
                   case Some(RegistrationInformation(_, _, Draft, Some(date), VatReg)) if date == LocalDate.now =>
                     Future.successful(Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap))))
                   case _ =>
-                    trafficManagementService.allocate(request.currentProfile.registrationID) flatMap {
+                    trafficManagementService.allocate(
+                      request.currentProfile.registrationID,
+                      request.userAnswers.businessEntity.getOrElse(throw new InternalServerException("[NinoController] Missing business entity"))
+                    ) flatMap {
                       case Allocated =>
                         s4LService.save[CacheMap](request.currentProfile.registrationID, "eligibility-data", cacheMap) map { _ =>
                           Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap)))

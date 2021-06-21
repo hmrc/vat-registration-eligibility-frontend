@@ -17,21 +17,27 @@
 package connectors
 
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
-import models.RegistrationInformation
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, InternalServerException, Upstream4xxResponse}
-import uk.gov.hmrc.http.HttpClient
+import models.BusinessEntity.businessEntityToPartyType
+import models.{BusinessEntity, RegistrationInformation}
 import play.api.http.Status._
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json.{Json, Writes}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, InternalServerException, Upstream4xxResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TrafficManagementConnector @Inject()(httpClient: HttpClient,
                                            config: FrontendAppConfig)(implicit ec: ExecutionContext) {
 
-  def allocate(regId: String)(implicit hc: HeaderCarrier): Future[AllocationResponse] =
-    httpClient.POSTEmpty[HttpResponse](config.trafficAllocationUrl(regId)).map {
+  def allocate(regId: String, businessEntity: BusinessEntity, isEnrolled: Boolean)(implicit hc: HeaderCarrier): Future[AllocationResponse] =
+    httpClient.POST(
+      config.trafficAllocationUrl(regId),
+      Json.obj(
+        "partyType" -> businessEntityToPartyType(businessEntity),
+        "isEnrolled" -> isEnrolled
+      )
+    ).map {
       _.status match {
         case CREATED =>
           Allocated

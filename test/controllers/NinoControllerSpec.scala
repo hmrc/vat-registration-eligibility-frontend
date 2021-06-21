@@ -20,14 +20,14 @@ import connectors.{Allocated, FakeDataCacheConnector, QuotaReached}
 import controllers.actions._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import forms.NinoFormProvider
-import identifiers.NinoId
+import identifiers.{BusinessEntityId, FixedEstablishmentId, NinoId}
 import mocks.{S4LServiceMock, TrafficManagementServiceMock}
 import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, Json}
+import play.api.libs.json.{JsBoolean, JsValue, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.Credentials
@@ -67,7 +67,10 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
   def testPostRequest(postData: (String, String)*) =
     DataRequest(fakeRequest.withFormUrlEncodedBody(postData:_*), testInternalId, CurrentProfile(testRegId), new UserAnswers(CacheMap(testRegId, Map())))
 
-  def controller(dataRetrievalAction: DataRetrievalAction = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, Map())))) =
+  val data: Map[String, JsValue] = Map(BusinessEntityId.toString -> Json.toJson(UKCompany))
+  val getRequiredCacheMap: FakeDataRetrievalAction = getWithCacheMap(CacheMap(cacheMapId, data))
+
+  def controller(dataRetrievalAction: DataRetrievalAction = getRequiredCacheMap) =
     new NinoController(controllerComponents, FakeDataCacheConnector, mockS4LService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
 
@@ -92,7 +95,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
 
     "redirect to the next page when valid data is submitted and Traffic Management returns Allocated" in {
       enable(TrafficManagement)
-      mockServiceAllocation(testRegId)(Future.successful(Allocated))
+      mockServiceAllocation(testRegId, UKCompany)(Future.successful(Allocated))
       mockGetRegistrationInformation()(Future.successful(Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg))))
       mockS4LSave(testRegId, "eligibility-data", Json.toJson(testCacheMap))(Future.successful(testCacheMap))
       when(
@@ -133,7 +136,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
 
     "redirect to the exception page when valid data is submitted, Traffic Management returns Quota Reached and RegistrationInformation does not match" in {
       enable(TrafficManagement)
-      mockServiceAllocation(testRegId)(Future.successful(QuotaReached))
+      mockServiceAllocation(testRegId, UKCompany)(Future.successful(QuotaReached))
       mockGetRegistrationInformation()(Future.successful(Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), OTRS))))
       when(
         mockAuthConnector.authorise(
@@ -153,7 +156,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
     "redirect to the next page when valid data is submitted, Traffic Management returns Quota Reached but RegistrationInformation does match" in {
       enable(TrafficManagement)
 
-      mockServiceAllocation(testRegId)(Future.successful(QuotaReached))
+      mockServiceAllocation(testRegId, UKCompany)(Future.successful(QuotaReached))
       mockGetRegistrationInformation()(Future.successful(Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg))))
 
       when(

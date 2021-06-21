@@ -21,7 +21,9 @@ import connectors.{Allocated, AllocationResponse, QuotaReached, TrafficManagemen
 import models._
 import play.api.libs.json.Json
 import play.api.mvc.Request
+import services.TrafficManagementService.{partnershipEnrolment, soleTraderEnrolment, ukCompanyEnrolment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import uk.gov.hmrc.play.audit.AuditExtensions
@@ -42,10 +44,17 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
                                         )(implicit ec: ExecutionContext,
                                           appConfig: FrontendAppConfig) extends AuthorisedFunctions with Logging {
 
-  def allocate(regId: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[AllocationResponse] =
-    authorised().retrieve(Retrievals.credentials) {
-      case Some(credentials) =>
-        trafficManagementConnector.allocate(regId).map {
+  def allocate(regId: String, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier, request: Request[_]): Future[AllocationResponse] =
+    authorised().retrieve(Retrievals.credentials and Retrievals.allEnrolments) {
+      case Some(credentials) ~ enrolments =>
+        val isEnrolled: Boolean = businessEntity match {
+          case UKCompany => enrolments.getEnrolment(ukCompanyEnrolment).isDefined
+          case SoleTrader => enrolments.getEnrolment(soleTraderEnrolment).isDefined
+          case _: PartnershipType => enrolments.getEnrolment(partnershipEnrolment).isDefined
+          case _ => throw new InternalServerException("[TrafficManagementService][allocate] attempted to allocate for invalid party type")
+        }
+
+        trafficManagementConnector.allocate(regId, businessEntity, isEnrolled).map {
           case Allocated =>
             val auditEvent = ExtendedDataEvent(
               auditSource = appConfig.appName,
@@ -68,7 +77,7 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
             logger.info("Daily quota reached")
             QuotaReached //TODO To be finished in the traffic management intergation story
         }
-      case None =>
+      case None ~ _ =>
         throw new InternalServerException("[TrafficManagementService][allocate] Missing authProviderId for journey start auditing")
     }
 
@@ -89,4 +98,10 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
 
     trafficManagementConnector.upsertRegistrationInformation(regInfo)
   }
+}
+
+object TrafficManagementService {
+  val soleTraderEnrolment = "IR-SA"
+  val partnershipEnrolment = "IR-SA-PART-ORG"
+  val ukCompanyEnrolment = "IR-CT"
 }

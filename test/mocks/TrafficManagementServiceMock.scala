@@ -17,9 +17,10 @@
 package mocks
 
 import connectors.AllocationResponse
-import models.RegistrationInformation
+import models.{BusinessEntity, RegistrationInformation}
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
+import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.Suite
 import org.scalatestplus.mockito.MockitoSugar
 import services.TrafficManagementService
@@ -33,15 +34,21 @@ trait TrafficManagementServiceMock extends MockitoSugar {
 
   val mockTrafficManagementService: TrafficManagementService = mock[TrafficManagementService]
 
-  def mockServiceAllocation(regId: String)(response: Future[AllocationResponse]) =
-    when(mockTrafficManagementService.allocate(ArgumentMatchers.any[String])(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any()))
-      .thenReturn(response)
+  def mockServiceAllocation(regId: String, businessEntity: BusinessEntity
+                           )(response: Future[AllocationResponse]): OngoingStubbing[Future[AllocationResponse]] =
+    when(mockTrafficManagementService.allocate(
+      ArgumentMatchers.eq(regId),
+      ArgumentMatchers.eq(businessEntity)
+    )(ArgumentMatchers.any[HeaderCarrier],
+      ArgumentMatchers.any())
+    ).thenReturn(response)
 
-  def mockGetRegistrationInformation()(response: Future[Option[RegistrationInformation]]) =
+  def mockGetRegistrationInformation()(response: Future[Option[RegistrationInformation]]): OngoingStubbing[Future[Option[RegistrationInformation]]] =
     when(mockTrafficManagementService.getRegistrationInformation()(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(response)
 
-  def mockUpsertRegistrationInformation(internalId: String, regId: String, isOtrs: Boolean)(response: Future[RegistrationInformation]) =
+  def mockUpsertRegistrationInformation(internalId: String, regId: String, isOtrs: Boolean)
+                                       (response: Future[RegistrationInformation]): OngoingStubbing[Future[RegistrationInformation]] =
     when(mockTrafficManagementService.upsertRegistrationInformation(
       ArgumentMatchers.eq(internalId),
       ArgumentMatchers.eq(regId),

@@ -3,12 +3,14 @@ package www
 import com.github.tomakehurst.wiremock.client.WireMock._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub, TrafficManagementStub}
-import models.{Draft, RegistrationInformation, VatReg}
+import identifiers.BusinessEntityId
+import models._
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, Json}
 import play.api.test.Helpers.{CREATED, OK, TOO_MANY_REQUESTS}
 import play.mvc.Http.HeaderNames
+import services.TrafficManagementService
 
 import java.time.LocalDate
 
@@ -19,7 +21,17 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
     .build()
 
   val testInternalId = "testInternalId"
-  val testDate = LocalDate.now
+  val testDate: LocalDate = LocalDate.now
+
+  val testEnrolments: JsArray = Json.arr(Json.obj(
+    "key" -> TrafficManagementService.ukCompanyEnrolment,
+    "identifiers" -> Json.arr(
+      Json.obj(
+        "key" -> "testKey",
+        "value" -> "testValue"
+      )
+    )
+  ))
 
   s"${controllers.routes.NinoController.onSubmit()}" should {
     "redirect to VAT Exception if the answer is no" in {
@@ -52,12 +64,14 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
     }
     "redirect to Threshold In Twelve Months if the answer is yes and TrafficManagement returns allocated" in {
       enable(TrafficManagement)
-      stubSuccessfulLogin()
+      stubSuccessfulLogin(enrolments = testEnrolments)
       stubSuccessfulRegIdGet()
       stubAudits()
       stubAllocation(testRegId)(CREATED)
       stubFor(put(urlMatching("/save4later/vat-registration-eligibility-frontend/testRegId/data/eligibility-data"))
         .willReturn(aResponse.withStatus(CREATED).withBody(Json.stringify(Json.obj("id" -> testRegId, "data" -> Json.obj())))))
+
+      cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
 
       val request = buildClient("/have-nino").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map(
@@ -69,10 +83,12 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
     }
     "redirect to VAT Exception if the answer is yes and TrafficManagement returns Quota Reached" in {
       enable(TrafficManagement)
-      stubSuccessfulLogin()
+      stubSuccessfulLogin(enrolments = testEnrolments)
       stubSuccessfulRegIdGet()
       stubAudits()
       stubAllocation(testRegId)(TOO_MANY_REQUESTS)
+
+      cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
 
       val request = buildClient("/have-nino").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map(
