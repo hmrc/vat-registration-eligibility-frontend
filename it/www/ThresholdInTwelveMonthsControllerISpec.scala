@@ -1,6 +1,6 @@
 package www
 
-import helpers.{AuthHelper, IntegrationSpecBase, S4LStub, SessionStub, TrafficManagementStub}
+import helpers._
 import identifiers._
 import models.{ConditionalDateFormElement, Draft, RegistrationInformation, VatReg}
 import play.api.Application
@@ -101,7 +101,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubUpsertRegistrationInformation(RegistrationInformation("testInternalId", "testRegId", Draft, Some(LocalDate.now), VatReg))
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[ConditionalDateFormElement](internalId, ThresholdNextThirtyDaysId.toString, ConditionalDateFormElement(false, None))
+        cacheSessionData[ConditionalDateFormElement](internalId, ThresholdNextThirtyDaysId.toString, ConditionalDateFormElement(value = false, None))
         cacheSessionData[Boolean](internalId, VoluntaryRegistrationId.toString, true)
         cacheSessionData(internalId, VATRegistrationExceptionId.toString, true)
 
@@ -115,15 +115,19 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad().url)
+        verifySessionCacheData[ConditionalDateFormElement](
+          internalId,
+          ThresholdInTwelveMonthsId.toString,
+          Some(ConditionalDateFormElement(value = true, Some(LocalDate.of(dateAfterIncorp.getYear, dateAfterIncorp.getMonthValue, 1))))
+        )
+
         verifySessionCacheData(internalId, VoluntaryRegistrationId.toString, Option.empty[Boolean])
-        verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString,
-          Some(ConditionalDateFormElement(true, Some(LocalDate.of(dateAfterIncorp.getYear, dateAfterIncorp.getMonthValue, 1)))))
-        verifySessionCacheData(internalId, ThresholdNextThirtyDaysId.toString, Option.empty[Boolean])
+        verifySessionCacheData(internalId, ThresholdNextThirtyDaysId.toString, Option.empty[ConditionalDateFormElement])
         verifySessionCacheData(internalId, VATRegistrationExceptionId.toString, Some(true))
       }
     }
     s"redirect to ${controllers.routes.ThresholdNextThirtyDaysController.onPageLoad().url}" when {
-      "no is submitted should not drop ThresholdNextThirtyDaysId or voluntary but drop exception" in {
+      "no is submitted should drop ThresholdPreviousThirtyDaysId data and exception but not voluntary" in {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
@@ -132,7 +136,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubUpsertRegistrationInformation(RegistrationInformation("testInternalId", "testRegId", Draft, Some(LocalDate.now), VatReg))
 
         cacheSessionData(internalId, VoluntaryRegistrationId.toString, true)
-        cacheSessionData[Boolean](internalId, ThresholdNextThirtyDaysId.toString, false)
+        cacheSessionData[ConditionalDateFormElement](internalId, ThresholdPreviousThirtyDaysId.toString, ConditionalDateFormElement(value = false, None))
         cacheSessionData(internalId, VATRegistrationExceptionId.toString, true)
 
         val request = buildClient("/gone-over-threshold").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -143,9 +147,10 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdNextThirtyDaysController.onPageLoad().url)
-        verifySessionCacheData(internalId, VoluntaryRegistrationId.toString, Some(true))
-        verifySessionCacheData(internalId, ThresholdNextThirtyDaysId.toString, Some(false))
         verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, Some(ConditionalDateFormElement(false, None)))
+
+        verifySessionCacheData(internalId, VoluntaryRegistrationId.toString, Some(true))
+        verifySessionCacheData(internalId, ThresholdPreviousThirtyDaysId.toString, Option.empty[ConditionalDateFormElement])
         verifySessionCacheData(internalId, VATRegistrationExceptionId.toString, Option.empty[Boolean])
       }
     }
