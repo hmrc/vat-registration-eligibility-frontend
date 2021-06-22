@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
-import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
+import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
 import models.{ConditionalDateFormElement, NormalMode, RegistrationInformation}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -71,7 +71,9 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
                 _ => dataCacheConnector.removeEntry(request.internalId, ThresholdNextThirtyDaysId.toString)
               }
             } else {
-              dataCacheConnector.removeEntry(request.internalId, VATRegistrationExceptionId.toString)
+              dataCacheConnector.removeEntry(request.internalId, VATRegistrationExceptionId.toString).flatMap {
+                _ => dataCacheConnector.removeEntry(request.internalId, ThresholdPreviousThirtyDaysId.toString)
+              }
             }
           }.flatMap(cacheMap =>
             trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = false).map {
