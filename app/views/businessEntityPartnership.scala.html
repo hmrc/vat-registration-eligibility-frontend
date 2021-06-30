@@ -33,7 +33,7 @@
 
 @layout(pageTitle = Some(title(businessEntityForm, messages("businessEntityPartnership.heading"))), backLink = true) {
 
-    @errorSummary(businessEntityForm.errors, errorId = Some("uk-company"))
+    @errorSummary(businessEntityForm.errors, errorId = Some(generalPartnershipKey))
 
     @h1("businessEntityPartnership.heading")
 

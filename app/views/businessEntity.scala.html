@@ -30,7 +30,7 @@
 
 @layout(pageTitle = Some(title(businessEntityForm, messages("businessEntity.heading"))), backLink = true) {
 
-    @errorSummary(businessEntityForm.errors, errorId = Some("uk-company"))
+    @errorSummary(businessEntityForm.errors, errorId = Some(ukCompanyKey))
 
     @formWithCsrf(action = postAction) {
         @inputRadio(
