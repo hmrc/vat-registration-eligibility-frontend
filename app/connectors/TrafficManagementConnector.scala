@@ -17,7 +17,6 @@
 package connectors
 
 import config.FrontendAppConfig
-import models.BusinessEntity.businessEntityToPartyType
 import models.{BusinessEntity, RegistrationInformation}
 import play.api.http.Status._
 import play.api.libs.json.{Json, Writes}
@@ -34,7 +33,7 @@ class TrafficManagementConnector @Inject()(httpClient: HttpClient,
     httpClient.POST(
       config.trafficAllocationUrl(regId),
       Json.obj(
-        "partyType" -> businessEntityToPartyType(businessEntity),
+        "partyType" -> Json.toJson(businessEntity),
         "isEnrolled" -> isEnrolled
       )
     ).map {

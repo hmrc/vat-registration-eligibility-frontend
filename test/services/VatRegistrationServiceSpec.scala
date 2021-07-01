@@ -115,7 +115,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
           | {"questionId":"turnoverEstimate-value","question":"mocked message","answer":"£50,000","answerValue":50000}]},
           | {"title":"Special situations",
           | "data":[{"questionId":"fixedEstablishment","question":"mocked message","answer":"mocked message","answerValue":true},
-          | {"questionId":"businessEntity-value","question":"mocked message","answer":"mocked message","answerValue":"uk-company"},
+          | {"questionId":"businessEntity-value","question":"mocked message","answer":"mocked message","answerValue":"50"},
           | {"questionId":"agriculturalFlatRateScheme","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"internationalActivities","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"involvedInOtherBusiness","question":"mocked message","answer":"mocked message","answerValue":false},

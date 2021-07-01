@@ -50,15 +50,15 @@ class BusinessEntityViewSpec extends ViewSpecBase {
       "for the option 'Uk company'" should {
 
         "have the text 'Uk company'" in {
-          doc.select("label[for=uk-company]").text() mustEqual messages("businessEntity.ukcompany")
+          doc.select("label[for=50]").text() mustEqual messages("businessEntity.ukcompany")
         }
 
         "have an input under the label that" should {
 
-          lazy val optionLabel = doc.select("#uk-company")
+          lazy val optionLabel = doc.select("#50")
 
-          "have the id 'uk-company'" in {
-            optionLabel.attr("id") mustEqual "uk-company"
+          "have the id '50'" in {
+            optionLabel.attr("id") mustEqual "50"
           }
 
           "be of type radio" in {
@@ -70,15 +70,15 @@ class BusinessEntityViewSpec extends ViewSpecBase {
       "for the option 'Sole Trader'" should {
 
         "have the text 'Sole Trader'" in {
-          doc.select("label[for=sole-trader]").text() mustEqual messages("businessEntity.soletrader")
+          doc.select("label[for=Z1]").text() mustEqual messages("businessEntity.soletrader")
         }
 
         "have an input under the label that" should {
 
-          lazy val optionLabel = doc.select("#sole-trader")
+          lazy val optionLabel = doc.select("#Z1")
 
-          "have the id 'sole-trader'" in {
-            optionLabel.attr("id") mustEqual "sole-trader"
+          "have the id 'Z1'" in {
+            optionLabel.attr("id") mustEqual "Z1"
           }
 
           "be of type radio" in {

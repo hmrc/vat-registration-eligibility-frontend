@@ -24,7 +24,7 @@ import featureswitch.core.models.FeatureSwitch
 @Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
-  val switches = Seq(TrafficManagement, EnableAAS, SoleTraderFlow)
+  val switches = Seq(TrafficManagement, EnableAAS, SoleTraderFlow, GeneralPartnershipFlow)
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
     Seq(

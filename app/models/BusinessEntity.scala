@@ -42,21 +42,21 @@ object Division extends OtherType
 object VatGroup extends OtherType
 
 object BusinessEntity {
-  val ukCompanyKey = "uk-company"
-  val soleTraderKey = "sole-trader"
+  val ukCompanyKey = "50"
+  val soleTraderKey = "Z1"
   val partnershipKey = "partnership"
-  val generalPartnershipKey = "general-partnership"
-  val limitedPartnershipKey = "limited-partnership"
-  val scottishPartnershipKey = "scottish-partnership"
-  val scottishLimitedPartnershipKey = "scottish-limited-partnership"
-  val limitedLiabilityPartnershipKey = "limited-liability-partnership"
+  val generalPartnershipKey = "61"
+  val limitedPartnershipKey = "62"
+  val scottishPartnershipKey = "58"
+  val scottishLimitedPartnershipKey = "59"
+  val limitedLiabilityPartnershipKey = "52"
   val otherKey = "other"
-  val charitableIncorporatedOrganisationKey = "charitable-incorporated-organisation"
-  val nonIncorporatedTrustKey = "non-incorporated-trust"
-  val registeredSocietyKey = "registered-society"
-  val unincorporatedAssociationKey = "unincorporated-association"
-  val divisionKey = "division"
-  val vatGroupKey = "vat-group"
+  val charitableIncorporatedOrganisationKey = "53"
+  val nonIncorporatedTrustKey = "60"
+  val registeredSocietyKey = "54"
+  val unincorporatedAssociationKey = "63"
+  val divisionKey = "65"
+  val vatGroupKey = "64"
 
   def businessEntityToString(businessEntity: BusinessEntity)(implicit messages: Messages): String = businessEntity match {
     case UKCompany => messages("businessEntity.ukcompany")
@@ -74,16 +74,6 @@ object BusinessEntity {
     case UnincorporatedAssociation => messages("businessEntity.unincorporated-association")
     case Division => messages("businessEntity.division")
     case VatGroup => messages("businessEntity.vat-group")
-  }
-
-  def businessEntityToPartyType(businessEntity: BusinessEntity): String = businessEntity match {
-    case UKCompany => "50"
-    case LimitedLiabilityPartnership => "52"
-    case ScottishPartnership => "58"
-    case ScottishLimitedPartnership => "59"
-    case GeneralPartnership => "61"
-    case LimitedPartnership => "62"
-    case SoleTrader => "Z1"
   }
 
   implicit val jsonReads: Reads[BusinessEntity] = Reads[BusinessEntity] {
