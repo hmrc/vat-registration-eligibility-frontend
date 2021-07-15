@@ -109,7 +109,7 @@ thresholdPreviousThirtyDays.error.date.invalid      = Enter a date in the correc
 voluntaryRegistration.heading               = Would you like to voluntarily register the business for VAT?
 voluntaryRegistration.error.required        = Select yes if you want to register voluntarily for VAT
 voluntaryRegistration.heading2              = Does the business want to register voluntarily?
-voluntaryRegistration.text                  = Only register voluntarily if the company intends to start reporting VAT in the next 3 months.
+voluntaryRegistration.text                  = Only register voluntarily if the business intends to start reporting VAT in the next 3 months.
 
 choseNotToRegister.title    = You have chosen not to register the business for VAT
 choseNotToRegister.heading  = You have chosen not to register the business for VAT
