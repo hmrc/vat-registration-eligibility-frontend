@@ -31,7 +31,7 @@ class VoluntaryRegistrationViewSpec extends ViewSpecBase {
   val bullet2 = "currently sells VAT-taxable goods or services"
   val bullet3 = "intends to sell VAT-taxable goods or services"
   val h2 = "Does the business want to register voluntarily?"
-  val indentText = "Only register voluntarily if the company intends to start reporting VAT in the next 3 months."
+  val indentText = "Only register voluntarily if the business intends to start reporting VAT in the next 3 months."
 
   val view = app.injector.instanceOf[voluntaryRegistration]
 
