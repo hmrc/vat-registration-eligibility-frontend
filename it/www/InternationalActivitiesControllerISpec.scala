@@ -16,7 +16,7 @@
 
 package www
 
-import featureswitch.core.config.{FeatureSwitching, GeneralPartnershipFlow, SoleTraderFlow}
+import featureswitch.core.config.{FeatureSwitching, GeneralPartnershipFlow, RegisteredSocietyFlow, SoleTraderFlow}
 import helpers.{AuthHelper, IntegrationSpecBase, S4LStub, SessionStub}
 import identifiers.{BusinessEntityId, InternationalActivitiesId}
 import models._
@@ -108,9 +108,29 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
+    "navigate to Involved In Other Business when false and Registered Society when FS is on" in {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+      enable(RegisteredSocietyFlow)
+
+      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", RegisteredSociety)
+
+      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq("false")))
+
+      val response = await(request)
+      response.status mustBe 303
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad().url)
+      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+    }
+
     "navigate to Vat Exception Kickout when false but business entity is not allowed" in {
       disable(GeneralPartnershipFlow)
       disable(SoleTraderFlow)
+      disable(RegisteredSocietyFlow)
 
       val entityList = Seq(
         SoleTrader,
