@@ -127,6 +127,25 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
+    "navigate to Involved In Other Business when false and Non-Incorporated Trust when FS is on" in {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+      enable(NonIncorpTrustFlow)
+
+      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", NonIncorporatedTrust)
+
+      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq("false")))
+
+      val response = await(request)
+      response.status mustBe 303
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad().url)
+      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+    }
+
     "navigate to Involved In Other Business when false and Charitable Incorporated Organisation (ICO) when FS is on" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -150,6 +169,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       disable(GeneralPartnershipFlow)
       disable(SoleTraderFlow)
       disable(RegisteredSocietyFlow)
+      disable(NonIncorpTrustFlow)
       disable(CharityFlow)
 
       val entityList = Seq(
