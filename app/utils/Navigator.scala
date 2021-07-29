@@ -177,6 +177,7 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
         case Some(RegisteredSociety) if isEnabled(RegisteredSocietyFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(NonIncorporatedTrust) if isEnabled(NonIncorpTrustFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(CharitableIncorporatedOrganisation) if isEnabled(CharityFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
+        case Some(UnincorporatedAssociation) if isEnabled(UnincorporatedAssociationFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case _ => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
