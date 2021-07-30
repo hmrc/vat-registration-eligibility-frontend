@@ -24,7 +24,16 @@ import featureswitch.core.models.FeatureSwitch
 @Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
-  val switches = Seq(TrafficManagement, EnableAAS, SoleTraderFlow, GeneralPartnershipFlow, RegisteredSocietyFlow, NonIncorpTrustFlow, CharityFlow)
+  val switches = Seq(
+    TrafficManagement,
+    EnableAAS,
+    SoleTraderFlow,
+    GeneralPartnershipFlow,
+    RegisteredSocietyFlow,
+    NonIncorpTrustFlow,
+    CharityFlow,
+    UnincorporatedAssociationFlow
+  )
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
     Seq(
@@ -66,4 +75,9 @@ case object NonIncorpTrustFlow extends FeatureSwitch {
 case object CharityFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.charity-flow"
   override val displayName: String = "Enable Charitable Incorporated Organisation (CIO) flow"
+}
+
+case object UnincorporatedAssociationFlow extends FeatureSwitch {
+  override val configName: String = "feature-switch.unincorporated-association"
+  override val displayName: String = "Enable Unincorporated Association flow"
 }

@@ -165,12 +165,32 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
+    "navigate to Involved In Other Business when an Unincorporated Association and Unincorporated Association FS is turned on" in {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+      enable(UnincorporatedAssociationFlow)
+
+      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", UnincorporatedAssociation)
+
+      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq("false")))
+
+      val response = await(request)
+      response.status mustBe 303
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad().url)
+      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+    }
+
     "navigate to Vat Exception Kickout when false but business entity is not allowed" in {
       disable(GeneralPartnershipFlow)
       disable(SoleTraderFlow)
       disable(RegisteredSocietyFlow)
       disable(NonIncorpTrustFlow)
       disable(CharityFlow)
+      disable(UnincorporatedAssociationFlow)
 
       val entityList = Seq(
         SoleTrader,
