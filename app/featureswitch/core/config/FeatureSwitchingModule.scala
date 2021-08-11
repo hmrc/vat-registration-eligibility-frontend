@@ -32,7 +32,8 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     RegisteredSocietyFlow,
     NonIncorpTrustFlow,
     CharityFlow,
-    UnincorporatedAssociationFlow
+    UnincorporatedAssociationFlow,
+    NETPFlow
   )
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
@@ -80,4 +81,9 @@ case object CharityFlow extends FeatureSwitch {
 case object UnincorporatedAssociationFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.unincorporated-association"
   override val displayName: String = "Enable Unincorporated Association flow"
+}
+
+case object NETPFlow extends FeatureSwitch {
+  override val configName: String = "feature-switch.enable-netp"
+  override val displayName: String = "Enable non-established taxable person (NETP) flow"
 }
