@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package www
+package controllers
 
 import featureswitch.core.config._
 import helpers.{AuthHelper, IntegrationSpecBase, S4LStub, SessionStub}

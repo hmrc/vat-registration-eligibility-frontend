@@ -1,4 +1,4 @@
-package www
+package controllers
 
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
 import identifiers.{RegisteringBusinessId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ZeroRatedSalesId}

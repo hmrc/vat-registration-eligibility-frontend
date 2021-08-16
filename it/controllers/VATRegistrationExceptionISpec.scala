@@ -1,4 +1,4 @@
-package www
+package controllers
 
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
 import play.api.Application

@@ -32,6 +32,9 @@ POST       /business-entity-partnership                 controllers.BusinessEnti
 GET        /business-entity-other                       controllers.BusinessEntityOtherController.onPageLoad()
 POST       /business-entity-other                       controllers.BusinessEntityOtherController.onSubmit()
 
+GET        /business-entity-overseas                    controllers.BusinessEntityOverseasController.onPageLoad()
+POST       /business-entity-overseas                    controllers.BusinessEntityOverseasController.onSubmit()
+
 GET        /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onPageLoad()
 POST       /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onSubmit()
 
