@@ -1,4 +1,4 @@
-package www
+package controllers
 
 import helpers.{AuthHelper, FakeTimeMachine, IntegrationSpecBase, SessionStub}
 import identifiers.{ThresholdInTwelveMonthsId, ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}

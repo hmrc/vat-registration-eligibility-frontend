@@ -1,4 +1,4 @@
-package www
+package controllers
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}

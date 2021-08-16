@@ -1,4 +1,4 @@
-package www
+package controllers
 
 import helpers._
 import identifiers._

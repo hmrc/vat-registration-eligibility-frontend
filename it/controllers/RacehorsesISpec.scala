@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package www
+package controllers
 
 import featureswitch.core.config.{EnableAAS, FeatureSwitching}
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}

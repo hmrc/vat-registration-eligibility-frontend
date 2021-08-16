@@ -1,0 +1,54 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+
+@this(
+        layout: views.html.layouts.layout,
+        errorSummary: components.errorSummary,
+        h1: components.h1,
+        formWithCsrf: FormWithCSRF,
+        button: components.button,
+        inputRadio: components.inputRadio
+)
+
+@(form: Form[BusinessEntity], postAction: Call)(implicit request: Request[_], messages: Messages, appconfig: FrontendAppConfig)
+
+@layout(pageTitle = Some(title(form, messages("businessEntityOverseas.heading"))), backLink = true) {
+
+    @errorSummary(form.errors)
+
+    @formWithCsrf(action = postAction) {
+        @inputRadio(
+            form = form,
+            legend = messages("businessEntityOverseas.heading"),
+            items = Seq(
+                RadioItem(
+                    content = Text(messages("businessEntityOverseas.radioyes")),
+                    value = Some("value"),
+                    hint = Some(Hint(content = Text(messages("businessEntityOverseas.hint"))))
+                ),
+                RadioItem(
+                    content = Text(messages("businessEntityOverseas.radiono")),
+                    value = Some("value-no")
+                )
+            )
+        )
+
+        @button(messages("site.continue"))
+    }
+}
+
