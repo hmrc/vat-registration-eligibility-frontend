@@ -18,6 +18,7 @@
 @import controllers.routes._
 @import models.Mode
 @import models.requests.DataRequest
+@import featureswitch.core.config._
 
 @this(
     layout: views.html.layouts.layout,
@@ -45,15 +46,26 @@
 
     @p{ @messages("internationalActivities.bulletText") }
 
-    @bullets(
-        messages("internationalActivities.bullet1"),
-        messages("internationalActivities.bullet2"),
-        messages("internationalActivities.bullet3"),
-        messages("internationalActivities.bullet4"),
-        messages("internationalActivities.bullet5"),
-        messages("internationalActivities.bullet6"),
-        messages("internationalActivities.bullet7")
-    )
+    @if(appConfig.isEnabled(NETPFlow)) {
+        @bullets(
+            messages("internationalActivities.bullet3"),
+            messages("internationalActivities.bullet4"),
+            messages("internationalActivities.bullet5"),
+            messages("internationalActivities.bullet6"),
+            messages("internationalActivities.bullet7")
+        )
+    } else {
+        @bullets(
+            messages("internationalActivities.bullet1"),
+            messages("internationalActivities.bullet2"),
+            messages("internationalActivities.bullet3"),
+            messages("internationalActivities.bullet4"),
+            messages("internationalActivities.bullet5"),
+            messages("internationalActivities.bullet6"),
+            messages("internationalActivities.bullet7")
+        )
+    }
+
 
     @formWithCsrf(action = InternationalActivitiesController.onSubmit(), 'autoComplete -> "off") {
         @yesNoRadio(
