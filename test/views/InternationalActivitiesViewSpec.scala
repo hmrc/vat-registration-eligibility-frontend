@@ -16,11 +16,12 @@
 
 package views
 
+import featureswitch.core.config._
 import forms.InternationalActivitiesFormProvider
 import models.NormalMode
 import views.html.internationalActivities
 
-class InternationalActivitiesViewSpec extends ViewSpecBase {
+class InternationalActivitiesViewSpec extends ViewSpecBase with FeatureSwitching {
 
   val messageKeyPrefix = "internationalActivities"
   val form = new InternationalActivitiesFormProvider()()
@@ -77,8 +78,19 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
       doc.select(Selectors.bullet(3)).first().text() mustBe bullet3
       doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
       doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
+      doc.select(Selectors.bullet(6)).first().text() mustBe bullet6
+      doc.select(Selectors.bullet(7)).first().text() mustBe bullet7
     }
 
+    "display the bullet text correctly when the NETPFlow feature switch is enabled" in {
+      enable(NETPFlow)
+      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
+      doc.select(Selectors.bullet(1)).first().text() mustBe bullet3
+      doc.select(Selectors.bullet(2)).first().text() mustBe bullet4
+      doc.select(Selectors.bullet(3)).first().text() mustBe bullet5
+      doc.select(Selectors.bullet(4)).first().text() mustBe bullet6
+      doc.select(Selectors.bullet(5)).first().text() mustBe bullet7
+    }
   }
 
 }

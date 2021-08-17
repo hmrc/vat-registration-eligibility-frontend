@@ -16,11 +16,14 @@
 
 @import config.FrontendAppConfig
 @import models.requests.CacheIdentifierRequest
+@import featureswitch.core.config._
 
 @this(
     layout: views.html.layouts.layout,
     h1: components.h1,
     p: components.p,
+    bullets: components.bullets,
+    bulletsHtml: components.bulletsHtml,
     link: components.link,
 )
 
@@ -31,31 +34,39 @@
     @h1(messages("eligibilityDropout.heading"))
     @p{ @messages("eligibility.international.special.text") }
 
-    <ul class="govuk-list govuk-list--bullet">
-        <li>
-            @messages("eligibility.international.bullet1")
-            @link( appConfig.otrsUrl, messages("eligibility.international.link1"))
-        </li>
-        <li>
-            @messages("eligibility.international.bullet2")
-            @link(appConfig.VAT1CFormURL, messages("eligibility.international.link2"))
-        </li>
-        <li>
-            @messages("eligibility.international.bullet3")
-            @link(appConfig.otrsUrl, messages("eligibility.international.link3"))
-        </li>
-        <li>
-            @messages("eligibility.international.bullet4")
-            @link(appConfig.otrsUrl, messages("eligibility.international.link4"))
-        </li>
-        <li>
-            @messages("eligibility.international.bullet5")
-            @link(appConfig.VAT1BFormURL, messages("eligibility.international.link5"))
-        </li>
-        <li>
-            @messages("eligibility.international.bullet6")
-            @link(appConfig.VAT1AFormURL, messages("eligibility.international.link6"))
-        </li>
-    </ul>
+    @if(appConfig.isEnabled(NETPFlow)) {
+        @bulletsHtml(bullet2, bullet3, bullet4, bullet5, bullet6)
+    } else {
+        @bulletsHtml(bullet1, bullet2, bullet3, bullet4, bullet5, bullet6)
+    }
+}
 
+@bullet1 = {
+    @messages("eligibility.international.bullet1")
+    @link( appConfig.otrsUrl, messages("eligibility.international.link1"))
+}
+
+@bullet2 = {
+    @messages("eligibility.international.bullet2")
+    @link(appConfig.VAT1CFormURL, messages("eligibility.international.link2"))
+}
+
+@bullet3 = {
+    @messages("eligibility.international.bullet3")
+    @link(appConfig.otrsUrl, messages("eligibility.international.link3"))
+}
+
+@bullet4 = {
+    @messages("eligibility.international.bullet4")
+    @link(appConfig.otrsUrl, messages("eligibility.international.link4"))
+}
+
+@bullet5 = {
+    @messages("eligibility.international.bullet5")
+    @link(appConfig.VAT1BFormURL, messages("eligibility.international.link5"))
+}
+
+@bullet6 = {
+    @messages("eligibility.international.bullet5")
+    @link(appConfig.VAT1BFormURL, messages("eligibility.international.link5"))
 }
