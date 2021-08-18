@@ -30,11 +30,12 @@ import javax.inject.{Inject, Singleton}
 
 //scalastyle:off
 @Singleton
-class Navigator @Inject()() extends Logging with FeatureSwitching {
+class Navigator @Inject extends Logging with FeatureSwitching {
 
   def pageIdToPageLoad(pageId: Identifier): Call = pageId match {
     case FixedEstablishmentId => routes.FixedEstablishmentController.onPageLoad
     case BusinessEntityId => routes.BusinessEntityController.onPageLoad
+    case BusinessEntityOverseasId => routes.BusinessEntityOverseasController.onPageLoad
     case ThresholdNextThirtyDaysId => routes.ThresholdNextThirtyDaysController.onPageLoad
     case ThresholdPreviousThirtyDaysId => routes.ThresholdPreviousThirtyDaysController.onPageLoad
     case VoluntaryRegistrationId => routes.VoluntaryRegistrationController.onPageLoad
@@ -52,7 +53,7 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
     case VATRegistrationExceptionId => routes.VATRegistrationExceptionController.onPageLoad
     case ApplyInWritingId => routes.ApplyInWritingController.onPageLoad
     case EligibilityDropoutId(mode) => mode match {
-      case InternationalActivitiesId.toString => routes.EligibilityDropoutController.internationalActivitiesDropout()
+      case InternationalActivitiesId.toString => routes.EligibilityDropoutController.internationalActivitiesDropout
       case mode => routes.EligibilityDropoutController.onPageLoad(mode)
     }
     case AgriculturalFlatRateSchemeId => routes.AgriculturalFlatRateSchemeController.onPageLoad
@@ -163,11 +164,20 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
       onSuccessPage = InternationalActivitiesId,
       onFailPage = EligibilityDropoutId(AgriculturalFlatRateSchemeId.toString)
     ),
-    nextOn(true,
-      fromPage = FixedEstablishmentId,
-      onSuccessPage = BusinessEntityId,
-      onFailPage = EligibilityDropoutId(InternationalActivitiesId.toString)
-    ),
+    FixedEstablishmentId -> { userAnswers =>
+      userAnswers.fixedEstablishment match {
+        case Some(true) => pageIdToPageLoad(BusinessEntityId)
+        case Some(false) if isEnabled(NETPFlow) => pageIdToPageLoad(BusinessEntityOverseasId)
+        case _ => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
+      }
+    },
+    BusinessEntityOverseasId -> { userAnswers =>
+      userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
+        case Some(NETP) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(Overseas) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
+        case _ => pageIdToPageLoad(FixedEstablishmentId)
+      }
+    },
     InternationalActivitiesId -> { userAnswers =>
       userAnswers.businessEntity match {
         case Some(_) if userAnswers.internationalActivities.contains(true) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))

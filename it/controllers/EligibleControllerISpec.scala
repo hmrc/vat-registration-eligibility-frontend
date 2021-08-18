@@ -24,8 +24,6 @@ class EligibleControllerISpec extends IntegrationSpecBase
 
   val testUrl: String = controllers.routes.EligibleController.onPageLoad.url
 
-  val testInternalId = "testInternalId"
-
   "GET /eligible" must {
     "return OK" in {
       stubS4LGetNothing(testRegId)

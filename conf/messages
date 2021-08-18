@@ -87,8 +87,9 @@ businessEntity.vat-group = VAT group
 
 businessEntityOverseas.heading = What type of business do you want to register for VAT?
 businessEntityOverseas.hint = An NETP is any person who is not normally resident in the UK, does not have a UK establishment and, in the case of a company, is not incorporated in the UK.
-businessEntityOverseas.radioyes = Non-established taxable person (NETP)
-businessEntityOverseas.radiono = Non UK Company
+businessEntityOverseas.netp = Non-established taxable person (NETP)
+businessEntityOverseas.overseas = Non UK Company
+businessEntityOverseas.error.required = Select the type of business you want to register for VAT
 
 introduction.heading                                = Check if you can register for VAT online
 introduction.p1                                     = We will ask you some questions about the nature of the business to check if this is the best way for you to register.
