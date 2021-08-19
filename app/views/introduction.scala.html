@@ -31,7 +31,7 @@
     @h1(messages("introduction.heading"))
     @p{ @messages("introduction.p1") }
 
-    @formWithCsrf(action = routes.IntroductionController.onSubmit()) {
+    @formWithCsrf(action = routes.IntroductionController.onSubmit) {
         @button(messages("site.continue"))
     }
 

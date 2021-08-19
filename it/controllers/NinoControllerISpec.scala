@@ -33,7 +33,7 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
     )
   ))
 
-  s"${controllers.routes.NinoController.onSubmit()}" should {
+  s"${controllers.routes.NinoController.onSubmit}" should {
     "redirect to VAT Exception if the answer is no" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -45,7 +45,7 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
     }
     "redirect to Threshold In Twelve Months if the feature switch is disabled" in {
       disable(TrafficManagement)
@@ -60,7 +60,7 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url)
     }
     "redirect to Threshold In Twelve Months if the answer is yes and TrafficManagement returns allocated" in {
       enable(TrafficManagement)
@@ -79,7 +79,7 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url)
     }
     "redirect to VAT Exception if the answer is yes and TrafficManagement returns Quota Reached" in {
       enable(TrafficManagement)
@@ -96,7 +96,7 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
     }
     "redirect to Threshold In Twelve Months if the answer is yes, TrafficManagement returns Quota Reached but RegistrationInformation matches" in {
       enable(TrafficManagement)
@@ -112,7 +112,7 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url)
     }
   }
 }

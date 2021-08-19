@@ -20,77 +20,77 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /feedback                                    controllers.FeedbackController.show()
 
-GET        /fixed-establishment                         controllers.FixedEstablishmentController.onPageLoad()
+GET        /fixed-establishment                         controllers.FixedEstablishmentController.onPageLoad
 POST       /fixed-establishment                         controllers.FixedEstablishmentController.onSubmit()
 
-GET        /business-entity                             controllers.BusinessEntityController.onPageLoad()
+GET        /business-entity                             controllers.BusinessEntityController.onPageLoad
 POST       /business-entity                             controllers.BusinessEntityController.onSubmit()
 
-GET        /business-entity-partnership                 controllers.BusinessEntityPartnershipController.onPageLoad()
+GET        /business-entity-partnership                 controllers.BusinessEntityPartnershipController.onPageLoad
 POST       /business-entity-partnership                 controllers.BusinessEntityPartnershipController.onSubmit()
 
-GET        /business-entity-other                       controllers.BusinessEntityOtherController.onPageLoad()
+GET        /business-entity-other                       controllers.BusinessEntityOtherController.onPageLoad
 POST       /business-entity-other                       controllers.BusinessEntityOtherController.onSubmit()
 
-GET        /business-entity-overseas                    controllers.BusinessEntityOverseasController.onPageLoad()
+GET        /business-entity-overseas                    controllers.BusinessEntityOverseasController.onPageLoad
 POST       /business-entity-overseas                    controllers.BusinessEntityOverseasController.onSubmit()
 
-GET        /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onPageLoad()
+GET        /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onPageLoad
 POST       /make-more-taxable-sales                     controllers.ThresholdNextThirtyDaysController.onSubmit()
 
-GET        /gone-over-threshold-period                  controllers.ThresholdPreviousThirtyDaysController.onPageLoad()
+GET        /gone-over-threshold-period                  controllers.ThresholdPreviousThirtyDaysController.onPageLoad
 POST       /gone-over-threshold-period                  controllers.ThresholdPreviousThirtyDaysController.onSubmit()
 
-GET        /voluntary-information                       controllers.VoluntaryInformationController.onPageLoad()
+GET        /voluntary-information                       controllers.VoluntaryInformationController.onPageLoad
 POST       /voluntary-information                       controllers.VoluntaryInformationController.onSubmit()
 
-GET        /mtd-mandatory-information                   controllers.MandatoryInformationController.onPageLoad()
+GET        /mtd-mandatory-information                   controllers.MandatoryInformationController.onPageLoad
 POST       /mtd-mandatory-information                   controllers.MandatoryInformationController.onSubmit()
 
-GET        /register-voluntarily                        controllers.VoluntaryRegistrationController.onPageLoad()
+GET        /register-voluntarily                        controllers.VoluntaryRegistrationController.onPageLoad
 POST       /register-voluntarily                        controllers.VoluntaryRegistrationController.onSubmit()
 
-GET        /chosen-not-to-register                      controllers.ChoseNotToRegisterController.onPageLoad()
+GET        /chosen-not-to-register                      controllers.ChoseNotToRegisterController.onPageLoad
 POST       /chosen-not-to-register                      controllers.ChoseNotToRegisterController.onSubmit()
 
-GET        /gone-over-threshold                         controllers.ThresholdInTwelveMonthsController.onPageLoad()
+GET        /gone-over-threshold                         controllers.ThresholdInTwelveMonthsController.onPageLoad
 POST       /gone-over-threshold                         controllers.ThresholdInTwelveMonthsController.onSubmit()
 
 GET        /vat-taxable-turnover                        controllers.TurnoverEstimateController.onPageLoad(mode : Mode = NormalMode)
 POST       /vat-taxable-turnover                        controllers.TurnoverEstimateController.onSubmit(mode : Mode = NormalMode)
 
-GET        /involved-more-business-changing-status      controllers.InvolvedInOtherBusinessController.onPageLoad()
+GET        /involved-more-business-changing-status      controllers.InvolvedInOtherBusinessController.onPageLoad
 POST       /involved-more-business-changing-status      controllers.InvolvedInOtherBusinessController.onSubmit()
 
 GET        /cant-register/:inelligibleType              controllers.EligibilityDropoutController.onPageLoad(inelligibleType: String)
 GET        /errors/business-activities-next-12-months   controllers.EligibilityDropoutController.internationalActivitiesDropout()
 POST       /cant-register                               controllers.EligibilityDropoutController.onSubmit()
 
-GET        /business-activities-next-12-months          controllers.InternationalActivitiesController.onPageLoad()
+GET        /business-activities-next-12-months          controllers.InternationalActivitiesController.onPageLoad
 POST       /business-activities-next-12-months          controllers.InternationalActivitiesController.onSubmit()
 
-GET        /zero-rated-sales                            controllers.ZeroRatedSalesController.onPageLoad()
+GET        /zero-rated-sales                            controllers.ZeroRatedSalesController.onPageLoad
 POST       /zero-rated-sales                            controllers.ZeroRatedSalesController.onSubmit()
 
-GET        /annual-accounting                           controllers.AnnualAccountingSchemeController.onPageLoad()
+GET        /annual-accounting                           controllers.AnnualAccountingSchemeController.onPageLoad
 POST       /annual-accounting                           controllers.AnnualAccountingSchemeController.onSubmit()
 
-GET        /vat-exemption                               controllers.VATExemptionController.onPageLoad()
+GET        /vat-exemption                               controllers.VATExemptionController.onPageLoad
 POST       /vat-exemption                               controllers.VATExemptionController.onSubmit()
 
-GET        /vat-exception-registration                  controllers.VATExceptionKickoutController.onPageLoad()
+GET        /vat-exception-registration                  controllers.VATExceptionKickoutController.onPageLoad
 POST       /vat-exception-registration                  controllers.VATExceptionKickoutController.onSubmit()
 
-GET        /registration-exception                      controllers.VATRegistrationExceptionController.onPageLoad()
+GET        /registration-exception                      controllers.VATRegistrationExceptionController.onPageLoad
 POST       /registration-exception                      controllers.VATRegistrationExceptionController.onSubmit()
 
-GET        /apply-writing                               controllers.ApplyInWritingController.onPageLoad()
+GET        /apply-writing                               controllers.ApplyInWritingController.onPageLoad
 POST       /apply-writing                               controllers.ApplyInWritingController.onSubmit()
 
-GET        /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onPageLoad()
+GET        /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onPageLoad
 POST       /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onSubmit()
 
-GET        /own-racehorses-buy-sell-property            controllers.RacehorsesController.onPageLoad()
+GET        /own-racehorses-buy-sell-property            controllers.RacehorsesController.onPageLoad
 POST       /own-racehorses-buy-sell-property            controllers.RacehorsesController.onSubmit()
 
 GET        /whos-the-application-for                    controllers.RegisteringBusinessController.onPageLoad

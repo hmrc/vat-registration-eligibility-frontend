@@ -33,7 +33,7 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(("/check-if-you-can-register-for-vat/cant-register/OTRS"))
     }
-    s"redirect the user to ${controllers.routes.MandatoryInformationController.onPageLoad()} when answer is false and MTD is mandatory" in {
+    s"redirect the user to ${controllers.routes.MandatoryInformationController.onPageLoad} when answer is false and MTD is mandatory" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -47,7 +47,7 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
         ))
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MandatoryInformationController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MandatoryInformationController.onPageLoad.url)
     }
   }
 

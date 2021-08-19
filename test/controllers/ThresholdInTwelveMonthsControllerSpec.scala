@@ -41,7 +41,7 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
 
   val view = app.injector.instanceOf[thresholdInTwelveMonths]
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute = routes.IndexController.onPageLoad
 
   object TestTimeMachine extends TimeMachine {
     override def today: LocalDate = LocalDate.parse("2020-01-01")
@@ -69,17 +69,17 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
     when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
     when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(ThresholdNextThirtyDaysId.toString))) thenReturn Future.successful(emptyCacheMap)
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
     }
 
     "redirect to start of the journey if user is missing data" in {
-      val result = controller(getEmptyCacheMap).onPageLoad()(fakeRequest)
+      val result = controller(getEmptyCacheMap).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.IntroductionController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.routes.IntroductionController.onPageLoad.url)
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
@@ -87,7 +87,7 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
       val validData = data + (ThresholdInTwelveMonthsId.toString -> jsValue)
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(ConditionalDateFormElement(true, Some(LocalDate.now))))
     }
@@ -116,10 +116,10 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -127,7 +127,7 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
       val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

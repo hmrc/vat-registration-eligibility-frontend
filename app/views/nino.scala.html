@@ -33,7 +33,7 @@
 
     @errorSummary(form.errors)
 
-    @formWithCsrf(action = NinoController.onSubmit(), 'autoComplete -> "off") {
+    @formWithCsrf(action = NinoController.onSubmit, 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
             headingKey = "nino.heading"

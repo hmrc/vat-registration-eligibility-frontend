@@ -22,7 +22,7 @@ class EligibleControllerISpec extends IntegrationSpecBase
     .configure(fakeConfig())
     .build()
 
-  val testUrl: String = controllers.routes.EligibleController.onPageLoad().url
+  val testUrl: String = controllers.routes.EligibleController.onPageLoad.url
 
   val testInternalId = "testInternalId"
 

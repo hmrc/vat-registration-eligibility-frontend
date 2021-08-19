@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.Assets.{IM_A_TEAPOT, OK}
+import play.api.test.Helpers.{IM_A_TEAPOT, OK}
 import helpers.{AuthHelper, IntegrationSpecBase}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -34,7 +34,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
       stubSuccessfulRegIdGet()
       stubAudits()
 
-      val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onPageLoad().url).get)
+      val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onPageLoad.url).get)
 
       res.status mustBe OK
     }

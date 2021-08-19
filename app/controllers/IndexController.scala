@@ -16,17 +16,15 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import connectors.{DataCacheConnector, S4LConnector}
 import controllers.actions.{CacheIdentifierAction, DataRetrievalAction}
 import identifiers.Identifier
-
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Navigator
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -42,7 +40,7 @@ class IndexController @Inject()(mcc: MessagesControllerComponents,
     for {
       _ <- dataCacheConnector.delete(request.internalId) //TODO Remove as part of SAR-6520
       _ <- s4LConnector.clear(request.internalId)
-    } yield Redirect(routes.IntroductionController.onPageLoad())
+    } yield Redirect(routes.IntroductionController.onPageLoad)
   }
 
   def navigateToPageId(pageId: String): Action[AnyContent] = Action { _ =>

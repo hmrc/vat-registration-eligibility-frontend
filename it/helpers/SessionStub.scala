@@ -26,7 +26,7 @@ trait SessionStub extends MongoSpecSupport with BeforeAndAfterEach with DefaultR
   }
 
   def cacheSessionData[T](id: String, key: String, data: T)(implicit format: Format[T]): Unit ={
-    val initialCount = await(repo.count)
+    await(repo.count)
     val cacheMap = await(repo.get(id))
     val updatedCacheMap =
       cacheMap.fold(CacheMap(id, Map(key -> Json.toJson(data))))(map => map.copy(data = map.data + (key -> Json.toJson(data))))

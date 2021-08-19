@@ -16,13 +16,13 @@ class IndexControllerISpec extends IntegrationSpecBase {
       val request = buildClient("/question?pageId=foo").get()
       val result = await(request)
       result.status mustBe 303
-      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.IntroductionController.onPageLoad().url)
+      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.IntroductionController.onPageLoad.url)
     }
     "redirect to page specified" in {
       val request = buildClient("/question?pageId=zeroRatedSales").get()
       val result = await(request)
       result.status mustBe 303
-      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ZeroRatedSalesController.onPageLoad().url)
+      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ZeroRatedSalesController.onPageLoad.url)
     }
   }
 }

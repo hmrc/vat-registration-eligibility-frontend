@@ -31,7 +31,7 @@
     @h1(messages("eligible.heading"))
     @p{ @messages("eligible.p1") }
 
-    @formWithCsrf(action = routes.EligibleController.onSubmit()) {
+    @formWithCsrf(action = routes.EligibleController.onSubmit) {
         @button(messages("eligible.button"))
     }
 

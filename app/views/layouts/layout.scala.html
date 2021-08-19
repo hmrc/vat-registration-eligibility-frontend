@@ -45,7 +45,7 @@
         timeout = Option(appConfig.timeout),
         countdown = Option(appConfig.countdown),
         keepAliveUrl = Some("?continue=true"),
-        signOutUrl = Some(controllers.routes.SignOutController.signOut().url)
+        signOutUrl = Some(controllers.routes.SignOutController.signOut.url)
     ))
     }
 }

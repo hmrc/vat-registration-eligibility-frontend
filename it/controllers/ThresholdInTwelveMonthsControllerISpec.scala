@@ -23,7 +23,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
     .configure(fakeConfig())
     .build
 
-  s"GET ${controllers.routes.ThresholdInTwelveMonthsController.onPageLoad().url}" should {
+  s"GET ${controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url}" should {
     "render the page" when {
       "no prepop data is present in mongo" in {
         stubSuccessfulLogin()
@@ -65,7 +65,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         val request = buildClient("/gone-over-threshold").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie()).get()
         val response = await(request)
         response.status mustBe SEE_OTHER
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.IntroductionController.onPageLoad().url)
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.IntroductionController.onPageLoad.url)
       }
     }
   }
@@ -93,7 +93,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         response.status mustBe 400
       }
     }
-    s"redirect to ${controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad().url}" when {
+    s"redirect to ${controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad.url}" when {
       "yes and a valid date is given and should drop ThresholdNextThirtyDaysId data if present but not exception" in {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
@@ -114,7 +114,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
 
         val response = await(request)
         response.status mustBe 303
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad().url)
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad.url)
         verifySessionCacheData[ConditionalDateFormElement](
           internalId,
           ThresholdInTwelveMonthsId.toString,
@@ -126,7 +126,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         verifySessionCacheData(internalId, VATRegistrationExceptionId.toString, Some(true))
       }
     }
-    s"redirect to ${controllers.routes.ThresholdNextThirtyDaysController.onPageLoad().url}" when {
+    s"redirect to ${controllers.routes.ThresholdNextThirtyDaysController.onPageLoad.url}" when {
       "no is submitted should drop ThresholdPreviousThirtyDaysId data and exception but not voluntary" in {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
@@ -146,7 +146,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
 
         val response = await(request)
         response.status mustBe 303
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdNextThirtyDaysController.onPageLoad().url)
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdNextThirtyDaysController.onPageLoad.url)
         verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, Some(ConditionalDateFormElement(false, None)))
 
         verifySessionCacheData(internalId, VoluntaryRegistrationId.toString, Some(true))

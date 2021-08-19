@@ -20,7 +20,7 @@ class ZeroRateSalesISpec extends IntegrationSpecBase with AuthHelper with Sessio
 
   val internalId = "testInternalId"
   s"POST ${controllers.routes.ZeroRatedSalesController.onSubmit().url}" should {
-    s"navigate to ${controllers.routes.VoluntaryInformationController.onPageLoad()} when false and in the voluntary flow" in {
+    s"navigate to ${controllers.routes.VoluntaryInformationController.onPageLoad} when false and in the voluntary flow" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -33,10 +33,10 @@ class ZeroRateSalesISpec extends IntegrationSpecBase with AuthHelper with Sessio
 
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryInformationController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryInformationController.onPageLoad.url)
       verifySessionCacheData(internalId, ZeroRatedSalesId.toString, Option.apply[Boolean](false))
     }
-    s"navigate to ${controllers.routes.VoluntaryInformationController.onPageLoad()} when true and in the voluntary flow" in {
+    s"navigate to ${controllers.routes.VoluntaryInformationController.onPageLoad} when true and in the voluntary flow" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -49,7 +49,7 @@ class ZeroRateSalesISpec extends IntegrationSpecBase with AuthHelper with Sessio
 
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryInformationController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryInformationController.onPageLoad.url)
       verifySessionCacheData(internalId, ZeroRatedSalesId.toString, Option.apply[Boolean](true))
     }
     "navigate to VAT Exemption when true and in the mandatory flow" in {
@@ -64,11 +64,11 @@ class ZeroRateSalesISpec extends IntegrationSpecBase with AuthHelper with Sessio
 
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExemptionController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExemptionController.onPageLoad.url)
       verifySessionCacheData(internalId, ZeroRatedSalesId.toString, Option.apply[Boolean](true))
     }
 
-    s"navigate to ${controllers.routes.MandatoryInformationController.onPageLoad()} when false and in the mandatory flow" in {
+    s"navigate to ${controllers.routes.MandatoryInformationController.onPageLoad} when false and in the mandatory flow" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -80,7 +80,7 @@ class ZeroRateSalesISpec extends IntegrationSpecBase with AuthHelper with Sessio
 
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MandatoryInformationController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MandatoryInformationController.onPageLoad.url)
       verifySessionCacheData(internalId, ZeroRatedSalesId.toString, Option.apply[Boolean](false))
       verifySessionCacheData(internalId, RegisteringBusinessId.toString, Option.empty[Boolean])
     }

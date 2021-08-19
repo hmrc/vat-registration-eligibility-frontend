@@ -2,9 +2,8 @@ package helpers
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.http.HeaderNames
-import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.libs.json.{JsArray, Json}
 import support.SessionCookieBaker
-import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.http.SessionKeys
 import utils.ExtraSessionKeys
 

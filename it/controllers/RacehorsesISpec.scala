@@ -45,7 +45,7 @@ class RacehorsesISpec extends IntegrationSpecBase with AuthHelper with SessionSt
 
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AnnualAccountingSchemeController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AnnualAccountingSchemeController.onPageLoad.url)
       verifySessionCacheData(internalId, RacehorsesId.toString, Option.apply[Boolean](false))
     }
 
@@ -61,7 +61,7 @@ class RacehorsesISpec extends IntegrationSpecBase with AuthHelper with SessionSt
 
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegisteringBusinessController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegisteringBusinessController.onPageLoad.url)
       verifySessionCacheData(internalId, RacehorsesId.toString, Option.apply[Boolean](false))
     }
 
@@ -76,7 +76,7 @@ class RacehorsesISpec extends IntegrationSpecBase with AuthHelper with SessionSt
 
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
       verifySessionCacheData(internalId, RacehorsesId.toString, Option.apply[Boolean](true))
     }
   }

@@ -44,7 +44,7 @@ class VoluntaryRegistrationController @Inject()(mcc: MessagesControllerComponent
                                                )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.voluntaryRegistration match {
         case None => formProvider()

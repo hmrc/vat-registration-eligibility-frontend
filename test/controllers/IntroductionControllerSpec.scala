@@ -34,7 +34,7 @@ class IntroductionControllerSpec extends ControllerSpecBase {
 
   "onPageLoad" must {
     "return OK with the correct view" in {
-      val res = Controller.onPageLoad()(fakeRequest)
+      val res = Controller.onPageLoad(fakeRequest)
       status(res) mustBe OK
       contentAsString(res) mustBe viewAsString
     }
@@ -45,7 +45,7 @@ class IntroductionControllerSpec extends ControllerSpecBase {
       val res = Controller.onSubmit()(fakeRequest)
 
       status(res) mustBe SEE_OTHER
-      redirectLocation(res) must contain(routes.FixedEstablishmentController.onPageLoad().url)
+      redirectLocation(res) must contain(routes.FixedEstablishmentController.onPageLoad.url)
     }
   }
 }
