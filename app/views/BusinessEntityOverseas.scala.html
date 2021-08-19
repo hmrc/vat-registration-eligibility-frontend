@@ -15,6 +15,7 @@
  *@
 
 @import config.FrontendAppConfig
+@import models.BusinessEntity._
 
 @this(
         layout: views.html.layouts.layout,
@@ -25,7 +26,7 @@
         inputRadio: components.inputRadio
 )
 
-@(form: Form[BusinessEntity], postAction: Call)(implicit request: Request[_], messages: Messages, appconfig: FrontendAppConfig)
+@(form: Form[OverseasType], postAction: Call)(implicit request: Request[_], messages: Messages, appconfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("businessEntityOverseas.heading"))), backLink = true) {
 
@@ -37,13 +38,15 @@
             legend = messages("businessEntityOverseas.heading"),
             items = Seq(
                 RadioItem(
-                    content = Text(messages("businessEntityOverseas.radioyes")),
-                    value = Some("value"),
-                    hint = Some(Hint(content = Text(messages("businessEntityOverseas.hint"))))
+                    content = Text(messages("businessEntityOverseas.netp")),
+                    value = Some(netpKey),
+                    hint = Some(Hint(content = Text(messages("businessEntityOverseas.hint")))),
+                    checked = form("value").value.contains(netpKey)
                 ),
                 RadioItem(
-                    content = Text(messages("businessEntityOverseas.radiono")),
-                    value = Some("value-no")
+                    content = Text(messages("businessEntityOverseas.overseas")),
+                    value = Some(overseasKey),
+                    checked = form("value").value.contains(overseasKey)
                 )
             )
         )

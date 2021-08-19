@@ -13,6 +13,7 @@ trait AuthHelper {
 
   val sessionId = "session-ac4ed3e7-dbc3-4150-9574-40771c4285c1"
   val testRegId = "testRegId"
+  val testInternalId = "testInternalId"
 
   private def cookieData(additionalData: Map[String, String], userId: String = defaultUser): Map[String, String] = {
     Map(
@@ -45,7 +46,7 @@ trait AuthHelper {
             "providerId" -> "testProviderID",
             "providerType" -> "GovernmentGateway"
           ),
-          "internalId" -> "testInternalId",
+          "internalId" -> testInternalId,
           "allEnrolments" -> enrolments
         ).toString())))
   }

@@ -17,11 +17,15 @@
 package controllers
 
 import config.FrontendAppConfig
+import connectors.DataCacheConnector
 import controllers.actions._
-import forms.BusinessEntityFormProvider
+import forms.BusinessEntityOverseasFormProvider
+import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
+import models.{BusinessEntity, NormalMode, OverseasType}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.{Navigator, UserAnswers}
 import views.html.BusinessEntityOverseas
 
 import javax.inject.{Inject, Singleton}
@@ -29,20 +33,38 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessEntityOverseasController @Inject()(mcc: MessagesControllerComponents,
+                                                 dataCacheConnector: DataCacheConnector,
+                                                 navigator: Navigator,
                                                  identify: CacheIdentifierAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
-                                                 form: BusinessEntityFormProvider, // TODO Make form provider for overseas
-                                                 view: BusinessEntityOverseas)(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
+                                                 formProvider: BusinessEntityOverseasFormProvider,
+                                                 view: BusinessEntityOverseas
+                                                )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view(form(), routes.BusinessEntityOverseasController.onSubmit()))
+      val preparedForm = request.userAnswers.businessEntity match {
+        case Some(overseasEntity: OverseasType) => formProvider().fill(overseasEntity)
+        case _ => formProvider()
+      }
+
+      Ok(view(preparedForm, routes.BusinessEntityOverseasController.onSubmit()))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      Future.successful(ImATeapot)
+      formProvider().bindFromRequest.fold(
+        formWithErrors =>
+          Future.successful(
+            BadRequest(view(formWithErrors, routes.BusinessEntityOverseasController.onSubmit()))
+          ),
+        entityType => {
+          dataCacheConnector.save[BusinessEntity](request.internalId, BusinessEntityId.toString, entityType) map { cacheMap =>
+            Redirect(navigator.nextPage(BusinessEntityOverseasId, NormalMode)(new UserAnswers(cacheMap)))
+          }
+        }
+      )
   }
 }

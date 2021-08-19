@@ -17,13 +17,13 @@
 package views
 
 import controllers.routes
-import forms.BusinessEntityFormProvider
+import forms.BusinessEntityOverseasFormProvider
 import views.html.BusinessEntityOverseas
 
 class BusinessEntityOverseasViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix = "BusinessEntityOverseas"
-  val form = new BusinessEntityFormProvider()()
+  val form = new BusinessEntityOverseasFormProvider()()
   val view = app.injector.instanceOf[BusinessEntityOverseas]
 
   object Selectors extends BaseSelectors

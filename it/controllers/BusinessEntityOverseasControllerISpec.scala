@@ -16,13 +16,16 @@
 
 package controllers
 
-import play.api.test.Helpers.{IM_A_TEAPOT, OK}
-import helpers.{AuthHelper, IntegrationSpecBase}
+import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
+import identifiers.BusinessEntityId
+import models.BusinessEntity.{netpKey, overseasKey}
+import models.{BusinessEntity, NETP, Overseas}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
-class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with AuthHelper {
+class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(fakeConfig())
@@ -41,17 +44,36 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
   }
 
   s"POST /business-entity-overseas" should {
-    "return IM_A_TEAPOT" in {
+    "return a redirect to Agricultural Flat Rate Scheme when NETP is selected" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
 
       val request = buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("true")))
+        .post(Map("value" -> Seq(netpKey)))
 
       val response = await(request)
-      response.status mustBe IM_A_TEAPOT
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
+
+      verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(NETP))
+    }
+
+    "return a redirect to International Activities Dropout when Overseas is selected" in {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+
+      val request = buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq(overseasKey)))
+
+      val response = await(request)
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
+
+      verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(Overseas))
     }
   }
 }

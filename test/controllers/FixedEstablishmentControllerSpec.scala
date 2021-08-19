@@ -18,6 +18,7 @@ package controllers
 
 import connectors.FakeDataCacheConnector
 import controllers.actions._
+import featureswitch.core.config.{FeatureSwitching, NETPFlow}
 import forms.FixedEstablishmentFormProvider
 import identifiers.FixedEstablishmentId
 import play.api.data.Form
@@ -28,7 +29,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import views.html.fixedEstablishment
 
-class FixedEstablishmentControllerSpec extends ControllerSpecBase {
+class FixedEstablishmentControllerSpec extends ControllerSpecBase with FeatureSwitching {
 
   def onwardRoute: Call = routes.BusinessEntityController.onPageLoad
 
@@ -69,13 +70,35 @@ class FixedEstablishmentControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when true is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true")
 
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(controllers.routes.BusinessEntityController.onPageLoad.url)
+
+      redirectLocation(result) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+    }
+
+    "redirect to the kickout page when false is submitted" in {
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "false")
+
+      val result = controller().onSubmit()(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+    }
+
+    "redirect to the kickout page when false is submitted when NETP FS is enabled" in {
+      enable(NETPFlow)
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "false")
+
+      val result = controller().onSubmit()(postRequest)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+      disable(NETPFlow)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.BusinessEntityFormProvider
-import identifiers.BusinessEntityId
+import identifiers.{BusinessEntityId, FixedEstablishmentId}
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -45,13 +45,19 @@ class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.businessEntity match {
-        case None => formProvider()
-        case Some(_: OtherType) => formProvider().fill(Other)
-        case Some(_: PartnershipType) => formProvider().fill(Partnership)
-        case Some(businessEntity) => formProvider().fill(businessEntity)
+      request.userAnswers.businessEntity match {
+        case Some(_: OverseasType) => Redirect(navigator.pageIdToPageLoad(FixedEstablishmentId))
+        case otherTypes =>
+          val preparedForm = otherTypes match {
+            case None => formProvider()
+            case Some(_: OtherType) => formProvider().fill(Other)
+            case Some(_: PartnershipType) => formProvider().fill(Partnership)
+            case Some(businessEntity) => formProvider().fill(businessEntity)
+          }
+
+          Ok(view(preparedForm, controllers.routes.BusinessEntityController.onSubmit()))
       }
-      Ok(view(preparedForm, controllers.routes.BusinessEntityController.onSubmit()))
+
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>

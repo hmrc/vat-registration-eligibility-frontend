@@ -41,6 +41,10 @@ object UnincorporatedAssociation extends OtherType
 object Division extends OtherType
 object VatGroup extends OtherType
 
+sealed trait OverseasType extends BusinessEntity
+object Overseas extends OverseasType
+object NETP extends OverseasType
+
 object BusinessEntity {
   val ukCompanyKey = "50"
   val soleTraderKey = "Z1"
@@ -57,6 +61,8 @@ object BusinessEntity {
   val unincorporatedAssociationKey = "63"
   val divisionKey = "65"
   val vatGroupKey = "64"
+  val netpKey = "NETP"
+  val overseasKey = "Overseas"
 
   // scalastyle:off
   implicit def writes[T <: BusinessEntity]: Writes[T] = Writes[T] {
@@ -75,6 +81,8 @@ object BusinessEntity {
     case UnincorporatedAssociation => JsString(unincorporatedAssociationKey)
     case Division => JsString(divisionKey)
     case VatGroup => JsString(vatGroupKey)
+    case NETP => JsString(netpKey)
+    case Overseas => JsString(overseasKey)
     case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 
@@ -94,6 +102,8 @@ object BusinessEntity {
     case UnincorporatedAssociation => messages("businessEntity.unincorporated-association")
     case Division => messages("businessEntity.division")
     case VatGroup => messages("businessEntity.vat-group")
+    case NETP => messages("businessEntityOverseas.netp")
+    case Overseas => messages("businessEntityOverseas.overseas")
   }
 
   implicit val jsonReads: Reads[BusinessEntity] = Reads[BusinessEntity] {
@@ -112,6 +122,8 @@ object BusinessEntity {
     case JsString(`unincorporatedAssociationKey`) => JsSuccess(UnincorporatedAssociation)
     case JsString(`divisionKey`) => JsSuccess(Division)
     case JsString(`vatGroupKey`) => JsSuccess(VatGroup)
+    case JsString(`netpKey`) => JsSuccess(NETP)
+    case JsString(`overseasKey`) => JsSuccess(Overseas)
     case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 
