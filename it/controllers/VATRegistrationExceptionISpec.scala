@@ -25,7 +25,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with AuthHelper 
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some("/check-if-you-can-register-for-vat/cant-register/vatExceptionKickout")
     }
-    s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad()} if answer is false" in {
+    s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} if answer is false" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -36,7 +36,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with AuthHelper 
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
     }
   }
 }

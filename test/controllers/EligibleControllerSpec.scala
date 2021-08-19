@@ -62,7 +62,7 @@ class EligibleControllerSpec extends ControllerSpecBase with TrafficManagementSe
 
   "onPageLoad" must {
     "return OK with the correct view" in {
-      val res = Controller.onPageLoad()(fakeRequest)
+      val res = Controller.onPageLoad(fakeRequest)
       status(res) mustBe OK
       contentAsString(res) mustBe viewAsString
     }

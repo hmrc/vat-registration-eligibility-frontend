@@ -25,7 +25,7 @@ class ApplyInWritingControllerSpec extends ControllerSpecBase {
   implicit val appConfig = frontendAppConfig
   val view = app.injector.instanceOf[applyInWriting]
 
-  def onwardRoute = routes.ApplyInWritingController.onPageLoad()
+  def onwardRoute = routes.ApplyInWritingController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ApplyInWritingController(controllerComponents, FakeCacheIdentifierAction, view)

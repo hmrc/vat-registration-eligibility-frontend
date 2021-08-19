@@ -34,7 +34,7 @@
 
     @errorSummary(form.errors)
 
-    @formWithCsrf(action = RegisteringBusinessController.onSubmit(), 'autoComplete -> "off") {
+    @formWithCsrf(action = RegisteringBusinessController.onSubmit, 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
             headingKey = "registeringBusiness.heading",

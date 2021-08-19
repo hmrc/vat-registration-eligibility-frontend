@@ -40,7 +40,7 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
 
   val view = app.injector.instanceOf[thresholdNextThirtyDays]
 
-  def onwardRoute: Call = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.IndexController.onPageLoad
 
   object TestTimeMachine extends TimeMachine {
     override def today: LocalDate = LocalDate.parse("2020-01-01")
@@ -69,7 +69,7 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
   "ThresholdNextThirtyDays Controller" must {
     when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeDataRequestIncorped)
+      val result = controller().onPageLoad(fakeDataRequestIncorped)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -79,7 +79,7 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
       val validData = Map(ThresholdNextThirtyDaysId.toString -> Json.toJson(ConditionalDateFormElement(value = true, Some(LocalDate.now))))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeDataRequestIncorped)
+      val result = controller(getRelevantData).onPageLoad(fakeDataRequestIncorped)
 
       contentAsString(result) mustBe viewAsString(form.fill(ConditionalDateFormElement(value = true, Some(LocalDate.now))))
     }
@@ -118,10 +118,10 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -129,7 +129,7 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
       val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

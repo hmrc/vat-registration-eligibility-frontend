@@ -34,7 +34,7 @@ class NavigatorSpec extends SpecBase {
     "in Normal mode" must {
       "go to Index from an identifier that doesn't exist in the route map" in {
         case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, NormalMode)(mock[UserAnswers]) mustBe routes.IntroductionController.onPageLoad()
+        navigator.nextPage(UnknownIdentifier, NormalMode)(mock[UserAnswers]) mustBe routes.IntroductionController.onPageLoad
       }
     }
   }
@@ -55,7 +55,7 @@ class NavigatorSpec extends SpecBase {
         val fakeId = new Identifier {
           override def toString: String = "fudge"
         }
-        navigator.pageIdToPageLoad(fakeId).url mustBe routes.IntroductionController.onPageLoad().url
+        navigator.pageIdToPageLoad(fakeId).url mustBe routes.IntroductionController.onPageLoad.url
       }
     }
   }
@@ -65,7 +65,7 @@ class NavigatorSpec extends SpecBase {
       "true is passed in" in {
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true))))
         val result = navigator.nextOn(true, ZeroRatedSalesId, AgriculturalFlatRateSchemeId, EligibilityDropoutId("mode"))
-        result._2(data) mustBe controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad()
+        result._2(data) mustBe controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad
       }
     }
   }
@@ -75,14 +75,14 @@ class NavigatorSpec extends SpecBase {
       "Exception is true and yes is answered" in {
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), VATRegistrationExceptionId.toString -> JsBoolean(true))))
         val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
-        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad()
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
       }
     }
     "Redirect to Exemption" when {
       "Not Voluntary Registration and yes is answered" in {
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true))))
         val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
-        result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad()
+        result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
       }
     }
     "Redirect to Voluntary" when {
@@ -90,14 +90,14 @@ class NavigatorSpec extends SpecBase {
         val testDate = LocalDate.of(1999, 12, 12)
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), ThresholdNextThirtyDaysId.toString -> Json.toJson(ConditionalDateFormElement(false, Some(testDate))))))
         val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
-        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad()
+        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
       }
     }
     "Redirect to Voluntary" when {
       "Is Voluntary Registration and no is answered" in {
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false), VoluntaryRegistrationId.toString -> JsBoolean(true))))
         val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
-        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad()
+        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
       }
     }
     "Redirect to Mandatory" when {
@@ -105,7 +105,7 @@ class NavigatorSpec extends SpecBase {
         val testDate = LocalDate.of(1999, 12, 12)
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false), ThresholdInTwelveMonthsId.toString -> Json.toJson(ConditionalDateFormElement(true, Some(testDate))))))
         val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
-        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad()
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
       }
     }
   }

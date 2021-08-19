@@ -58,6 +58,26 @@ object BusinessEntity {
   val divisionKey = "65"
   val vatGroupKey = "64"
 
+  // scalastyle:off
+  implicit def writes[T <: BusinessEntity]: Writes[T] = Writes[T] {
+    case UKCompany => JsString(ukCompanyKey)
+    case SoleTrader => JsString(soleTraderKey)
+    case Partnership => JsString(partnershipKey)
+    case GeneralPartnership => JsString(generalPartnershipKey)
+    case LimitedPartnership => JsString(limitedPartnershipKey)
+    case ScottishPartnership => JsString(scottishPartnershipKey)
+    case ScottishLimitedPartnership => JsString(scottishLimitedPartnershipKey)
+    case LimitedLiabilityPartnership => JsString(limitedLiabilityPartnershipKey)
+    case Other => JsString(otherKey)
+    case CharitableIncorporatedOrganisation => JsString(charitableIncorporatedOrganisationKey)
+    case NonIncorporatedTrust => JsString(nonIncorporatedTrustKey)
+    case RegisteredSociety => JsString(registeredSocietyKey)
+    case UnincorporatedAssociation => JsString(unincorporatedAssociationKey)
+    case Division => JsString(divisionKey)
+    case VatGroup => JsString(vatGroupKey)
+    case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
+  }
+
   def businessEntityToString(businessEntity: BusinessEntity)(implicit messages: Messages): String = businessEntity match {
     case UKCompany => messages("businessEntity.ukcompany")
     case SoleTrader => messages("businessEntity.soletrader")
@@ -95,24 +115,5 @@ object BusinessEntity {
     case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 
-  implicit val jsonWrites: Writes[BusinessEntity] = Writes[BusinessEntity] {
-    case UKCompany => JsString(ukCompanyKey)
-    case SoleTrader => JsString(soleTraderKey)
-    case Partnership => JsString(partnershipKey)
-    case GeneralPartnership => JsString(generalPartnershipKey)
-    case LimitedPartnership => JsString(limitedPartnershipKey)
-    case ScottishPartnership => JsString(scottishPartnershipKey)
-    case ScottishLimitedPartnership => JsString(scottishLimitedPartnershipKey)
-    case LimitedLiabilityPartnership => JsString(limitedLiabilityPartnershipKey)
-    case Other => JsString(otherKey)
-    case CharitableIncorporatedOrganisation => JsString(charitableIncorporatedOrganisationKey)
-    case NonIncorporatedTrust => JsString(nonIncorporatedTrustKey)
-    case RegisteredSociety => JsString(registeredSocietyKey)
-    case UnincorporatedAssociation => JsString(unincorporatedAssociationKey)
-    case Division => JsString(divisionKey)
-    case VatGroup => JsString(vatGroupKey)
-    case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
-  }
-
-  implicit val jsonFormat: Format[BusinessEntity] = Format[BusinessEntity](jsonReads, jsonWrites)
+  implicit val jsonFormat: Format[BusinessEntity] = Format[BusinessEntity](jsonReads, writes)
 }

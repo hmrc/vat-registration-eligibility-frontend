@@ -52,7 +52,7 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
                                 executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.nino match {
         case None => formProvider()
@@ -69,7 +69,7 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
         value =>
           dataCacheConnector.save[Boolean](request.internalId, NinoId.toString, value).flatMap { cacheMap =>
             if (!value) {
-              Future.successful(Redirect(controllers.routes.VATExceptionKickoutController.onPageLoad()))
+              Future.successful(Redirect(controllers.routes.VATExceptionKickoutController.onPageLoad))
             }
             else {
               if (isEnabled(TrafficManagement)) {
@@ -86,7 +86,7 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
                           Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap)))
                         }
                       case QuotaReached =>
-                        Future.successful(Redirect(controllers.routes.VATExceptionKickoutController.onPageLoad()))
+                        Future.successful(Redirect(controllers.routes.VATExceptionKickoutController.onPageLoad))
                     }
                 }
               }

@@ -20,7 +20,7 @@ import connectors.{Allocated, FakeDataCacheConnector, QuotaReached}
 import controllers.actions._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import forms.NinoFormProvider
-import identifiers.{BusinessEntityId, FixedEstablishmentId, NinoId}
+import identifiers.{BusinessEntityId, NinoId}
 import mocks.{S4LServiceMock, TrafficManagementServiceMock}
 import models._
 import models.requests.DataRequest
@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with TrafficManagementServiceMock with S4LServiceMock {
 
-  def onwardRoute: Call = routes.ThresholdInTwelveMonthsController.onPageLoad()
+  def onwardRoute: Call = routes.ThresholdInTwelveMonthsController.onPageLoad
 
   val view = app.injector.instanceOf[nino]
 
@@ -78,7 +78,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
 
   "Nino Controller" must {
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -88,7 +88,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
       val validData = Map(NinoId.toString -> JsBoolean(true))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(true))
     }
@@ -119,7 +119,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
       val result = controller().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.VATExceptionKickoutController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.VATExceptionKickoutController.onPageLoad.url)
     }
 
     "redirect to the next page when the Traffic Management is disabled" in {
@@ -150,7 +150,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
       val result = controller().onSubmit()(testPostRequest("value" -> "true"))
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.VATExceptionKickoutController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.VATExceptionKickoutController.onPageLoad.url)
     }
 
     "redirect to the next page when valid data is submitted, Traffic Management returns Quota Reached but RegistrationInformation does match" in {
@@ -185,10 +185,10 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -196,7 +196,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
       val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

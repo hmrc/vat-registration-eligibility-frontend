@@ -36,7 +36,7 @@ class MandatoryInformationController @Inject()(mcc: MessagesControllerComponents
   }
 
   def onSubmit: Action[AnyContent] = identify { _ =>
-    Redirect(controllers.routes.EligibleController.onPageLoad())
+    Redirect(controllers.routes.EligibleController.onPageLoad)
   }
 
 }

@@ -34,7 +34,7 @@ import scala.concurrent.Future
 
 class VATExceptionKickoutControllerSpec extends ControllerSpecBase with TrafficManagementServiceMock {
 
-  def onwardRoute = routes.IndexController.onPageLoad()
+  def onwardRoute = routes.IndexController.onPageLoad
 
   val view = app.injector.instanceOf[vatExceptionKickout]
 
@@ -57,7 +57,7 @@ class VATExceptionKickoutControllerSpec extends ControllerSpecBase with TrafficM
   "VATRegistrationException Controller" must {
 
     "return OK and the correct view for a GET" in {
-      val result = controller().onPageLoad()(fakeRequest)
+      val result = controller().onPageLoad(fakeRequest)
 
       status(result) mustBe OK
       contentAsString(result) mustBe viewAsString()
@@ -67,7 +67,7 @@ class VATExceptionKickoutControllerSpec extends ControllerSpecBase with TrafficM
       val validData = Map(VATExceptionKickoutId.toString -> JsBoolean(true))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
-      val result = controller(getRelevantData).onPageLoad()(fakeRequest)
+      val result = controller(getRelevantData).onPageLoad(fakeRequest)
 
       contentAsString(result) mustBe viewAsString(form.fill(true))
     }
@@ -94,10 +94,10 @@ class VATExceptionKickoutControllerSpec extends ControllerSpecBase with TrafficM
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-      val result = controller(dontGetAnyData).onPageLoad()(fakeRequest)
+      val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
@@ -105,7 +105,7 @@ class VATExceptionKickoutControllerSpec extends ControllerSpecBase with TrafficM
       val result = controller(dontGetAnyData).onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.SessionExpiredController.onPageLoad.url)
     }
   }
 }

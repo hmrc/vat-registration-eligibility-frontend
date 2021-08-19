@@ -21,7 +21,7 @@ import play.api.test.Helpers._
 
 class FeedbackControllerSpec extends ControllerSpecBase {
 
-  def onwardRoute: Call = routes.IndexController.onPageLoad()
+  def onwardRoute: Call = routes.IndexController.onPageLoad
 
   val controller: FeedbackController = new FeedbackController(frontendAppConfig, controllerComponents)
 

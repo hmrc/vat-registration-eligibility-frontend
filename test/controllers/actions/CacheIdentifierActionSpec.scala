@@ -39,7 +39,7 @@ class CacheIdentifierActionSpec extends SpecBase {
                (implicit override val executionContext: ExecutionContext) extends CacheIdentifierAction with BaseController {
 
 
-    def onPageLoad() = authAction { request => Ok }
+    def onPageLoad = authAction { request => Ok }
 
     override protected def controllerComponents: ControllerComponents = controllerComponents
 
@@ -66,7 +66,7 @@ class CacheIdentifierActionSpec extends SpecBase {
           when(mockCurrentProfileService.fetchOrBuildCurrentProfile(ArgumentMatchers.eq(testInternalId)))
             .thenReturn(throw new NotFoundException(""))
 
-          val result = controller.onPageLoad()(fakeRequest)
+          val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get mustBe Some(s"${frontendAppConfig.vatRegFEURL}${frontendAppConfig.vatRegFEURI}")
         }
@@ -76,7 +76,7 @@ class CacheIdentifierActionSpec extends SpecBase {
         "redirect the user to log in " in {
           val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new MissingBearerToken), frontendAppConfig, mockCurrentProfileService, parser)
           val controller = new Harness(authAction, parser)
-          val result = controller.onPageLoad()(fakeRequest)
+          val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
         }
@@ -86,7 +86,7 @@ class CacheIdentifierActionSpec extends SpecBase {
         "redirect the user to log in " in {
           val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new BearerTokenExpired), frontendAppConfig, mockCurrentProfileService, parser)
           val controller = new Harness(authAction, parser)
-          val result = controller.onPageLoad()(fakeRequest)
+          val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
           redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
         }
@@ -96,9 +96,9 @@ class CacheIdentifierActionSpec extends SpecBase {
         "redirect the user to the unauthorised page" in {
           val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new InsufficientEnrolments), frontendAppConfig, mockCurrentProfileService, parser)
           val controller = new Harness(authAction, parser)
-          val result = controller.onPageLoad()(fakeRequest)
+          val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
         }
       }
 
@@ -106,9 +106,9 @@ class CacheIdentifierActionSpec extends SpecBase {
         "redirect the user to the unauthorised page" in {
           val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), frontendAppConfig, mockCurrentProfileService, parser)
           val controller = new Harness(authAction, parser)
-          val result = controller.onPageLoad()(fakeRequest)
+          val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
         }
       }
 
@@ -116,9 +116,9 @@ class CacheIdentifierActionSpec extends SpecBase {
         "redirect the user to the unauthorised page" in {
           val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedAuthProvider), frontendAppConfig, mockCurrentProfileService, parser)
           val controller = new Harness(authAction, parser)
-          val result = controller.onPageLoad()(fakeRequest)
+          val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
         }
       }
 
@@ -126,9 +126,9 @@ class CacheIdentifierActionSpec extends SpecBase {
         "redirect the user to the unauthorised page" in {
           val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), frontendAppConfig, mockCurrentProfileService, parser)
           val controller = new Harness(authAction, parser)
-          val result = controller.onPageLoad()(fakeRequest)
+          val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
         }
       }
 
@@ -136,9 +136,9 @@ class CacheIdentifierActionSpec extends SpecBase {
         "redirect the user to the unauthorised page" in {
           val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedCredentialRole), frontendAppConfig, mockCurrentProfileService, parser)
           val controller = new Harness(authAction, parser)
-          val result = controller.onPageLoad()(fakeRequest)
+          val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad().url)
+          redirectLocation(result) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
         }
       }
     }

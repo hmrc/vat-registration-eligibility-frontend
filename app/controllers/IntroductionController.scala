@@ -35,7 +35,7 @@ class IntroductionController @Inject()(mcc: MessagesControllerComponents,
   }
 
   def onSubmit: Action[AnyContent] = identify { _ =>
-    Redirect(controllers.routes.FixedEstablishmentController.onPageLoad())
+    Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
   }
 
 }

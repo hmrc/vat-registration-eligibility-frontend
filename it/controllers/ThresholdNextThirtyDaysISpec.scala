@@ -17,7 +17,7 @@ class ThresholdNextThirtyDaysISpec extends IntegrationSpecBase with AuthHelper w
   val dateFieldName = s"${ThresholdNextThirtyDaysId}Date"
 
   s" ${controllers.routes.ThresholdNextThirtyDaysController.onSubmit()}" should {
-    s"redirect to ${controllers.routes.VATRegistrationExceptionController.onPageLoad()} with value of true" in {
+    s"redirect to ${controllers.routes.VATRegistrationExceptionController.onPageLoad} with value of true" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -31,9 +31,9 @@ class ThresholdNextThirtyDaysISpec extends IntegrationSpecBase with AuthHelper w
         ))
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad.url)
     }
-    s"redirect to ${controllers.routes.VoluntaryRegistrationController.onPageLoad()} with value of false" in {
+    s"redirect to ${controllers.routes.VoluntaryRegistrationController.onPageLoad} with value of false" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -44,7 +44,7 @@ class ThresholdNextThirtyDaysISpec extends IntegrationSpecBase with AuthHelper w
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryRegistrationController.onPageLoad().url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryRegistrationController.onPageLoad.url)
     }
   }
 }

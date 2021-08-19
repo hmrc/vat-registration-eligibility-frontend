@@ -26,7 +26,7 @@ class ChoseNotToRegisterControllerSpec extends ControllerSpecBase {
 
   val view = app.injector.instanceOf[choseNotToRegister]
 
-  def onwardRoute = routes.ChoseNotToRegisterController.onPageLoad()
+  def onwardRoute = routes.ChoseNotToRegisterController.onPageLoad
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ChoseNotToRegisterController(controllerComponents, FakeCacheIdentifierAction, view)

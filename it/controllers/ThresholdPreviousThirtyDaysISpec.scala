@@ -28,7 +28,7 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
     .overrides(bind[TimeMachine].to[FakeTimeMachine])
     .build()
 
-  s"GET ${controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad().url}" should {
+  s"GET ${controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad.url}" should {
     "render the page" when {
       "no data is present in mongo" in {
         stubSuccessfulLogin()
@@ -59,7 +59,7 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
     val incorpDate = LocalDate.of(2020, 1, 1).minusMonths(14)
     val dateAfterIncorp = incorpDate.plusMonths(2)
 
-    s"redirect to ${controllers.routes.VATRegistrationExceptionController.onPageLoad().url}" when {
+    s"redirect to ${controllers.routes.VATRegistrationExceptionController.onPageLoad.url}" when {
       "yes and a valid date is submitted, and Q1 is yes should also drop voluntary" in {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
@@ -77,7 +77,7 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
 
         val response = await(request)
         response.status mustBe SEE_OTHER
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad().url)
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad.url)
         verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdPreviousThirtyDaysId.toString, Some(ConditionalDateFormElement(true, Some(dateAfterIncorp))))
         verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, Some(ConditionalDateFormElement(true, Some(localDate))))
         verifySessionCacheData(internalId, VoluntaryRegistrationId.toString, Option.empty[Boolean])
@@ -96,7 +96,7 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
 
         val response = await(request)
         response.status mustBe 303
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad().url)
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad.url)
 
         verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdPreviousThirtyDaysId.toString, Some(ConditionalDateFormElement(false, None)))
         verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, Some(ConditionalDateFormElement(true, Some(localDate))))

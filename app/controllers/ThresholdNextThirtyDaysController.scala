@@ -44,7 +44,7 @@ class ThresholdNextThirtyDaysController @Inject()(mcc: MessagesControllerCompone
                                                  )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.thresholdNextThirtyDays match {
         case None => formProvider()

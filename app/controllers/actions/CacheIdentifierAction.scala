@@ -26,7 +26,7 @@ import services.CurrentProfileService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, UnauthorizedException}
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,7 +39,7 @@ class CacheIdentifierActionImpl @Inject()(override val authConnector: AuthConnec
   extends CacheIdentifierAction with AuthorisedFunctions {
 
   override def invokeBlock[A](request: Request[A], block: CacheIdentifierRequest[A] => Future[Result]): Future[Result] = {
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised().retrieve(Retrievals.internalId) {
       _.map {
@@ -54,15 +54,15 @@ class CacheIdentifierActionImpl @Inject()(override val authConnector: AuthConnec
       case ex: NoActiveSession =>
         Redirect(config.loginUrl, Map("continue" -> Seq(config.postSignInUrl)))
       case ex: InsufficientEnrolments =>
-        Redirect(routes.UnauthorisedController.onPageLoad())
+        Redirect(routes.UnauthorisedController.onPageLoad)
       case ex: InsufficientConfidenceLevel =>
-        Redirect(routes.UnauthorisedController.onPageLoad())
+        Redirect(routes.UnauthorisedController.onPageLoad)
       case ex: UnsupportedAuthProvider =>
-        Redirect(routes.UnauthorisedController.onPageLoad())
+        Redirect(routes.UnauthorisedController.onPageLoad)
       case ex: UnsupportedAffinityGroup =>
-        Redirect(routes.UnauthorisedController.onPageLoad())
+        Redirect(routes.UnauthorisedController.onPageLoad)
       case ex: UnsupportedCredentialRole =>
-        Redirect(routes.UnauthorisedController.onPageLoad())
+        Redirect(routes.UnauthorisedController.onPageLoad)
     }
   }
 }

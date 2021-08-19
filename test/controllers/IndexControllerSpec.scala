@@ -37,7 +37,7 @@ class IndexControllerSpec extends ControllerSpecBase with MockS4lConnector with 
   class Setup {
     val controller = new IndexController(
       controllerComponents,
-      new FakeNavigator(desiredRoute = routes.ThresholdInTwelveMonthsController.onPageLoad()),
+      new FakeNavigator(desiredRoute = routes.ThresholdInTwelveMonthsController.onPageLoad),
       dataCacheConnectorMock,
       mockS4LConnector,
       FakeCacheIdentifierAction,
@@ -49,12 +49,12 @@ class IndexControllerSpec extends ControllerSpecBase with MockS4lConnector with 
     "Redirect to the Introduction page for a GET" in new Setup {
       mockClearSession(testCacheId)(Future.successful(true))
       mockS4LClear()
-      val result = controller.onPageLoad()(request)
-      redirectLocation(result) mustBe Some(routes.IntroductionController.onPageLoad().url)
+      val result = controller.onPageLoad(request)
+      redirectLocation(result) mustBe Some(routes.IntroductionController.onPageLoad.url)
     }
   }
   "navigateToPage with a page id takes user to page in navigator" in new Setup {
     val result = controller.navigateToPageId("foo")(fakeRequest)
-    redirectLocation(result) mustBe Some(routes.IntroductionController.onPageLoad().url)
+    redirectLocation(result) mustBe Some(routes.IntroductionController.onPageLoad.url)
   }
 }

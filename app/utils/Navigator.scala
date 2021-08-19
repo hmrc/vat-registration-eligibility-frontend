@@ -33,36 +33,36 @@ import javax.inject.{Inject, Singleton}
 class Navigator @Inject()() extends Logging with FeatureSwitching {
 
   def pageIdToPageLoad(pageId: Identifier): Call = pageId match {
-    case FixedEstablishmentId => routes.FixedEstablishmentController.onPageLoad()
-    case BusinessEntityId => routes.BusinessEntityController.onPageLoad()
-    case ThresholdNextThirtyDaysId => routes.ThresholdNextThirtyDaysController.onPageLoad()
-    case ThresholdPreviousThirtyDaysId => routes.ThresholdPreviousThirtyDaysController.onPageLoad()
-    case VoluntaryRegistrationId => routes.VoluntaryRegistrationController.onPageLoad()
-    case ChoseNotToRegisterId => routes.ChoseNotToRegisterController.onPageLoad()
-    case ThresholdInTwelveMonthsId => routes.ThresholdInTwelveMonthsController.onPageLoad()
-    case TurnoverEstimateId => routes.TurnoverEstimateController.onPageLoad()
-    case InvolvedInOtherBusinessId => routes.InvolvedInOtherBusinessController.onPageLoad()
-    case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad()
-    case AnnualAccountingSchemeId => routes.AnnualAccountingSchemeController.onPageLoad()
-    case ZeroRatedSalesId => routes.ZeroRatedSalesController.onPageLoad()
-    case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad()
-    case NinoId => routes.NinoController.onPageLoad()
-    case VATExemptionId => routes.VATExemptionController.onPageLoad()
-    case VATExceptionKickoutId => routes.VATExceptionKickoutController.onPageLoad()
-    case VATRegistrationExceptionId => routes.VATRegistrationExceptionController.onPageLoad()
-    case ApplyInWritingId => routes.ApplyInWritingController.onPageLoad()
+    case FixedEstablishmentId => routes.FixedEstablishmentController.onPageLoad
+    case BusinessEntityId => routes.BusinessEntityController.onPageLoad
+    case ThresholdNextThirtyDaysId => routes.ThresholdNextThirtyDaysController.onPageLoad
+    case ThresholdPreviousThirtyDaysId => routes.ThresholdPreviousThirtyDaysController.onPageLoad
+    case VoluntaryRegistrationId => routes.VoluntaryRegistrationController.onPageLoad
+    case ChoseNotToRegisterId => routes.ChoseNotToRegisterController.onPageLoad
+    case ThresholdInTwelveMonthsId => routes.ThresholdInTwelveMonthsController.onPageLoad
+    case TurnoverEstimateId => routes.TurnoverEstimateController.onPageLoad
+    case InvolvedInOtherBusinessId => routes.InvolvedInOtherBusinessController.onPageLoad
+    case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad
+    case AnnualAccountingSchemeId => routes.AnnualAccountingSchemeController.onPageLoad
+    case ZeroRatedSalesId => routes.ZeroRatedSalesController.onPageLoad
+    case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad
+    case NinoId => routes.NinoController.onPageLoad
+    case VATExemptionId => routes.VATExemptionController.onPageLoad
+    case VATExceptionKickoutId => routes.VATExceptionKickoutController.onPageLoad
+    case VATRegistrationExceptionId => routes.VATRegistrationExceptionController.onPageLoad
+    case ApplyInWritingId => routes.ApplyInWritingController.onPageLoad
     case EligibilityDropoutId(mode) => mode match {
       case InternationalActivitiesId.toString => routes.EligibilityDropoutController.internationalActivitiesDropout()
       case mode => routes.EligibilityDropoutController.onPageLoad(mode)
     }
-    case AgriculturalFlatRateSchemeId => routes.AgriculturalFlatRateSchemeController.onPageLoad()
-    case RacehorsesId => routes.RacehorsesController.onPageLoad()
-    case VoluntaryInformationId => routes.VoluntaryInformationController.onPageLoad()
-    case MandatoryInformationId => routes.MandatoryInformationController.onPageLoad()
-    case EligibleId => routes.EligibleController.onPageLoad()
+    case AgriculturalFlatRateSchemeId => routes.AgriculturalFlatRateSchemeController.onPageLoad
+    case RacehorsesId => routes.RacehorsesController.onPageLoad
+    case VoluntaryInformationId => routes.VoluntaryInformationController.onPageLoad
+    case MandatoryInformationId => routes.MandatoryInformationController.onPageLoad
+    case EligibleId => routes.EligibleController.onPageLoad
     case page => {
       logger.info(s"${page.toString} does not exist navigating to start of the journey")
-      routes.IntroductionController.onPageLoad()
+      routes.IntroductionController.onPageLoad
     }
   }
 
@@ -139,23 +139,23 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
   private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
     BusinessEntityId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
-        case Some(Other) => routes.BusinessEntityOtherController.onPageLoad()
-        case Some(Partnership) => routes.BusinessEntityPartnershipController.onPageLoad()
-        case Some(_) => routes.AgriculturalFlatRateSchemeController.onPageLoad()
-        case _ => routes.BusinessEntityController.onPageLoad()
+        case Some(Other) => routes.BusinessEntityOtherController.onPageLoad
+        case Some(Partnership) => routes.BusinessEntityPartnershipController.onPageLoad
+        case Some(_) => routes.AgriculturalFlatRateSchemeController.onPageLoad
+        case _ => routes.BusinessEntityController.onPageLoad
       }
     },
     BusinessEntityPartnershipId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
-        case Some(_: PartnershipType) => routes.AgriculturalFlatRateSchemeController.onPageLoad()
-        case _ => routes.BusinessEntityController.onPageLoad()
+        case Some(_: PartnershipType) => routes.AgriculturalFlatRateSchemeController.onPageLoad
+        case _ => routes.BusinessEntityController.onPageLoad
       }
     },
     BusinessEntityOtherId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
         case Some(Division) => routes.EligibilityDropoutController.onPageLoad(BusinessEntityId.toString)
-        case Some(_: OtherType) => routes.AgriculturalFlatRateSchemeController.onPageLoad()
-        case _ => routes.BusinessEntityController.onPageLoad()
+        case Some(_: OtherType) => routes.AgriculturalFlatRateSchemeController.onPageLoad
+        case _ => routes.BusinessEntityController.onPageLoad
       }
     },
     nextOn(false,
@@ -256,5 +256,5 @@ class Navigator @Inject()() extends Logging with FeatureSwitching {
   )
 
   def nextPage(id: Identifier, mode: Mode): UserAnswers => Call =
-    routeMap.getOrElse(id, _ => routes.IntroductionController.onPageLoad())
+    routeMap.getOrElse(id, _ => routes.IntroductionController.onPageLoad)
 }

@@ -44,7 +44,7 @@ class InvolvedInOtherBusinessController @Inject()(mcc: MessagesControllerCompone
                                                  )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.involvedInOtherBusiness match {
         case None => formProvider.form

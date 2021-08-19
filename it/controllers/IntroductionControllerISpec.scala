@@ -37,7 +37,7 @@ class IntroductionControllerISpec extends IntegrationSpecBase with AuthHelper wi
         .post(Json.obj()))
 
       res.status mustBe SEE_OTHER
-      res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad().url)
+      res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
     }
   }
 
