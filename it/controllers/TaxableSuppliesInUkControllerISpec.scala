@@ -41,7 +41,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
   val pageUrl: String = routes.TaxableSuppliesInUkController.onSubmit.toString
 
   s"POST $pageUrl" should {
-    "redirect to Do not need to register if the answer is no" in {
+    "redirect to Do Not Need To Register if the answer is no" in {
       disable(TrafficManagement)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -54,7 +54,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DoNotNeedToRegisterController.onPageLoad.url)
     }
 
     "redirect to Threshold In Twelve Months if the feature switch is disabled" in {
