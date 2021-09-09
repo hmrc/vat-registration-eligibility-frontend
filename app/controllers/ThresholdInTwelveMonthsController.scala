@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
-import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
-import models.{ConditionalDateFormElement, NormalMode, RegistrationInformation}
+import identifiers.{TaxableSuppliesInUkId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
+import models.{ConditionalDateFormElement, NETP, NormalMode, RegistrationInformation}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -48,13 +48,15 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      (request.userAnswers.fixedEstablishment, request.userAnswers.nino) match {
-        case (Some(true), Some(true)) =>
+      (request.userAnswers.fixedEstablishment, request.userAnswers.nino, request.userAnswers.businessEntity) match {  //TODO Move the journey continue logic into a separate controller: SAR-8201
+        case (Some(true), Some(true), _) =>
           val preparedForm = request.userAnswers.thresholdInTwelveMonths match {
             case None => formProvider()
             case Some(value) => formProvider().fill(value)
           }
           Ok(view(preparedForm, NormalMode))
+        case (Some(true), None, Some(NETP)) =>
+          Redirect(navigator.pageIdToPageLoad(TaxableSuppliesInUkId))
         case _ => Redirect(routes.IntroductionController.onPageLoad)
       }
   }

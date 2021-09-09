@@ -103,3 +103,6 @@ GET        /eligible                                    controllers.EligibleCont
 POST       /eligible                                    controllers.EligibleController.onSubmit
 
 GET        /sign-out                                    controllers.SignOutController.signOut
+
+GET        /made-or-intend-to-make-taxable-supplies     controllers.TaxableSuppliesInUkController.onPageLoad
+POST       /made-or-intend-to-make-taxable-supplies     controllers.TaxableSuppliesInUkController.onSubmit

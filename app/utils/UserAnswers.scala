@@ -17,10 +17,11 @@
 package utils
 
 import identifiers._
-import javax.inject.Singleton
 import models._
 import play.api.libs.json.{JsValue, Reads}
 import uk.gov.hmrc.http.cache.client.CacheMap
+
+import javax.inject.Singleton
 
 @Singleton
 class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
@@ -61,6 +62,8 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def registeringBusiness: Option[Boolean] = cacheMap.getEntry[Boolean](RegisteringBusinessId.toString)
 
   def nino: Option[Boolean] = cacheMap.getEntry[Boolean](NinoId.toString)
+
+  def taxableSuppliesInUk: Option[Boolean] = cacheMap.getEntry[Boolean](TaxableSuppliesInUkId.toString)
 
   def getAnswer[T](id: Identifier)(implicit reads: Reads[T]): Option[T] = cacheMap.getEntry[T](id.toString)
 

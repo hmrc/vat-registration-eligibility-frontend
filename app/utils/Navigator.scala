@@ -61,6 +61,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case VoluntaryInformationId => routes.VoluntaryInformationController.onPageLoad
     case MandatoryInformationId => routes.MandatoryInformationController.onPageLoad
     case EligibleId => routes.EligibleController.onPageLoad
+    case TaxableSuppliesInUkId => routes.TaxableSuppliesInUkController.onPageLoad
     case page => {
       logger.info(s"${page.toString} does not exist navigating to start of the journey")
       routes.IntroductionController.onPageLoad
@@ -188,6 +189,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
         case Some(NonIncorporatedTrust) if isEnabled(NonIncorpTrustFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(CharitableIncorporatedOrganisation) if isEnabled(CharityFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(UnincorporatedAssociation) if isEnabled(UnincorporatedAssociationFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
+        case Some(NETP) if isEnabled(NETPFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case _ => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
@@ -213,11 +215,13 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       onSuccessPage = RegisteringBusinessId,
       onFailPage = VATExceptionKickoutId
     ),
-    nextOn(true,
-      fromPage = RegisteringBusinessId,
-      onSuccessPage = NinoId,
-      onFailPage = VATExceptionKickoutId
-    ),
+    RegisteringBusinessId -> { userAnswers =>
+      userAnswers.registeringBusiness match {
+        case Some(true) if userAnswers.businessEntity.contains(NETP) => pageIdToPageLoad(TaxableSuppliesInUkId)
+        case Some(true) => pageIdToPageLoad(NinoId)
+        case Some(false) => pageIdToPageLoad(VATExceptionKickoutId)
+      }
+    },
     nextOn(true,
       fromPage = NinoId,
       onSuccessPage = ThresholdInTwelveMonthsId,
@@ -261,6 +265,11 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       fromPage = VoluntaryRegistrationId,
       onSuccessPage = TurnoverEstimateId,
       onFailPage = ChoseNotToRegisterId
+    ),
+    nextOn(true,
+      fromPage = TaxableSuppliesInUkId,
+      onSuccessPage = TaxableSuppliesInUkId, //TODO SAR-8128
+      onFailPage = TaxableSuppliesInUkId  //TODO SAR-8129
     ),
     toNextPage(VoluntaryInformationId, EligibleId)
   )

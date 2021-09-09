@@ -281,3 +281,10 @@ fixedEstablishment.error.required = Select yes if the business has a fixed estab
 fixedEstablishment.para = A UK establishment exists if either the:
 fixedEstablishment.bullet1 = place where essential management decisions are made and the business’s central administration is carried out is in the UK
 fixedEstablishment.bullet2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK
+
+taxableSuppliesInUk.heading = Has the business made taxable supplies in the UK?
+taxableSuppliesInUk.para = Tell us if any of the following apply:
+taxableSuppliesInUk.bullet1 = the business has made taxable supplies in the UK within the last 4 years
+taxableSuppliesInUk.bullet2 = the business previously intended to make taxable supplies in the UK within the last 4 years
+taxableSuppliesInUk.bullet3 = the business intends to make taxable supplies in the UK within the next 3 months
+taxableSuppliesInUk.error.required = Select yes if the business has made taxable supplies in the UK
