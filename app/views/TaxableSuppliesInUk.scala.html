@@ -1,0 +1,59 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import models.Mode
+@import models.requests.DataRequest
+
+@this(
+    layout: views.html.layouts.layout,
+    errorSummary: components.errorSummary,
+    formWithCsrf: FormWithCSRF,
+    yesNoRadio: components.yesNoRadio,
+    button: components.button,
+    h1: components.h1,
+    p: components.p,
+    bullets: components.bullets
+)
+
+@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+
+@layout(pageTitle = Some(title(form, messages("taxableSuppliesInUk.heading"))), backLink = true) {
+
+    @errorSummary(form.errors)
+
+    @h1("taxableSuppliesInUk.heading")
+
+    @p{ @messages("taxableSuppliesInUk.para") }
+
+    @bullets(
+        "taxableSuppliesInUk.bullet1",
+        "taxableSuppliesInUk.bullet2",
+        "taxableSuppliesInUk.bullet3"
+    )
+
+    @formWithCsrf(action = routes.TaxableSuppliesInUkController.onSubmit, 'autoComplete -> "off") {
+        @yesNoRadio(
+            form = form,
+            headingKey = "taxableSuppliesInUk.heading",
+            isPageHeading = false,
+            classes = "govuk-visually-hidden"
+        )
+
+        @button(messages("site.continue"))
+    }
+}
+

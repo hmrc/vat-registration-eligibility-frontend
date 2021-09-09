@@ -49,7 +49,7 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
       case Some(credentials) ~ enrolments =>
         val isEnrolled: Boolean = businessEntity match {
           case UKCompany => enrolments.getEnrolment(ukCompanyEnrolment).isDefined
-          case SoleTrader => enrolments.getEnrolment(soleTraderEnrolment).isDefined
+          case SoleTrader | NETP => enrolments.getEnrolment(soleTraderEnrolment).isDefined
           case _: PartnershipType => enrolments.getEnrolment(partnershipEnrolment).isDefined
           case _ => throw new InternalServerException("[TrafficManagementService][allocate] attempted to allocate for invalid party type")
         }
