@@ -62,10 +62,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case MandatoryInformationId => routes.MandatoryInformationController.onPageLoad
     case EligibleId => routes.EligibleController.onPageLoad
     case TaxableSuppliesInUkId => routes.TaxableSuppliesInUkController.onPageLoad
-    case page => {
-      logger.info(s"${page.toString} does not exist navigating to start of the journey")
+    case DoNotNeedToRegisterId => routes.DoNotNeedToRegisterController.onPageLoad
+    case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
       routes.IntroductionController.onPageLoad
-    }
+
   }
 
   private[utils] def nextOn[T](condition: T, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)
@@ -269,7 +269,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     nextOn(true,
       fromPage = TaxableSuppliesInUkId,
       onSuccessPage = TaxableSuppliesInUkId, //TODO SAR-8128
-      onFailPage = TaxableSuppliesInUkId  //TODO SAR-8129
+      onFailPage = DoNotNeedToRegisterId
     ),
     toNextPage(VoluntaryInformationId, EligibleId)
   )

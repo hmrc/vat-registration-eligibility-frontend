@@ -106,3 +106,6 @@ GET        /sign-out                                    controllers.SignOutContr
 
 GET        /made-or-intend-to-make-taxable-supplies     controllers.TaxableSuppliesInUkController.onPageLoad
 POST       /made-or-intend-to-make-taxable-supplies     controllers.TaxableSuppliesInUkController.onSubmit
+
+GET        /do-not-need-to-register                     controllers.DoNotNeedToRegisterController.onPageLoad
+POST       /do-not-need-to-register                     controllers.DoNotNeedToRegisterController.onSubmit()
