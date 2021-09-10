@@ -57,7 +57,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DoNotNeedToRegisterController.onPageLoad.url)
     }
 
-    "redirect to Threshold In Twelve Months if the feature switch is disabled" in {
+    "redirect to the Threshold Taxable Supplies page if the feature switch is disabled" in {
       disable(TrafficManagement)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -71,10 +71,10 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdTaxableSuppliesController.onPageLoad.url)
     }
 
-    "redirect to Threshold In Twelve Months if the answer is yes and TrafficManagement returns allocated" in {
+    "redirect to the Threshold Taxable Supplies page if the answer is yes and TrafficManagement returns allocated" in {
       enable(TrafficManagement)
       stubSuccessfulLogin(enrolments = testEnrolments)
       stubSuccessfulRegIdGet()
@@ -95,7 +95,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdTaxableSuppliesController.onPageLoad.url)
     }
 
     "redirect to OTRS if the answer is yes and TrafficManagement returns Quota Reached" in {
@@ -118,7 +118,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
       response.header(HeaderNames.LOCATION) mustBe Some("https://tax.service.gov.uk/business-registration/select-taxes")
     }
 
-    "redirect to Threshold In Twelve Months if the answer is yes, TrafficManagement returns Quota Reached but RegistrationInformation matches" in {
+    "redirect to the Threshold Taxable Supplies page if the answer is yes, TrafficManagement returns Quota Reached but RegistrationInformation matches" in {
       enable(TrafficManagement)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -133,7 +133,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
         )
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdTaxableSuppliesController.onPageLoad.url)
     }
   }
 }

@@ -113,6 +113,14 @@ thresholdPreviousThirtyDays.error.date.required     = Enter a date for when the 
 thresholdPreviousThirtyDays.error.date.inFuture     = Enter a date that is in the past
 thresholdPreviousThirtyDays.error.date.invalid      = Enter a date in the correct format
 
+thresholdTaxableSupplies.heading                     = When did the business make or intend to make taxable supplies in the UK?
+thresholdTaxableSupplies.text                        = You should enter the earliest date the business either made or intended to make taxable supplies in the UK.
+thresholdTaxableSupplies.dateHint                    = For example, 18 10 2020
+
+thresholdTaxableSupplies.error.date.required         = Enter the date the business made or intended to make taxable supplies
+thresholdTaxableSupplies.error.date.inFuture         = The date must be between {0} and {1}
+thresholdTaxableSupplies.error.date.invalid          = Enter a real date
+
 voluntaryRegistration.heading               = Would you like to voluntarily register the business for VAT?
 voluntaryRegistration.error.required        = Select yes if you want to register voluntarily for VAT
 voluntaryRegistration.heading2              = Does the business want to register voluntarily?

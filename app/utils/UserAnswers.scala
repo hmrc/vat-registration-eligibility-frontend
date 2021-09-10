@@ -51,6 +51,8 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
 
   def thresholdInTwelveMonths: Option[ConditionalDateFormElement] = cacheMap.getEntry[ConditionalDateFormElement](ThresholdInTwelveMonthsId.toString)
 
+  def thresholdTaxableSupplies: Option[DateFormElement] = cacheMap.getEntry[DateFormElement](ThresholdTaxableSuppliesId.toString)
+
   def voluntaryInformation: Option[Boolean] = cacheMap.getEntry[Boolean](VoluntaryInformationId.toString)
 
   def voluntaryRegistration: Option[Boolean] = cacheMap.getEntry[Boolean](VoluntaryRegistrationId.toString)
