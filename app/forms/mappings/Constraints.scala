@@ -87,14 +87,13 @@ trait Constraints {
         Valid
     }
 
-  protected def withinDateRange(minDate: LocalDate, maxDate: LocalDate, beforeMinErr: String, afterMaxErr: String,
-                                minArgs: Seq[String] = Seq(), maxArgs: Seq[String] = Seq()
+  protected def withinDateRange(minDate: LocalDate, maxDate: LocalDate, error: String, args: Seq[String] = Seq()
                                ): Constraint[LocalDate] =
     Constraint { date: LocalDate =>
       if (date.isEqual(minDate) || date.isAfter(minDate)) {
-        if (date.isEqual(maxDate) || date.isBefore(maxDate)) Valid else Invalid(ValidationError(afterMaxErr, maxArgs: _*))
+        if (date.isEqual(maxDate) || date.isBefore(maxDate)) Valid else Invalid(ValidationError(error, args: _*))
       } else {
-        Invalid(ValidationError(beforeMinErr, minArgs: _*))
+        Invalid(ValidationError(error, args: _*))
       }
     }
 
