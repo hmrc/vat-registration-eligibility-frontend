@@ -16,10 +16,9 @@
 
 package utils
 
-import akka.util.Helpers.Requiring
 import featureswitch.core.config.{EnableAAS, FeatureSwitching}
 import identifiers.{Identifier, _}
-import models.ConditionalDateFormElement
+import models.{ConditionalDateFormElement, NETP}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 //scalastyle:off
@@ -29,36 +28,47 @@ object PageIdBinding extends FeatureSwitching {
     val userAnswers = new UserAnswers(map)
     val elemMiss = (e: Identifier) => throw new NoSuchElementException(s"Element missing - $e")
     val illegalState = (e: Identifier) => throw new IllegalStateException(s"Illegal state of elem - $e")
-    val twelveMonthsValue = userAnswers.thresholdInTwelveMonths.getOrElse(elemMiss(ThresholdInTwelveMonthsId)).value
-    val nextThirtyDaysValue = userAnswers.thresholdNextThirtyDays.getOrElse(None).value
+    val twelveMonthsValue = userAnswers.thresholdInTwelveMonths.exists(_.value)
+    val nextThirtyDaysValue = userAnswers.thresholdNextThirtyDays.exists(_.value)
+
+    val isMandatory: Boolean =
+      (userAnswers.thresholdInTwelveMonths, userAnswers.thresholdNextThirtyDays, userAnswers.thresholdPreviousThirtyDays) match {
+        case (Some(ConditionalDateFormElement(true, _)), None, Some(_)) => true
+        case (Some(ConditionalDateFormElement(false, _)), Some(ConditionalDateFormElement(true, _)), None) => true
+        case _ => false
+      }
+
+    val isOverseas = userAnswers.businessEntity.contains(NETP)
 
     def ThresholdSectionValidationAndConstruction: PartialFunction[(Identifier, Option[Any]), (Identifier, Option[Any])] = {
+      case e@(ThresholdInTwelveMonthsId, None) if isOverseas => e
       case e@(ThresholdNextThirtyDaysId, Some(_)) => if (twelveMonthsValue) {
         illegalState(e._1)
       } else {
         e
       }
-      case e@(ThresholdNextThirtyDaysId, None) if !twelveMonthsValue => elemMiss(e._1)
+      case e@(ThresholdNextThirtyDaysId, None) if twelveMonthsValue || isOverseas => e
       case e@(ThresholdPreviousThirtyDaysId, Some(_)) => if (!twelveMonthsValue) {
         illegalState(e._1)
       } else {
         e
       }
-      case e@(ThresholdPreviousThirtyDaysId, None) if twelveMonthsValue => elemMiss(e._1)
-      case e@(VATRegistrationExceptionId, Some(_)) => if (!twelveMonthsValue && (nextThirtyDaysValue == None || nextThirtyDaysValue == (ThresholdNextThirtyDaysId, Some(false)))) {
+      case e@(ThresholdPreviousThirtyDaysId, None) if !twelveMonthsValue || isOverseas => e
+      case e@(ThresholdTaxableSuppliesId, None) if !isOverseas => e
+      case e@(VATRegistrationExceptionId, Some(_)) => if (twelveMonthsValue && nextThirtyDaysValue) {
         illegalState(e._1)
       } else {
         e
       }
       case e@(VATRegistrationExceptionId, None) if (twelveMonthsValue) => illegalState(e._1)
-      case e@(VoluntaryRegistrationId, Some(_)) => if (!validateVoluntaryReason) {
+      case e@(VoluntaryRegistrationId, Some(_)) => if (isMandatory) {
         illegalState(e._1)
       } else {
         e
       }
-      case e@(VoluntaryRegistrationId, None) if (validateVoluntaryReason) => elemMiss(e._1)
+      case e@(VoluntaryRegistrationId, None) if isMandatory || isOverseas => e
       case e@(VoluntaryInformationId, None) => e
-      case e if (e._1 != ThresholdNextThirtyDaysId && e._1 != ThresholdPreviousThirtyDaysId && e._1 != VATRegistrationExceptionId && e._1 != VoluntaryRegistrationId) => (e._1, e._2.orElse(elemMiss(e._1)))
+      case e if (e._1 != VATRegistrationExceptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
     }
 
     def SpecialSituationsValidateAndConstruction: PartialFunction[(Identifier, Option[Any]), (Identifier, Option[Any])] = {
@@ -68,14 +78,12 @@ object PageIdBinding extends FeatureSwitching {
         } else {
           e
         }
+      case e@(TaxableSuppliesInUkId, None) if !isOverseas => e
+      case e@(GoneOverThresholdId, None) if !isOverseas => e
+      case e@(NinoId, None) if isOverseas => e
       case e@(VATExemptionId, None) if (!userAnswers.zeroRatedSales.contains(false) && userAnswers.vatRegistrationException.contains(false)) => elemMiss(e._1)
       case e@(AnnualAccountingSchemeId, None) if isEnabled(EnableAAS) => e
       case e if (e._1 != VATExemptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
-    }
-
-    def validateVoluntaryReason: Boolean = (userAnswers.thresholdNextThirtyDays, userAnswers.thresholdInTwelveMonths) match {
-      case (Some(ConditionalDateFormElement(false, _)), Some(ConditionalDateFormElement(false, _))) => true
-      case _ => false
     }
 
     Map(
@@ -84,6 +92,7 @@ object PageIdBinding extends FeatureSwitching {
           (ThresholdInTwelveMonthsId, userAnswers.thresholdInTwelveMonths),
           (ThresholdNextThirtyDaysId, userAnswers.thresholdNextThirtyDays),
           (ThresholdPreviousThirtyDaysId, userAnswers.thresholdPreviousThirtyDays),
+          (ThresholdTaxableSuppliesId, userAnswers.thresholdTaxableSupplies),
           (VATRegistrationExceptionId, userAnswers.vatRegistrationException),
           (VoluntaryRegistrationId, userAnswers.voluntaryRegistration),
           (VoluntaryInformationId, userAnswers.voluntaryInformation),
@@ -100,6 +109,8 @@ object PageIdBinding extends FeatureSwitching {
           (AnnualAccountingSchemeId, userAnswers.annualAccountingScheme),
           (RegisteringBusinessId, userAnswers.registeringBusiness),
           (NinoId, userAnswers.nino),
+          (TaxableSuppliesInUkId, userAnswers.taxableSuppliesInUk),
+          (GoneOverThresholdId, userAnswers.goneOverThreshold),
           (ZeroRatedSalesId, userAnswers.zeroRatedSales),
           (VATExemptionId, userAnswers.vatExemption)
         ).collect(SpecialSituationsValidateAndConstruction)

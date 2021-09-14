@@ -18,7 +18,7 @@ package utils
 
 import featureswitch.core.config.{EnableAAS, FeatureSwitching}
 import identifiers.{ThresholdInTwelveMonthsId, _}
-import models.UKCompany
+import models.{NETP, UKCompany}
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -46,6 +46,25 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
     s"$RacehorsesId" -> JsBoolean(false)
   )
+  val fullListMapHappyPathNETP: ListMap[String, JsValue] = ListMap[String, JsValue](
+    "" -> JsString(""),
+    s"$FixedEstablishmentId" -> JsBoolean(true),
+    s"$BusinessEntityId" -> Json.toJson(NETP),
+    s"$TaxableSuppliesInUkId" -> JsBoolean(true),
+    s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),
+    s"$GoneOverThresholdId" -> JsBoolean(true),
+    s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
+    s"$ZeroRatedSalesId" -> JsBoolean(true),
+    s"$VoluntaryRegistrationId" -> JsBoolean(true),
+    s"$VoluntaryInformationId" -> JsBoolean(true),
+    s"$InternationalActivitiesId" -> JsBoolean(false),
+    s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
+    s"$AnnualAccountingSchemeId" -> JsBoolean(false),
+    s"$RegisteringBusinessId" -> JsBoolean(true),
+    s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
+    s"$RacehorsesId" -> JsBoolean(false)
+  )
+
   fullListMapHappyPathTwelveMonthsFalse.foldLeft(Map[String, JsValue]()) {
     case (mockedReturn, currentItem) =>
       s"an exception should be experienced when only pages before ${currentItem._1} have been filled" in {
@@ -54,6 +73,15 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       mockedReturn + currentItem
   }
   val listMapWithoutFieldsToBeTested: Map[String, JsValue] = fullListMapHappyPathTwelveMonthsFalse.filterNot { s =>
+    s._1 match {
+      case x if x == ThresholdInTwelveMonthsId.toString || x == ThresholdNextThirtyDaysId.toString ||
+        x == ThresholdPreviousThirtyDaysId.toString || x == VoluntaryRegistrationId.toString ||
+        x == VATExemptionId.toString || x == ZeroRatedSalesId.toString || x == VATRegistrationExceptionId.toString => true
+      case _ => false
+    }
+  }
+
+  val listMapWithoutFieldsToBeTestedNETP: Map[String, JsValue] = fullListMapHappyPathNETP.filterNot { s =>
     s._1 match {
       case x if x == ThresholdInTwelveMonthsId.toString || x == ThresholdNextThirtyDaysId.toString ||
         x == ThresholdPreviousThirtyDaysId.toString || x == VoluntaryRegistrationId.toString ||
@@ -190,17 +218,143 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested)))
   }
+
+  "no exception if TaxableSuppliesInUk doesn't exist, when UK Company" in {
+    val mapOfValuesToBeTested = List(
+      s"$FixedEstablishmentId" -> JsBoolean(true),
+      s"$BusinessEntityId" -> Json.toJson(UKCompany),
+      s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
+      s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
+      s"$VoluntaryRegistrationId" -> JsBoolean(true),
+      s"$VATExemptionId" -> JsBoolean(false),
+      s"$ZeroRatedSalesId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$NinoId" -> JsBoolean(true)
+
+    )
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested).-(s"$TaxableSuppliesInUkId")))
+  }
+
+  "no exception if ThresholdTaxableSupplies doesn't exist, when UK Company" in {
+    val mapOfValuesToBeTested = List(
+      s"$FixedEstablishmentId" -> JsBoolean(true),
+      s"$BusinessEntityId" -> Json.toJson(UKCompany),
+      s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
+      s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
+      s"$VoluntaryRegistrationId" -> JsBoolean(true),
+      s"$VATExemptionId" -> JsBoolean(false),
+      s"$ZeroRatedSalesId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$NinoId" -> JsBoolean(true)
+
+    )
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested).-(s"$ThresholdTaxableSuppliesId")))
+  }
+
+  "no exception if GoneOverThreshold doesn't exist, when UK Company" in {
+    val mapOfValuesToBeTested = List(
+      s"$FixedEstablishmentId" -> JsBoolean(true),
+      s"$BusinessEntityId" -> Json.toJson(UKCompany),
+      s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
+      s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
+      s"$VoluntaryRegistrationId" -> JsBoolean(true),
+      s"$VATExemptionId" -> JsBoolean(false),
+      s"$ZeroRatedSalesId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$NinoId" -> JsBoolean(true)
+
+    )
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested).-(s"$GoneOverThresholdId")))
+  }
   "throw exception if annual accounting scheme answer doesn't exist when EnableAAS is off" in {
     disable(EnableAAS)
     intercept[NoSuchElementException](PageIdBinding.sectionBindings(
       new CacheMap("test", fullListMapHappyPathTwelveMonthsFalse.-(s"$AnnualAccountingSchemeId")))
     )
-    println(fullListMapHappyPathTwelveMonthsFalse)
   }
   "no exception if annual accounting scheme answer doesn't exist when EnableAAS is on" in {
     enable(EnableAAS)
     PageIdBinding.sectionBindings(
       new CacheMap("test", fullListMapHappyPathTwelveMonthsFalse.-(s"$AnnualAccountingSchemeId"))
     )
+  }
+
+  "throw exception if TaxableSuppliesInUk answer doesn't exist when NETP" in {
+    intercept[NoSuchElementException](PageIdBinding.sectionBindings(
+      new CacheMap("test", fullListMapHappyPathNETP.-(s"$TaxableSuppliesInUkId")))
+    )
+  }
+
+  "throw exception if ThresholdTaxableSupplies answer doesn't exist when NETP" in {
+    intercept[NoSuchElementException](PageIdBinding.sectionBindings(
+      new CacheMap("test", fullListMapHappyPathNETP.-(s"$ThresholdTaxableSuppliesId")))
+    )
+  }
+
+  "throw exception if GoneOverThreshold answer doesn't exist when NETP" in {
+    intercept[NoSuchElementException](PageIdBinding.sectionBindings(
+      new CacheMap("test", fullListMapHappyPathNETP.-(s"$GoneOverThresholdId")))
+    )
+  }
+
+  "no exception on Full Happy Path, when the user is a NETP" in {
+    val mapOfValuesToBeTested = List(
+      s"$ZeroRatedSalesId" -> JsBoolean(true)
+    )
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested)))
+  }
+
+  "no exception if ThresholdNextThirtyDays is missing, when the user is a NETP" in {
+    val mapOfValuesToBeTested = List(
+      s"$FixedEstablishmentId" -> JsBoolean(true),
+      s"$BusinessEntityId" -> Json.toJson(NETP),
+      s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
+      s"$VoluntaryRegistrationId" -> JsBoolean(true),
+      s"$VATExemptionId" -> JsBoolean(false),
+      s"$ZeroRatedSalesId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$NinoId" -> JsBoolean(true)
+
+    )
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdNextThirtyDaysId")))
+  }
+
+  "no exception if ThresholdInTwelveMonths is missing, when the user is a NETP" in {
+    val mapOfValuesToBeTested = List(
+      s"$FixedEstablishmentId" -> JsBoolean(true),
+      s"$BusinessEntityId" -> Json.toJson(NETP),
+      s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
+      s"$VoluntaryRegistrationId" -> JsBoolean(true),
+      s"$VATExemptionId" -> JsBoolean(false),
+      s"$ZeroRatedSalesId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> JsBoolean(true),
+
+    )
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdInTwelveMonthsId")))
+  }
+
+  "no exception if ThresholdPreviousThirtyDays is missing, when the user is a NETP" in {
+    val mapOfValuesToBeTested = List(
+      s"$FixedEstablishmentId" -> JsBoolean(true),
+      s"$BusinessEntityId" -> Json.toJson(NETP),
+      s"$VoluntaryRegistrationId" -> JsBoolean(true),
+      s"$VATExemptionId" -> JsBoolean(false),
+      s"$ZeroRatedSalesId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> JsBoolean(true),
+
+    )
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdPreviousThirtyDaysId")))
+  }
+
+  "no exception if Nino == None, , when the user is a NETP" in {
+    val mapOfValuesToBeTested = List(
+      s"$FixedEstablishmentId" -> JsBoolean(true),
+      s"$BusinessEntityId" -> Json.toJson(NETP),
+      s"$TaxableSuppliesInUkId" -> JsBoolean(true),
+      s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),
+      s"$GoneOverThresholdId" -> JsBoolean(true),
+      s"$ZeroRatedSalesId" -> JsBoolean(true),
+    )
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$NinoId")))
   }
 }

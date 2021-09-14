@@ -20,7 +20,7 @@ import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-case class DateFormElement(optionalData: Option[LocalDate])
+case class DateFormElement(date: LocalDate)
 
 object DateFormElement {
   implicit val DateFormElement = Json.format[DateFormElement]

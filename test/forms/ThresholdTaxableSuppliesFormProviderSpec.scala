@@ -99,7 +99,7 @@ class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).value shouldBe Some(DateFormElement(Some(date)))
+        ).value shouldBe Some(DateFormElement(date))
       }
     }
   }
