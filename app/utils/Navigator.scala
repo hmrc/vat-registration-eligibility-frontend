@@ -63,6 +63,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case EligibleId => routes.EligibleController.onPageLoad
     case TaxableSuppliesInUkId => routes.TaxableSuppliesInUkController.onPageLoad
     case ThresholdTaxableSuppliesId => routes.ThresholdTaxableSuppliesController.onPageLoad
+    case GoneOverThresholdId => routes.GoneOverThresholdController.onPageLoad
     case DoNotNeedToRegisterId => routes.DoNotNeedToRegisterController.onPageLoad
     case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
       routes.IntroductionController.onPageLoad
@@ -274,7 +275,11 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     toNextPage(
       fromPage = ThresholdTaxableSuppliesId,
-      toPage = ThresholdTaxableSuppliesId //TODO Update redirect when the next page is completed
+      toPage = GoneOverThresholdId
+    ),
+    toNextPage(
+      fromPage = GoneOverThresholdId,
+      toPage = TurnoverEstimateId
     ),
     toNextPage(VoluntaryInformationId, EligibleId)
   )

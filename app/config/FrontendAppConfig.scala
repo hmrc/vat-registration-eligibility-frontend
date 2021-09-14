@@ -17,11 +17,12 @@
 package config
 
 import controllers.routes
-import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
-import javax.inject.{Inject, Singleton}
+import featureswitch.core.config.FeatureSwitching
 import play.api.Configuration
 import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
@@ -77,6 +78,7 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
     throw new Exception("Couldn't get VATMandatoryInformationGroup URL"))
   lazy val VATFileChanges = servicesConfig.getConfString("gov-uk.VATFileChanges", throw new Exception("Couldn't get VATFileChanges URL"))
   lazy val languageTranslationEnabled = runModeConfiguration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
+  lazy val calculateTurnoverUrl = "https://www.gov.uk/vat-registration/calculate-turnover"
 
   def trafficAllocationUrl(regId: String): String =
     servicesConfig.baseUrl("vat-registration") + s"/vatreg/traffic-management/$regId/allocate"

@@ -67,6 +67,8 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
 
   def taxableSuppliesInUk: Option[Boolean] = cacheMap.getEntry[Boolean](TaxableSuppliesInUkId.toString)
 
+  def goneOverThreshold: Option[Boolean] = cacheMap.getEntry[Boolean](GoneOverThresholdId.toString)
+
   def getAnswer[T](id: Identifier)(implicit reads: Reads[T]): Option[T] = cacheMap.getEntry[T](id.toString)
 
   def getAnswerFromIdString[T](id: String)(implicit reads: Reads[T]): Option[JsValue] = cacheMap.getEntry[JsValue](id)

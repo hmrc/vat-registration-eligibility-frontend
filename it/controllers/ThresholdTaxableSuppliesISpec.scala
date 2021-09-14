@@ -30,7 +30,7 @@ class ThresholdTaxableSuppliesISpec extends IntegrationSpecBase with AuthHelper 
         ))
       val response = await(request)
       response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdTaxableSuppliesController.onPageLoad.url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.GoneOverThresholdController.onPageLoad.url)
     }
   }
 }

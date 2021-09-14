@@ -1,0 +1,60 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.Mode
+@import models.requests.DataRequest
+@import config.FrontendAppConfig
+
+@this(
+    layout: layouts.layout,
+    errorSummary: components.errorSummary,
+    h1: components.h1,
+    p: components.p,
+    details: components.details,
+    link: components.link,
+    formWithCsrf: FormWithCSRF,
+    yesNoRadio: components.yesNoRadio,
+    inputDate: components.inputDate,
+    button: components.button
+)
+
+@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
+
+@layout(pageTitle = Some(title(form, messages("goneOverThreshold.heading"))), backLink =  true) {
+    @errorSummary(form.errors)
+
+    @h1(messages("goneOverThreshold.heading"))
+    @p{ @messages("goneOverThreshold.para") }
+    @details(messages("goneOverThreshold.dropdownText"), detailsContent)
+
+    @formWithCsrf(action = routes.GoneOverThresholdController.onSubmit, 'autoComplete -> "off") {
+        @yesNoRadio(
+            form = form,
+            headingKey = "goneOverThreshold.heading",
+            isPageHeading = false,
+            classes = "govuk-visually-hidden"
+        )
+
+        @button(messages("site.continue"))
+    }
+}
+
+@detailsContent = {
+    @p {
+        @messages("goneOverThreshold.dropdown.para")
+        @link(appConfig.calculateTurnoverUrl, "goneOverThreshold.linkText", isExternal = true)
+    }
+}
