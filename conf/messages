@@ -302,3 +302,10 @@ doNotNeedToRegister.title    = Currently you do not need to register for VAT
 doNotNeedToRegister.heading  = Currently you do not need to register for VAT
 doNotNeedToRegister.p1       = From the answers provided, you do not need to register for VAT as you have not and do not plan to make taxable supplies in the UK.
 doNotNeedToRegister.p2       = If this changes, the business should register for VAT.
+
+goneOverThreshold.heading        = Has the business’s taxable turnover gone over £85,000 in any 12 month period?
+goneOverThreshold.para           = You must monitor your turnover every month and add up the total amount to cover the last 12 months. This is called a ‘rolling 12 month period’. If one month’s turnover takes you over £85,000 in any rolling 12 month period, you must register for VAT.
+goneOverThreshold.error.required = Select yes if the business's taxable turnover has gone over £85,000 in any 12 month period
+goneOverThreshold.dropdownText   = What is taxable turnover?
+goneOverThreshold.dropdown.para  = VAT taxable turnover is the total value of everything you sell that is not exempt from VAT.
+goneOverThreshold.linkText       = Find out more about how to calculate your VAT taxable turnover

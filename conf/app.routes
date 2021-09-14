@@ -113,3 +113,6 @@ POST       /made-or-intend-to-make-taxable-supplies     controllers.TaxableSuppl
 
 GET        /do-not-need-to-register                     controllers.DoNotNeedToRegisterController.onPageLoad
 POST       /do-not-need-to-register                     controllers.DoNotNeedToRegisterController.onSubmit()
+
+GET        /gone-over-threshold-netp                    controllers.GoneOverThresholdController.onPageLoad
+POST       /gone-over-threshold-netp                    controllers.GoneOverThresholdController.onSubmit
