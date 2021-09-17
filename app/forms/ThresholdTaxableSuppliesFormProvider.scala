@@ -21,7 +21,6 @@ import identifiers.ThresholdTaxableSuppliesId
 import models.DateFormElement
 import play.api.data.Form
 import play.api.data.Forms._
-import uk.gov.voa.play.form.ConditionalMappings.mandatory
 import utils.TimeMachine
 
 import java.time.LocalDate
@@ -49,7 +48,7 @@ class ThresholdTaxableSuppliesFormProvider @Inject()(timeMachine: TimeMachine) e
 
   def apply(): Form[DateFormElement] = Form(
     mapping(
-      thresholdTaxableSuppliesDate -> mandatory(
+      thresholdTaxableSuppliesDate ->
         tuple(
           "day" -> default(text(), ""),
           "month" -> default(text(), ""),
@@ -63,6 +62,6 @@ class ThresholdTaxableSuppliesFormProvider @Inject()(timeMachine: TimeMachine) e
         ).verifying(
           withinDateRange(minDateAllowed, maxDateAllowed, dateOutsideRangeKey, List(minDateAllowed.format(dateFormat), maxDateAllowed.format(dateFormat)))
         )
-      ))(DateFormElement.apply)(DateFormElement.unapply)
+    )(DateFormElement.apply)(DateFormElement.unapply)
   )
 }

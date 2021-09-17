@@ -105,11 +105,15 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     JsonSummaryRow(s"$key-value", messages(s"$key.heading"), businessEntityToString(data)(messages), Json.toJson(data))
   }
 
-  private[services] def prepareDateData(key: String, data: ConditionalDateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
+  private[services] def prepareConditionalDateData(key: String, data: ConditionalDateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
     val value = JsonSummaryRow(s"$key-value", messages(s"$key.heading"), messages(if (data.value) s"site.yes" else "site.no"), Json.toJson(data.value))
     val dataObj = data.optionalData.map(date => JsonSummaryRow(s"$key-optionalData", messages(s"$key.heading2"), date.format(formatter), Json.toJson(date)))
 
     dataObj.foldLeft(value)((old, list) => old ++ list)
+  }
+
+  private[services] def prepareDateData(key: String, data: DateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
+    JsonSummaryRow(s"$key-value", messages(s"$key.heading"), data.date.format(formatter), Json.toJson(data.date))
   }
 
   private[services] def prepareQuestionData(key: String, data: TurnoverEstimateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
@@ -120,8 +124,9 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
   private[services] def buildIndividualQuestion(implicit r: DataRequest[_]): PartialFunction[(Identifier, Any), List[JsValue]] = {
     case (id@BusinessEntityId, e: BusinessEntity) => prepareBusinessEntity(id.toString, e)
     case (id@ThresholdInTwelveMonthsId, e: ConditionalDateFormElement) => prepareThresholdInTwelveMonths(id.toString, e)
-    case (id@ThresholdNextThirtyDaysId, e: ConditionalDateFormElement) => prepareDateData(id.toString, e)
+    case (id@ThresholdNextThirtyDaysId, e: ConditionalDateFormElement) => prepareConditionalDateData(id.toString, e)
     case (id@ThresholdPreviousThirtyDaysId, e: ConditionalDateFormElement) => prepareThresholdPreviousThirty(id.toString, e)
+    case (id@ThresholdTaxableSuppliesId, e: DateFormElement) => prepareDateData(id.toString, e)
     case (id, e: ConditionalDateFormElement) => prepareQuestionData(id.toString, e)
     case (id, e: TurnoverEstimateFormElement) => prepareQuestionData(id.toString, e)
     case (VoluntaryRegistrationId, e: Boolean) => getVoluntaryRegistrationJson(e)
