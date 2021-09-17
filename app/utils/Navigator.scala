@@ -100,24 +100,32 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     }
   }
 
-  private[utils] def checkZeroRatedSalesVoluntaryQuestion(fromPage: Identifier, mandatoryTrue: Identifier, mandatoryFalse: Identifier, onFailPage: Identifier):
-  (Identifier, UserAnswers => Call) = {
-    fromPage -> { userAns =>
-      if (userAns.zeroRatedSales.contains(false)) {
-        if (ThresholdHelper.q1DefinedAndTrue(userAns) || ThresholdHelper.nextThirtyDaysDefinedAndTrue(userAns)) {
-          pageIdToPageLoad(mandatoryTrue)
-        } else {
-          pageIdToPageLoad(mandatoryFalse)
-        }
-      }
-      else if (userAns.zeroRatedSales.contains(true) && userAns.vatRegistrationException.contains(true)) {
-        pageIdToPageLoad(mandatoryTrue)
-      }
-      else if (userAns.zeroRatedSales.contains(true) && ThresholdHelper.nextThirtyDaysDefinedAndFalse(userAns)) {
-        pageIdToPageLoad(mandatoryFalse)
-      }
-      else {
-        pageIdToPageLoad(onFailPage)
+  /**
+   * @param fromPage ZeroRatedSalesId
+   * @return (Identifier, UserAnswers => Call) Identifier and returns Call (HTTP request for
+   *         next page)
+   *
+   * Function decides next page in flow for all journeys.
+   * NETP flow is decided by `goneOverThreshold` identifier. `goneOverThreshold` takes precedence over `zeroRateSales`.
+   * In case of `true` uses 'MandatoryInformationId' and `false` uses 'VoluntaryInformationId'
+   * There is no `VATExemptionId` in NETP flow.
+   */
+  def nextOnZeroRateSales: (Identifier, UserAnswers => Call) = {
+    ZeroRatedSalesId -> { ua: UserAnswers =>
+      (ua.zeroRatedSales, ua.goneOverThreshold) match {
+        case (Some(false), None) if ThresholdHelper.q1DefinedAndTrue(ua) || ThresholdHelper.nextThirtyDaysDefinedAndTrue(ua) =>
+          pageIdToPageLoad(MandatoryInformationId)
+        case (Some(false), None) =>
+          pageIdToPageLoad(VoluntaryInformationId)
+        case (Some(true), None) if ThresholdHelper.nextThirtyDaysDefinedAndFalse(ua) =>
+          pageIdToPageLoad(VoluntaryInformationId)
+        case (Some(true), None) if ua.vatRegistrationException.contains(true) =>
+          pageIdToPageLoad(MandatoryInformationId)
+        case (_, Some(true)) =>
+          pageIdToPageLoad(MandatoryInformationId)
+        case (_, Some(false)) =>
+          pageIdToPageLoad(VoluntaryInformationId)
+        case _ => pageIdToPageLoad(VATExemptionId)
       }
     }
   }
@@ -252,12 +260,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       fromPage = TurnoverEstimateId,
       toPage = ZeroRatedSalesId
     ),
-    checkZeroRatedSalesVoluntaryQuestion(
-      ZeroRatedSalesId,
-      MandatoryInformationId,
-      VoluntaryInformationId,
-      VATExemptionId
-    ),
+    nextOnZeroRateSales,
     nextOn(true,
       fromPage = VATExemptionId,
       onSuccessPage = EligibilityDropoutId(OTRS.toString),
