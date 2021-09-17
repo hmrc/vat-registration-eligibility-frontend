@@ -70,18 +70,18 @@ class NavigatorSpec extends SpecBase {
     }
   }
 
-  "checkZeroRatedSalesVoluntaryQuestion" should {
+  "nextOnZeroRateSales" should {
     "Skip Exemption" when {
       "Exception is true and yes is answered" in {
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), VATRegistrationExceptionId.toString -> JsBoolean(true))))
-        val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
+        val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
       }
     }
     "Redirect to Exemption" when {
       "Not Voluntary Registration and yes is answered" in {
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true))))
-        val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
+        val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
       }
     }
@@ -89,14 +89,25 @@ class NavigatorSpec extends SpecBase {
       "Is Voluntary Registration and yes is answered" in {
         val testDate = LocalDate.of(1999, 12, 12)
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), ThresholdNextThirtyDaysId.toString -> Json.toJson(ConditionalDateFormElement(false, Some(testDate))))))
-        val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
+        val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
       }
     }
     "Redirect to Voluntary" when {
       "Is Voluntary Registration and no is answered" in {
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false), VoluntaryRegistrationId.toString -> JsBoolean(true))))
-        val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
+      }
+      "goneOverThreshold is false and zeroRatedSales is true" in {
+        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), GoneOverThresholdId.toString -> JsBoolean(false))))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
+      }
+      "goneOverThreshold is false and zeroRatedSales is false" in {
+        val testDate = LocalDate.of(1999, 12, 12)
+        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false),ThresholdInTwelveMonthsId.toString -> Json.toJson(ConditionalDateFormElement(true, Some(testDate))) , GoneOverThresholdId.toString -> JsBoolean(false))))
+        val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
       }
     }
@@ -104,9 +115,26 @@ class NavigatorSpec extends SpecBase {
       "Is Mandatory Registration and no is answered" in {
         val testDate = LocalDate.of(1999, 12, 12)
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false), ThresholdInTwelveMonthsId.toString -> Json.toJson(ConditionalDateFormElement(true, Some(testDate))))))
-        val result = navigator.checkZeroRatedSalesVoluntaryQuestion(ZeroRatedSalesId, MandatoryInformationId, VoluntaryInformationId, VATExemptionId)
+        val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
       }
+      "goneOverThreshold is true and zeroRatedSales is false" in {
+        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false), GoneOverThresholdId.toString -> JsBoolean(true))))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
+      "goneOverThreshold is true and zeroRatedSales is true" in {
+        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), GoneOverThresholdId.toString -> JsBoolean(true))))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
+      "goneOverThreshold is true with other conditions" in {
+        val testDate = LocalDate.of(1999, 12, 12)
+        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), ThresholdNextThirtyDaysId.toString -> Json.toJson(ConditionalDateFormElement(false, Some(testDate))), GoneOverThresholdId.toString -> JsBoolean(true))))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
+
     }
   }
 }
