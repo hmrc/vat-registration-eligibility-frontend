@@ -101,11 +101,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
   }
 
   /**
-   * @param fromPage ZeroRatedSalesId
+   * Function decides next page in flow for all journeys when user is at `zeroRatedSales`
    * @return (Identifier, UserAnswers => Call) Identifier and returns Call (HTTP request for
    *         next page)
    *
-   * Function decides next page in flow for all journeys.
    * NETP flow is decided by `goneOverThreshold` identifier. `goneOverThreshold` takes precedence over `zeroRateSales`.
    * In case of `true` uses 'MandatoryInformationId' and `false` uses 'VoluntaryInformationId'
    * There is no `VATExemptionId` in NETP flow.
