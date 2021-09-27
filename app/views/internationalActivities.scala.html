@@ -26,11 +26,13 @@
     h1: components.h1,
     p: components.p,
     bullets: components.bullets,
+    bulletsHtml: components.bulletsHtml,
     formWithCsrf: FormWithCSRF,
     yesNoRadio: components.yesNoRadio,
     button: components.button,
     link: components.link
 )
+
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("internationalActivities.heading"))), backLink = true) {
@@ -46,13 +48,10 @@
 
     @p{ @messages("internationalActivities.bulletText") }
 
-    @if(appConfig.isEnabled(NETPFlow)) {
+    @if(appConfig.isEnabled(NIPFlow)) {
         @bullets(
-            messages("internationalActivities.bullet3"),
-            messages("internationalActivities.bullet4"),
-            messages("internationalActivities.bullet5"),
-            messages("internationalActivities.bullet6"),
-            messages("internationalActivities.bullet7")
+            messages("internationalActivities.bullet1"),
+            messages("internationalActivities.bullet5")
         )
     } else {
         @bullets(
@@ -60,9 +59,7 @@
             messages("internationalActivities.bullet2"),
             messages("internationalActivities.bullet3"),
             messages("internationalActivities.bullet4"),
-            messages("internationalActivities.bullet5"),
-            messages("internationalActivities.bullet6"),
-            messages("internationalActivities.bullet7")
+            messages("internationalActivities.bullet5")
         )
     }
 

@@ -34,21 +34,21 @@
     @h1(messages("eligibilityDropout.heading"))
     @p{ @messages("eligibility.international.special.text") }
 
-    @if(appConfig.isEnabled(NETPFlow)) {
-        @bulletsHtml(bullet2, bullet3, bullet4, bullet5, bullet6)
+    @if(appConfig.isEnabled(NIPFlow)) {
+        @bulletsHtml(bullet1, bullet5)
     } else {
-        @bulletsHtml(bullet1, bullet2, bullet3, bullet4, bullet5, bullet6)
+        @bulletsHtml(bullet1, bullet2, bullet3, bullet4, bullet5)
     }
 }
 
 @bullet1 = {
     @messages("eligibility.international.bullet1")
-    @link( appConfig.otrsUrl, messages("eligibility.international.link1"))
+    @link(appConfig.VAT1CFormURL, messages("eligibility.international.link1"))
 }
 
 @bullet2 = {
     @messages("eligibility.international.bullet2")
-    @link(appConfig.VAT1CFormURL, messages("eligibility.international.link2"))
+    @link(appConfig.otrsUrl, messages("eligibility.international.link2"))
 }
 
 @bullet3 = {
@@ -58,15 +58,10 @@
 
 @bullet4 = {
     @messages("eligibility.international.bullet4")
-    @link(appConfig.otrsUrl, messages("eligibility.international.link4"))
+    @link(appConfig.VAT1BFormURL, messages("eligibility.international.link4"))
 }
 
 @bullet5 = {
-    @messages("eligibility.international.bullet5")
-    @link(appConfig.VAT1BFormURL, messages("eligibility.international.link5"))
-}
-
-@bullet6 = {
     @messages("eligibility.international.bullet5")
     @link(appConfig.VAT1BFormURL, messages("eligibility.international.link5"))
 }
