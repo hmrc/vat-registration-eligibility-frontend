@@ -29,13 +29,11 @@ class InternationalActivitiesViewSpec extends ViewSpecBase with FeatureSwitching
   val h1 = "Will the business do any of the following activities over the next 12 months?"
   val linkParagraph ="Use the GOV.UK Brexit checker (opens in new tab) to find out if the EU exit will impact your business."
   val paragraph = "Tell us if the business will:"
-  val bullet1 = "do all its business outside the UK"
-  val bullet2 = "have its head office outside the UK"
-  val bullet3 = "sell assets bought from outside the UK and claim a repayment of VAT under Directive 2008/9EC or Thirteenth VAT Directive"
-  val bullet4 = "sell goods located in Northern Ireland at the time of sale"
-  val bullet5 = "sell or move goods from Northern Ireland to an EU member state"
-  val bullet6 = "bring goods into Northern Ireland from an EU member state"
-  val bullet7 = "sell goods into Northern Ireland from an EU member state"
+  val bullet1 = "sell assets bought from outside the UK and claim a repayment of VAT under Directive 2008/9EC or Thirteenth VAT Directive"
+  val bullet2 = "sell goods located in Northern Ireland at the time of sale"
+  val bullet3 = "sell or move goods from Northern Ireland to an EU member state"
+  val bullet4 = "bring goods into Northern Ireland from an EU member state"
+  val bullet5 = "sell goods into Northern Ireland from an EU member state"
 
   val view = app.injector.instanceOf[internationalActivities]
 
@@ -78,18 +76,13 @@ class InternationalActivitiesViewSpec extends ViewSpecBase with FeatureSwitching
       doc.select(Selectors.bullet(3)).first().text() mustBe bullet3
       doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
       doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
-      doc.select(Selectors.bullet(6)).first().text() mustBe bullet6
-      doc.select(Selectors.bullet(7)).first().text() mustBe bullet7
     }
 
-    "display the bullet text correctly when the NETPFlow feature switch is enabled" in {
-      enable(NETPFlow)
+    "display the bullet text correctly when the NIPFlow feature switch is enabled" in {
+      enable(NIPFlow)
       lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
-      doc.select(Selectors.bullet(1)).first().text() mustBe bullet3
-      doc.select(Selectors.bullet(2)).first().text() mustBe bullet4
-      doc.select(Selectors.bullet(3)).first().text() mustBe bullet5
-      doc.select(Selectors.bullet(4)).first().text() mustBe bullet6
-      doc.select(Selectors.bullet(5)).first().text() mustBe bullet7
+      doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
+      doc.select(Selectors.bullet(2)).first().text() mustBe bullet5
     }
   }
 
