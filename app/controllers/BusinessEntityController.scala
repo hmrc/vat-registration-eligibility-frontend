@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.BusinessEntityFormProvider
-import identifiers.{BusinessEntityId, FixedEstablishmentId}
+import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,10 +46,14 @@ class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       request.userAnswers.businessEntity match {
-        case Some(_: OverseasType) => Redirect(navigator.pageIdToPageLoad(FixedEstablishmentId))
+        case Some(_: OverseasType) if request.userAnswers.fixedEstablishment.contains(false) =>
+          Redirect(navigator.pageIdToPageLoad(BusinessEntityOverseasId))
+        // This allows the CYA redirect to send the user back to the Overseas Business Entity page, this is necessary
+        // because all 4 business entity pages store to the same key on eligibility which is later used by the
+        // CYA page to create the change link, doing it any other way would require a lot of extra work.
         case otherTypes =>
           val preparedForm = otherTypes match {
-            case None => formProvider()
+            case None | Some(_: OverseasType) => formProvider()
             case Some(_: OtherType) => formProvider().fill(Other)
             case Some(_: PartnershipType) => formProvider().fill(Partnership)
             case Some(businessEntity) => formProvider().fill(businessEntity)
