@@ -31,7 +31,7 @@ class BusinessEntityOverseasViewSpec extends ViewSpecBase {
   val h1 = "What type of business do you want to register for VAT?"
   val radio1 = "Non-established taxable person (NETP)"
   val radio2 = "Non UK Company"
-  val hint = "An NETP is any person who is not normally resident in the UK, does not have a UK establishment and, in the case of a company, is not incorporated in the UK."
+  val hint = "An NETP is any person who is not normally resident in the UK or does not have a UK establishment."
 
   "BusinessEntityOverseas view" must {
     lazy val doc = asDocument(view(form, routes.BusinessEntityOverseasController.onSubmit())(fakeDataRequestIncorped, messages, frontendAppConfig))
