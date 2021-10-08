@@ -177,13 +177,15 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     FixedEstablishmentId -> { userAnswers =>
       userAnswers.fixedEstablishment match {
         case Some(true) => pageIdToPageLoad(BusinessEntityId)
-        case Some(false) if isEnabled(NETPFlow) => pageIdToPageLoad(BusinessEntityOverseasId)
+        case Some(false) if isEnabled(NETPFlow) || isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(BusinessEntityOverseasId)
         case _ => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
       }
     },
     BusinessEntityOverseasId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
-        case Some(NETP) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(NETP) if isEnabled(NETPFlow) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(Overseas) if isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(NETP) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
         case Some(Overseas) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
         case _ => pageIdToPageLoad(FixedEstablishmentId)
       }
@@ -199,6 +201,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
         case Some(CharitableIncorporatedOrganisation) if isEnabled(CharityFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(UnincorporatedAssociation) if isEnabled(UnincorporatedAssociationFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(NETP) if isEnabled(NETPFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
+        case Some(Overseas) if isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case _ => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
