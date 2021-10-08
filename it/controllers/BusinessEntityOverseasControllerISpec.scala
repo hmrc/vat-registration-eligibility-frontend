@@ -16,6 +16,7 @@
 
 package controllers
 
+import featureswitch.core.config.{NETPFlow, NonUkCompanyFlow}
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
 import identifiers.BusinessEntityId
 import models.BusinessEntity.{netpKey, overseasKey}
@@ -24,6 +25,7 @@ import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
+import utils.PageIdBinding.{disable, enable}
 
 class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub {
 
@@ -44,7 +46,8 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
   }
 
   s"POST /business-entity-overseas" should {
-    "return a redirect to Agricultural Flat Rate Scheme when NETP is selected" in {
+    "return a redirect to Agricultural Flat Rate Scheme when NETP is selected with FS Enabled" in {
+      enable(NETPFlow)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -60,7 +63,42 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
       verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(NETP))
     }
 
-    "return a redirect to International Activities Dropout when Overseas is selected" in {
+    "return a redirect to International Activities Dropout when NETP is selected with FS Disabled" in {
+      disable(NETPFlow)
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+
+      val request = buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq(netpKey)))
+
+      val response = await(request)
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
+
+      verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(NETP))
+    }
+
+    "return a redirect to Agricultural Flat Rate Scheme when NonUkCompany is selected with FS Enabled" in {
+      enable(NonUkCompanyFlow)
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+
+      val request = buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq(overseasKey)))
+
+      val response = await(request)
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
+
+      verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(Overseas))
+    }
+
+    "return a redirect to International Activities Dropout when Overseas is selected with FS Disabled" in {
+      disable(NonUkCompanyFlow)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
