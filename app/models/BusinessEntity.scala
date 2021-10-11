@@ -62,7 +62,7 @@ object BusinessEntity {
   val divisionKey = "65"
   val vatGroupKey = "64"
   val netpKey = "NETP"
-  val overseasKey = "Overseas"
+  val overseasKey = "55"
 
   // scalastyle:off
   implicit def writes[T <: BusinessEntity]: Writes[T] = Writes[T] {
