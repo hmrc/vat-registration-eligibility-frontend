@@ -18,7 +18,7 @@ package utils
 
 import featureswitch.core.config.{EnableAAS, FeatureSwitching}
 import identifiers.{Identifier, _}
-import models.{ConditionalDateFormElement, NETP}
+import models.{ConditionalDateFormElement, NETP, Overseas}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 //scalastyle:off
@@ -38,7 +38,7 @@ object PageIdBinding extends FeatureSwitching {
         case _ => false
       }
 
-    val isOverseas = userAnswers.businessEntity.contains(NETP)
+    val isOverseas = userAnswers.businessEntity.contains(NETP) || userAnswers.businessEntity.contains(Overseas)
 
     def ThresholdSectionValidationAndConstruction: PartialFunction[(Identifier, Option[Any]), (Identifier, Option[Any])] = {
       case e@(ThresholdInTwelveMonthsId, None) if isOverseas => e

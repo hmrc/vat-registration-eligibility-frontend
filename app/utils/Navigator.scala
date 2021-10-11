@@ -230,6 +230,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     RegisteringBusinessId -> { userAnswers =>
       userAnswers.registeringBusiness match {
         case Some(true) if userAnswers.businessEntity.contains(NETP) => pageIdToPageLoad(TaxableSuppliesInUkId)
+        case Some(true) if userAnswers.businessEntity.contains(Overseas) => pageIdToPageLoad(TaxableSuppliesInUkId)
         case Some(true) => pageIdToPageLoad(NinoId)
         case Some(false) => pageIdToPageLoad(VATExceptionKickoutId)
       }

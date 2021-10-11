@@ -21,7 +21,7 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
 import identifiers.{TaxableSuppliesInUkId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
-import models.{ConditionalDateFormElement, NETP, NormalMode, RegistrationInformation}
+import models.{ConditionalDateFormElement, NETP, NormalMode, Overseas, RegistrationInformation}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -55,7 +55,7 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
             case Some(value) => formProvider().fill(value)
           }
           Ok(view(preparedForm, NormalMode))
-        case (Some(true), None, Some(NETP)) =>
+        case (Some(true), None, Some(NETP | Overseas)) =>
           Redirect(navigator.pageIdToPageLoad(TaxableSuppliesInUkId))
         case _ => Redirect(routes.IntroductionController.onPageLoad)
       }
