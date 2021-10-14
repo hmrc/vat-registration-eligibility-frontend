@@ -28,6 +28,7 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
     val errorKeyRoot = s"turnoverEstimate.error"
     val turnoverEstimateRequired = s"$errorKeyRoot.required"
     val turnoverEstimateAmountLessThan = s"$errorKeyRoot.amount.giveLessThan"
+    val turnoverEstimateAmountMoreThan = s"$errorKeyRoot.amount.giveMoreThan"
     val turnoverEstimateNeedsNumbers = s"$errorKeyRoot.amount.numbers"
 
     "return errors" when {
@@ -49,6 +50,15 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
         ).errors shouldBe Seq(FormError(amountFieldName, turnoverEstimateNeedsNumbers))
       }
 
+      "the amount is too low" in {
+        val wrappedArray = Seq(BigInt("-1"))
+        form.bind(
+          Map(
+            amountFieldName -> "-100"
+          )
+        ).errors shouldBe Seq(FormError(amountFieldName, turnoverEstimateAmountMoreThan, wrappedArray))
+      }
+
       "the amount is too high" in {
         val wrappedArray = Seq(BigInt("999999999999999"))
         form.bind(
@@ -56,6 +66,22 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
             amountFieldName -> "99999999999999999999999999"
           )
         ).errors shouldBe Seq(FormError(amountFieldName, turnoverEstimateAmountLessThan, wrappedArray))
+      }
+    }
+    "should return no errors" when {
+      "the amount is zero" in {
+        form.bind(
+          Map(
+            amountFieldName -> "0"
+          )
+        ).errors shouldBe Nil
+      }
+      "the amount is valid" in {
+        form.bind(
+            Map(
+              amountFieldName -> "12000"
+        )
+        ).errors shouldBe Nil
       }
     }
   }

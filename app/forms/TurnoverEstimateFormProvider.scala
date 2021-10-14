@@ -20,7 +20,7 @@ import forms.mappings.Mappings
 import models.TurnoverEstimateFormElement
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.data.validation.{Constraint, Valid}
 
 import javax.inject.{Inject, Singleton}
 
@@ -37,7 +37,7 @@ class TurnoverEstimateFormProvider @Inject() extends FormErrorHelper with Mappin
   def constraints: Constraint[String] = Constraint { field =>
     List(
       validBigIntConversion(amountNumbers),
-      bigIntRange(amountLessThan, amountMoreThan, BigInt("0"), BigInt("999999999999999"))
+      bigIntRange(amountLessThan, amountMoreThan, BigInt("-1"), BigInt("999999999999999"))
     ).dropWhile (_.apply(field) == Valid) match {
       case Nil             => Valid
       case constraint :: _ => constraint(field)
