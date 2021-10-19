@@ -1,0 +1,72 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+@import models.requests.DataRequest
+@import models.RegistrationReason._
+
+@this(
+    layout: layouts.layout,
+    errorSummary: components.errorSummary,
+    h1: components.h1,
+    formWithCsrf: FormWithCSRF,
+    inputRadio: components.inputRadio,
+    button: components.button
+)
+
+@(regReasonForm:  Form[RegistrationReason], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
+
+@layout(pageTitle = Some(title(regReasonForm, messages("registrationReason.heading"))), backLink =  true) {
+
+    @errorSummary(regReasonForm.errors)
+
+    @formWithCsrf(action = routes.RegistrationReasonController.onSubmit) {
+        @inputRadio(
+            form = regReasonForm,
+            legend = Messages("registrationReason.heading"),
+            items = Seq(
+                RadioItem(id = Some(RegistrationReason.sellingGoodsAndServicesKey),
+                    value = Some(sellingGoodsAndServicesKey),
+                    content = Text(Messages("registrationReason.sellingGoods.radio")),
+                    checked = regReasonForm("value").value.contains(sellingGoodsAndServicesKey)
+                ),
+                RadioItem(id = Some(RegistrationReason.takingOverBusinessKey),
+                    value = Some(takingOverBusinessKey),
+                    content = Text(Messages("registrationReason.takingOver.radio")),
+                    checked = regReasonForm("value").value.contains(takingOverBusinessKey)
+                ),
+                RadioItem(id = Some(RegistrationReason.changingLegalEntityOfBusinessKey),
+                    value = Some(changingLegalEntityOfBusinessKey),
+                    content = Text(Messages("registrationReason.changingEntity.radio")),
+                    checked = regReasonForm("value").value.contains(changingLegalEntityOfBusinessKey)
+                ),
+                RadioItem(id = Some(RegistrationReason.settingUpVatGroupKey),
+                    value = Some(settingUpVatGroupKey),
+                    content = Text(Messages("registrationReason.settingUp.radio")),
+                    checked = regReasonForm("value").value.contains(settingUpVatGroupKey)
+                ),
+                RadioItem(id = Some(RegistrationReason.ukEstablishedOverseasExporterKey),
+                    value = Some(ukEstablishedOverseasExporterKey),
+                    content = Text(Messages("registrationReason.ukExporter.radio")),
+                    hint = Some(Hint(content = Text(messages("registrationReason.ukExporter.hint")))),
+                    checked = regReasonForm("value").value.contains(ukEstablishedOverseasExporterKey)
+                )
+            )
+        )
+
+        @button(messages("site.continue"))
+    }
+}

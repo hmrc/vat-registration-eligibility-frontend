@@ -33,7 +33,7 @@ class ZeroRatedSalesViewSpec extends ViewSpecBase {
   val bullet1 = "most food and drink (but not things like alcoholic drinks, confectionery, crisps and savoury snacks, hot food, sports drinks, hot takeaways, ice cream, soft drinks and mineral water)"
   val bullet2 = "books and newspapers"
   val bullet3 = "printing services for brochures, leaflets or pamphlets"
-  val bullet4 = "children's clothes and shoes"
+  val bullet4 = "children’s clothes and shoes"
   val bullet5 = "most goods you export to non-EU countries"
 
   val view = app.injector.instanceOf[zeroRatedSales]

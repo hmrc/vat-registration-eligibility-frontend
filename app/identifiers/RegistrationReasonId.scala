@@ -14,26 +14,8 @@
  * limitations under the License.
  */
 
-package views
+package identifiers
 
-import views.html.unauthorised
-
-class UnauthorisedViewSpec extends ViewSpecBase {
-
-  val h1 = "You can’t access this service with this account"
-  val view = app.injector.instanceOf[unauthorised]
-
-  object Selectors extends BaseSelectors
-
-  "Unauthorised view" must {
-    lazy val doc = asDocument(view()(fakeRequest, messages, frontendAppConfig))
-
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
-
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
-  }
+case object RegistrationReasonId extends Identifier {
+  override val toString: String = "registrationReason"
 }

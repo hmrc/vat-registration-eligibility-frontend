@@ -17,31 +17,35 @@
 package controllers
 
 import connectors.FakeDataCacheConnector
+import connectors.mocks.MockDataCacheConnector
 import controllers.actions._
 import forms.TurnoverEstimateFormProvider
-import identifiers.TurnoverEstimateId
+import identifiers.{GoneOverThresholdId, TurnoverEstimateId, ZeroRatedSalesId}
 import models.{NormalMode, TurnoverEstimateFormElement}
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
-import utils.FakeNavigator
+import utils.{FakeNavigator, Navigator}
 import views.html.turnoverEstimate
 
-class TurnoverEstimateControllerSpec extends ControllerSpecBase {
+import scala.concurrent.Future
+
+class TurnoverEstimateControllerSpec extends ControllerSpecBase with MockDataCacheConnector {
 
   def onwardRoute = routes.IndexController.onPageLoad
 
   val view = app.injector.instanceOf[turnoverEstimate]
 
   val formProvider = new TurnoverEstimateFormProvider()
+  val navigator = app.injector.instanceOf[Navigator]
   val form = formProvider()
   implicit val appConfig = frontendAppConfig
 
   val dataRequiredAction = new DataRequiredAction
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new TurnoverEstimateController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new TurnoverEstimateController(controllerComponents, dataCacheConnectorMock, navigator, FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
@@ -65,16 +69,47 @@ class TurnoverEstimateControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(form.fill(element))
     }
 
-    "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(
-        ("turnoverEstimateAmount", "10001")
-      )
+    "redirect to the zero rated page when a non-zero value is submitted" in {
+      val testTurnover = TurnoverEstimateFormElement("10001")
+      mockSessionCacheSave[TurnoverEstimateFormElement](cacheMapId, TurnoverEstimateId.toString)(testTurnover)(Future.successful(CacheMap(
+        id = cacheMapId,
+        data = Map(TurnoverEstimateId.toString -> Json.toJson(testTurnover))
+      )))
 
+      mockSessionCacheSave[Boolean](cacheMapId, ZeroRatedSalesId.toString)(false)(Future.successful(CacheMap(
+        id = cacheMapId,
+        data = Map(
+          ZeroRatedSalesId.toString -> JsBoolean(false),
+          TurnoverEstimateId.toString -> Json.toJson(testTurnover)
+        )
+      )))
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("turnoverEstimateAmount", "10001"))
       val result = controller().onSubmit(NormalMode)(postRequest)
 
       contentAsString(result) mustBe ""
       status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
+      redirectLocation(result) mustBe Some(controllers.routes.ZeroRatedSalesController.onPageLoad.url)
+    }
+
+    "skip the zero rated page when zero is submitted" in {
+      val testTurnover = TurnoverEstimateFormElement("0")
+      mockSessionCacheSave[TurnoverEstimateFormElement](cacheMapId, TurnoverEstimateId.toString)(testTurnover)(Future.successful(CacheMap(
+        id = cacheMapId,
+        data = Map(TurnoverEstimateId.toString -> Json.toJson(testTurnover))
+      )))
+
+      mockSessionCacheSave[Boolean](cacheMapId, ZeroRatedSalesId.toString)(false)(Future.successful(CacheMap(
+        id = cacheMapId,
+        data = Map(ZeroRatedSalesId.toString -> JsBoolean(false))
+      )))
+
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("turnoverEstimateAmount", "0"))
+      val result = controller().onSubmit(NormalMode)(postRequest)
+
+      contentAsString(result) mustBe ""
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(controllers.routes.VoluntaryInformationController.onPageLoad.url)
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

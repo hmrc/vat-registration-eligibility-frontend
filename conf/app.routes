@@ -116,3 +116,6 @@ POST       /do-not-need-to-register                     controllers.DoNotNeedToR
 
 GET        /gone-over-threshold-netp                    controllers.GoneOverThresholdController.onPageLoad
 POST       /gone-over-threshold-netp                    controllers.GoneOverThresholdController.onSubmit
+
+GET        /registration-reason                         controllers.RegistrationReasonController.onPageLoad
+POST       /registration-reason                         controllers.RegistrationReasonController.onSubmit

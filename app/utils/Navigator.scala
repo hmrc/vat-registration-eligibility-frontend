@@ -65,9 +65,9 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case ThresholdTaxableSuppliesId => routes.ThresholdTaxableSuppliesController.onPageLoad
     case GoneOverThresholdId => routes.GoneOverThresholdController.onPageLoad
     case DoNotNeedToRegisterId => routes.DoNotNeedToRegisterController.onPageLoad
+    case RegistrationReasonId => routes.RegistrationReasonController.onPageLoad
     case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
       routes.IntroductionController.onPageLoad
-
   }
 
   private[utils] def nextOn[T](condition: T, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)
@@ -287,6 +287,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       fromPage = GoneOverThresholdId,
       toPage = TurnoverEstimateId
     ),
+    toNextPage(RegistrationReasonId, RegistrationReasonId),
     toNextPage(VoluntaryInformationId, EligibleId)
   )
 
