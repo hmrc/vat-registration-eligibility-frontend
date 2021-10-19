@@ -20,7 +20,8 @@ import config.FrontendAppConfig
 import connectors.DataCacheConnector
 import controllers.actions._
 import forms.TurnoverEstimateFormProvider
-import identifiers.TurnoverEstimateId
+import identifiers.{TurnoverEstimateId, ZeroRatedSalesId}
+
 import javax.inject.{Inject, Singleton}
 import models.{Mode, TurnoverEstimateFormElement}
 import play.api.data.Form
@@ -44,6 +45,8 @@ class TurnoverEstimateController @Inject()(mcc: MessagesControllerComponents,
                                           )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with Enumerable.Implicits {
 
+  private val ZeroTurnover = TurnoverEstimateFormElement("0")
+
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.turnoverEstimate match {
@@ -59,8 +62,16 @@ class TurnoverEstimateController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
-          dataCacheConnector.save[TurnoverEstimateFormElement](request.internalId, TurnoverEstimateId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(TurnoverEstimateId, mode)(new UserAnswers(cacheMap))))
+          dataCacheConnector.save[TurnoverEstimateFormElement](request.internalId, TurnoverEstimateId.toString, value).flatMap { cacheMap =>
+            value match {
+              case ZeroTurnover =>
+                dataCacheConnector.save[Boolean](request.internalId, ZeroRatedSalesId.toString, false).map { cacheMap =>
+                  Redirect(navigator.nextPage(ZeroRatedSalesId, mode)(new UserAnswers(cacheMap)))
+                }
+              case _ =>
+                Future.successful(Redirect(navigator.nextPage(TurnoverEstimateId, mode)(new UserAnswers(cacheMap))))
+            }
+          }
       )
   }
 }
