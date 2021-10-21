@@ -45,8 +45,8 @@ common.feedbackFirst                                                = This is a 
 common.feedbackSecond                                               = feedback
 common.feedbackThird                                                = will help us to improve it.
 
-unauthorised.title = You can''t access this service with this account
-unauthorised.heading = You can''t access this service with this account
+unauthorised.title = You can’t access this service with this account
+unauthorised.heading = You can’t access this service with this account
 
 businessEntity.heading = What type of business do you want to register for VAT?
 businessEntity.error.required = Select the type of business you want to register for VAT
@@ -162,7 +162,7 @@ turnoverEstimate.pound                  = £
 turnoverEstimate.error.required         = Enter what you think the business’s VAT-taxable turnover will be for the next 12 months
 turnoverEstimate.error.amount.numbers   = Give a value using only numbers
 turnoverEstimate.error.amount.giveMoreThan  = Give an estimate that is more than £{0}
-turnoverEstimate.error.amount.giveLessThan  = Give an estimate that''s less than or equal to £{0}
+turnoverEstimate.error.amount.giveLessThan  = Give an estimate that’s less than or equal to £{0}
 completionCapacity.noneOfThese = None of these
 
 involvedInOtherBusiness.heading                 = Have you been involved with another business or taken over a VAT-registered business?
@@ -219,7 +219,7 @@ zeroRatedSales.dropdownLine2 = They include:
 zeroRatedSales.bullet1 = most food and drink (but not things like alcoholic drinks, confectionery, crisps and savoury snacks, hot food, sports drinks, hot takeaways, ice cream, soft drinks and mineral water)
 zeroRatedSales.bullet2 = books and newspapers
 zeroRatedSales.bullet3 = printing services for brochures, leaflets or pamphlets
-zeroRatedSales.bullet4 = children''s clothes and shoes
+zeroRatedSales.bullet4 = children’s clothes and shoes
 zeroRatedSales.bullet5 = most goods you export to non-EU countries
 zeroRatedSales.linkText = Find out about VAT rates on different goods and services
 
@@ -237,7 +237,7 @@ annualAccountingScheme.linkText = Find out more about the Annual Accounting Sche
 
 registeringBusiness.heading = Do you want to register your business or someone else’s?
 registeringBusiness.radioyes = Yes, I want to register my business
-registeringBusiness.radiono = No, I want to register someone else''s business
+registeringBusiness.radiono = No, I want to register someone else’s business
 registeringBusiness.error.required = Select yes if you want to register your own business for VAT
 
 nino.heading = Do you have a UK National Insurance number?
@@ -301,7 +301,16 @@ doNotNeedToRegister.p2       = If this changes, the business should register for
 
 goneOverThreshold.heading        = Has the business’s taxable turnover gone over £85,000 in any 12 month period?
 goneOverThreshold.para           = You must monitor your turnover every month and add up the total amount to cover the last 12 months. This is called a ‘rolling 12 month period’. If one month’s turnover takes you over £85,000 in any rolling 12 month period, you must register for VAT.
-goneOverThreshold.error.required = Select yes if the business's taxable turnover has gone over £85,000 in any 12 month period
+goneOverThreshold.error.required = Select yes if the business’s taxable turnover has gone over £85,000 in any 12 month period
 goneOverThreshold.dropdownText   = What is taxable turnover?
 goneOverThreshold.dropdown.para  = VAT taxable turnover is the total value of everything you sell that is not exempt from VAT.
 goneOverThreshold.linkText       = Find out more about how to calculate your VAT taxable turnover
+
+registrationReason.heading                = Why do you want to register the business for VAT?
+registrationReason.sellingGoods.radio     = It’s selling goods or services and needs or wants to charge VAT to customers
+registrationReason.takingOver.radio       = It’s taking over a VAT registered business as a Transfer of a Going Concern
+registrationReason.changingEntity.radio   = You’re changing the legal entity of the business (for example, from sole trader to limited company)
+registrationReason.settingUp.radio        = You’re setting up a VAT group
+registrationReason.ukExporter.radio       = It’s a UK established overseas exporter
+registrationReason.ukExporter.hint        = The business is established within the UK and will only make taxable supplies outside of the UK.
+registrationReason.error                  = Select the reason you want to register the business for VAT
