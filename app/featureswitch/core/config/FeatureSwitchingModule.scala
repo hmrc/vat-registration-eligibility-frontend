@@ -35,7 +35,8 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     UnincorporatedAssociationFlow,
     NETPFlow,
     NonUkCompanyFlow,
-    NIPFlow
+    NIPFlow,
+    ThirdPartyTransactorFlow
   )
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
@@ -98,4 +99,9 @@ case object NonUkCompanyFlow extends FeatureSwitch {
 case object NIPFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.enable-nip"
   override val displayName: String = "Enable Northern Ireland protocol (NIP) flow"
+}
+
+case object ThirdPartyTransactorFlow extends FeatureSwitch {
+  override val configName: String = "feature-switch.enable-third-party-transactor"
+  override val displayName: String = "Enable Third Party Transactor flow"
 }
