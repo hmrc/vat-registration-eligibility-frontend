@@ -21,29 +21,29 @@ import play.api.libs.json._
 
 sealed trait BusinessEntity
 
-object UKCompany extends BusinessEntity
-object SoleTrader extends BusinessEntity
-object Partnership extends BusinessEntity
-object Other extends BusinessEntity
+case object UKCompany extends BusinessEntity
+case object SoleTrader extends BusinessEntity
+case object Partnership extends BusinessEntity
+case object Other extends BusinessEntity
 
 sealed trait PartnershipType extends BusinessEntity
-object GeneralPartnership extends PartnershipType
-object LimitedPartnership extends PartnershipType
-object ScottishPartnership extends PartnershipType
-object ScottishLimitedPartnership extends PartnershipType
-object LimitedLiabilityPartnership extends PartnershipType
+case object GeneralPartnership extends PartnershipType
+case object LimitedPartnership extends PartnershipType
+case object ScottishPartnership extends PartnershipType
+case object ScottishLimitedPartnership extends PartnershipType
+case object LimitedLiabilityPartnership extends PartnershipType
 
 sealed trait OtherType extends BusinessEntity
-object CharitableIncorporatedOrganisation extends OtherType
-object NonIncorporatedTrust extends OtherType
-object RegisteredSociety extends OtherType
-object UnincorporatedAssociation extends OtherType
-object Division extends OtherType
-object VatGroup extends OtherType
+case object CharitableIncorporatedOrganisation extends OtherType
+case object NonIncorporatedTrust extends OtherType
+case object RegisteredSociety extends OtherType
+case object UnincorporatedAssociation extends OtherType
+case object Division extends OtherType
+case object VatGroup extends OtherType
 
 sealed trait OverseasType extends BusinessEntity
-object Overseas extends OverseasType
-object NETP extends OverseasType
+case object Overseas extends OverseasType
+case object NETP extends OverseasType
 
 object BusinessEntity {
   val ukCompanyKey = "50"

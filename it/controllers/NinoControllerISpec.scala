@@ -23,7 +23,7 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
   val testDate: LocalDate = LocalDate.now
 
   val testEnrolments: JsArray = Json.arr(Json.obj(
-    "key" -> TrafficManagementService.ukCompanyEnrolment,
+    "key" -> TrafficManagementService.companyEnrolment,
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> "testKey",

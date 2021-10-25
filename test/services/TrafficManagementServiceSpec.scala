@@ -19,12 +19,12 @@ package services
 import base.SpecBase
 import connectors.{Allocated, QuotaReached}
 import mocks.TrafficManagementConnectorMock
-import models.{BusinessEntity, Draft, RegistrationInformation, SoleTrader, UKCompany, VatReg}
+import models._
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.Json
 import play.api.mvc.Request
-import services.TrafficManagementService.ukCompanyEnrolment
+import services.TrafficManagementService.{charityEnrolment, companyEnrolment, selfAssesmentEnrolment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
@@ -58,79 +58,81 @@ class TrafficManagementServiceSpec extends SpecBase
   val testDate = LocalDate.now
 
   implicit val request: Request[_] = fakeRequest
-  val testEnrolments: Enrolments = Enrolments(Set(Enrolment(ukCompanyEnrolment)))
+  val testEnrolments: Enrolments = Enrolments(Set(Enrolment(companyEnrolment), Enrolment(selfAssesmentEnrolment), Enrolment(charityEnrolment)))
 
   "allocate" must {
-    "pass through the value when the connector returns an Allocated response" in {
-      mockAllocation(testRegId, UKCompany, isEnrolled = true)(Future.successful(Allocated))
-      when(
-        mockAuthConnector.authorise(
-          ArgumentMatchers.any,
-          ArgumentMatchers.eq(Retrievals.credentials and Retrievals.allEnrolments)
+    Seq(UKCompany, RegisteredSociety, SoleTrader, NETP, Overseas, CharitableIncorporatedOrganisation).foreach { partyType =>
+      s"pass through the value when the connector returns an Allocated response for an enrolled ${partyType.toString}" in {
+        mockAllocation(testRegId, partyType, isEnrolled = true)(Future.successful(Allocated))
+        when(
+          mockAuthConnector.authorise(
+            ArgumentMatchers.any,
+            ArgumentMatchers.eq(Retrievals.credentials and Retrievals.allEnrolments)
+          )(
+            ArgumentMatchers.any[HeaderCarrier],
+            ArgumentMatchers.any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(new ~(Some(testCredentials), testEnrolments)))
+
+        val testAuditEvent = ExtendedDataEvent(
+          auditSource = frontendAppConfig.appName,
+          auditType = "StartRegistration",
+          tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags("start-tax-registration", request.path),
+          detail = Json.obj(
+            "authProviderId" -> testProviderId,
+            "journeyId" -> testRegId
+          ),
+          generatedAt = timeMachine.instant,
+          eventId = idGenerator.createId
+        )
+
+        val res = await(Service.allocate(testRegId, partyType))
+
+        res mustBe Allocated
+
+        verify(mockAuditConnector).sendExtendedEvent(
+          ArgumentMatchers.eq(testAuditEvent)
         )(
           ArgumentMatchers.any[HeaderCarrier],
           ArgumentMatchers.any[ExecutionContext]
         )
-      ).thenReturn(Future.successful(new ~(Some(testCredentials), testEnrolments)))
+      }
 
-      val testAuditEvent = ExtendedDataEvent(
-        auditSource = frontendAppConfig.appName,
-        auditType = "StartRegistration",
-        tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags("start-tax-registration", request.path),
-        detail = Json.obj(
-          "authProviderId" -> testProviderId,
-          "journeyId" -> testRegId
-        ),
-        generatedAt = timeMachine.instant,
-        eventId = idGenerator.createId
-      )
+      s"pass through the value when the connector returns an Allocated response for an unenrolled ${partyType.toString}" in {
+        mockAllocation(testRegId, partyType, isEnrolled = false)(Future.successful(Allocated))
+        when(
+          mockAuthConnector.authorise(
+            ArgumentMatchers.any,
+            ArgumentMatchers.eq(Retrievals.credentials and Retrievals.allEnrolments)
+          )(
+            ArgumentMatchers.any[HeaderCarrier],
+            ArgumentMatchers.any[ExecutionContext]
+          )
+        ).thenReturn(Future.successful(new ~(Some(testCredentials), Enrolments(Set()))))
 
-      val res = await(Service.allocate(testRegId, UKCompany))
+        val testAuditEvent = ExtendedDataEvent(
+          auditSource = frontendAppConfig.appName,
+          auditType = "StartRegistration",
+          tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags("start-tax-registration", request.path),
+          detail = Json.obj(
+            "authProviderId" -> testProviderId,
+            "journeyId" -> testRegId
+          ),
+          generatedAt = timeMachine.instant,
+          eventId = idGenerator.createId
+        )
 
-      res mustBe Allocated
+        val res = await(Service.allocate(testRegId, partyType))
 
-      verify(mockAuditConnector).sendExtendedEvent(
-        ArgumentMatchers.eq(testAuditEvent)
-      )(
-        ArgumentMatchers.any[HeaderCarrier],
-        ArgumentMatchers.any[ExecutionContext]
-      )
-    }
+        res mustBe Allocated
 
-    "pass through the value when the connector returns an Allocated response for an unenrolled sole trader" in {
-      mockAllocation(testRegId, SoleTrader, isEnrolled = false)(Future.successful(Allocated))
-      when(
-        mockAuthConnector.authorise(
-          ArgumentMatchers.any,
-          ArgumentMatchers.eq(Retrievals.credentials and Retrievals.allEnrolments)
+        verify(mockAuditConnector).sendExtendedEvent(
+          ArgumentMatchers.eq(testAuditEvent)
         )(
           ArgumentMatchers.any[HeaderCarrier],
           ArgumentMatchers.any[ExecutionContext]
         )
-      ).thenReturn(Future.successful(new ~(Some(testCredentials), Enrolments(Set()))))
-
-      val testAuditEvent = ExtendedDataEvent(
-        auditSource = frontendAppConfig.appName,
-        auditType = "StartRegistration",
-        tags = AuditExtensions.auditHeaderCarrier(hc).toAuditTags("start-tax-registration", request.path),
-        detail = Json.obj(
-          "authProviderId" -> testProviderId,
-          "journeyId" -> testRegId
-        ),
-        generatedAt = timeMachine.instant,
-        eventId = idGenerator.createId
-      )
-
-      val res = await(Service.allocate(testRegId, SoleTrader))
-
-      res mustBe Allocated
-
-      verify(mockAuditConnector).sendExtendedEvent(
-        ArgumentMatchers.eq(testAuditEvent)
-      )(
-        ArgumentMatchers.any[HeaderCarrier],
-        ArgumentMatchers.any[ExecutionContext]
-      )
+      }
     }
 
     "pass through the value when the connector returns an QuotaReached response" in {
