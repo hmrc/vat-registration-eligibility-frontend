@@ -29,7 +29,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
   val testDate: LocalDate = LocalDate.now
 
   val testEnrolments: JsArray = Json.arr(Json.obj(
-    "key" -> TrafficManagementService.soleTraderEnrolment,
+    "key" -> TrafficManagementService.selfAssesmentEnrolment,
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> "testKey",

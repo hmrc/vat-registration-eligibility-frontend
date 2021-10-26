@@ -21,7 +21,7 @@ import connectors.{Allocated, AllocationResponse, QuotaReached, TrafficManagemen
 import models._
 import play.api.libs.json.Json
 import play.api.mvc.Request
-import services.TrafficManagementService.{partnershipEnrolment, soleTraderEnrolment, ukCompanyEnrolment}
+import services.TrafficManagementService.{charityEnrolment, companyEnrolment, partnershipEnrolment, selfAssesmentEnrolment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
@@ -35,6 +35,7 @@ import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+// scalastyle:off
 @Singleton
 class TrafficManagementService @Inject()(trafficManagementConnector: TrafficManagementConnector,
                                          val authConnector: AuthConnector,
@@ -48,8 +49,10 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
     authorised().retrieve(Retrievals.credentials and Retrievals.allEnrolments) {
       case Some(credentials) ~ enrolments =>
         val isEnrolled: Boolean = businessEntity match {
-          case UKCompany => enrolments.getEnrolment(ukCompanyEnrolment).isDefined
-          case SoleTrader | NETP => enrolments.getEnrolment(soleTraderEnrolment).isDefined
+          case UKCompany | RegisteredSociety => enrolments.getEnrolment(companyEnrolment).isDefined
+          case SoleTrader | NETP => enrolments.getEnrolment(selfAssesmentEnrolment).isDefined
+          case Overseas => enrolments.getEnrolment(companyEnrolment).isDefined || enrolments.getEnrolment(selfAssesmentEnrolment).isDefined
+          case CharitableIncorporatedOrganisation => enrolments.getEnrolment(charityEnrolment).isDefined
           case _: PartnershipType => enrolments.getEnrolment(partnershipEnrolment).isDefined
           case _ => throw new InternalServerException("[TrafficManagementService][allocate] attempted to allocate for invalid party type")
         }
@@ -101,7 +104,8 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
 }
 
 object TrafficManagementService {
-  val soleTraderEnrolment = "IR-SA"
+  val selfAssesmentEnrolment = "IR-SA"
   val partnershipEnrolment = "IR-SA-PART-ORG"
-  val ukCompanyEnrolment = "IR-CT"
+  val companyEnrolment = "IR-CT"
+  val charityEnrolment = "HMRC-CHAR-ORG"
 }
