@@ -3,7 +3,7 @@ package controllers
 import com.github.tomakehurst.wiremock.client.WireMock._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub, TrafficManagementStub}
-import identifiers.BusinessEntityId
+import identifiers.{BusinessEntityId, RegistrationReasonId}
 import models._
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -112,6 +112,23 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url)
+    }
+
+    "redirect to Turnover Estimate if the answer is yes and UkEstablishedOverseasExporter registration reason is selected" in {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubGetRegistrationInformation(OK, Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
+
+      cacheSessionData[RegistrationReason](testInternalId, s"$RegistrationReasonId", UkEstablishedOverseasExporter)
+
+      val request = buildClient("/have-nino").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map(
+          "value" -> Seq("true"))
+        )
+      val response = await(request)
+      response.status mustBe 303
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
     }
   }
 }

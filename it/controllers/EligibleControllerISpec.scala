@@ -54,6 +54,7 @@ class EligibleControllerISpec extends IntegrationSpecBase
       cacheSessionData[Boolean](testInternalId, s"$AnnualAccountingSchemeId", false)
       cacheSessionData[Boolean](testInternalId, s"$ZeroRatedSalesId", false)
       cacheSessionData[Boolean](testInternalId, s"$RegisteringBusinessId", true)
+      cacheSessionData[RegistrationReason](testInternalId, s"$RegistrationReasonId", SellingGoodsAndServices)
       cacheSessionData[Boolean](testInternalId, s"$AgriculturalFlatRateSchemeId", false)
       cacheSessionData[Boolean](testInternalId, s"$NinoId", true)
       cacheSessionData[Boolean](testInternalId, s"$RacehorsesId", false)

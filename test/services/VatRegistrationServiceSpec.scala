@@ -18,7 +18,8 @@ package services
 
 import base.{SpecBase, VATEligibilityMocks}
 import identifiers._
-import models.UKCompany
+import models.RegistrationReason.sellingGoodsAndServicesKey
+import models._
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
@@ -95,6 +96,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
       s"$NinoId" -> JsBoolean(true),
       s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
       s"$RacehorsesId" -> JsBoolean(false)
@@ -122,6 +124,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
           | {"questionId":"racehorses","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"annualAccountingScheme","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"registeringBusiness","question":"mocked message","answer":"mocked message","answerValue":true},
+          | {"questionId":"registrationReason-value","question":"mocked message","answer":"mocked message","answerValue":"selling-goods-and-services"},
           | {"questionId":"nino","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"zeroRatedSales","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"vatExemption","question":"mocked message","answer":"mocked message","answerValue":false}
