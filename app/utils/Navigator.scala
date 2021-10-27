@@ -231,15 +231,23 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       userAnswers.registeringBusiness match {
         case Some(true) if userAnswers.businessEntity.contains(NETP) => pageIdToPageLoad(TaxableSuppliesInUkId)
         case Some(true) if userAnswers.businessEntity.contains(Overseas) => pageIdToPageLoad(TaxableSuppliesInUkId)
-        case Some(true) => pageIdToPageLoad(NinoId)
+        case Some(true) => pageIdToPageLoad(RegistrationReasonId)
         case Some(false) => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
-    nextOn(true,
-      fromPage = NinoId,
-      onSuccessPage = ThresholdInTwelveMonthsId,
-      onFailPage = VATExceptionKickoutId
-    ),
+    RegistrationReasonId -> { userAnswers =>
+      userAnswers.registrationReason match {
+        case Some(SellingGoodsAndServices) => pageIdToPageLoad(NinoId)
+        case Some(UkEstablishedOverseasExporter) => pageIdToPageLoad(NinoId)
+      }
+    },
+    NinoId -> { userAnswers =>
+      userAnswers.nino match {
+        case Some(true) if userAnswers.registrationReason.contains(UkEstablishedOverseasExporter) => pageIdToPageLoad(TurnoverEstimateId)
+        case Some(true) => pageIdToPageLoad(ThresholdInTwelveMonthsId)
+        case Some(false) => pageIdToPageLoad(VATExceptionKickoutId)
+      }
+    },
     nextOn12MonthThresholdConditionalFormElement(true,
       fromPage = ThresholdInTwelveMonthsId,
       onSuccessPage = ThresholdPreviousThirtyDaysId,
@@ -287,8 +295,9 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       fromPage = GoneOverThresholdId,
       toPage = TurnoverEstimateId
     ),
-    toNextPage(RegistrationReasonId, RegistrationReasonId),
-    toNextPage(VoluntaryInformationId, EligibleId)
+    toNextPage(
+      fromPage = VoluntaryInformationId,
+      toPage = EligibleId)
   )
 
   def nextPage(id: Identifier, mode: Mode): UserAnswers => Call =

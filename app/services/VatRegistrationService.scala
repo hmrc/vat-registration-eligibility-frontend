@@ -17,11 +17,12 @@
 package services
 
 import java.time.format.DateTimeFormatter
-
 import connectors.{DataCacheConnector, VatRegistrationConnector}
 import identifiers._
+
 import javax.inject.{Inject, Singleton}
 import models.BusinessEntity.businessEntityToString
+import models.RegistrationReason.registrationReasonToString
 import models._
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
@@ -120,6 +121,10 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     JsonSummaryRow(s"$key-value", messages(s"$key.heading"), s"£${"%,d".format(data.value.toLong)}", JsNumber(BigDecimal(data.value.toLong)))
   }
 
+  private[services] def prepareRegistrationReasonData(key: String, data: RegistrationReason)(implicit r: DataRequest[_]): List[JsValue] = {
+    JsonSummaryRow(s"$key-value", messages(s"$key.heading"), registrationReasonToString(data)(messages), Json.toJson(data))
+  }
+
 
   private[services] def buildIndividualQuestion(implicit r: DataRequest[_]): PartialFunction[(Identifier, Any), List[JsValue]] = {
     case (id@BusinessEntityId, e: BusinessEntity) => prepareBusinessEntity(id.toString, e)
@@ -127,6 +132,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     case (id@ThresholdNextThirtyDaysId, e: ConditionalDateFormElement) => prepareConditionalDateData(id.toString, e)
     case (id@ThresholdPreviousThirtyDaysId, e: ConditionalDateFormElement) => prepareThresholdPreviousThirty(id.toString, e)
     case (id@ThresholdTaxableSuppliesId, e: DateFormElement) => prepareDateData(id.toString, e)
+    case (id@RegistrationReasonId, e: RegistrationReason) => prepareRegistrationReasonData(id.toString, e)
     case (id, e: ConditionalDateFormElement) => prepareQuestionData(id.toString, e)
     case (id, e: TurnoverEstimateFormElement) => prepareQuestionData(id.toString, e)
     case (VoluntaryRegistrationId, e: Boolean) => getVoluntaryRegistrationJson(e)

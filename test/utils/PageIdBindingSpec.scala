@@ -18,7 +18,7 @@ package utils
 
 import featureswitch.core.config.{EnableAAS, FeatureSwitching}
 import identifiers.{ThresholdInTwelveMonthsId, _}
-import models.{NETP, UKCompany}
+import models._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -38,6 +38,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
     s"$AnnualAccountingSchemeId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> JsBoolean(true),
+    s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
     s"$NinoId" -> JsBoolean(true),
     s"$ZeroRatedSalesId" -> JsBoolean(true),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),

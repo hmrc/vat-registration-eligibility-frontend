@@ -54,10 +54,7 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
 
     "have the right radio options" in {
       doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-      doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
-      doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
-      doc.select(Selectors.radio(4)).text() mustBe ExpectedContent.radio4
-      doc.select(Selectors.radio(5)).text() mustBe ExpectedContent.radio5
+      doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
     }
 
     "have the right hint" in {

@@ -16,6 +16,7 @@
 
 package models
 
+import play.api.i18n.Messages
 import play.api.libs.json._
 
 sealed trait RegistrationReason
@@ -44,6 +45,14 @@ object RegistrationReason {
     case SettingUpVatGroup => JsString(settingUpVatGroupKey)
     case UkEstablishedOverseasExporter => JsString(ukEstablishedOverseasExporterKey)
     case unknownKey => throw new IllegalArgumentException(s"Unknown Registration Reason: $unknownKey")
+  }
+
+  def registrationReasonToString(registrationReason: RegistrationReason)(implicit messages: Messages): String = registrationReason match {
+    case SellingGoodsAndServices => messages("registrationReason.sellingGoods.radio")
+    case TakingOverBusiness => messages("registrationReason.takingOver.radio")
+    case ChangingLegalEntityOfBusiness => messages("registrationReason.changingEntity.radio")
+    case SettingUpVatGroup => messages("registrationReason.settingUp.radio")
+    case UkEstablishedOverseasExporter => messages("registrationReason.ukExporter.radio")
   }
 
   implicit val jsonReads: Reads[RegistrationReason] = Reads[RegistrationReason] {
