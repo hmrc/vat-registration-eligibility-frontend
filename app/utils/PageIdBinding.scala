@@ -82,7 +82,7 @@ object PageIdBinding extends FeatureSwitching {
         }
       case e@(TaxableSuppliesInUkId, None) if !isOverseas => e
       case e@(GoneOverThresholdId, None) if !isOverseas => e
-      case e@(RegistrationReasonId, None) if isOverseas => e
+      case e@(RegistrationReasonId, None) => e
       case e@(NinoId, None) if isOverseas => e
       case e@(VATExemptionId, None) if (!userAnswers.zeroRatedSales.contains(false) && userAnswers.vatRegistrationException.contains(false)) => elemMiss(e._1)
       case e@(AnnualAccountingSchemeId, None) if isEnabled(EnableAAS) => e
