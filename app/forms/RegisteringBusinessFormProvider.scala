@@ -17,14 +17,41 @@
 package forms
 
 import forms.mappings.Mappings
+import models.RegisteringBusiness._
+import models._
+import play.api.data.Forms._
+import play.api.data.format.Formatter
+import play.api.data.{Form, FormError}
+
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 
 @Singleton
 class RegisteringBusinessFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("registeringBusiness.error.required")
+  val registeringBusiness: String = "value"
+  val registeringBusinessError: String = "registeringBusiness.error.required"
+
+  def apply(): Form[RegisteringBusiness] = Form(
+    single(
+      registeringBusiness -> of(formatter)
     )
+  )
+
+  def formatter: Formatter[RegisteringBusiness] = new Formatter[RegisteringBusiness] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], RegisteringBusiness] = {
+      data.get(key) match {
+        case Some(`ownBusinessKey`) => Right(OwnBusiness)
+        case Some(`someoneElseKey`) => Right(SomeoneElse)
+        case _ => Left(Seq(FormError(key, registeringBusinessError)))
+      }
+    }
+
+    override def unbind(key: String, value: RegisteringBusiness): Map[String, String] = {
+      val stringValue = value match {
+        case OwnBusiness => ownBusinessKey
+        case SomeoneElse => someoneElseKey
+      }
+      Map(key -> stringValue)
+    }
+  }
 }

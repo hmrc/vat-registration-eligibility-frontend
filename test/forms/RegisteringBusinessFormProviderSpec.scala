@@ -17,6 +17,8 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
+import models.{OwnBusiness, SomeoneElse}
+import models.RegisteringBusiness.{ownBusinessKey, someoneElseKey}
 import play.api.data.FormError
 
 class RegisteringBusinessFormProviderSpec extends BooleanFieldBehaviours {
@@ -26,15 +28,22 @@ class RegisteringBusinessFormProviderSpec extends BooleanFieldBehaviours {
 
   val form = new RegisteringBusinessFormProvider()()
 
-  ".value" must {
+  "RegisteringBusinessFrom" must {
 
     val fieldName = "value"
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+    "successfully parse any of the values" in {
+      val valueList = Seq(
+        (OwnBusiness, ownBusinessKey),
+        (SomeoneElse, someoneElseKey)
+      )
+
+      valueList.map {
+        case (entity, key) =>
+          val res = form.bind(Map(fieldName -> key))
+          res.value should contain(entity)
+      }
+    }
 
     behave like mandatoryField(
       form,

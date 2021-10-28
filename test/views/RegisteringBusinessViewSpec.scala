@@ -28,7 +28,11 @@ class RegisteringBusinessViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
-  val h1 = "Do you want to register your business or someone else’s?"
+  object ExpectedContent {
+    val h1 = "Whose business do you want to register?"
+    val ownOption = "Your own"
+    val someoneElseOption = "Someone else’s"
+  }
 
   "RegisteringBusiness view" must {
     lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
@@ -42,15 +46,20 @@ class RegisteringBusinessViewSpec extends ViewSpecBase {
     }
 
     "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
+      doc.select(Selectors.title).text() mustBe title(ExpectedContent.h1)
     }
 
     "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
+      doc.select(Selectors.h1).text() mustBe ExpectedContent.h1
     }
 
     "have the correct legend" in {
-      doc.select(Selectors.legend(1)).text() mustBe h1
+      doc.select(Selectors.legend(1)).text() mustBe ExpectedContent.h1
+    }
+
+    "have the correct radio options" in {
+      doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.ownOption
+      doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.someoneElseOption
     }
   }
 }

@@ -37,7 +37,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
     s"$AnnualAccountingSchemeId" -> JsBoolean(false),
-    s"$RegisteringBusinessId" -> JsBoolean(true),
+    s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
     s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
     s"$NinoId" -> JsBoolean(true),
     s"$ZeroRatedSalesId" -> JsBoolean(true),
@@ -61,7 +61,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
     s"$AnnualAccountingSchemeId" -> JsBoolean(false),
-    s"$RegisteringBusinessId" -> JsBoolean(true),
+    s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
     s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
     s"$RacehorsesId" -> JsBoolean(false)
   )
@@ -99,7 +99,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
     )
@@ -135,7 +135,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(true)),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$ZeroRatedSalesId" -> JsBoolean(false),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
     )
@@ -213,7 +213,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
 
     )
@@ -229,7 +229,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
 
     )
@@ -245,7 +245,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
 
     )
@@ -261,7 +261,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
 
     )
@@ -313,7 +313,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
 
     )
@@ -328,7 +328,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
 
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdInTwelveMonthsId")))
@@ -341,7 +341,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$RegisteringBusinessId" -> JsBoolean(true),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
 
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdPreviousThirtyDaysId")))
