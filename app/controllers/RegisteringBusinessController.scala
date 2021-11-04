@@ -21,8 +21,9 @@ import connectors.DataCacheConnector
 import controllers.actions._
 import forms.RegisteringBusinessFormProvider
 import identifiers.RegisteringBusinessId
+
 import javax.inject.{Inject, Singleton}
-import models.NormalMode
+import models.{NormalMode, RegisteringBusiness}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -56,10 +57,10 @@ class RegisteringBusinessController @Inject()(mcc: MessagesControllerComponents,
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       formProvider().bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
+        (formWithErrors: Form[RegisteringBusiness]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, RegisteringBusinessId.toString, value).map(cacheMap =>
+          dataCacheConnector.save[RegisteringBusiness](request.internalId, RegisteringBusinessId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(RegisteringBusinessId, NormalMode)(new UserAnswers(cacheMap))))
       )
   }

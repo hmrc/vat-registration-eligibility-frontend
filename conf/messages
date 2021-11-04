@@ -235,10 +235,10 @@ annualAccountingScheme.bulletB1 = want to keep up to date with the exact amount 
 annualAccountingScheme.bulletB2 = regularly reclaim more VAT than they charge, because they will only get one VAT refund a year
 annualAccountingScheme.linkText = Find out more about the Annual Accounting Scheme
 
-registeringBusiness.heading = Do you want to register your business or someone else’s?
-registeringBusiness.radioyes = Yes, I want to register my business
-registeringBusiness.radiono = No, I want to register someone else’s business
-registeringBusiness.error.required = Select yes if you want to register your own business for VAT
+registeringBusiness.heading = Whose business do you want to register?
+registeringBusiness.radioOwn = Your own
+registeringBusiness.radioElse = Someone else’s
+registeringBusiness.error.required = Select whose business you want to register
 
 nino.heading = Do you have a UK National Insurance number?
 nino.error.required = Select yes if you have a UK National Insurance number

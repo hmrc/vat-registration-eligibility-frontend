@@ -22,6 +22,7 @@ import identifiers._
 
 import javax.inject.{Inject, Singleton}
 import models.BusinessEntity.businessEntityToString
+import models.RegisteringBusiness.registeringBusinessToString
 import models.RegistrationReason.registrationReasonToString
 import models._
 import models.requests.DataRequest
@@ -125,6 +126,9 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     JsonSummaryRow(s"$key-value", messages(s"$key.heading"), registrationReasonToString(data)(messages), Json.toJson(data))
   }
 
+  private[services] def prepareRegisteringBusinessData(key: String, data: RegisteringBusiness)(implicit r: DataRequest[_]): List[JsValue] = {
+    JsonSummaryRow(s"$key-value", messages(s"$key.heading"), registeringBusinessToString(data)(messages), Json.toJson(data))
+  }
 
   private[services] def buildIndividualQuestion(implicit r: DataRequest[_]): PartialFunction[(Identifier, Any), List[JsValue]] = {
     case (id@BusinessEntityId, e: BusinessEntity) => prepareBusinessEntity(id.toString, e)
@@ -133,6 +137,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     case (id@ThresholdPreviousThirtyDaysId, e: ConditionalDateFormElement) => prepareThresholdPreviousThirty(id.toString, e)
     case (id@ThresholdTaxableSuppliesId, e: DateFormElement) => prepareDateData(id.toString, e)
     case (id@RegistrationReasonId, e: RegistrationReason) => prepareRegistrationReasonData(id.toString, e)
+    case (id@RegisteringBusinessId, e: RegisteringBusiness) => prepareRegisteringBusinessData(id.toString, e)
     case (id, e: ConditionalDateFormElement) => prepareQuestionData(id.toString, e)
     case (id, e: TurnoverEstimateFormElement) => prepareQuestionData(id.toString, e)
     case (VoluntaryRegistrationId, e: Boolean) => getVoluntaryRegistrationJson(e)

@@ -61,7 +61,7 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
 
   def thresholdNextThirtyDays: Option[ConditionalDateFormElement] = cacheMap.getEntry[ConditionalDateFormElement](ThresholdNextThirtyDaysId.toString)
 
-  def registeringBusiness: Option[Boolean] = cacheMap.getEntry[Boolean](RegisteringBusinessId.toString)
+  def registeringBusiness: Option[RegisteringBusiness] = cacheMap.getEntry[RegisteringBusiness](RegisteringBusinessId.toString)
 
   def nino: Option[Boolean] = cacheMap.getEntry[Boolean](NinoId.toString)
 

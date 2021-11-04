@@ -20,9 +20,9 @@ import connectors.FakeDataCacheConnector
 import controllers.actions._
 import forms.RegisteringBusinessFormProvider
 import identifiers.RegisteringBusinessId
-import models.NormalMode
+import models.{NormalMode, OwnBusiness, RegisteringBusiness}
 import play.api.data.Form
-import play.api.libs.json.JsBoolean
+import play.api.libs.json.JsString
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
@@ -44,7 +44,7 @@ class RegisteringBusinessControllerSpec extends ControllerSpecBase {
     new RegisteringBusinessController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 
-  def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
+  def viewAsString(form: Form[RegisteringBusiness] = form) = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
 
   "RegisteringBusiness Controller" must {
 
@@ -56,16 +56,16 @@ class RegisteringBusinessControllerSpec extends ControllerSpecBase {
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
-      val validData = Map(RegisteringBusinessId.toString -> JsBoolean(true))
+      val validData = Map(RegisteringBusinessId.toString -> JsString("own"))
       val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
 
       val result = controller(getRelevantData).onPageLoad(fakeRequest)
 
-      contentAsString(result) mustBe viewAsString(form.fill(true))
+      contentAsString(result) mustBe viewAsString(form.fill(OwnBusiness))
     }
 
     "redirect to the next page when valid data is submitted" in {
-      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "true"))
+      val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "own"))
 
       val result = controller().onSubmit()(postRequest)
 
