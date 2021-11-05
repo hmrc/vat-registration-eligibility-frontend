@@ -48,14 +48,14 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      (request.userAnswers.fixedEstablishment, request.userAnswers.nino, request.userAnswers.businessEntity) match {  //TODO Move the journey continue logic into a separate controller: SAR-8201
-        case (Some(true), Some(true), _) =>
+      (request.userAnswers.fixedEstablishment, request.userAnswers.registeringBusiness, request.userAnswers.businessEntity) match {  //TODO Move the journey continue logic into a separate controller: SAR-8201
+        case (Some(true), Some(_), _) =>
           val preparedForm = request.userAnswers.thresholdInTwelveMonths match {
             case None => formProvider()
             case Some(value) => formProvider().fill(value)
           }
           Ok(view(preparedForm, NormalMode))
-        case (Some(true), None, Some(NETP | Overseas)) =>
+        case (Some(false), Some(_), Some(NETP | Overseas)) =>
           Redirect(navigator.pageIdToPageLoad(TaxableSuppliesInUkId))
         case _ => Redirect(routes.IntroductionController.onPageLoad)
       }
