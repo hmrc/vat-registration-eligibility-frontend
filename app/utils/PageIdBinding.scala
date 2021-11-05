@@ -16,7 +16,7 @@
 
 package utils
 
-import featureswitch.core.config.{EnableAAS, FeatureSwitching}
+import featureswitch.core.config.{EnableAAS, FeatureSwitching, IndividualFlow}
 import identifiers.{Identifier, _}
 import models._
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -83,7 +83,7 @@ object PageIdBinding extends FeatureSwitching {
       case e@(TaxableSuppliesInUkId, None) if !isOverseas => e
       case e@(GoneOverThresholdId, None) if !isOverseas => e
       case e@(RegistrationReasonId, None) => e
-      case e@(NinoId, None) if isOverseas => e
+      case e@(NinoId, None) if isOverseas || isEnabled(IndividualFlow) => e
       case e@(VATExemptionId, None) if (!userAnswers.zeroRatedSales.contains(false) && userAnswers.vatRegistrationException.contains(false)) => elemMiss(e._1)
       case e@(AnnualAccountingSchemeId, None) if isEnabled(EnableAAS) => e
       case e if (e._1 != VATExemptionId) => (e._1, e._2.orElse(elemMiss(e._1)))

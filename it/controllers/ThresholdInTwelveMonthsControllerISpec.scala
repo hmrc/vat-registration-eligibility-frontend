@@ -2,7 +2,7 @@ package controllers
 
 import helpers._
 import identifiers._
-import models.{ConditionalDateFormElement, Draft, RegistrationInformation, VatReg}
+import models._
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
@@ -32,7 +32,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[Boolean](internalId, s"$FixedEstablishmentId", true)
-        cacheSessionData[Boolean](internalId, s"$NinoId", true)
+        cacheSessionData[RegisteringBusiness](internalId, s"$RegisteringBusinessId", OwnBusiness)
 
         val request = buildClient("/gone-over-threshold").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie()).get()
         val response = await(request)
@@ -46,7 +46,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[Boolean](internalId, s"$FixedEstablishmentId", true)
-        cacheSessionData[Boolean](internalId, s"$NinoId", true)
+        cacheSessionData[RegisteringBusiness](internalId, s"$RegisteringBusinessId", OwnBusiness)
         cacheSessionData[ConditionalDateFormElement](internalId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, Some(LocalDate.of(2017, 12, 1))))
 
         val request = buildClient("/gone-over-threshold").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie()).get()

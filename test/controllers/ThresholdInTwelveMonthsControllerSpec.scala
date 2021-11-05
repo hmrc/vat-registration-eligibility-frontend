@@ -27,7 +27,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
 import play.api.data.Form
-import play.api.libs.json.{JsBoolean, JsValue, Json}
+import play.api.libs.json._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeNavigator, TimeMachine}
@@ -52,7 +52,7 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
   implicit val appConfig: FrontendAppConfig = frontendAppConfig
 
   val dataRequiredAction = new DataRequiredAction
-  val data: Map[String, JsValue] = Map(FixedEstablishmentId.toString -> JsBoolean(true), NinoId.toString -> JsBoolean(true))
+  val data: Map[String, JsValue] = Map(FixedEstablishmentId.toString -> JsBoolean(true), RegisteringBusinessId.toString -> JsString("own"))
   val getRequiredCacheMap: FakeDataRetrievalAction = getWithCacheMap(CacheMap(cacheMapId, data))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getRequiredCacheMap) =
@@ -68,6 +68,7 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
   "ThresholdInTwelveMonths Controller" must {
     when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
     when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(ThresholdNextThirtyDaysId.toString))) thenReturn Future.successful(emptyCacheMap)
+
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(fakeRequest)
 

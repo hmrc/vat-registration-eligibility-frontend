@@ -240,8 +240,9 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     },
     RegistrationReasonId -> { userAnswers =>
       userAnswers.registrationReason match {
-        case Some(SellingGoodsAndServices) => pageIdToPageLoad(NinoId)
-        case Some(UkEstablishedOverseasExporter) => pageIdToPageLoad(NinoId)
+        case Some(SellingGoodsAndServices) if isEnabled(IndividualFlow) => pageIdToPageLoad(ThresholdInTwelveMonthsId)
+        case Some(UkEstablishedOverseasExporter) if isEnabled(IndividualFlow) => pageIdToPageLoad(TurnoverEstimateId)
+        case Some(SellingGoodsAndServices | UkEstablishedOverseasExporter) => pageIdToPageLoad(NinoId)
       }
     },
     NinoId -> { userAnswers =>
