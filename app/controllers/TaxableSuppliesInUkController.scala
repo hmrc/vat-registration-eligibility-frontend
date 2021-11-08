@@ -17,23 +17,19 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.{Allocated, DataCacheConnector, QuotaReached}
+import connectors.DataCacheConnector
 import controllers.actions._
-import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
+import featureswitch.core.config.FeatureSwitching
 import forms.TaxableSuppliesInUkFormProvider
-import identifiers.{EligibilityDropoutId, InternationalActivitiesId, TaxableSuppliesInUkId}
-import models.{Draft, NormalMode, RegistrationInformation, VatReg}
-import play.api.data.Form
+import identifiers.TaxableSuppliesInUkId
+import models.NormalMode
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{S4LService, TrafficManagementService}
-import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.TaxableSuppliesInUk
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -68,36 +64,8 @@ class TaxableSuppliesInUkController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, TaxableSuppliesInUkId.toString, value).flatMap { cacheMap =>
-            def redirectToNextPage: Result = Redirect(navigator.nextPage(TaxableSuppliesInUkId, NormalMode)(new UserAnswers(cacheMap)))
-
-            (value, isEnabled(TrafficManagement)) match {
-              case (false, _) =>
-                Future.successful(redirectToNextPage)
-              case (true, false) =>
-                trafficManagementService.upsertRegistrationInformation(
-                  internalId = request.internalId,
-                  regId = request.currentProfile.registrationID,
-                  isOtrs = false
-                ).map(_ => redirectToNextPage)
-              case (true, true) =>
-                trafficManagementService.getRegistrationInformation.flatMap {
-                  case Some(RegistrationInformation(_, _, Draft, Some(date), VatReg)) if date == LocalDate.now =>
-                    Future.successful(redirectToNextPage)
-                  case _ =>
-                    trafficManagementService.allocate(
-                      request.currentProfile.registrationID,
-                      request.userAnswers.businessEntity.getOrElse(throw new InternalServerException("[TaxableSuppliesInUkController] Missing business entity"))
-                    ).flatMap {
-                      case Allocated =>
-                        s4LService.save[CacheMap](request.currentProfile.registrationID, "eligibility-data", cacheMap) map { _ =>
-                          redirectToNextPage
-                        }
-                      case QuotaReached =>
-                        Future.successful(Redirect(appConfig.otrsUrl))
-                    }
-                }
-            }
+          dataCacheConnector.save[Boolean](request.internalId, TaxableSuppliesInUkId.toString, value).map { cacheMap =>
+            Redirect(navigator.nextPage(TaxableSuppliesInUkId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )
   }
