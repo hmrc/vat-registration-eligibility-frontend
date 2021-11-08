@@ -17,23 +17,20 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.{Allocated, DataCacheConnector, QuotaReached}
+import connectors.DataCacheConnector
 import controllers.actions._
-import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
+import featureswitch.core.config.FeatureSwitching
 import forms.NinoFormProvider
 import identifiers.NinoId
-import models.{Draft, NormalMode, RegistrationInformation, VatReg}
+import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{S4LService, TrafficManagementService}
-import uk.gov.hmrc.http.InternalServerException
-import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.nino
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -67,37 +64,8 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, NinoId.toString, value).flatMap { cacheMap =>
-            if (!value) {
-              Future.successful(Redirect(controllers.routes.VATExceptionKickoutController.onPageLoad))
-            }
-            else {
-              if (isEnabled(TrafficManagement)) {
-                trafficManagementService.getRegistrationInformation flatMap {
-                  case Some(RegistrationInformation(_, _, Draft, Some(date), VatReg)) if date == LocalDate.now =>
-                    Future.successful(Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap))))
-                  case _ =>
-                    trafficManagementService.allocate(
-                      request.currentProfile.registrationID,
-                      request.userAnswers.businessEntity.getOrElse(throw new InternalServerException("[NinoController] Missing business entity"))
-                    ) flatMap {
-                      case Allocated =>
-                        s4LService.save[CacheMap](request.currentProfile.registrationID, "eligibility-data", cacheMap) map { _ =>
-                          Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap)))
-                        }
-                      case QuotaReached =>
-                        Future.successful(Redirect(controllers.routes.VATExceptionKickoutController.onPageLoad))
-                    }
-                }
-              }
-              else {
-                trafficManagementService.upsertRegistrationInformation(
-                  internalId = request.internalId,
-                  regId = request.currentProfile.registrationID,
-                  isOtrs = false
-                ) map (_ => Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap))))
-              }
-            }
+          dataCacheConnector.save[Boolean](request.internalId, NinoId.toString, value).map { cacheMap =>
+            Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )
   }

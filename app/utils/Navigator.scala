@@ -66,6 +66,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case GoneOverThresholdId => routes.GoneOverThresholdController.onPageLoad
     case DoNotNeedToRegisterId => routes.DoNotNeedToRegisterController.onPageLoad
     case RegistrationReasonId => routes.RegistrationReasonController.onPageLoad
+    case TrafficManagementResolverId => routes.TrafficManagementResolverController.resolve
     case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
       routes.IntroductionController.onPageLoad
   }
@@ -240,15 +241,13 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     },
     RegistrationReasonId -> { userAnswers =>
       userAnswers.registrationReason match {
-        case Some(SellingGoodsAndServices) if isEnabled(IndividualFlow) => pageIdToPageLoad(ThresholdInTwelveMonthsId)
-        case Some(UkEstablishedOverseasExporter) if isEnabled(IndividualFlow) => pageIdToPageLoad(TurnoverEstimateId)
+        case Some(SellingGoodsAndServices | UkEstablishedOverseasExporter) if isEnabled(IndividualFlow) => pageIdToPageLoad(TrafficManagementResolverId)
         case Some(SellingGoodsAndServices | UkEstablishedOverseasExporter) => pageIdToPageLoad(NinoId)
       }
     },
     NinoId -> { userAnswers =>
       userAnswers.nino match {
-        case Some(true) if userAnswers.registrationReason.contains(UkEstablishedOverseasExporter) => pageIdToPageLoad(TurnoverEstimateId)
-        case Some(true) => pageIdToPageLoad(ThresholdInTwelveMonthsId)
+        case Some(true) => pageIdToPageLoad(TrafficManagementResolverId)
         case Some(false) => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
@@ -288,7 +287,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     nextOn(true,
       fromPage = TaxableSuppliesInUkId,
-      onSuccessPage = ThresholdTaxableSuppliesId,
+      onSuccessPage = TrafficManagementResolverId,
       onFailPage = DoNotNeedToRegisterId
     ),
     toNextPage(
@@ -301,7 +300,15 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     toNextPage(
       fromPage = VoluntaryInformationId,
-      toPage = EligibleId)
+      toPage = EligibleId
+    ),
+    TrafficManagementResolverId -> { userAnswers =>
+      userAnswers.fixedEstablishment match {
+        case Some(true) if userAnswers.registrationReason.contains(UkEstablishedOverseasExporter) => pageIdToPageLoad(TurnoverEstimateId)
+        case Some(true) => pageIdToPageLoad(ThresholdInTwelveMonthsId)
+        case Some(false) => pageIdToPageLoad(ThresholdTaxableSuppliesId)
+      }
+    }
   )
 
   def nextPage(id: Identifier, mode: Mode): UserAnswers => Call =

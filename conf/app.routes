@@ -119,3 +119,5 @@ POST       /gone-over-threshold-netp                    controllers.GoneOverThre
 
 GET        /registration-reason                         controllers.RegistrationReasonController.onPageLoad
 POST       /registration-reason                         controllers.RegistrationReasonController.onSubmit
+
+GET        /resolve-traffic-management                  controllers.TrafficManagementResolverController.resolve

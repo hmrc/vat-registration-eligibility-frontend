@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with TrafficManagementServiceMock with S4LServiceMock {
 
-  def onwardRoute: Call = routes.ThresholdInTwelveMonthsController.onPageLoad
+  def onwardRoute: Call = routes.TrafficManagementResolverController.resolve
 
   val view = app.injector.instanceOf[nino]
 
@@ -74,6 +74,10 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
     new NinoController(controllerComponents, FakeDataCacheConnector, mockS4LService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
 
+  def kickoutController(dataRetrievalAction: DataRetrievalAction = getRequiredCacheMap) =
+    new NinoController(controllerComponents, FakeDataCacheConnector, mockS4LService, new FakeNavigator(desiredRoute = routes.VATExceptionKickoutController.onPageLoad),
+      FakeCacheIdentifierAction, dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
+
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig).toString
 
   "Nino Controller" must {
@@ -93,80 +97,17 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
       contentAsString(result) mustBe viewAsString(form.fill(true))
     }
 
-    "redirect to the next page when valid data is submitted and Traffic Management returns Allocated" in {
-      enable(TrafficManagement)
-      mockServiceAllocation(testRegId, UKCompany)(Future.successful(Allocated))
-      mockGetRegistrationInformation()(Future.successful(Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg))))
-      mockS4LSave(testRegId, "eligibility-data", Json.toJson(testCacheMap))(Future.successful(testCacheMap))
-      when(
-        mockAuthConnector.authorise(
-          ArgumentMatchers.any,
-          ArgumentMatchers.eq(Retrievals.credentials)
-        )(
-          ArgumentMatchers.any[HeaderCarrier],
-          ArgumentMatchers.any[ExecutionContext])
-      ).thenReturn(Future.successful(Some(testCredentials)))
-
-      val result = controller().onSubmit()(testPostRequest("value" -> "true"))
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
     "redirect to the exception page when no is selected" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", "false"))
 
-      val result = controller().onSubmit()(postRequest)
+      val result = kickoutController().onSubmit()(postRequest)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(routes.VATExceptionKickoutController.onPageLoad.url)
     }
 
-    "redirect to the next page when the Traffic Management is disabled" in {
-      disable(TrafficManagement)
-
-      mockUpsertRegistrationInformation(testInternalId, testRegId, isOtrs = false)(Future.successful(testRegistrationInformation))
-      val postRequest = testPostRequest("value" -> "true")
-
-      val result = controller().onSubmit()(postRequest)
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(onwardRoute.url)
-    }
-
-    "redirect to the exception page when valid data is submitted, Traffic Management returns Quota Reached and RegistrationInformation does not match" in {
+    "redirect to the traffic management resolver if yes is selected" in {
       enable(TrafficManagement)
-      mockServiceAllocation(testRegId, UKCompany)(Future.successful(QuotaReached))
-      mockGetRegistrationInformation()(Future.successful(Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), OTRS))))
-      when(
-        mockAuthConnector.authorise(
-          ArgumentMatchers.any,
-          ArgumentMatchers.eq(Retrievals.credentials)
-        )(
-          ArgumentMatchers.any[HeaderCarrier],
-          ArgumentMatchers.any[ExecutionContext])
-      ).thenReturn(Future.successful(Some(testCredentials)))
-
-      val result = controller().onSubmit()(testPostRequest("value" -> "true"))
-
-      status(result) mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.VATExceptionKickoutController.onPageLoad.url)
-    }
-
-    "redirect to the next page when valid data is submitted, Traffic Management returns Quota Reached but RegistrationInformation does match" in {
-      enable(TrafficManagement)
-
-      mockServiceAllocation(testRegId, UKCompany)(Future.successful(QuotaReached))
-      mockGetRegistrationInformation()(Future.successful(Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg))))
-
-      when(
-        mockAuthConnector.authorise(
-          ArgumentMatchers.any,
-          ArgumentMatchers.eq(Retrievals.credentials)
-        )(
-          ArgumentMatchers.any[HeaderCarrier],
-          ArgumentMatchers.any[ExecutionContext])
-      ).thenReturn(Future.successful(Some(testCredentials)))
 
       val result = controller().onSubmit()(testPostRequest("value" -> "true"))
 
