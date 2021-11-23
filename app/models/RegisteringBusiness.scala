@@ -17,7 +17,7 @@
 package models
 
 import play.api.i18n.Messages
-import play.api.libs.json.{Format, JsString, JsSuccess, Reads, Writes}
+import play.api.libs.json.{Format, JsBoolean, JsString, JsSuccess, Reads, Writes}
 
 sealed trait RegisteringBusiness
 
@@ -41,8 +41,8 @@ object RegisteringBusiness {
   }
 
   implicit val jsonReads: Reads[RegisteringBusiness] = Reads[RegisteringBusiness] {
-    case JsString(`ownBusinessKey`) => JsSuccess(OwnBusiness)
-    case JsString(`someoneElseKey`) => JsSuccess(SomeoneElse)
+    case JsString(`ownBusinessKey`) | JsBoolean(true) => JsSuccess(OwnBusiness) //TODO Remove JsBoolean cases 2 weeks from merge as they're to fix old data
+    case JsString(`someoneElseKey`) | JsBoolean(false) => JsSuccess(SomeoneElse)
     case unknownKey => throw new IllegalArgumentException(s"Unknown Registering Business Reason: $unknownKey")
   }
 
