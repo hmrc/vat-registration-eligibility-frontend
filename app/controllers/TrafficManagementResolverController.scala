@@ -51,7 +51,7 @@ class TrafficManagementResolverController @Inject()(mcc: MessagesControllerCompo
       def redirectToNextPage: Result = Redirect(navigator.nextPage(TrafficManagementResolverId, NormalMode)(new UserAnswers(request.userAnswers.cacheMap)))
 
       if (isEnabled(TrafficManagement)) {
-        trafficManagementService.getRegistrationInformation.flatMap {
+        trafficManagementService.getRegistrationInformation(request.currentProfile.registrationID).flatMap {
           case Some(RegistrationInformation(_, _, Draft, Some(date), VatReg)) if date == LocalDate.now =>
             Future.successful(redirectToNextPage)
           case _ =>

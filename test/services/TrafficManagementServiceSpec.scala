@@ -171,16 +171,16 @@ class TrafficManagementServiceSpec extends SpecBase
   "getRegistrationInformation" must {
     "return registration information if registration information exists" in {
       val testRegInfo = RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)
-      mockGetRegistrationInformation()(Future.successful(Some(testRegInfo)))
+      mockGetRegistrationInformation(testRegId)(Future.successful(Some(testRegInfo)))
 
-      val res = await(Service.getRegistrationInformation())
+      val res = await(Service.getRegistrationInformation(testRegId))
 
       res mustBe Some(testRegInfo)
     }
     "return None if no registration information exists" in {
-      mockGetRegistrationInformation()(Future.successful(None))
+      mockGetRegistrationInformation(testRegId)(Future.successful(None))
 
-      val res = await(Service.getRegistrationInformation())
+      val res = await(Service.getRegistrationInformation(testRegId))
 
       res mustBe None
     }
