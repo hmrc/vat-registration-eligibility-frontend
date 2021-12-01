@@ -21,7 +21,7 @@ import connectors.{Allocated, AllocationResponse, QuotaReached, TrafficManagemen
 import models._
 import play.api.libs.json.Json
 import play.api.mvc.Request
-import services.TrafficManagementService.{charityEnrolment, companyEnrolment, partnershipEnrolment, selfAssesmentEnrolment}
+import services.TrafficManagementService._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
@@ -53,8 +53,10 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
           case SoleTrader | NETP => enrolments.getEnrolment(selfAssesmentEnrolment).isDefined
           case Overseas => enrolments.getEnrolment(companyEnrolment).isDefined || enrolments.getEnrolment(selfAssesmentEnrolment).isDefined
           case CharitableIncorporatedOrganisation => enrolments.getEnrolment(charityEnrolment).isDefined
+          case NonIncorporatedTrust => enrolments.getEnrolment(trustEnrolment).isDefined
+          case UnincorporatedAssociation => enrolments.getEnrolment(unincorporatedAssociationEnrolment).isDefined
           case _: PartnershipType => enrolments.getEnrolment(partnershipEnrolment).isDefined
-          case _ => throw new InternalServerException("[TrafficManagementService][allocate] attempted to allocate for invalid party type")
+          case _ => false
         }
 
         trafficManagementConnector.allocate(regId, businessEntity, isEnrolled).map {
@@ -108,4 +110,6 @@ object TrafficManagementService {
   val partnershipEnrolment = "IR-SA-PART-ORG"
   val companyEnrolment = "IR-CT"
   val charityEnrolment = "HMRC-CHAR-ORG"
+  val trustEnrolment = "IR-SA-TRUST-ORG"
+  val unincorporatedAssociationEnrolment = "IR-CT"
 }

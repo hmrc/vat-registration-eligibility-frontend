@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.Json
 import play.api.mvc.Request
-import services.TrafficManagementService.{charityEnrolment, companyEnrolment, selfAssesmentEnrolment}
+import services.TrafficManagementService.{charityEnrolment, companyEnrolment, selfAssesmentEnrolment, trustEnrolment, unincorporatedAssociationEnrolment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{Enrolment, Enrolments}
@@ -58,10 +58,25 @@ class TrafficManagementServiceSpec extends SpecBase
   val testDate = LocalDate.now
 
   implicit val request: Request[_] = fakeRequest
-  val testEnrolments: Enrolments = Enrolments(Set(Enrolment(companyEnrolment), Enrolment(selfAssesmentEnrolment), Enrolment(charityEnrolment)))
+  val testEnrolments: Enrolments = Enrolments(Set(
+    Enrolment(companyEnrolment),
+    Enrolment(selfAssesmentEnrolment),
+    Enrolment(charityEnrolment),
+    Enrolment(trustEnrolment),
+    Enrolment(unincorporatedAssociationEnrolment)
+  ))
 
   "allocate" must {
-    Seq(UKCompany, RegisteredSociety, SoleTrader, NETP, Overseas, CharitableIncorporatedOrganisation).foreach { partyType =>
+    Seq(
+      UKCompany,
+      RegisteredSociety,
+      SoleTrader,
+      NETP,
+      Overseas,
+      CharitableIncorporatedOrganisation,
+      NonIncorporatedTrust,
+      UnincorporatedAssociation
+    ).foreach { partyType =>
       s"pass through the value when the connector returns an Allocated response for an enrolled ${partyType.toString}" in {
         mockAllocation(testRegId, partyType, isEnrolled = true)(Future.successful(Allocated))
         when(
