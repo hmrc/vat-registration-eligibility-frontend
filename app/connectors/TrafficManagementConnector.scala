@@ -47,12 +47,12 @@ class TrafficManagementConnector @Inject()(httpClient: HttpClient,
       case Upstream4xxResponse(_, TOO_MANY_REQUESTS, _, _) => QuotaReached
     }
 
-  def getRegistrationInformation()(implicit hc: HeaderCarrier): Future[Option[RegistrationInformation]] =
-    httpClient.GET[Option[RegistrationInformation]](config.getRegistrationInformationUrl)
+  def getRegistrationInformation(regId: String)(implicit hc: HeaderCarrier): Future[Option[RegistrationInformation]] =
+    httpClient.GET[Option[RegistrationInformation]](config.getRegistrationInformationUrl(regId))
 
-  def upsertRegistrationInformation[DataType](regInfo: DataType
-                                             )(implicit hc: HeaderCarrier, dataTypeWriter: Writes[DataType]): Future[RegistrationInformation] =
-    httpClient.PUT[DataType, RegistrationInformation](config.upsertRegistrationInformationUrl, regInfo)
+  def upsertRegistrationInformation(regInfo: RegistrationInformation
+                                   )(implicit hc: HeaderCarrier, dataTypeWriter: Writes[RegistrationInformation]): Future[RegistrationInformation] =
+    httpClient.PUT[RegistrationInformation, RegistrationInformation](config.upsertRegistrationInformationUrl(regInfo.registrationId), regInfo)
 
 }
 

@@ -43,8 +43,8 @@ trait TrafficManagementServiceMock extends MockitoSugar {
       ArgumentMatchers.any())
     ).thenReturn(response)
 
-  def mockGetRegistrationInformation()(response: Future[Option[RegistrationInformation]]): OngoingStubbing[Future[Option[RegistrationInformation]]] =
-    when(mockTrafficManagementService.getRegistrationInformation()(ArgumentMatchers.any[HeaderCarrier]))
+  def mockGetRegistrationInformation(regId: String)(response: Future[Option[RegistrationInformation]]): OngoingStubbing[Future[Option[RegistrationInformation]]] =
+    when(mockTrafficManagementService.getRegistrationInformation(ArgumentMatchers.eq(regId))(ArgumentMatchers.any[HeaderCarrier]))
       .thenReturn(response)
 
   def mockUpsertRegistrationInformation(internalId: String, regId: String, isOtrs: Boolean)

@@ -1,6 +1,7 @@
 package helpers
 
 import akka.util.Timeout
+import featureswitch.core.config.{FeatureSwitching, FeatureSwitchingModule}
 import itutil.WiremockHelper
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
@@ -20,7 +21,9 @@ trait IntegrationSpecBase extends PlaySpec
   with BeforeAndAfterAll
   with FutureAwaits
   with DefaultAwaitTimeout
-  with MongoSpecSupport with FakeConfig {
+  with MongoSpecSupport
+  with FeatureSwitching
+  with FakeConfig {
 
   val mockPort = 11111
   val mockHost = "localhost"
@@ -31,6 +34,7 @@ trait IntegrationSpecBase extends PlaySpec
   override def beforeEach(): Unit = {
     super.beforeEach()
     resetWiremock()
+    app.injector.instanceOf[FeatureSwitchingModule].switches.foreach(disable)
   }
 
   override def beforeAll(): Unit = {

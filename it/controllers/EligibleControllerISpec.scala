@@ -60,7 +60,7 @@ class EligibleControllerISpec extends IntegrationSpecBase
       cacheSessionData[Boolean](testInternalId, s"$RacehorsesId", false)
 
       stubSaveEligibilityData(testRegId)
-      stubUpsertRegistrationInformation(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
+      stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
       stubS4LSave(testRegId, "eligibility-data")(CacheMap(testRegId, Map()))
       val res = await(buildClient(testUrl)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")

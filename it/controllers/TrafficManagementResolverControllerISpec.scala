@@ -46,7 +46,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         disable(TrafficManagement)
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
-        stubUpsertRegistrationInformation(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
+        stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
         stubAudits()
         stubS4LGetNothing(testRegId)
 
@@ -69,7 +69,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
           put(urlMatching("/save4later/vat-registration-eligibility-frontend/testRegId/data/eligibility-data"))
             .willReturn(aResponse.withStatus(CREATED).withBody(Json.stringify(Json.obj("id" -> testRegId, "data" -> Json.obj()))))
         )
-        stubGetRegistrationInformation(NOT_FOUND, None)
+        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
@@ -93,7 +93,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
           put(urlMatching("/save4later/vat-registration-eligibility-frontend/testRegId/data/eligibility-data"))
             .willReturn(aResponse.withStatus(CREATED).withBody(Json.stringify(Json.obj("id" -> testRegId, "data" -> Json.obj()))))
         )
-        stubGetRegistrationInformation(NOT_FOUND, None)
+        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
@@ -112,7 +112,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubSuccessfulRegIdGet()
         stubAudits()
         stubAllocation(testRegId)(TOO_MANY_REQUESTS)
-        stubGetRegistrationInformation(NOT_FOUND, None)
+        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
@@ -131,7 +131,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubSuccessfulRegIdGet()
         stubAudits()
         stubAllocation(testRegId)(TOO_MANY_REQUESTS)
-        stubGetRegistrationInformation(OK, Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
+        stubGetRegistrationInformation(testRegId)(OK, Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", true)
@@ -148,7 +148,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         disable(TrafficManagement)
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
-        stubUpsertRegistrationInformation(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
+        stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
         stubAudits()
         stubS4LGetNothing(testRegId)
 
@@ -171,7 +171,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
           put(urlMatching("/save4later/vat-registration-eligibility-frontend/testRegId/data/eligibility-data"))
             .willReturn(aResponse.withStatus(CREATED).withBody(Json.stringify(Json.obj("id" -> testRegId, "data" -> Json.obj()))))
         )
-        stubGetRegistrationInformation(NOT_FOUND, None)
+        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", Overseas)
@@ -190,7 +190,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubSuccessfulRegIdGet()
         stubAudits()
         stubAllocation(testRegId)(TOO_MANY_REQUESTS)
-        stubGetRegistrationInformation(NOT_FOUND, None)
+        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", Overseas)
@@ -209,7 +209,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubSuccessfulRegIdGet()
         stubAudits()
         stubAllocation(testRegId)(TOO_MANY_REQUESTS)
-        stubGetRegistrationInformation(OK, Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
+        stubGetRegistrationInformation(testRegId)(OK, Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", false)

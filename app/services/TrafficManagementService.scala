@@ -86,8 +86,8 @@ class TrafficManagementService @Inject()(trafficManagementConnector: TrafficMana
         throw new InternalServerException("[TrafficManagementService][allocate] Missing authProviderId for journey start auditing")
     }
 
-  def getRegistrationInformation()(implicit hc: HeaderCarrier): Future[Option[RegistrationInformation]] =
-    trafficManagementConnector.getRegistrationInformation()
+  def getRegistrationInformation(regId: String)(implicit hc: HeaderCarrier): Future[Option[RegistrationInformation]] =
+    trafficManagementConnector.getRegistrationInformation(regId)
 
 
   def upsertRegistrationInformation(internalId: String, regId: String, isOtrs: Boolean

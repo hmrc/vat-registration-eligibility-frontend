@@ -83,9 +83,9 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
   def trafficAllocationUrl(regId: String): String =
     servicesConfig.baseUrl("vat-registration") + s"/vatreg/traffic-management/$regId/allocate"
 
-  def upsertRegistrationInformationUrl: String = servicesConfig.baseUrl("vat-registration") + "/vatreg/traffic-management/reg-info"
+  def upsertRegistrationInformationUrl(regId: String): String = servicesConfig.baseUrl("vat-registration") + s"/vatreg/traffic-management/$regId/reg-info"
 
-  def getRegistrationInformationUrl: String = servicesConfig.baseUrl("vat-registration") + "/vatreg/traffic-management/reg-info"
+  def getRegistrationInformationUrl(regId: String): String = servicesConfig.baseUrl("vat-registration") + s"/vatreg/traffic-management/$regId/reg-info"
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

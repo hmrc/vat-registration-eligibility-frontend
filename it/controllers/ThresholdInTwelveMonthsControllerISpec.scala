@@ -15,7 +15,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
 
   val selectionFieldName = "value"
   val dateFieldName = "valueDate"
-  val internalId = "testInternalId"
+  val internalId = testInternalId
   val pageHeading = "In any 12-month period has Test Company gone over the VAT-registration threshold?"
   val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
@@ -98,7 +98,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
-        stubUpsertRegistrationInformation(RegistrationInformation("testInternalId", "testRegId", Draft, Some(LocalDate.now), VatReg))
+        stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[ConditionalDateFormElement](internalId, ThresholdNextThirtyDaysId.toString, ConditionalDateFormElement(value = false, None))
@@ -133,7 +133,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Au
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        stubUpsertRegistrationInformation(RegistrationInformation("testInternalId", "testRegId", Draft, Some(LocalDate.now), VatReg))
+        stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
 
         cacheSessionData(internalId, VoluntaryRegistrationId.toString, true)
         cacheSessionData[ConditionalDateFormElement](internalId, ThresholdPreviousThirtyDaysId.toString, ConditionalDateFormElement(value = false, None))
