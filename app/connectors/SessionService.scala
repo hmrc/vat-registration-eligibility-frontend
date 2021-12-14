@@ -26,8 +26,9 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DataCacheConnectorImpl @Inject()(val sessionRepository: SessionRepository, val cascadeUpsert: CascadeUpsert)
-                                      (implicit ec: ExecutionContext) extends DataCacheConnector {
+class SessionServiceImpl @Inject()(val sessionRepository: SessionRepository,
+                                   val cascadeUpsert: CascadeUpsert)
+                                  (implicit ec: ExecutionContext) extends SessionService {
 
   def save[A](cacheId: String, key: String, value: A)(implicit fmt: Format[A]): Future[CacheMap] = {
     sessionRepository.get(cacheId).flatMap { optionalCacheMap =>
@@ -89,8 +90,8 @@ class DataCacheConnectorImpl @Inject()(val sessionRepository: SessionRepository,
   }
 }
 
-@ImplementedBy(classOf[DataCacheConnectorImpl])
-trait DataCacheConnector {
+@ImplementedBy(classOf[SessionServiceImpl])
+trait SessionService {
   def save[A](cacheId: String, key: String, value: A)(implicit fmt: Format[A]): Future[CacheMap]
 
   def save(cacheMap: CacheMap): Future[CacheMap]

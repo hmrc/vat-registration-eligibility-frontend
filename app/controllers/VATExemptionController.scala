@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.VATExemptionFormProvider
 import identifiers.VATExemptionId
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VATExemptionController @Inject()(mcc: MessagesControllerComponents,
-                                       dataCacheConnector: DataCacheConnector,
+                                       sessionService: SessionService,
                                        navigator: Navigator,
                                        identify: CacheIdentifierAction,
                                        getData: DataRetrievalAction,
@@ -62,7 +62,7 @@ class VATExemptionController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, VATExemptionId.toString, value).map { cacheMap =>
+          sessionService.save[Boolean](request.internalId, VATExemptionId.toString, value).map { cacheMap =>
             if (value) {
               trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = true)
             }

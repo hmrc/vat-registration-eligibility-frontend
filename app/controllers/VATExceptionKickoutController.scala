@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.VATExceptionKickoutFormProvider
 import identifiers.VATExceptionKickoutId
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VATExceptionKickoutController @Inject()(mcc: MessagesControllerComponents,
-                                              dataCacheConnector: DataCacheConnector,
+                                              sessionService: SessionService,
                                               navigator: Navigator,
                                               identify: CacheIdentifierAction,
                                               getData: DataRetrievalAction,
@@ -61,7 +61,7 @@ class VATExceptionKickoutController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, VATExceptionKickoutId.toString, value).flatMap(cacheMap =>
+          sessionService.save[Boolean](request.internalId, VATExceptionKickoutId.toString, value).flatMap(cacheMap =>
             trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = true).map {
               case RegistrationInformation(_, _, _, _, _) =>
                 Redirect(navigator.nextPage(VATExceptionKickoutId, NormalMode)(new UserAnswers(cacheMap)))

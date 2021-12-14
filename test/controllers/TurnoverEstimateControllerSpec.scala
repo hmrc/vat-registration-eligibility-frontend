@@ -16,8 +16,8 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
-import connectors.mocks.MockDataCacheConnector
+import connectors.FakeSessionService
+import connectors.mocks.MockSessionService
 import controllers.actions._
 import forms.TurnoverEstimateFormProvider
 import identifiers.{GoneOverThresholdId, TurnoverEstimateId, ZeroRatedSalesId}
@@ -31,7 +31,7 @@ import views.html.turnoverEstimate
 
 import scala.concurrent.Future
 
-class TurnoverEstimateControllerSpec extends ControllerSpecBase with MockDataCacheConnector {
+class TurnoverEstimateControllerSpec extends ControllerSpecBase with MockSessionService {
 
   def onwardRoute = routes.IndexController.onPageLoad
 
@@ -45,7 +45,7 @@ class TurnoverEstimateControllerSpec extends ControllerSpecBase with MockDataCac
   val dataRequiredAction = new DataRequiredAction
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new TurnoverEstimateController(controllerComponents, dataCacheConnectorMock, navigator, FakeCacheIdentifierAction,
+    new TurnoverEstimateController(controllerComponents, sessionServiceMock, navigator, FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString

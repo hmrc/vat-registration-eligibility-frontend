@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.mocks.{MockDataCacheConnector, MockS4lConnector}
+import connectors.mocks.{MockSessionService, MockS4lConnector}
 import controllers.actions.FakeCacheIdentifierAction
 import models.CurrentProfile
 import models.requests.OptionalDataRequest
@@ -26,7 +26,7 @@ import utils.FakeNavigator
 
 import scala.concurrent.Future
 
-class IndexControllerSpec extends ControllerSpecBase with MockS4lConnector with MockDataCacheConnector{
+class IndexControllerSpec extends ControllerSpecBase with MockS4lConnector with MockSessionService{
 
   implicit val appConfig: FrontendAppConfig = frontendAppConfig
 
@@ -38,7 +38,7 @@ class IndexControllerSpec extends ControllerSpecBase with MockS4lConnector with 
     val controller = new IndexController(
       controllerComponents,
       new FakeNavigator(desiredRoute = routes.ThresholdInTwelveMonthsController.onPageLoad),
-      dataCacheConnectorMock,
+      sessionServiceMock,
       mockS4LConnector,
       FakeCacheIdentifierAction,
       getEmptyCacheMap

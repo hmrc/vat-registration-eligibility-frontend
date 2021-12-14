@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import forms.FixedEstablishmentFormProvider
 import identifiers.FixedEstablishmentId
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class FixedEstablishmentController @Inject()(mcc: MessagesControllerComponents,
-                                             dataCacheConnector: DataCacheConnector,
+                                             sessionService: SessionService,
                                              navigator: Navigator,
                                              identify: CacheIdentifierAction,
                                              getData: DataRetrievalAction,
@@ -58,7 +58,7 @@ class FixedEstablishmentController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, FixedEstablishmentId.toString, value) map { cacheMap =>
+          sessionService.save[Boolean](request.internalId, FixedEstablishmentId.toString, value) map { cacheMap =>
             Redirect(navigator.nextPage(FixedEstablishmentId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )

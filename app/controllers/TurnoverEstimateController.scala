@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.TurnoverEstimateFormProvider
 import identifiers.{TurnoverEstimateId, ZeroRatedSalesId}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TurnoverEstimateController @Inject()(mcc: MessagesControllerComponents,
-                                           dataCacheConnector: DataCacheConnector,
+                                           sessionService: SessionService,
                                            navigator: Navigator,
                                            identify: CacheIdentifierAction,
                                            getData: DataRetrievalAction,
@@ -62,10 +62,10 @@ class TurnoverEstimateController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
-          dataCacheConnector.save[TurnoverEstimateFormElement](request.internalId, TurnoverEstimateId.toString, value).flatMap { cacheMap =>
+          sessionService.save[TurnoverEstimateFormElement](request.internalId, TurnoverEstimateId.toString, value).flatMap { cacheMap =>
             value match {
               case ZeroTurnover =>
-                dataCacheConnector.save[Boolean](request.internalId, ZeroRatedSalesId.toString, false).map { cacheMap =>
+                sessionService.save[Boolean](request.internalId, ZeroRatedSalesId.toString, false).map { cacheMap =>
                   Redirect(navigator.nextPage(ZeroRatedSalesId, mode)(new UserAnswers(cacheMap)))
                 }
               case _ =>

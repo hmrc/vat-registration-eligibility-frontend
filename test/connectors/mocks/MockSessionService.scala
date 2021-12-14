@@ -16,7 +16,7 @@
 
 package connectors.mocks
 
-import connectors.DataCacheConnector
+import connectors.SessionService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.mockito.stubbing.OngoingStubbing
@@ -27,37 +27,37 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
-trait MockDataCacheConnector extends MockitoSugar {
+trait MockSessionService extends MockitoSugar {
   self: Suite =>
 
-  val dataCacheConnectorMock = mock[DataCacheConnector]
+  val sessionServiceMock = mock[SessionService]
 
   // Curried methods to allow for tidy setting of defaults for the different parameter lists
   def mockSessionCacheSave[A](cacheId: String, key: String): A => Future[CacheMap] => OngoingStubbing[Future[CacheMap]] =
-    (value: A) => (response: Future[CacheMap]) => when(dataCacheConnectorMock.save(
+    (value: A) => (response: Future[CacheMap]) => when(sessionServiceMock.save(
       ArgumentMatchers.eq(cacheId),
       ArgumentMatchers.eq(key),
       ArgumentMatchers.any[A]
     )(ArgumentMatchers.any[Format[A]])) thenReturn response
 
   def mockSessionCacheSave(cacheMap: CacheMap): OngoingStubbing[Future[CacheMap]] =
-    when(dataCacheConnectorMock.save(
+    when(sessionServiceMock.save(
       ArgumentMatchers.eq(cacheMap)
     )) thenReturn(Future.successful(cacheMap))
 
   def mockSessionFetch(cacheId: String): Future[Option[CacheMap]] => OngoingStubbing[Future[Option[CacheMap]]] =
-    (response: Future[Option[CacheMap]]) => when(dataCacheConnectorMock.fetch(
+    (response: Future[Option[CacheMap]]) => when(sessionServiceMock.fetch(
       ArgumentMatchers.eq(cacheId)
     )) thenReturn response
 
   def mockSessionGetEntry[A](cacheId: String, key: String): Future[Option[A]] => OngoingStubbing[Future[Option[A]]] =
-    (response: Future[Option[A]]) => when(dataCacheConnectorMock.getEntry(
+    (response: Future[Option[A]]) => when(sessionServiceMock.getEntry(
       ArgumentMatchers.eq(cacheId),
       ArgumentMatchers.eq(key)
     )(ArgumentMatchers.any[Format[A]])) thenReturn response
 
   def mockClearSession(cacheId: String)(response: Future[Boolean]): OngoingStubbing[Future[Boolean]] =
-    when(dataCacheConnectorMock.delete(
+    when(sessionServiceMock.delete(
       ArgumentMatchers.eq(cacheId)
     )) thenReturn response
 

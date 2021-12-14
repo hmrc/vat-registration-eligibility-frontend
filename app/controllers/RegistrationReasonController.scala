@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import featureswitch.core.config.FeatureSwitching
 import forms.RegistrationReasonFormProvider
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RegistrationReasonController @Inject() (mcc: MessagesControllerComponents,
-                                              dataCacheConnector: DataCacheConnector,
+                                              sessionService: SessionService,
                                               navigator: Navigator,
                                               identify: CacheIdentifierAction,
                                               getData: DataRetrievalAction,
@@ -60,7 +60,7 @@ class RegistrationReasonController @Inject() (mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[RegistrationReason](request.internalId, RegistrationReasonId.toString, value)
+          sessionService.save[RegistrationReason](request.internalId, RegistrationReasonId.toString, value)
             .map(cacheMap  =>
               Redirect(navigator.nextPage(RegistrationReasonId, NormalMode)(new UserAnswers(cacheMap))))
           )

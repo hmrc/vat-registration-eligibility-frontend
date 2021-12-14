@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.ThresholdPreviousThirtyDaysFormProvider
 import identifiers.{ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ThresholdPreviousThirtyDaysController @Inject()(mcc: MessagesControllerComponents,
-                                                      dataCacheConnector: DataCacheConnector,
+                                                      sessionService: SessionService,
                                                       navigator: Navigator,
                                                       identify: CacheIdentifierAction,
                                                       getData: DataRetrievalAction,
@@ -61,11 +61,11 @@ class ThresholdPreviousThirtyDaysController @Inject()(mcc: MessagesControllerCom
           Future.successful(BadRequest(view(formWithErrors, NormalMode)))
         },
         formValue =>
-          dataCacheConnector.save[ConditionalDateFormElement](request.internalId, ThresholdPreviousThirtyDaysId.toString, formValue).flatMap {
+          sessionService.save[ConditionalDateFormElement](request.internalId, ThresholdPreviousThirtyDaysId.toString, formValue).flatMap {
             cacheMap =>
               val userAnswers = new UserAnswers(cacheMap)
               if (ThresholdHelper.q1DefinedAndTrue(userAnswers) | formValue.value | userAnswers.thresholdNextThirtyDays.fold(false)(_.value)) {
-                dataCacheConnector.removeEntry(request.internalId, VoluntaryRegistrationId.toString)
+                sessionService.removeEntry(request.internalId, VoluntaryRegistrationId.toString)
               } else {
                 Future.successful(cacheMap)
               }

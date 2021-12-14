@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import forms.VoluntaryInformationFormProvider
 import identifiers.VoluntaryInformationId
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VoluntaryInformationController @Inject()(mcc: MessagesControllerComponents,
-                                               dataCacheConnector: DataCacheConnector,
+                                               sessionService: SessionService,
                                                navigator: Navigator,
                                                identify: CacheIdentifierAction,
                                                getData: DataRetrievalAction,
@@ -59,7 +59,7 @@ class VoluntaryInformationController @Inject()(mcc: MessagesControllerComponents
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, VoluntaryInformationId.toString, value).map(cacheMap =>
+          sessionService.save[Boolean](request.internalId, VoluntaryInformationId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(VoluntaryInformationId, NormalMode)(new UserAnswers(cacheMap))))
       )
   }

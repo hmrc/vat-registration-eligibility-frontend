@@ -36,7 +36,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
   class Setup {
     val service = new VatRegistrationService(
       mockVatRegConnector,
-      mockDataCacheConnector,
+      mockSessionService,
       mockMessagesAPI
     )
 
@@ -101,7 +101,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
       s"$RacehorsesId" -> JsBoolean(false)
     )
     "return the JsObject submitted to Vat registration" in new Setup {
-      when(mockDataCacheConnector.fetch(any())).thenReturn(Future.successful(Some(new CacheMap("foo", fullListMapHappyPathTwelveMonthsFalse))))
+      when(mockSessionService.fetch(any())).thenReturn(Future.successful(Some(new CacheMap("foo", fullListMapHappyPathTwelveMonthsFalse))))
       when(mockVatRegConnector.saveEligibility(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj("wizz" -> "woo")))
 
       await(service.submitEligibility("foo")) mustBe Json.parse(

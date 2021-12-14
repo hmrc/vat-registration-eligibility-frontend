@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.BusinessEntityFormProvider
 import identifiers.BusinessEntityId
@@ -46,7 +46,7 @@ class BusinessEntityControllerSpec extends ControllerSpecBase {
   val postAction = testCall
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new BusinessEntityController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new BusinessEntityController(controllerComponents, FakeSessionService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 
   def viewAsString(form: Form[BusinessEntity] = form) = view(form, postAction)(fakeDataRequestIncorped, messages, frontendAppConfig).toString

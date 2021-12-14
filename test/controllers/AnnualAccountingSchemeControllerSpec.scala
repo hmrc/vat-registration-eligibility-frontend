@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.AnnualAccountingSchemeFormProvider
 import identifiers.AnnualAccountingSchemeId
@@ -42,7 +42,7 @@ class AnnualAccountingSchemeControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new AnnualAccountingSchemeController(
       controllerComponents,
-      FakeDataCacheConnector,
+      FakeSessionService,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeCacheIdentifierAction,
       dataRetrievalAction,

@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.BusinessEntityOtherFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityOtherId}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessEntityOtherController @Inject()(mcc: MessagesControllerComponents,
-                                              dataCacheConnector: DataCacheConnector,
+                                              sessionService: SessionService,
                                               navigator: Navigator,
                                               identify: CacheIdentifierAction,
                                               getData: DataRetrievalAction,
@@ -59,7 +59,7 @@ class BusinessEntityOtherController @Inject()(mcc: MessagesControllerComponents,
           BadRequest(view(formWithErrors, routes.BusinessEntityOtherController.onSubmit()))
         ),
       entityType => {
-        dataCacheConnector.save[BusinessEntity](request.internalId, BusinessEntityId.toString, entityType) map { cacheMap =>
+        sessionService.save[BusinessEntity](request.internalId, BusinessEntityId.toString, entityType) map { cacheMap =>
           Redirect(navigator.nextPage(BusinessEntityOtherId, NormalMode)(new UserAnswers(cacheMap)))
         }
       }

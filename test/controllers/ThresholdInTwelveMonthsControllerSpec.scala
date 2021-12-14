@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
 import identifiers._
@@ -56,7 +56,7 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
   val getRequiredCacheMap: FakeDataRetrievalAction = getWithCacheMap(CacheMap(cacheMapId, data))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getRequiredCacheMap) =
-    new ThresholdInTwelveMonthsController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new ThresholdInTwelveMonthsController(controllerComponents, FakeSessionService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequestIncorpedOver12m, messages, frontendAppConfig).toString
@@ -66,8 +66,8 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
   val testDate = LocalDate.now
 
   "ThresholdInTwelveMonths Controller" must {
-    when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
-    when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(ThresholdNextThirtyDaysId.toString))) thenReturn Future.successful(emptyCacheMap)
+    when(mockSessionService.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
+    when(mockSessionService.removeEntry(anyString(), ArgumentMatchers.eq(ThresholdNextThirtyDaysId.toString))) thenReturn Future.successful(emptyCacheMap)
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(fakeRequest)
