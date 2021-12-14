@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.ThresholdTaxableSuppliesFormProvider
 import identifiers._
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ThresholdTaxableSuppliesController @Inject()(mcc: MessagesControllerComponents,
-                                                   dataCacheConnector: DataCacheConnector,
+                                                   sessionService: SessionService,
                                                    navigator: Navigator,
                                                    identify: CacheIdentifierAction,
                                                    getData: DataRetrievalAction,
@@ -58,7 +58,7 @@ class ThresholdTaxableSuppliesController @Inject()(mcc: MessagesControllerCompon
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         formValue =>
-          dataCacheConnector.save[DateFormElement](request.internalId, ThresholdTaxableSuppliesId.toString, formValue).flatMap {
+          sessionService.save[DateFormElement](request.internalId, ThresholdTaxableSuppliesId.toString, formValue).flatMap {
             cacheMap => Future.successful(cacheMap)
           }.map(cMap => Redirect(navigator.nextPage(ThresholdTaxableSuppliesId, NormalMode)(new UserAnswers(cMap)))))
   }

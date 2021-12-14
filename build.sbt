@@ -15,7 +15,7 @@ scalaVersion := "2.12.12"
 
 val scoverageSettings = Seq(
   ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
-    ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*DataCacheConnector;" +
+    ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*SessionService;" +
     ".*ControllerConfiguration;.*LanguageSwitchController",
   ScoverageKeys.coverageMinimum := 90,
   ScoverageKeys.coverageFailOnMinimum := false,

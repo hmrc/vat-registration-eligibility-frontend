@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.ThresholdPreviousThirtyDaysFormProvider
 import identifiers.{ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
@@ -53,7 +53,7 @@ class ThresholdPreviousThirtyDaysControllerSpec extends ControllerSpecBase {
   val dataRequiredAction = new DataRequiredAction
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new ThresholdPreviousThirtyDaysController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new ThresholdPreviousThirtyDaysController(controllerComponents, FakeSessionService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig).toString
@@ -77,7 +77,7 @@ class ThresholdPreviousThirtyDaysControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted with value of true with a date" in {
-      when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
+      when(mockSessionService.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
       val date = LocalDate.parse("2019-01-01")
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true",
         "thresholdPreviousThirtyDaysDate.year" -> date.getYear.toString,

@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.RegisteringBusinessFormProvider
 import identifiers.RegisteringBusinessId
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RegisteringBusinessController @Inject()(mcc: MessagesControllerComponents,
-                                              dataCacheConnector: DataCacheConnector,
+                                              sessionService: SessionService,
                                               navigator: Navigator,
                                               identify: CacheIdentifierAction,
                                               getData: DataRetrievalAction,
@@ -60,7 +60,7 @@ class RegisteringBusinessController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[RegisteringBusiness]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[RegisteringBusiness](request.internalId, RegisteringBusinessId.toString, value).map(cacheMap =>
+          sessionService.save[RegisteringBusiness](request.internalId, RegisteringBusinessId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(RegisteringBusinessId, NormalMode)(new UserAnswers(cacheMap))))
       )
   }

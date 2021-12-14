@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.InternationalActivitiesFormProvider
 import identifiers.InternationalActivitiesId
@@ -41,7 +41,7 @@ class InternationalActivitiesControllerSpec extends ControllerSpecBase {
   val dataRequiredAction = new DataRequiredAction
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new InternationalActivitiesController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new InternationalActivitiesController(controllerComponents, FakeSessionService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString

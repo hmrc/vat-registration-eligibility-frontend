@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import featureswitch.core.config.{FeatureSwitching, NETPFlow}
 import forms.FixedEstablishmentFormProvider
@@ -41,7 +41,7 @@ class FixedEstablishmentControllerSpec extends ControllerSpecBase with FeatureSw
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new FixedEstablishmentController(
       controllerComponents,
-      FakeDataCacheConnector,
+      FakeSessionService,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeCacheIdentifierAction,
       dataRetrievalAction,

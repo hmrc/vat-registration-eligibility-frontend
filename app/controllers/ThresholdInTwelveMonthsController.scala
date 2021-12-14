@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
 import identifiers.{TaxableSuppliesInUkId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerComponents,
-                                                  dataCacheConnector: DataCacheConnector,
+                                                  sessionService: SessionService,
                                                   navigator: Navigator,
                                                   identify: CacheIdentifierAction,
                                                   getData: DataRetrievalAction,
@@ -67,14 +67,14 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         formValue =>
-          dataCacheConnector.save[ConditionalDateFormElement](request.internalId, ThresholdInTwelveMonthsId.toString, formValue).flatMap { _ =>
+          sessionService.save[ConditionalDateFormElement](request.internalId, ThresholdInTwelveMonthsId.toString, formValue).flatMap { _ =>
             if (formValue.value) {
-              dataCacheConnector.removeEntry(request.internalId, VoluntaryRegistrationId.toString).flatMap {
-                _ => dataCacheConnector.removeEntry(request.internalId, ThresholdNextThirtyDaysId.toString)
+              sessionService.removeEntry(request.internalId, VoluntaryRegistrationId.toString).flatMap {
+                _ => sessionService.removeEntry(request.internalId, ThresholdNextThirtyDaysId.toString)
               }
             } else {
-              dataCacheConnector.removeEntry(request.internalId, VATRegistrationExceptionId.toString).flatMap {
-                _ => dataCacheConnector.removeEntry(request.internalId, ThresholdPreviousThirtyDaysId.toString)
+              sessionService.removeEntry(request.internalId, VATRegistrationExceptionId.toString).flatMap {
+                _ => sessionService.removeEntry(request.internalId, ThresholdPreviousThirtyDaysId.toString)
               }
             }
           }.flatMap(cacheMap =>

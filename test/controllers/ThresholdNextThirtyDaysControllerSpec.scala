@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.ThresholdNextThirtyDaysFormProvider
 import identifiers.{ThresholdNextThirtyDaysId, VoluntaryRegistrationId}
@@ -55,7 +55,7 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ThresholdNextThirtyDaysController(
       controllerComponents,
-      FakeDataCacheConnector,
+      FakeSessionService,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeCacheIdentifierAction,
       dataRetrievalAction,
@@ -67,7 +67,7 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
 
   "ThresholdNextThirtyDays Controller" must {
-    when(mockDataCacheConnector.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
+    when(mockSessionService.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(fakeDataRequestIncorped)
 

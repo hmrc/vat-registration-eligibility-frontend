@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.{Allocated, FakeDataCacheConnector, QuotaReached}
+import connectors.{Allocated, FakeSessionService, QuotaReached}
 import controllers.actions._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import forms.NinoFormProvider
@@ -71,11 +71,11 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
   val getRequiredCacheMap: FakeDataRetrievalAction = getWithCacheMap(CacheMap(cacheMapId, data))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getRequiredCacheMap) =
-    new NinoController(controllerComponents, FakeDataCacheConnector, mockS4LService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new NinoController(controllerComponents, FakeSessionService, mockS4LService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
 
   def kickoutController(dataRetrievalAction: DataRetrievalAction = getRequiredCacheMap) =
-    new NinoController(controllerComponents, FakeDataCacheConnector, mockS4LService, new FakeNavigator(desiredRoute = routes.VATExceptionKickoutController.onPageLoad),
+    new NinoController(controllerComponents, FakeSessionService, mockS4LService, new FakeNavigator(desiredRoute = routes.VATExceptionKickoutController.onPageLoad),
       FakeCacheIdentifierAction, dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig).toString

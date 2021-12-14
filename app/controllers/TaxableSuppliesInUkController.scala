@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import featureswitch.core.config.FeatureSwitching
 import forms.TaxableSuppliesInUkFormProvider
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TaxableSuppliesInUkController @Inject()(mcc: MessagesControllerComponents,
-                                              dataCacheConnector: DataCacheConnector,
+                                              sessionService: SessionService,
                                               s4LService: S4LService,
                                               navigator: Navigator,
                                               identify: CacheIdentifierAction,
@@ -64,7 +64,7 @@ class TaxableSuppliesInUkController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, TaxableSuppliesInUkId.toString, value).map { cacheMap =>
+          sessionService.save[Boolean](request.internalId, TaxableSuppliesInUkId.toString, value).map { cacheMap =>
             Redirect(navigator.nextPage(TaxableSuppliesInUkId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )

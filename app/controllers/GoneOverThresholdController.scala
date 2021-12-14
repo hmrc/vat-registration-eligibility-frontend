@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import featureswitch.core.config.FeatureSwitching
 import forms.GoneOverThresholdFormProvider
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GoneOverThresholdController @Inject()(mcc: MessagesControllerComponents,
-                                            dataCacheConnector: DataCacheConnector,
+                                            sessionService: SessionService,
                                             s4LService: S4LService,
                                             navigator: Navigator,
                                             identify: CacheIdentifierAction,
@@ -63,7 +63,7 @@ class GoneOverThresholdController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, GoneOverThresholdId.toString, value).flatMap {
+          sessionService.save[Boolean](request.internalId, GoneOverThresholdId.toString, value).flatMap {
             cacheMap => Future.successful(cacheMap)
           }.map(cMap => Redirect(navigator.nextPage(GoneOverThresholdId, NormalMode)(new UserAnswers(cMap)))))
   }

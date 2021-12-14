@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import featureswitch.core.config.FeatureSwitching
 import forms.NinoFormProvider
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NinoController @Inject()(mcc: MessagesControllerComponents,
-                               dataCacheConnector: DataCacheConnector,
+                               sessionService: SessionService,
                                s4LService: S4LService,
                                navigator: Navigator,
                                identify: CacheIdentifierAction,
@@ -64,7 +64,7 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, NinoId.toString, value).map { cacheMap =>
+          sessionService.save[Boolean](request.internalId, NinoId.toString, value).map { cacheMap =>
             Redirect(navigator.nextPage(NinoId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )

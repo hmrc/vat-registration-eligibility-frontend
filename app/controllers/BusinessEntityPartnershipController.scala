@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.BusinessEntityPartnershipFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityPartnershipId}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessEntityPartnershipController @Inject()(mcc: MessagesControllerComponents,
-                                                    dataCacheConnector: DataCacheConnector,
+                                                    sessionService: SessionService,
                                                     navigator: Navigator,
                                                     identify: CacheIdentifierAction,
                                                     getData: DataRetrievalAction,
@@ -59,7 +59,7 @@ class BusinessEntityPartnershipController @Inject()(mcc: MessagesControllerCompo
           BadRequest(view(formWithErrors, routes.BusinessEntityPartnershipController.onSubmit()))
         ),
       entityType => {
-        dataCacheConnector.save[BusinessEntity](request.internalId, BusinessEntityId.toString, entityType) map { cacheMap =>
+        sessionService.save[BusinessEntity](request.internalId, BusinessEntityId.toString, entityType) map { cacheMap =>
           Redirect(navigator.nextPage(BusinessEntityPartnershipId, NormalMode)(new UserAnswers(cacheMap)))
         }
       }

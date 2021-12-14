@@ -17,7 +17,7 @@
 package services
 
 import java.time.format.DateTimeFormatter
-import connectors.{DataCacheConnector, VatRegistrationConnector}
+import connectors.{SessionService, VatRegistrationConnector}
 import identifiers._
 
 import javax.inject.{Inject, Singleton}
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector,
-                                       val dataCacheConnector: DataCacheConnector,
+                                       val sessionService: SessionService,
                                        val messagesApi: MessagesApi) extends MessagesUtils {
 
   def submitEligibility(internalId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, r: DataRequest[_]): Future[JsObject] = {
@@ -163,7 +163,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
                                     (implicit hc: HeaderCarrier,
                                      executionContext: ExecutionContext,
                                      r: DataRequest[_]): Future[JsObject] = {
-    dataCacheConnector.fetch(internalId) map {
+    sessionService.fetch(internalId) map {
       case Some(map) => Json.obj("sections" -> getEligibilitySections(map))
       case _ => throw new RuntimeException
     }

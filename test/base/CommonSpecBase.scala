@@ -35,7 +35,7 @@ trait CommonSpecBase extends PlaySpec with FutureAwaits with DefaultAwaitTimeout
 
   def resetMocks() = {
     reset(
-      mockDataCacheConnector,
+      mockSessionService,
       mockVatRegConnector,
       mockAuthConnector,
       mockVRService,

@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.AgriculturalFlatRateSchemeFormProvider
 import identifiers.AgriculturalFlatRateSchemeId
@@ -40,7 +40,7 @@ class AgriculturalFlatRateSchemeControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new AgriculturalFlatRateSchemeController(
       controllerComponents,
-      FakeDataCacheConnector,
+      FakeSessionService,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeCacheIdentifierAction,
       dataRetrievalAction,

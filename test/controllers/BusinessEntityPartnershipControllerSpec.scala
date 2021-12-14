@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.BusinessEntityPartnershipFormProvider
 import identifiers.BusinessEntityId
@@ -45,7 +45,7 @@ class BusinessEntityPartnershipControllerSpec extends ControllerSpecBase {
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) = new BusinessEntityPartnershipController(
     controllerComponents,
-    FakeDataCacheConnector,
+    FakeSessionService,
     new FakeNavigator(desiredRoute = onwardRoute),
     FakeCacheIdentifierAction,
     dataRetrievalAction,

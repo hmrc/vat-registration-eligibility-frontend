@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.FakeDataCacheConnector
+import connectors.FakeSessionService
 import controllers.actions._
 import forms.VATExceptionKickoutFormProvider
 import identifiers.VATExceptionKickoutId
@@ -45,7 +45,7 @@ class VATExceptionKickoutControllerSpec extends ControllerSpecBase with TrafficM
   val dataRequiredAction = new DataRequiredAction
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new VATExceptionKickoutController(controllerComponents, FakeDataCacheConnector, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new VATExceptionKickoutController(controllerComponents, FakeSessionService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString

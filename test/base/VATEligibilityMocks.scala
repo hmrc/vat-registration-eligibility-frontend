@@ -29,7 +29,7 @@ trait VATEligibilityMocks {
   self: MockitoSugar =>
 
   //Connectors
-  lazy val mockDataCacheConnector = mock[DataCacheConnector]
+  lazy val mockSessionService = mock[SessionService]
   lazy val mockVatRegConnector = mock[VatRegistrationConnector]
   lazy val mockAuthConnector = mock[AuthConnector]
   lazy val mockAuditConnector = mock[AuditConnector]

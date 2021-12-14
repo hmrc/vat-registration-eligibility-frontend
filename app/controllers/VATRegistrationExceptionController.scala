@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.VATRegistrationExceptionFormProvider
 import identifiers.VATRegistrationExceptionId
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerComponents,
-                                                   dataCacheConnector: DataCacheConnector,
+                                                   sessionService: SessionService,
                                                    navigator: Navigator,
                                                    identify: CacheIdentifierAction,
                                                    getData: DataRetrievalAction,
@@ -62,7 +62,7 @@ class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerCompon
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, VATRegistrationExceptionId.toString, value).map { cacheMap =>
+          sessionService.save[Boolean](request.internalId, VATRegistrationExceptionId.toString, value).map { cacheMap =>
             if (value) {
               trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = true)
             }

@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.InternationalActivitiesFormProvider
 import identifiers.InternationalActivitiesId
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class InternationalActivitiesController @Inject()(mcc: MessagesControllerComponents,
-                                                  dataCacheConnector: DataCacheConnector,
+                                                  sessionService: SessionService,
                                                   navigator: Navigator,
                                                   identify: CacheIdentifierAction,
                                                   getData: DataRetrievalAction,
@@ -59,7 +59,7 @@ class InternationalActivitiesController @Inject()(mcc: MessagesControllerCompone
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, InternationalActivitiesId.toString, value).map(cacheMap =>
+          sessionService.save[Boolean](request.internalId, InternationalActivitiesId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(InternationalActivitiesId, NormalMode)(new UserAnswers(cacheMap))))
       )
   }

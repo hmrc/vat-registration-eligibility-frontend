@@ -31,7 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CurrentProfileServiceSpec extends CommonSpecBase with S4LServiceMock {
 
   class Setup {
-    val service = new CurrentProfileService(mockDataCacheConnector, mockVatRegConnector, mockS4LService)
+    val service = new CurrentProfileService(mockSessionService, mockVatRegConnector, mockS4LService)
   }
 
   val testIntId = "internalId"
@@ -39,11 +39,11 @@ class CurrentProfileServiceSpec extends CommonSpecBase with S4LServiceMock {
   "buildCurrentProfile" should {
     "build a profile" when {
       "it hasn't been built" in new Setup {
-        when(mockDataCacheConnector.getEntry[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
+        when(mockSessionService.getEntry[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(None))
         when(mockVatRegConnector.getRegistrationId()(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext]))
           .thenReturn(Future.successful(regId))
-        when(mockDataCacheConnector.save[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
+        when(mockSessionService.save[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(CacheMap("test", Map("test" -> Json.obj()))))
         mockS4LFetchAndGet(regId, "eligibility-data")(None)
 
@@ -53,11 +53,11 @@ class CurrentProfileServiceSpec extends CommonSpecBase with S4LServiceMock {
       "it has been built with S4L" in new Setup {
         private val testCacheMap = CacheMap(regId, Map("CurrentProfile" -> Json.toJson(CurrentProfile(regId))))
 
-        when(mockDataCacheConnector.getEntry[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
+        when(mockSessionService.getEntry[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(None))
         when(mockVatRegConnector.getRegistrationId()(ArgumentMatchers.any[HeaderCarrier], ArgumentMatchers.any[ExecutionContext]))
           .thenReturn(Future.successful(regId))
-        when(mockDataCacheConnector.save(ArgumentMatchers.eq(testCacheMap)))
+        when(mockSessionService.save(ArgumentMatchers.eq(testCacheMap)))
           .thenReturn(Future.successful(testCacheMap))
         mockS4LFetchAndGet(regId, "eligibility-data")(Some(testCacheMap))
 
@@ -67,7 +67,7 @@ class CurrentProfileServiceSpec extends CommonSpecBase with S4LServiceMock {
       "it has been built" in new Setup {
         private val profile = CurrentProfile(regId)
 
-        when(mockDataCacheConnector.getEntry[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
+        when(mockSessionService.getEntry[CurrentProfile](ArgumentMatchers.any(), ArgumentMatchers.any())(ArgumentMatchers.any()))
           .thenReturn(Future.successful(Some(profile)))
 
         await(service.fetchOrBuildCurrentProfile(testIntId)) mustBe profile

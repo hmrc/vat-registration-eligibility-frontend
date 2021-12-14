@@ -16,7 +16,7 @@
 
 package services
 
-import connectors.{DataCacheConnector, VatRegistrationConnector}
+import connectors.{SessionService, VatRegistrationConnector}
 import models.CurrentProfile
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -25,13 +25,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CurrentProfileService @Inject()(val dataCacheConnector: DataCacheConnector,
+class CurrentProfileService @Inject()(val sessionService: SessionService,
                                       val vatRegistrationConnector: VatRegistrationConnector,
                                       s4LService: S4LService)
                                      (implicit ec: ExecutionContext) {
 
   def fetchOrBuildCurrentProfile(internalID: String)(implicit headerCarrier: HeaderCarrier): Future[CurrentProfile] = {
-    dataCacheConnector.getEntry[CurrentProfile](internalID, "CurrentProfile") flatMap {
+    sessionService.getEntry[CurrentProfile](internalID, "CurrentProfile") flatMap {
       case Some(currentProfile) => Future.successful(currentProfile)
       case None => for {
         regId <- vatRegistrationConnector.getRegistrationId()
@@ -39,8 +39,8 @@ class CurrentProfileService @Inject()(val dataCacheConnector: DataCacheConnector
         currentProfile = optCacheMap.fold(CurrentProfile(regId))(cacheMap =>
           cacheMap.getEntry[CurrentProfile]("CurrentProfile").getOrElse(CurrentProfile(regId)))
         _ <- optCacheMap match {
-          case Some(cacheMap) => dataCacheConnector.save(cacheMap)
-          case None => dataCacheConnector.save(internalID, "CurrentProfile", currentProfile)
+          case Some(cacheMap) => sessionService.save(cacheMap)
+          case None => sessionService.save(internalID, "CurrentProfile", currentProfile)
         }
       } yield currentProfile
     }

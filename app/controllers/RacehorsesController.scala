@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.DataCacheConnector
+import connectors.SessionService
 import controllers.actions._
 import forms.RacehorsesFormProvider
 import identifiers.RacehorsesId
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RacehorsesController @Inject()(mcc: MessagesControllerComponents,
-                                     dataCacheConnector: DataCacheConnector,
+                                     sessionService: SessionService,
                                      navigator: Navigator,
                                      identify: CacheIdentifierAction,
                                      getData: DataRetrievalAction,
@@ -58,7 +58,7 @@ class RacehorsesController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          dataCacheConnector.save[Boolean](request.internalId, RacehorsesId.toString, value) map { cacheMap =>
+          sessionService.save[Boolean](request.internalId, RacehorsesId.toString, value) map { cacheMap =>
             Redirect(navigator.nextPage(RacehorsesId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )

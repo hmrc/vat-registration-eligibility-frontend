@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.{DataCacheConnector, S4LConnector}
+import connectors.{SessionService, S4LConnector}
 import controllers.actions.{CacheIdentifierAction, DataRetrievalAction}
 import identifiers.Identifier
 import play.api.i18n.I18nSupport
@@ -30,7 +30,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class IndexController @Inject()(mcc: MessagesControllerComponents,
                                 navigator: Navigator,
-                                dataCacheConnector: DataCacheConnector,
+                                sessionService: SessionService,
                                 s4LConnector: S4LConnector,
                                 identify: CacheIdentifierAction,
                                 getData: DataRetrievalAction
@@ -38,7 +38,7 @@ class IndexController @Inject()(mcc: MessagesControllerComponents,
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData).async { implicit request =>
     for {
-      _ <- dataCacheConnector.delete(request.internalId) //TODO Remove as part of SAR-6520
+      _ <- sessionService.delete(request.internalId) //TODO Remove as part of SAR-6520
       _ <- s4LConnector.clear(request.internalId)
     } yield Redirect(routes.IntroductionController.onPageLoad)
   }
