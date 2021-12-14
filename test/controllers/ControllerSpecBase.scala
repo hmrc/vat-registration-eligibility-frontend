@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 trait ControllerSpecBase extends SpecBase {
 
-  val cacheMapId = "id"
+  val cacheMapId = "sessionId"
 
   def emptyCacheMap = CacheMap(cacheMapId, Map())
 

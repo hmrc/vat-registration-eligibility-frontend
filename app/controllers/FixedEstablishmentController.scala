@@ -17,13 +17,13 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import forms.FixedEstablishmentFormProvider
 import identifiers.FixedEstablishmentId
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.fixedEstablishment
@@ -58,7 +58,7 @@ class FixedEstablishmentController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          sessionService.save[Boolean](request.internalId, FixedEstablishmentId.toString, value) map { cacheMap =>
+          sessionService.save[Boolean](FixedEstablishmentId.toString, value) map { cacheMap =>
             Redirect(navigator.nextPage(FixedEstablishmentId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )

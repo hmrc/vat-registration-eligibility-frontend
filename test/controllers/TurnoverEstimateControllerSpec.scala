@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.FakeSessionService
 import connectors.mocks.MockSessionService
 import controllers.actions._
 import forms.TurnoverEstimateFormProvider
@@ -25,6 +24,7 @@ import models.{NormalMode, TurnoverEstimateFormElement}
 import play.api.data.Form
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
+import services.FakeSessionService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeNavigator, Navigator}
 import views.html.turnoverEstimate
@@ -71,12 +71,12 @@ class TurnoverEstimateControllerSpec extends ControllerSpecBase with MockSession
 
     "redirect to the zero rated page when a non-zero value is submitted" in {
       val testTurnover = TurnoverEstimateFormElement("10001")
-      mockSessionCacheSave[TurnoverEstimateFormElement](cacheMapId, TurnoverEstimateId.toString)(testTurnover)(Future.successful(CacheMap(
+      mockSessionCacheSave[TurnoverEstimateFormElement](TurnoverEstimateId.toString)(testTurnover)(Future.successful(CacheMap(
         id = cacheMapId,
         data = Map(TurnoverEstimateId.toString -> Json.toJson(testTurnover))
       )))
 
-      mockSessionCacheSave[Boolean](cacheMapId, ZeroRatedSalesId.toString)(false)(Future.successful(CacheMap(
+      mockSessionCacheSave[Boolean](ZeroRatedSalesId.toString)(false)(Future.successful(CacheMap(
         id = cacheMapId,
         data = Map(
           ZeroRatedSalesId.toString -> JsBoolean(false),
@@ -94,12 +94,12 @@ class TurnoverEstimateControllerSpec extends ControllerSpecBase with MockSession
 
     "skip the zero rated page when zero is submitted" in {
       val testTurnover = TurnoverEstimateFormElement("0")
-      mockSessionCacheSave[TurnoverEstimateFormElement](cacheMapId, TurnoverEstimateId.toString)(testTurnover)(Future.successful(CacheMap(
+      mockSessionCacheSave[TurnoverEstimateFormElement](TurnoverEstimateId.toString)(testTurnover)(Future.successful(CacheMap(
         id = cacheMapId,
         data = Map(TurnoverEstimateId.toString -> Json.toJson(testTurnover))
       )))
 
-      mockSessionCacheSave[Boolean](cacheMapId, ZeroRatedSalesId.toString)(false)(Future.successful(CacheMap(
+      mockSessionCacheSave[Boolean](ZeroRatedSalesId.toString)(false)(Future.successful(CacheMap(
         id = cacheMapId,
         data = Map(ZeroRatedSalesId.toString -> JsBoolean(false))
       )))

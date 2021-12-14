@@ -32,9 +32,12 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
     .build()
 
   val internalId = "testInternalId"
+
+  class Setup extends SessionTest(app)
+
   s"POST ${controllers.routes.RegisteringBusinessController.onSubmit.url}" should {
 
-    "navigate to Registration Reason Page when own business" in {
+    "navigate to Registration Reason Page when own business" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -47,15 +50,15 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegistrationReasonController.onPageLoad.url)
-      verifySessionCacheData(internalId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](OwnBusiness))
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](OwnBusiness))
     }
 
-    "navigate to Taxable Supplies for own business when flow is NETP" in {
+    "navigate to Taxable Supplies for own business when flow is NETP" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       disable(ThirdPartyTransactorFlow)
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", NETP)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", NETP)
 
       val request = buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -64,15 +67,15 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
-      verifySessionCacheData(internalId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](OwnBusiness))
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](OwnBusiness))
     }
 
-    "navigate to Taxable Supplies for own business when flow is Overseas" in {
+    "navigate to Taxable Supplies for own business when flow is Overseas" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       disable(ThirdPartyTransactorFlow)
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", Overseas)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
 
       val request = buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -81,10 +84,10 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
-      verifySessionCacheData(internalId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](OwnBusiness))
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](OwnBusiness))
     }
 
-    "navigate to Vat Exception Kickout when someone else's business" in {
+    "navigate to Vat Exception Kickout when someone else's business" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -97,10 +100,10 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
-      verifySessionCacheData(internalId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
     }
 
-    "navigate to Registration Reason Page when someone else's business if Third Party Transactor flow" in {
+    "navigate to Registration Reason Page when someone else's business if Third Party Transactor flow" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -113,15 +116,15 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegistrationReasonController.onPageLoad.url)
-      verifySessionCacheData(internalId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
     }
 
-    "navigate to Taxable Supplies when someone else's business if Third Party Transactor flow and NETP flow" in {
+    "navigate to Taxable Supplies when someone else's business if Third Party Transactor flow and NETP flow" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       enable(ThirdPartyTransactorFlow)
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", NETP)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", NETP)
 
       val request = buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -130,15 +133,15 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
-      verifySessionCacheData(internalId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
     }
 
-    "navigate to Taxable Supplies when someone else's business if Third Party Transactor flow and Overseas flow" in {
+    "navigate to Taxable Supplies when someone else's business if Third Party Transactor flow and Overseas flow" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       enable(ThirdPartyTransactorFlow)
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", Overseas)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
 
       val request = buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -147,7 +150,7 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
-      verifySessionCacheData(internalId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
     }
   }
 }

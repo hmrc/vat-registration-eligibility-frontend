@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.FakeSessionService
 import controllers.actions._
 import forms.VATExceptionKickoutFormProvider
 import identifiers.VATExceptionKickoutId
@@ -25,6 +24,7 @@ import models.{Draft, NormalMode, RegistrationInformation, VatReg}
 import play.api.data.Form
 import play.api.libs.json.JsBoolean
 import play.api.test.Helpers._
+import services.FakeSessionService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import views.html.vatExceptionKickout

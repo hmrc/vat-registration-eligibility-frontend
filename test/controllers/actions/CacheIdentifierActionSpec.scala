@@ -28,7 +28,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, SessionId}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -38,33 +38,35 @@ class CacheIdentifierActionSpec extends SpecBase {
                 val parser: BodyParsers.Default)
                (implicit override val executionContext: ExecutionContext) extends CacheIdentifierAction with BaseController {
 
+    val testInternalId = "testInternalId"
+    val testRegId = "regId"
+    val sessionId = "sessionId"
 
     def onPageLoad = authAction { request => Ok }
 
     override protected def controllerComponents: ControllerComponents = controllerComponents
 
     override def invokeBlock[A](request: Request[A], block: CacheIdentifierRequest[A] => Future[Result]): Future[Result] =
-      block(CacheIdentifierRequest(request, "id", CurrentProfile("regId")))
+      block(CacheIdentifierRequest(request, testRegId, testInternalId))
 
+    implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
 
     "Auth Action" when {
       "the user hasn't started the journey" must {
         "redirect the user to the start of the journey" in {
-          val authAction = new CacheIdentifierActionImpl(mockAuthConnector, frontendAppConfig, mockCurrentProfileService, parser)
+          val authAction = new CacheIdentifierActionImpl(mockAuthConnector, frontendAppConfig, mockJourneyService, parser)
           val controller = new Harness(authAction, parser)
-          val testInternalId = "testInternalId"
 
-          when(
-            mockAuthConnector.authorise(
-              ArgumentMatchers.any,
-              ArgumentMatchers.eq(Retrievals.internalId)
-            )(
-              ArgumentMatchers.any[HeaderCarrier],
-              ArgumentMatchers.any[ExecutionContext]
-            )
-          ).thenReturn(Future.successful(Some(testInternalId)))
-          when(mockCurrentProfileService.fetchOrBuildCurrentProfile(ArgumentMatchers.eq(testInternalId)))
-            .thenReturn(throw new NotFoundException(""))
+          when(mockAuthConnector.authorise(
+            ArgumentMatchers.any,
+            ArgumentMatchers.eq(Retrievals.internalId)
+          )(
+            ArgumentMatchers.any[HeaderCarrier],
+            ArgumentMatchers.any[ExecutionContext]
+          )).thenReturn(Future.successful(Some(testInternalId)))
+
+          when(mockJourneyService.getProfile(ArgumentMatchers.eq(hc)))
+            .thenReturn(Future.successful(None))
 
           val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
@@ -74,7 +76,7 @@ class CacheIdentifierActionSpec extends SpecBase {
 
       "the user hasn't logged in" must {
         "redirect the user to log in " in {
-          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new MissingBearerToken), frontendAppConfig, mockCurrentProfileService, parser)
+          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new MissingBearerToken), frontendAppConfig, mockJourneyService, parser)
           val controller = new Harness(authAction, parser)
           val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
@@ -84,7 +86,7 @@ class CacheIdentifierActionSpec extends SpecBase {
 
       "the user's session has expired" must {
         "redirect the user to log in " in {
-          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new BearerTokenExpired), frontendAppConfig, mockCurrentProfileService, parser)
+          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new BearerTokenExpired), frontendAppConfig, mockJourneyService, parser)
           val controller = new Harness(authAction, parser)
           val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
@@ -94,7 +96,7 @@ class CacheIdentifierActionSpec extends SpecBase {
 
       "the user doesn't have sufficient enrolments" must {
         "redirect the user to the unauthorised page" in {
-          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new InsufficientEnrolments), frontendAppConfig, mockCurrentProfileService, parser)
+          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new InsufficientEnrolments), frontendAppConfig, mockJourneyService, parser)
           val controller = new Harness(authAction, parser)
           val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
@@ -104,7 +106,7 @@ class CacheIdentifierActionSpec extends SpecBase {
 
       "the user doesn't have sufficient confidence level" must {
         "redirect the user to the unauthorised page" in {
-          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), frontendAppConfig, mockCurrentProfileService, parser)
+          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new InsufficientConfidenceLevel), frontendAppConfig, mockJourneyService, parser)
           val controller = new Harness(authAction, parser)
           val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
@@ -114,7 +116,7 @@ class CacheIdentifierActionSpec extends SpecBase {
 
       "the user used an unaccepted auth provider" must {
         "redirect the user to the unauthorised page" in {
-          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedAuthProvider), frontendAppConfig, mockCurrentProfileService, parser)
+          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedAuthProvider), frontendAppConfig, mockJourneyService, parser)
           val controller = new Harness(authAction, parser)
           val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
@@ -124,7 +126,7 @@ class CacheIdentifierActionSpec extends SpecBase {
 
       "the user has an unsupported affinity group" must {
         "redirect the user to the unauthorised page" in {
-          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), frontendAppConfig, mockCurrentProfileService, parser)
+          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedAffinityGroup), frontendAppConfig, mockJourneyService, parser)
           val controller = new Harness(authAction, parser)
           val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER
@@ -134,7 +136,7 @@ class CacheIdentifierActionSpec extends SpecBase {
 
       "the user has an unsupported credential role" must {
         "redirect the user to the unauthorised page" in {
-          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedCredentialRole), frontendAppConfig, mockCurrentProfileService, parser)
+          val authAction = new CacheIdentifierActionImpl(new FakeFailingAuthConnector(new UnsupportedCredentialRole), frontendAppConfig, mockJourneyService, parser)
           val controller = new Harness(authAction, parser)
           val result = controller.onPageLoad(fakeRequest)
           status(result) mustBe SEE_OTHER

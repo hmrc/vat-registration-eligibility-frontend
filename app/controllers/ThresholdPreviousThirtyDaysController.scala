@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.ThresholdPreviousThirtyDaysFormProvider
 import identifiers.{ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
@@ -27,6 +26,7 @@ import models.{ConditionalDateFormElement, NormalMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, ThresholdHelper, UserAnswers}
 import views.html.thresholdPreviousThirtyDays
@@ -61,11 +61,11 @@ class ThresholdPreviousThirtyDaysController @Inject()(mcc: MessagesControllerCom
           Future.successful(BadRequest(view(formWithErrors, NormalMode)))
         },
         formValue =>
-          sessionService.save[ConditionalDateFormElement](request.internalId, ThresholdPreviousThirtyDaysId.toString, formValue).flatMap {
+          sessionService.save[ConditionalDateFormElement](ThresholdPreviousThirtyDaysId.toString, formValue).flatMap {
             cacheMap =>
               val userAnswers = new UserAnswers(cacheMap)
               if (ThresholdHelper.q1DefinedAndTrue(userAnswers) | formValue.value | userAnswers.thresholdNextThirtyDays.fold(false)(_.value)) {
-                sessionService.removeEntry(request.internalId, VoluntaryRegistrationId.toString)
+                sessionService.removeEntry(VoluntaryRegistrationId.toString)
               } else {
                 Future.successful(cacheMap)
               }

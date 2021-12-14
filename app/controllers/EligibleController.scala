@@ -48,11 +48,11 @@ class EligibleController @Inject()(mcc: MessagesControllerComponents,
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    vatRegistrationService.submitEligibility(request.internalId)(hc, implicitly[ExecutionContext], request).flatMap { _ =>
-      trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = false).flatMap {
+    vatRegistrationService.submitEligibility(hc, implicitly[ExecutionContext], request).flatMap { _ =>
+      trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = false).flatMap {
         case RegistrationInformation(_, _, _, _, _) =>
-          s4LService.save[CacheMap](request.currentProfile.registrationID, "eligibility-data", request.userAnswers.cacheMap).map { _ =>
-            Redirect(frontendUrl)
+          s4LService.save[CacheMap](request.regId, "eligibility-data", request.userAnswers.cacheMap).map { _ =>
+            Redirect(s"${appConfig.vatRegFEURL}${appConfig.vatRegFEURI}/journey/${request.regId}")
           }
       }
     }

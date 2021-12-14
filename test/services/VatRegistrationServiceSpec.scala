@@ -17,6 +17,7 @@
 package services
 
 import base.{SpecBase, VATEligibilityMocks}
+import connectors.mocks.MockSessionService
 import identifiers._
 import models._
 import models.requests.DataRequest
@@ -31,12 +32,12 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
-class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
+class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with MockSessionService {
 
   class Setup {
     val service = new VatRegistrationService(
       mockVatRegConnector,
-      mockSessionService,
+      sessionServiceMock,
       mockMessagesAPI
     )
 
@@ -101,10 +102,10 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks {
       s"$RacehorsesId" -> JsBoolean(false)
     )
     "return the JsObject submitted to Vat registration" in new Setup {
-      when(mockSessionService.fetch(any())).thenReturn(Future.successful(Some(new CacheMap("foo", fullListMapHappyPathTwelveMonthsFalse))))
+      mockSessionFetch()(Future.successful(Some(new CacheMap("foo", fullListMapHappyPathTwelveMonthsFalse))))
       when(mockVatRegConnector.saveEligibility(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj("wizz" -> "woo")))
 
-      await(service.submitEligibility("foo")) mustBe Json.parse(
+      await(service.submitEligibility) mustBe Json.parse(
         """
           |{"sections":[
           |{"title":"VAT-taxable sales",

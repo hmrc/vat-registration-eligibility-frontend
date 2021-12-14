@@ -32,8 +32,10 @@ class RacehorsesISpec extends IntegrationSpecBase with AuthHelper with SessionSt
 
   val internalId = "testInternalId"
 
+  class Setup extends SessionTest(app)
+
   s"POST ${controllers.routes.RacehorsesController.onSubmit().url}" should {
-    "navigate to Registering Business when false and EnableAAS is off" in {
+    "navigate to Registering Business when false and EnableAAS is off" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -46,10 +48,10 @@ class RacehorsesISpec extends IntegrationSpecBase with AuthHelper with SessionSt
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AnnualAccountingSchemeController.onPageLoad.url)
-      verifySessionCacheData(internalId, RacehorsesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, RacehorsesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Registering Business when false and EnableAAS is on" in {
+    "navigate to Registering Business when false and EnableAAS is on" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -62,10 +64,10 @@ class RacehorsesISpec extends IntegrationSpecBase with AuthHelper with SessionSt
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegisteringBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, RacehorsesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, RacehorsesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to VAT Exception when true" in {
+    "navigate to VAT Exception when true" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -77,7 +79,7 @@ class RacehorsesISpec extends IntegrationSpecBase with AuthHelper with SessionSt
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
-      verifySessionCacheData(internalId, RacehorsesId.toString, Option.apply[Boolean](true))
+      verifySessionCacheData(sessionId, RacehorsesId.toString, Option.apply[Boolean](true))
     }
   }
 }

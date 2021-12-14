@@ -16,14 +16,16 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
 
   val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
+  class Setup extends SessionTest(app)
+
   s"${controllers.routes.VATExemptionController.onSubmit()}" should {
-    s"redirect the user to ${config.otrsUrl} when answer is true and MTD is mandatory" in {
+    s"redirect the user to ${config.otrsUrl} when answer is true and MTD is mandatory" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
 
-      cacheSessionData[ConditionalDateFormElement]("testInternalId", s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, None))
-      cacheSessionData[ConditionalDateFormElement]("testInternalId", s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(false, None))
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, None))
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(false, None))
 
       val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map(
@@ -33,13 +35,13 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(("/check-if-you-can-register-for-vat/cant-register/OTRS"))
     }
-    s"redirect the user to ${controllers.routes.MandatoryInformationController.onPageLoad} when answer is false and MTD is mandatory" in {
+    s"redirect the user to ${controllers.routes.MandatoryInformationController.onPageLoad} when answer is false and MTD is mandatory" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
 
-      cacheSessionData[ConditionalDateFormElement]("testInternalId", s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, None))
-      cacheSessionData[ConditionalDateFormElement]("testInternalId", s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(false, None))
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, None))
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(false, None))
 
       val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map(

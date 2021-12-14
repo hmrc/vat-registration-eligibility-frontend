@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.FakeSessionService
 import controllers.actions._
 import forms.AgriculturalFlatRateSchemeFormProvider
 import identifiers.AgriculturalFlatRateSchemeId
@@ -25,6 +24,7 @@ import play.api.data.Form
 import play.api.libs.json.JsBoolean
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import services.FakeSessionService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import views.html.agriculturalFlatRateScheme

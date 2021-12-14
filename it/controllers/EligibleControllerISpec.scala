@@ -22,42 +22,46 @@ class EligibleControllerISpec extends IntegrationSpecBase
     .configure(fakeConfig())
     .build()
 
+  class Setup extends SessionTest(app)
+
   val testUrl: String = controllers.routes.EligibleController.onPageLoad.url
 
   "GET /eligible" must {
-    "return OK" in {
+    "return OK" in new Setup {
       stubS4LGetNothing(testRegId)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
 
-      val res = await(buildClient(testUrl).get)
+      val res = await(buildClient(testUrl)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .get)
 
       res.status mustBe OK
     }
   }
 
   "POST /eligible" must {
-    "Redirect to VAT reg frontend" in {
+    "Redirect to VAT reg frontend" in new Setup {
       stubS4LGetNothing(testRegId)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
-      cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", true)
-      cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
-      cacheSessionData[ConditionalDateFormElement](testInternalId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(value = false, None))
-      cacheSessionData[ConditionalDateFormElement](testInternalId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(value = false, None))
-      cacheSessionData[Boolean](testInternalId, s"$VoluntaryRegistrationId", true)
-      cacheSessionData[TurnoverEstimateFormElement](testInternalId, s"$TurnoverEstimateId", TurnoverEstimateFormElement("50000"))
-      cacheSessionData[Boolean](testInternalId, s"$InternationalActivitiesId", false)
-      cacheSessionData[Boolean](testInternalId, s"$InvolvedInOtherBusinessId", false)
-      cacheSessionData[Boolean](testInternalId, s"$AnnualAccountingSchemeId", false)
-      cacheSessionData[Boolean](testInternalId, s"$ZeroRatedSalesId", false)
-      cacheSessionData[RegisteringBusiness](testInternalId, s"$RegisteringBusinessId", OwnBusiness)
-      cacheSessionData[RegistrationReason](testInternalId, s"$RegistrationReasonId", SellingGoodsAndServices)
-      cacheSessionData[Boolean](testInternalId, s"$AgriculturalFlatRateSchemeId", false)
-      cacheSessionData[Boolean](testInternalId, s"$NinoId", true)
-      cacheSessionData[Boolean](testInternalId, s"$RacehorsesId", false)
+      cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", true)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", UKCompany)
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(value = false, None))
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(value = false, None))
+      cacheSessionData[Boolean](sessionId, s"$VoluntaryRegistrationId", true)
+      cacheSessionData[TurnoverEstimateFormElement](sessionId, s"$TurnoverEstimateId", TurnoverEstimateFormElement("50000"))
+      cacheSessionData[Boolean](sessionId, s"$InternationalActivitiesId", false)
+      cacheSessionData[Boolean](sessionId, s"$InvolvedInOtherBusinessId", false)
+      cacheSessionData[Boolean](sessionId, s"$AnnualAccountingSchemeId", false)
+      cacheSessionData[Boolean](sessionId, s"$ZeroRatedSalesId", false)
+      cacheSessionData[RegisteringBusiness](sessionId, s"$RegisteringBusinessId", OwnBusiness)
+      cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", SellingGoodsAndServices)
+      cacheSessionData[Boolean](sessionId, s"$AgriculturalFlatRateSchemeId", false)
+      cacheSessionData[Boolean](sessionId, s"$NinoId", true)
+      cacheSessionData[Boolean](sessionId, s"$RacehorsesId", false)
 
       stubSaveEligibilityData(testRegId)
       stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
@@ -67,10 +71,10 @@ class EligibleControllerISpec extends IntegrationSpecBase
         .post(Map("value" -> Seq("false"))))
 
       res.status mustBe SEE_OTHER
-      res.header(HeaderNames.LOCATION) mustBe Some("/register-for-vat/honesty-declaration")
+      res.header(HeaderNames.LOCATION) mustBe Some(s"/register-for-vat/journey/$testRegId")
     }
 
-    "Return Internal Server Error if data is missing" in {
+    "Return Internal Server Error if data is missing" in new Setup {
       stubS4LGetNothing(testRegId)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()

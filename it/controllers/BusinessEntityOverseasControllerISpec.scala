@@ -20,12 +20,19 @@ import featureswitch.core.config.{NETPFlow, NonUkCompanyFlow}
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
 import identifiers.BusinessEntityId
 import models.BusinessEntity.{netpKey, overseasKey}
-import models.{BusinessEntity, NETP, Overseas}
+import models.{BusinessEntity, CurrentProfile, NETP, Overseas}
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers._
+import play.api.test.Helpers.{await, _}
 import play.mvc.Http.HeaderNames
+import repositories.{DatedCacheMap, SessionRepository}
+import services.SessionService
+import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import utils.PageIdBinding.{disable, enable}
+
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub {
 
@@ -33,20 +40,26 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
     .configure(fakeConfig())
     .build()
 
+  class Setup extends SessionTest(app)
+
   "GET /business-entity-overseas" must {
-    "return OK" in {
+    "return OK" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
 
-      val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onPageLoad.url).get)
+      val res = await(
+        buildClient(controllers.routes.BusinessEntityOverseasController.onPageLoad.url)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get
+      )
 
       res.status mustBe OK
     }
   }
 
   s"POST /business-entity-overseas" should {
-    "return a redirect to Agricultural Flat Rate Scheme when NETP is selected with FS Enabled" in {
+    "return a redirect to Agricultural Flat Rate Scheme when NETP is selected with FS Enabled" in new Setup {
       enable(NETPFlow)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -60,10 +73,10 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
       response.status mustBe SEE_OTHER
       response.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
 
-      verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(NETP))
+      verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId.toString, Some(NETP))
     }
 
-    "return a redirect to International Activities Dropout when NETP is selected with FS Disabled" in {
+    "return a redirect to International Activities Dropout when NETP is selected with FS Disabled" in new Setup {
       disable(NETPFlow)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -77,10 +90,10 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
       response.status mustBe SEE_OTHER
       response.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
 
-      verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(NETP))
+      verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId.toString, Some(NETP))
     }
 
-    "return a redirect to Agricultural Flat Rate Scheme when NonUkCompany is selected with FS Enabled" in {
+    "return a redirect to Agricultural Flat Rate Scheme when NonUkCompany is selected with FS Enabled" in new Setup {
       enable(NonUkCompanyFlow)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -94,10 +107,10 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
       response.status mustBe SEE_OTHER
       response.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
 
-      verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(Overseas))
+      verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId.toString, Some(Overseas))
     }
 
-    "return a redirect to International Activities Dropout when Overseas is selected with FS Disabled" in {
+    "return a redirect to International Activities Dropout when Overseas is selected with FS Disabled" in new Setup {
       disable(NonUkCompanyFlow)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -111,7 +124,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with Aut
       response.status mustBe SEE_OTHER
       response.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
 
-      verifySessionCacheData[BusinessEntity](testInternalId, BusinessEntityId.toString, Some(Overseas))
+      verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId.toString, Some(Overseas))
     }
   }
 }

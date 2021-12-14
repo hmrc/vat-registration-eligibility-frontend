@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.TurnoverEstimateFormProvider
 import identifiers.{TurnoverEstimateId, ZeroRatedSalesId}
@@ -27,6 +26,7 @@ import models.{Mode, TurnoverEstimateFormElement}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Enumerable, Navigator, UserAnswers}
 import views.html.turnoverEstimate
@@ -62,10 +62,10 @@ class TurnoverEstimateController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
-          sessionService.save[TurnoverEstimateFormElement](request.internalId, TurnoverEstimateId.toString, value).flatMap { cacheMap =>
+          sessionService.save[TurnoverEstimateFormElement](TurnoverEstimateId.toString, value).flatMap { cacheMap =>
             value match {
               case ZeroTurnover =>
-                sessionService.save[Boolean](request.internalId, ZeroRatedSalesId.toString, false).map { cacheMap =>
+                sessionService.save[Boolean](ZeroRatedSalesId.toString, false).map { cacheMap =>
                   Redirect(navigator.nextPage(ZeroRatedSalesId, mode)(new UserAnswers(cacheMap)))
                 }
               case _ =>

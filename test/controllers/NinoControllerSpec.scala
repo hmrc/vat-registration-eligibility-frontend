@@ -16,7 +16,7 @@
 
 package controllers
 
-import connectors.{Allocated, FakeSessionService, QuotaReached}
+import connectors.{Allocated, QuotaReached}
 import controllers.actions._
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import forms.NinoFormProvider
@@ -30,6 +30,7 @@ import play.api.data.Form
 import play.api.libs.json.{JsBoolean, JsValue, Json}
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import services.FakeSessionService
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.HeaderCarrier
@@ -65,7 +66,7 @@ class NinoControllerSpec extends ControllerSpecBase with FeatureSwitching with T
   val testDate = LocalDate.now
 
   def testPostRequest(postData: (String, String)*) =
-    DataRequest(fakeRequest.withFormUrlEncodedBody(postData:_*), testInternalId, CurrentProfile(testRegId), new UserAnswers(CacheMap(testRegId, Map())))
+    DataRequest(fakeRequest.withFormUrlEncodedBody(postData:_*), testRegId, testInternalId, new UserAnswers(CacheMap(testRegId, Map())))
 
   val data: Map[String, JsValue] = Map(BusinessEntityId.toString -> Json.toJson(UKCompany))
   val getRequiredCacheMap: FakeDataRetrievalAction = getWithCacheMap(CacheMap(cacheMapId, data))

@@ -16,8 +16,10 @@ class ThresholdTaxableSuppliesISpec extends IntegrationSpecBase with AuthHelper 
 
   val dateFieldName = s"${ThresholdTaxableSuppliesId}Date"
 
+  class Setup extends SessionTest(app)
+
   s" ${controllers.routes.ThresholdTaxableSuppliesController.onSubmit()}" should {
-    s"redirect to ${controllers.routes.VATExceptionKickoutController.onPageLoad} with value of true" in {
+    s"redirect to ${controllers.routes.VATExceptionKickoutController.onPageLoad} with value of true" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()

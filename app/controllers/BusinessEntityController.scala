@@ -17,13 +17,13 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.BusinessEntityFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.businessEntity
@@ -71,7 +71,7 @@ class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
           BadRequest(view(formWithErrors, routes.BusinessEntityController.onSubmit()))
         ),
       entityType => {
-        sessionService.save[BusinessEntity](request.internalId, BusinessEntityId.toString, entityType) map { cacheMap =>
+        sessionService.save[BusinessEntity](BusinessEntityId.toString, entityType) map { cacheMap =>
           Redirect(navigator.nextPage(BusinessEntityId, NormalMode)(new UserAnswers(cacheMap)))
         }
       }

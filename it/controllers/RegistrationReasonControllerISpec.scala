@@ -14,27 +14,32 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
     .configure(fakeConfig())
     .build()
 
+  class Setup extends SessionTest(app)
+
   "GET /registration-reason" must {
-    "return OK" in {
+    "return OK" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
 
-      val res = await(buildClient(controllers.routes.RegistrationReasonController.onPageLoad.url).get)
+      val res = await(buildClient(controllers.routes.RegistrationReasonController.onPageLoad.url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .get)
 
       res.status mustBe OK
     }
   }
 
   "POST /registration-reason" must {
-    s"redirect to Nino when sellingGoodsAndServices value is selected" in {
+    s"redirect to Nino when sellingGoodsAndServices value is selected" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
 
-      val request = buildClient("/registration-reason").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map("value" -> sellingGoodsAndServicesKey))
 
       val response = await(request)
@@ -42,13 +47,14 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.NinoController.onPageLoad.url)
     }
 
-    s"redirect to Nino when ukEstablishedOverseasExporter value is selected" in {
+    s"redirect to Nino when ukEstablishedOverseasExporter value is selected" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
 
-      val request = buildClient("/registration-reason").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map("value" -> ukEstablishedOverseasExporterKey))
 
       val response = await(request)
@@ -56,14 +62,15 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.NinoController.onPageLoad.url)
     }
 
-    s"redirect to Traffic management resolver when sellingGoodsAndServices value is selected and individual flow enabled" in {
+    s"redirect to Traffic management resolver when sellingGoodsAndServices value is selected and individual flow enabled" in new Setup {
       enable(IndividualFlow)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
 
-      val request = buildClient("/registration-reason").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map("value" -> sellingGoodsAndServicesKey))
 
       val response = await(request)
@@ -71,14 +78,15 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
     }
 
-    s"redirect to Traffic management resolver when ukEstablishedOverseasExporter value is selected and individual flow enabled" in {
+    s"redirect to Traffic management resolver when ukEstablishedOverseasExporter value is selected and individual flow enabled" in new Setup {
       enable(IndividualFlow)
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
 
-      val request = buildClient("/registration-reason").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map("value" -> ukEstablishedOverseasExporterKey))
 
       val response = await(request)

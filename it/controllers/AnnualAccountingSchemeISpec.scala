@@ -30,8 +30,11 @@ class AnnualAccountingSchemeISpec extends IntegrationSpecBase with AuthHelper wi
     .build()
 
   val internalId = "testInternalId"
+
+  class Setup extends SessionTest(app)
+
   s"POST ${controllers.routes.AnnualAccountingSchemeController.onSubmit().url}" should {
-    "navigate to Registering Business when false" in {
+    "navigate to Registering Business when false" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -43,10 +46,10 @@ class AnnualAccountingSchemeISpec extends IntegrationSpecBase with AuthHelper wi
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegisteringBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, AnnualAccountingSchemeId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, AnnualAccountingSchemeId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to VAT Exception when true" in {
+    "navigate to VAT Exception when true" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -58,7 +61,7 @@ class AnnualAccountingSchemeISpec extends IntegrationSpecBase with AuthHelper wi
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
-      verifySessionCacheData(internalId, AnnualAccountingSchemeId.toString, Option.apply[Boolean](true))
+      verifySessionCacheData(sessionId, AnnualAccountingSchemeId.toString, Option.apply[Boolean](true))
     }
   }
 }

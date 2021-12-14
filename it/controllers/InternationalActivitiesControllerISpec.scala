@@ -33,14 +33,16 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
 
   val internalId = "testInternalId"
 
+  class Setup extends SessionTest(app)
+
   s"POST ${controllers.routes.InternationalActivitiesController.onSubmit().url}" should {
-    "navigate to International Activities dropout when true" in {
+    "navigate to International Activities dropout when true" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", UKCompany)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, UKCompany)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -49,16 +51,16 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.EligibilityDropoutController.internationalActivitiesDropout().url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](true))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](true))
     }
 
-    "navigate to Involved In Other Business when false and UKCompany" in {
+    "navigate to Involved In Other Business when false and UKCompany" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", UKCompany)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, UKCompany)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -67,17 +69,17 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Involved In Other Business when false and SoleTrader when FS is on" in {
+    "navigate to Involved In Other Business when false and SoleTrader when FS is on" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
       enable(SoleTraderFlow)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", SoleTrader)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, SoleTrader)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -86,17 +88,17 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Involved In Other Business when false and Partnership when FS is on" in {
+    "navigate to Involved In Other Business when false and Partnership when FS is on" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
       enable(PartnershipFlow)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", GeneralPartnership)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, GeneralPartnership)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -105,17 +107,17 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Involved In Other Business when false and Limited Liability Partnership" in {
+    "navigate to Involved In Other Business when false and Limited Liability Partnership" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
       enable(PartnershipFlow)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", LimitedLiabilityPartnership)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, LimitedLiabilityPartnership)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -124,17 +126,17 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Involved In Other Business when false and Registered Society when FS is on" in {
+    "navigate to Involved In Other Business when false and Registered Society when FS is on" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
       enable(RegisteredSocietyFlow)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", RegisteredSociety)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, RegisteredSociety)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -143,17 +145,17 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Involved In Other Business when false and Non-Incorporated Trust when FS is on" in {
+    "navigate to Involved In Other Business when false and Non-Incorporated Trust when FS is on" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
       enable(NonIncorpTrustFlow)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", NonIncorporatedTrust)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, NonIncorporatedTrust)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -162,17 +164,17 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Involved In Other Business when false and Charitable Incorporated Organisation (ICO) when FS is on" in {
+    "navigate to Involved In Other Business when false and Charitable Incorporated Organisation (ICO) when FS is on" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
       enable(CharityFlow)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", CharitableIncorporatedOrganisation)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, CharitableIncorporatedOrganisation)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -181,17 +183,17 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Involved In Other Business when an Unincorporated Association and Unincorporated Association FS is turned on" in {
+    "navigate to Involved In Other Business when an Unincorporated Association and Unincorporated Association FS is turned on" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
       enable(UnincorporatedAssociationFlow)
 
-      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", UnincorporatedAssociation)
+      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, UnincorporatedAssociation)
 
       val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -200,10 +202,10 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Vat Exception Kickout when false but business entity is not allowed" in {
+    "navigate to Vat Exception Kickout when false but business entity is not allowed" in new Setup {
       disable(PartnershipFlow)
       disable(SoleTraderFlow)
       disable(RegisteredSocietyFlow)
@@ -228,7 +230,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", entity)
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, entity)
 
         val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
           .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -237,7 +239,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
-        verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+        verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
       }
     }
   }

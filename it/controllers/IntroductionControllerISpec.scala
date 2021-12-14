@@ -14,20 +14,24 @@ class IntroductionControllerISpec extends IntegrationSpecBase with AuthHelper wi
 
   val testUrl = controllers.routes.IntroductionController.onPageLoad.url
 
+  class Setup extends SessionTest(app)
+
   "GET /introduction" must {
-    "return OK" in {
+    "return OK" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
 
-      val res = await(buildClient(testUrl).get)
+      val res = await(buildClient(testUrl)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .get)
 
       res.status mustBe OK
     }
   }
 
   "POST /introduction" must {
-    "Redirect to the FixedEstablishmentController" in {
+    "Redirect to the FixedEstablishmentController" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()

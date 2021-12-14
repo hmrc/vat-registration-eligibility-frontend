@@ -16,13 +16,14 @@
 
 package connectors.mocks
 
-import connectors.SessionService
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.Suite
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Format
+import services.SessionService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
@@ -33,32 +34,36 @@ trait MockSessionService extends MockitoSugar {
   val sessionServiceMock = mock[SessionService]
 
   // Curried methods to allow for tidy setting of defaults for the different parameter lists
-  def mockSessionCacheSave[A](cacheId: String, key: String): A => Future[CacheMap] => OngoingStubbing[Future[CacheMap]] =
+  def mockSessionCacheSave[A](key: String): A => Future[CacheMap] => OngoingStubbing[Future[CacheMap]] =
     (value: A) => (response: Future[CacheMap]) => when(sessionServiceMock.save(
-      ArgumentMatchers.eq(cacheId),
       ArgumentMatchers.eq(key),
       ArgumentMatchers.any[A]
-    )(ArgumentMatchers.any[Format[A]])) thenReturn response
+    )(ArgumentMatchers.any[Format[A]], ArgumentMatchers.any[HeaderCarrier])) thenReturn response
 
   def mockSessionCacheSave(cacheMap: CacheMap): OngoingStubbing[Future[CacheMap]] =
     when(sessionServiceMock.save(
       ArgumentMatchers.eq(cacheMap)
-    )) thenReturn(Future.successful(cacheMap))
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn(Future.successful(cacheMap))
+
+  def mockSessionFetch(): Future[Option[CacheMap]] => OngoingStubbing[Future[Option[CacheMap]]] =
+    (response: Future[Option[CacheMap]]) => when(sessionServiceMock.fetch(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
 
   def mockSessionFetch(cacheId: String): Future[Option[CacheMap]] => OngoingStubbing[Future[Option[CacheMap]]] =
     (response: Future[Option[CacheMap]]) => when(sessionServiceMock.fetch(
       ArgumentMatchers.eq(cacheId)
-    )) thenReturn response
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
 
-  def mockSessionGetEntry[A](cacheId: String, key: String): Future[Option[A]] => OngoingStubbing[Future[Option[A]]] =
+  def mockSessionGetEntry[A](key: String): Future[Option[A]] => OngoingStubbing[Future[Option[A]]] =
     (response: Future[Option[A]]) => when(sessionServiceMock.getEntry(
-      ArgumentMatchers.eq(cacheId),
       ArgumentMatchers.eq(key)
-    )(ArgumentMatchers.any[Format[A]])) thenReturn response
+    )(ArgumentMatchers.any[Format[A]], ArgumentMatchers.any[HeaderCarrier])) thenReturn response
 
-  def mockClearSession(cacheId: String)(response: Future[Boolean]): OngoingStubbing[Future[Boolean]] =
-    when(sessionServiceMock.delete(
-      ArgumentMatchers.eq(cacheId)
-    )) thenReturn response
+  def mockSessionRemoveEntry[A](key: String): Future[CacheMap] => OngoingStubbing[Future[CacheMap]] =
+    (response: Future[CacheMap]) => when(sessionServiceMock.removeEntry(
+      ArgumentMatchers.eq(key)
+    )(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
+
+  def mockClearSession(response: Future[Boolean]): OngoingStubbing[Future[Boolean]] =
+    when(sessionServiceMock.delete(ArgumentMatchers.any[HeaderCarrier])) thenReturn response
 
 }

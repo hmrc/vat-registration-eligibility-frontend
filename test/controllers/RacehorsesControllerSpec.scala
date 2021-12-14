@@ -16,7 +16,6 @@
 
 package controllers
 
-import connectors.FakeSessionService
 import controllers.actions._
 import forms.RacehorsesFormProvider
 import identifiers.RacehorsesId
@@ -24,6 +23,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.api.libs.json.JsBoolean
 import play.api.test.Helpers._
+import services.FakeSessionService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.FakeNavigator
 import views.html.racehorses

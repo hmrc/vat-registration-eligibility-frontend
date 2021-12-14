@@ -70,7 +70,7 @@ class EligibleControllerSpec extends ControllerSpecBase with TrafficManagementSe
 
   "onSubmit" must {
     "redirect to VAT reg frontend" in {
-      when(mockVRService.submitEligibility(ArgumentMatchers.any[String])(
+      when(mockVRService.submitEligibility(
         ArgumentMatchers.any[HeaderCarrier],
         ArgumentMatchers.any[ExecutionContext],
         ArgumentMatchers.any[DataRequest[_]])
@@ -85,7 +85,7 @@ class EligibleControllerSpec extends ControllerSpecBase with TrafficManagementSe
       val res = Controller.onSubmit()(fakeRequest)
 
       status(res) mustBe SEE_OTHER
-      redirectLocation(res) must contain("http://localhost:9895/register-for-vat/honesty-declaration")
+      redirectLocation(res) must contain(s"http://localhost:9895/register-for-vat/journey/$testRegId")
     }
   }
 

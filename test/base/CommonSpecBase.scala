@@ -39,7 +39,7 @@ trait CommonSpecBase extends PlaySpec with FutureAwaits with DefaultAwaitTimeout
       mockVatRegConnector,
       mockAuthConnector,
       mockVRService,
-      mockCurrentProfileService,
+      mockJourneyService,
       mockHttpClient,
       mockDataRequiredAction,
       mockMessagesAPI,

@@ -16,12 +16,12 @@
 
 package controllers
 
-import connectors.FakeSessionService
 import controllers.actions._
 import forms.InvolvedInOtherBusinessFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.api.test.Helpers._
+import services.FakeSessionService
 import utils.FakeNavigator
 import views.html.involvedInOtherBusiness
 

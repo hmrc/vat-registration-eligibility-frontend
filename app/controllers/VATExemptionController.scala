@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.VATExemptionFormProvider
 import identifiers.VATExemptionId
@@ -27,7 +26,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TrafficManagementService
+import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.vatExemption
@@ -62,9 +61,9 @@ class VATExemptionController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, VATExemptionId.toString, value).map { cacheMap =>
+          sessionService.save[Boolean](VATExemptionId.toString, value).map { cacheMap =>
             if (value) {
-              trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = true)
+              trafficManagementService.upsertRegistrationInformation(request.regId, request.regId, isOtrs = true)
             }
             Redirect(navigator.nextPage(VATExemptionId, NormalMode)(new UserAnswers(cacheMap)))
           }

@@ -29,8 +29,8 @@ class FakeDataRetrievalAction(cacheMapToReturn: Option[CacheMap], regId: String 
   override protected def executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   override protected def transform[A](request: CacheIdentifierRequest[A]): Future[OptionalDataRequest[A]] = cacheMapToReturn match {
-    case None => Future(OptionalDataRequest(request.request, request.cacheId, CurrentProfile(regId), None))(executionContext)
-    case Some(cacheMap) => Future(OptionalDataRequest(request.request, request.cacheId, CurrentProfile(regId), Some(new UserAnswers(cacheMap))))(executionContext)
+    case None => Future(OptionalDataRequest(request.request, request.regId, "id", None))(executionContext)
+    case Some(cacheMap) => Future(OptionalDataRequest(request.request, request.regId, "id", Some(new UserAnswers(cacheMap))))(executionContext)
   }
 
 }

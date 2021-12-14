@@ -39,6 +39,10 @@ class VatRegistrationConnector @Inject()(val http: HttpClient,
     }
   }
 
+  def getAllRegistrations(internalId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
+    http.GET[List[JsObject]](s"$vatRegistrationUrl/registrations")
+      .map(registrations => registrations.map(json => (json \ "registrationId").as[String]))
+
   def saveEligibility(regId: String, eligibility: JsValue)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
     http.PATCH[JsValue, HttpResponse](s"$vatRegistrationUrl$vatRegistrationUri/$regId/eligibility-data", eligibility).map(_.json) recover {
       case e: NotFoundException => logger.error(s"[VatRegistrationConnector][saveEligibility] No vat registration found for regId: $regId")

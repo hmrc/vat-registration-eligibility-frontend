@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
 import identifiers.{TaxableSuppliesInUkId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
@@ -25,7 +24,7 @@ import models.{ConditionalDateFormElement, NETP, NormalMode, Overseas, Registrat
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TrafficManagementService
+import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.thresholdInTwelveMonths
@@ -67,18 +66,18 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         formValue =>
-          sessionService.save[ConditionalDateFormElement](request.internalId, ThresholdInTwelveMonthsId.toString, formValue).flatMap { _ =>
+          sessionService.save[ConditionalDateFormElement](ThresholdInTwelveMonthsId.toString, formValue).flatMap { _ =>
             if (formValue.value) {
-              sessionService.removeEntry(request.internalId, VoluntaryRegistrationId.toString).flatMap {
-                _ => sessionService.removeEntry(request.internalId, ThresholdNextThirtyDaysId.toString)
+              sessionService.removeEntry(VoluntaryRegistrationId.toString).flatMap {
+                _ => sessionService.removeEntry(ThresholdNextThirtyDaysId.toString)
               }
             } else {
-              sessionService.removeEntry(request.internalId, VATRegistrationExceptionId.toString).flatMap {
-                _ => sessionService.removeEntry(request.internalId, ThresholdPreviousThirtyDaysId.toString)
+              sessionService.removeEntry(VATRegistrationExceptionId.toString).flatMap {
+                _ => sessionService.removeEntry(ThresholdPreviousThirtyDaysId.toString)
               }
             }
           }.flatMap(cacheMap =>
-            trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = false).map {
+            trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = false).map {
               case RegistrationInformation(_, _, _, _, _) =>
                 Redirect(navigator.nextPage(ThresholdInTwelveMonthsId, NormalMode)(new UserAnswers(cacheMap)))
             }

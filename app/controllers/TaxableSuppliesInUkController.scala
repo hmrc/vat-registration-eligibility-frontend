@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import featureswitch.core.config.FeatureSwitching
 import forms.TaxableSuppliesInUkFormProvider
@@ -25,7 +24,7 @@ import identifiers.TaxableSuppliesInUkId
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{S4LService, TrafficManagementService}
+import services.{S4LService, SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.TaxableSuppliesInUk
@@ -64,7 +63,7 @@ class TaxableSuppliesInUkController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, TaxableSuppliesInUkId.toString, value).map { cacheMap =>
+          sessionService.save[Boolean](TaxableSuppliesInUkId.toString, value).map { cacheMap =>
             Redirect(navigator.nextPage(TaxableSuppliesInUkId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )
