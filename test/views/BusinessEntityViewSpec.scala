@@ -49,8 +49,8 @@ class BusinessEntityViewSpec extends ViewSpecBase {
 
       "for the option 'Uk company'" should {
 
-        "have the text 'Uk company'" in {
-          doc.select("label[for=50]").text() mustEqual messages("businessEntity.ukcompany")
+        "have the text 'Limited company'" in {
+          doc.select("label[for=50]").text() mustEqual messages("businessEntity.limited-company")
         }
 
         "have an input under the label that" should {

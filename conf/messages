@@ -58,7 +58,6 @@ businessEntityOther.non-incorporated-trust = Unincorporated with no legal identi
 businessEntityOther.registered-society = There are different kinds of registered societies, for example, Industrial and Provident Society, Co-operative Society (Co-op) and Community Benefit Society (BenCom). They have limited liability in the same way as companies.
 businessEntityOther.unincorporated-association = Groups that agree, or ‘contract’, to come together for a specific purpose. They normally have a constitution setting out the purpose for which the association has been set up and the rules for the association and its members.
 businessEntityOther.division = A business entity which is part of a larger group. It has 2 or more branches performing different functions or trading in different geographical regions.
-businessEntityOther.vat-group = A group of related companies (where one is under the control of the others) registering to submit a VAT return together. For example, a parent company that has a subsidiary or subsidiaries.
 businessEntityOther.error.required = Select the type of business you want to register for VAT
 
 businessEntityPartnership.heading = What type of partnership are you registering?
@@ -70,7 +69,7 @@ businessEntityPartnership.scottish-limited-partnership = Similar to a limited pa
 businessEntityPartnership.limited-liability-partnership = Must be registered at Companies House. Taxed as partnerships but have the benefits of being a corporate entity. All the partners have limited liability for debts.
 businessEntityPartnership.error.required = Select the type of partnership you want to register for VAT
 
-businessEntity.ukcompany = UK company (includes Limited Company)
+businessEntity.limited-company = Limited company (includes Unlimited companies)
 businessEntity.soletrader = Sole trader
 businessEntity.partnership = Partnership
 businessEntity.general-partnership = General partnership
@@ -84,7 +83,6 @@ businessEntity.non-incorporated-trust = Trust (non-incorporated)
 businessEntity.registered-society = Registered Society
 businessEntity.unincorporated-association = Unincorporated Association
 businessEntity.division = Division
-businessEntity.vat-group = VAT group
 
 businessEntityOverseas.heading = What type of business do you want to register for VAT?
 businessEntityOverseas.hint = An NETP is any person who is not normally resident in the UK or does not have a UK establishment.
