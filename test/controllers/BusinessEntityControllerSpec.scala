@@ -78,15 +78,6 @@ class BusinessEntityControllerSpec extends ControllerSpecBase {
       contentAsString(result) mustBe viewAsString(form.fill(Partnership))
     }
 
-    "populate the view with a partnership on a GET when the user is a division" in {
-      val validData = Map(BusinessEntityId.toString -> Json.toJson(VatGroup))
-      val getRelevantData = new FakeDataRetrievalAction(Some(CacheMap(cacheMapId, validData)))
-
-      val result = controller(getRelevantData).onPageLoad(fakeRequest)
-
-      contentAsString(result) mustBe viewAsString(form.fill(Other))
-    }
-
     "redirect to the next page when valid data is submitted" in {
       val postRequest = fakeRequest.withFormUrlEncodedBody(("value", ukCompanyKey))
 

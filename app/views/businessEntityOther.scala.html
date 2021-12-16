@@ -73,11 +73,6 @@
                     value = Some(divisionKey),
                     content = Text(Messages("businessEntity.division")),
                     checked = businessEntityForm("value").value.contains(divisionKey)
-                ),
-                RadioItem(id = Some(vatGroupKey),
-                    value = Some(vatGroupKey),
-                    content = Text(Messages("businessEntity.vat-group")),
-                    checked = businessEntityForm("value").value.contains(vatGroupKey)
                 )
             )
         )
@@ -97,6 +92,4 @@
     @p{ @messages("businessEntityOther.unincorporated-association") }
     @strong{ @messages("businessEntity.division") }
     @p{ @messages("businessEntityOther.division") }
-    @strong{ @messages("businessEntity.vat-group") }
-    @p{ @messages("businessEntityOther.vat-group") }
 }

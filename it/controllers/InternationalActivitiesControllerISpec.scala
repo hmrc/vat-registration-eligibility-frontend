@@ -203,8 +203,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
         NonIncorporatedTrust,
         RegisteredSociety,
         UnincorporatedAssociation,
-        Division,
-        VatGroup
+        Division
       )
 
       entityList.map { entity =>

@@ -55,8 +55,6 @@ class BusinessEntityOtherViewSpec extends ViewSpecBase {
   val detailsPara4 = "Groups that agree, or ‘contract’, to come together for a specific purpose. They normally have a constitution setting out the purpose for which the association has been set up and the rules for the association and its members."
   val provider5 = "Division"
   val detailsPara5 = "A business entity which is part of a larger group. It has 2 or more branches performing different functions or trading in different geographical regions."
-  val provider6 = "VAT group"
-  val detailsPara6 = "A group of related companies (where one is under the control of the others) registering to submit a VAT return together. For example, a parent company that has a subsidiary or subsidiaries."
 
   "BusinessEntityOther view" must {
     lazy val doc = Jsoup.parse(page.body)
@@ -77,9 +75,7 @@ class BusinessEntityOtherViewSpec extends ViewSpecBase {
           include(provider4) and
           include(detailsPara4) and
           include(provider5) and
-          include(detailsPara5) and
-          include(provider6) and
-          include(detailsPara6)
+          include(detailsPara5)
         )
     }
 
@@ -89,7 +85,6 @@ class BusinessEntityOtherViewSpec extends ViewSpecBase {
       doc.select(Selectors.radio(3)).text() mustBe provider3
       doc.select(Selectors.radio(4)).text() mustBe provider4
       doc.select(Selectors.radio(5)).text() mustBe provider5
-      doc.select(Selectors.radio(6)).text() mustBe provider6
     }
 
     "have the correct continue button" in {

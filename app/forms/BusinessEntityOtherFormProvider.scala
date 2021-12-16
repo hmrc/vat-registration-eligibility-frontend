@@ -45,7 +45,6 @@ class BusinessEntityOtherFormProvider extends FormErrorHelper with Mappings {
         case Some(`registeredSocietyKey`) => Right(RegisteredSociety)
         case Some(`unincorporatedAssociationKey`) => Right(UnincorporatedAssociation)
         case Some(`divisionKey`) => Right(Division)
-        case Some(`vatGroupKey`) => Right(VatGroup)
         case _ => Left(Seq(FormError(key, businessEntityError)))
       }
     }
@@ -57,7 +56,6 @@ class BusinessEntityOtherFormProvider extends FormErrorHelper with Mappings {
         case RegisteredSociety => registeredSocietyKey
         case UnincorporatedAssociation => unincorporatedAssociationKey
         case Division => divisionKey
-        case VatGroup => vatGroupKey
       }
       Map(key -> stringValue)
     }
