@@ -28,7 +28,7 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     TrafficManagement,
     EnableAAS,
     SoleTraderFlow,
-    GeneralPartnershipFlow,
+    PartnershipFlow,
     RegisteredSocietyFlow,
     NonIncorpTrustFlow,
     CharityFlow,
@@ -62,9 +62,9 @@ case object SoleTraderFlow extends FeatureSwitch {
   override val displayName: String = "Enable Sole Trader flow"
 }
 
-case object GeneralPartnershipFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.general-partnership-flow"
-  override val displayName: String = "Enable General Partnership flow"
+case object PartnershipFlow extends FeatureSwitch {
+  override val configName: String = "feature-switch.partnership-flow"
+  override val displayName: String = "Enable Partnership flow"
 }
 
 case object RegisteredSocietyFlow extends FeatureSwitch {
