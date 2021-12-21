@@ -89,12 +89,12 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Involved In Other Business when false and General Partnership when FS is on" in {
+    "navigate to Involved In Other Business when false and Partnership when FS is on" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
-      enable(GeneralPartnershipFlow)
+      enable(PartnershipFlow)
 
       cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", GeneralPartnership)
 
@@ -185,7 +185,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
     }
 
     "navigate to Vat Exception Kickout when false but business entity is not allowed" in {
-      disable(GeneralPartnershipFlow)
+      disable(PartnershipFlow)
       disable(SoleTraderFlow)
       disable(RegisteredSocietyFlow)
       disable(NonIncorpTrustFlow)
