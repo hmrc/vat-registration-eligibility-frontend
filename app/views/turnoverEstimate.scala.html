@@ -30,13 +30,21 @@
         button: components.button
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("turnoverEstimate.title"))), backLink = true) {
+@headingKeySuffix = @{
+    if(isPartnership) {
+        "partnership"
+    } else {
+        "business"
+    }
+}
+
+@layout(pageTitle = Some(title(form, messages(s"turnoverEstimate.title.$headingKeySuffix"))), backLink = true) {
 
         @errorSummary(form.errors)
 
-        @h1(messages("turnoverEstimate.heading"))
+        @h1(messages(s"turnoverEstimate.heading.$headingKeySuffix"))
 
         @p{ @messages("turnoverEstimate.text") }
 
@@ -51,7 +59,7 @@
                 name = "turnoverEstimateAmount",
                 classes = Some("govuk-input--width-10"),
                 labelClasses = Some("govuk-visually-hidden"),
-                label = Some(messages("turnoverEstimate.heading")),
+                label = Some(messages(s"turnoverEstimate.heading.$headingKeySuffix")),
                 hint = Some(Html(messages("turnoverEstimate.giveAnEstimate")))
             )
             @button(messages("site.continue"))

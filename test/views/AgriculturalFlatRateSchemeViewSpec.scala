@@ -25,7 +25,8 @@ class AgriculturalFlatRateSchemeViewSpec extends ViewSpecBase {
   val messageKeyPrefix = "agriculturalFlatRateScheme"
   val form = new AgriculturalFlatRateSchemeFormProvider()()
 
-  val h1 = "Is the business applying for the Agricultural Flat Rate Scheme?"
+  val h1Business = "Is the business applying for the Agricultural Flat Rate Scheme?"
+  val h1Partnership = "Is the partnership applying for the Agricultural Flat Rate Scheme?"
   val p1 = "The scheme is a different type of VAT registration for farmers."
   val afrsLinkText1 = "Find out more about the"
   val afrsLinkText2 = "Agricultural Flat Rate Scheme (opens in a new window)."
@@ -33,37 +34,73 @@ class AgriculturalFlatRateSchemeViewSpec extends ViewSpecBase {
   val p2 = s"$afrsLinkText1 $afrsLinkText2"
 
   object Selectors extends BaseSelectors
+
   val view = app.injector.instanceOf[agriculturalFlatRateScheme]
 
-  "AgriculturalFlatRateScheme view" must {
-    lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
+  "AgriculturalFlatRateScheme view" when {
+    
+    "Business entity is not partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Business)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Business
+      }
+
+      "have the first paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe p1
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Business
+      }
+
+      "have the second paragraph with the correct url link" in {
+        doc.select(Selectors.p(2)).select("a").attr("href") mustBe afrsLink
+      }
     }
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+    "Business entity is partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequest, messages, frontendAppConfig))
 
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have the first paragraph" in {
-      doc.select(Selectors.p(1)).text() mustBe p1
-    }
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+      }
 
-    "have the correct legend" in {
-      doc.select(Selectors.legend(1)).text() mustBe h1
-    }
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Partnership
+      }
 
-    "have the second paragraph with the correct url link" in {
-      doc.select(Selectors.p(2)).select("a").attr("href") mustBe afrsLink
+      "have the first paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe p1
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Partnership
+      }
+
+      "have the second paragraph with the correct url link" in {
+        doc.select(Selectors.p(2)).select("a").attr("href") mustBe afrsLink
+      }
     }
   }
 }

@@ -28,43 +28,80 @@ class RacehorsesViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
-  val h1 = "Will the business be doing any of the following?"
-  val paragraph = "Tell us if the business will:"
+  val h1Business = "Will the business be doing any of the following?"
+  val h1Partnership = "Will the partnership be doing any of the following?"
+  val paragraphBusiness = "Tell us if the business will:"
+  val paragraphPartnership = "Tell us if the partnership will:"
   val bullet1 = "buy, sell or rent out land or property as a business activity (not just to have its own premises)"
   val bullet2 = "own one or more racehorses"
 
   val view = app.injector.instanceOf[racehorses]
 
-  "Racehorses view" must {
-    lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+  "Racehorses view" when {
+    "Business entity is not partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Business)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Business
+      }
+
+      "have the first paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe paragraphBusiness
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Business
+      }
+
+      "have bullets" in {
+        doc.select(Selectors.bullet(1)).text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).text() mustBe bullet2
+      }
     }
+    "Business entity is partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
 
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+      }
 
-    "have the first paragraph" in {
-      doc.select(Selectors.p(1)).text() mustBe paragraph
-    }
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Partnership
+      }
 
-    "have the correct legend" in {
-      doc.select(Selectors.legend(1)).text() mustBe h1
-    }
+      "have the first paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe paragraphPartnership
+      }
 
-    "have bullets" in {
-      doc.select(Selectors.bullet(1)).text() mustBe bullet1
-      doc.select(Selectors.bullet(2)).text() mustBe bullet2
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Partnership
+      }
+
+      "have bullets" in {
+        doc.select(Selectors.bullet(1)).text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).text() mustBe bullet2
+      }
     }
   }
+  
 }

@@ -34,39 +34,71 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase {
   val form = new ThresholdPreviousThirtyDaysFormProvider(TestTimeMachine)()
   implicit val msgs: Messages = messages
 
-  val h1 = "Did the business expect its taxable-turnover to go over £85,000 in any 30 day period in the past?"
-  val legend = "When did the business expect to go over the threshold?"
+  val h1Business = "Did the business expect its taxable-turnover to go over £85,000 in any 30 day period in the past?"
+  val legendBusiness = "When did the business expect to go over the threshold?"
+  val h1Partnership = "Did the partnership expect its taxable-turnover to go over £85,000 in any 30 day period in the past?"
+  val legendPartnership = "When did the partnership expect to go over the threshold?"
   val paragraph = "This could happen if, for example, a business planned to run an exhibition and anticipated selling so many tickets it expected to go over the VAT threshold. The business must register for VAT when you expected it to go over the threshold, not when it actually went over the threshold."
 
   val view = app.injector.instanceOf[thresholdPreviousThirtyDays]
 
   object Selectors extends BaseSelectors
 
-  "ThresholdPreviousThirtyDays view" must {
-    lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+  "ThresholdPreviousThirtyDays view" when {
+    "Business entity is not partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Business)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Business
+      }
+
+      "have the first paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe paragraph
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(2)).text() mustBe legendBusiness
+      }
     }
+    "Business entity is partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
 
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+      }
 
-    "have the first paragraph" in {
-      doc.select(Selectors.p(1)).text() mustBe paragraph
-    }
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Partnership
+      }
 
-    "have the correct legend" in {
-      doc.select(Selectors.legend(2)).text() mustBe legend
+      "have the first paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe paragraph
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(2)).text() mustBe legendPartnership
+      }
     }
   }
+
 }

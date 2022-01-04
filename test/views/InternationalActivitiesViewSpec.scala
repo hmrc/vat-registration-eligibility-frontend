@@ -26,7 +26,8 @@ class InternationalActivitiesViewSpec extends ViewSpecBase with FeatureSwitching
   val messageKeyPrefix = "internationalActivities"
   val form = new InternationalActivitiesFormProvider()()
 
-  val h1 = "Will the business do any of the following activities over the next 12 months?"
+  val h1Business = "Will the business do any of the following activities over the next 12 months?"
+  val h1Partnership = "Will the partnership do any of the following activities over the next 12 months?"
   val linkParagraph ="Use the GOV.UK Brexit checker (opens in new tab) to find out if the EU exit will impact your business."
   val paragraph = "Tell us if the business will:"
   val bullet1 = "sell assets bought from outside the UK and claim a repayment of VAT under Directive 2008/9EC or Thirteenth VAT Directive"
@@ -36,54 +37,104 @@ class InternationalActivitiesViewSpec extends ViewSpecBase with FeatureSwitching
   val bullet5 = "sell goods into Northern Ireland from an EU member state"
 
   val view = app.injector.instanceOf[internationalActivities]
-
   object Selectors extends BaseSelectors
 
-  "InternationalActivities view" must {
-    lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
+  "InternationalActivities view" when {
+    "Business entity is not partnership" must {
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
+
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Business)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Business
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Business
+      }
+
+      "have the correct link paragraph text" in {
+        doc.select(Selectors.p(1)).text() mustBe linkParagraph
+      }
+
+      "have the correct paragraph" in {
+        doc.select(Selectors.p(2)).text() mustBe paragraph
+      }
+
+      "display the bullet text correctly" in {
+        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
+        doc.select(Selectors.bullet(3)).first().text() mustBe bullet3
+        doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
+        doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
+      }
+
+      "display the bullet text correctly when the NIPFlow feature switch is enabled" in {
+        enable(NIPFlow)
+        val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
+        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).first().text() mustBe bullet5
+      }
     }
+    "Business entity is partnership" must {
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+      val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequest, messages, frontendAppConfig))
 
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have the correct legend" in {
-      doc.select(Selectors.legend(1)).text() mustBe h1
-    }
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+      }
 
-    "have the correct link paragraph text" in {
-      doc.select(Selectors.p(1)).text() mustBe linkParagraph
-    }
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Partnership
+      }
 
-    "have the correct paragraph" in {
-      doc.select(Selectors.p(2)).text() mustBe paragraph
-    }
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Partnership
+      }
 
-    "display the bullet text correctly" in {
-      doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
-      doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
-      doc.select(Selectors.bullet(3)).first().text() mustBe bullet3
-      doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
-      doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
-    }
+      "have the correct link paragraph text" in {
+        doc.select(Selectors.p(1)).text() mustBe linkParagraph
+      }
 
-    "display the bullet text correctly when the NIPFlow feature switch is enabled" in {
-      enable(NIPFlow)
-      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
-      doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
-      doc.select(Selectors.bullet(2)).first().text() mustBe bullet5
+      "have the correct paragraph" in {
+        doc.select(Selectors.p(2)).text() mustBe paragraph
+      }
+
+      "display the bullet text correctly" in {
+        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
+        doc.select(Selectors.bullet(3)).first().text() mustBe bullet3
+        doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
+        doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
+      }
+
+      "display the bullet text correctly when the NIPFlow feature switch is enabled" in {
+        enable(NIPFlow)
+        val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequest, messages, frontendAppConfig))
+        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).first().text() mustBe bullet5
+      }
     }
   }
+  
 
 }

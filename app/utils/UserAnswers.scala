@@ -29,6 +29,11 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
 
   def businessEntity: Option[BusinessEntity] = cacheMap.getEntry[BusinessEntity](BusinessEntityId.toString)
 
+  def isPartnership: Boolean = businessEntity match {
+    case Some(_: PartnershipType) => true
+    case _ => false
+  }
+
   def racehorses: Option[Boolean] = cacheMap.getEntry[Boolean](RacehorsesId.toString)
 
   def agriculturalFlatRateScheme: Option[Boolean] = cacheMap.getEntry[Boolean](AgriculturalFlatRateSchemeId.toString)

@@ -33,13 +33,21 @@
     link: components.link
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("internationalActivities.heading"))), backLink = true) {
+@headingKey = @{
+    if(isPartnership) {
+        "internationalActivities.heading.partnership"
+    } else {
+        "internationalActivities.heading.business"
+    }
+}
+
+@layout(pageTitle = Some(title(form, messages(headingKey))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1(messages("internationalActivities.heading"))
+    @h1(messages(headingKey))
 
     @p{
         @link("https://www.gov.uk/transition", messages("internationalActivities.linkText") , isExternal = true)
@@ -67,7 +75,7 @@
     @formWithCsrf(action = InternationalActivitiesController.onSubmit(), 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
-            headingKey = "internationalActivities.heading",
+            headingKey = headingKey,
             isPageHeading = false,
             classes = "govuk-visually-hidden"
         )

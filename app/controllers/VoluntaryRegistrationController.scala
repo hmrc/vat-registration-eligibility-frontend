@@ -50,7 +50,7 @@ class VoluntaryRegistrationController @Inject()(mcc: MessagesControllerComponent
         case None => formProvider()
         case Some(value) => formProvider().fill(value)
       }
-      Ok(view(preparedForm, NormalMode))
+      Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {

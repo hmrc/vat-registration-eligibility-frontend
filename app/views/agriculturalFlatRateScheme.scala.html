@@ -30,13 +30,21 @@
     button: components.button
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("agriculturalFlatRateScheme.heading"))), backLink = true) {
+@headingKey = @{
+    if(isPartnership) {
+        "agriculturalFlatRateScheme.heading.partnership"
+    } else {
+        "agriculturalFlatRateScheme.heading.business"
+    }
+}
+
+@layout(pageTitle = Some(title(form, messages(headingKey))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1(messages.apply("agriculturalFlatRateScheme.heading"))
+    @h1(messages(headingKey))
 
     @p{ @messages("agriculturalFlatRateScheme.text") }
     @p{
@@ -46,7 +54,7 @@
     @formWithCsrf(action = AgriculturalFlatRateSchemeController.onSubmit(), 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
-            headingKey = "agriculturalFlatRateScheme.heading",
+            headingKey = headingKey,
             isPageHeading = false,
             classes = "govuk-visually-hidden",
             headingMessageArgs = Nil

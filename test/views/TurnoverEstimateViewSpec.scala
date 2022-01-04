@@ -27,7 +27,8 @@ class TurnoverEstimateViewSpec extends ViewSpecBase {
 
   implicit val msgs = messages
   val messageKeyPrefix = "turnoverEstimate"
-  val h1 = "What do you think the business’s VAT-taxable turnover will be for the next 12 months?"
+  val h1Business = "What do you think the business’s VAT-taxable turnover will be for the next 12 months?"
+  val h1Partnership = "What do you think the partnership’s VAT-taxable turnover will be for the next 12 months?"
   val p1 = "Include the sale of all goods and services that are not exempt from VAT. You must include goods and services that have a 0% VAT rate."
   val estimateLinkText1 = "Find out more about"
   val estimateLinkText2 = "which goods and services are exempt from VAT (opens in new tab)."
@@ -36,31 +37,60 @@ class TurnoverEstimateViewSpec extends ViewSpecBase {
 
   val form = new TurnoverEstimateFormProvider()()
 
-  "TurnoverEstimate view" must {
-    lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+  "TurnoverEstimate view" when {
+    "Business entity is not partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Business)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Business
+      }
+
+      "have the first paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe p1
+      }
+
+      "have the second paragraph with the correct url link" in {
+        doc.select(Selectors.p(2)).select("a").attr("href") mustBe estimateLink
+      }
     }
+    "Business entity is partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
 
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+      }
 
-    "have the first paragraph" in {
-      doc.select(Selectors.p(1)).text() mustBe p1
-    }
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Partnership
+      }
 
-    "have the second paragraph with the correct url link" in {
-      doc.select(Selectors.p(2)).select("a").attr("href") mustBe estimateLink
+      "have the first paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe p1
+      }
+
+      "have the second paragraph with the correct url link" in {
+        doc.select(Selectors.p(2)).select("a").attr("href") mustBe estimateLink
+      }
     }
   }
 }

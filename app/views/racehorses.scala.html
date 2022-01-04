@@ -30,20 +30,28 @@
         button: components.button
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("racehorses.heading"))), backLink = true) {
+@headingKeySuffix = @{
+    if(isPartnership) {
+        "partnership"
+    } else {
+        "business"
+    }
+}
+
+@layout(pageTitle = Some(title(form, messages(s"racehorses.heading.$headingKeySuffix"))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1(messages("racehorses.heading"))
-    @p{ @messages("racehorses.bulletText") }
+    @h1(messages(s"racehorses.heading.$headingKeySuffix"))
+    @p{ @messages(s"racehorses.bulletText.$headingKeySuffix") }
     @bullets("racehorses.bullet1","racehorses.bullet2")
 
     @formWithCsrf(action = routes.RacehorsesController.onSubmit(), 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
-            headingKey = "racehorses.heading",
+            headingKey = s"racehorses.heading.$headingKeySuffix",
             isPageHeading = false,
             classes = "govuk-visually-hidden"
         )
