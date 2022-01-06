@@ -214,9 +214,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       val entityList = Seq(
         SoleTrader,
         GeneralPartnership,
-        LimitedPartnership,
         ScottishPartnership,
-        ScottishLimitedPartnership,
         CharitableIncorporatedOrganisation,
         NonIncorporatedTrust,
         RegisteredSociety,
