@@ -108,6 +108,25 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
       verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
     }
 
+    "navigate to Involved In Other Business when false and Limited Liability Partnership" in {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+      enable(PartnershipFlow)
+
+      cacheSessionData[BusinessEntity](internalId, s"$BusinessEntityId", LimitedLiabilityPartnership)
+
+      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq("false")))
+
+      val response = await(request)
+      response.status mustBe 303
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+      verifySessionCacheData(internalId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+    }
+
     "navigate to Involved In Other Business when false and Registered Society when FS is on" in {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
@@ -198,7 +217,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Au
         LimitedPartnership,
         ScottishPartnership,
         ScottishLimitedPartnership,
-        LimitedLiabilityPartnership,
         CharitableIncorporatedOrganisation,
         NonIncorporatedTrust,
         RegisteredSociety,
