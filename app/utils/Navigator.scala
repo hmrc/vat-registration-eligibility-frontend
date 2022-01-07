@@ -194,7 +194,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     InternationalActivitiesId -> { userAnswers =>
       userAnswers.businessEntity match {
         case Some(_) if userAnswers.internationalActivities.contains(true) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
-        case Some(UKCompany) => pageIdToPageLoad(InvolvedInOtherBusinessId)
+        case Some(UKCompany | ScottishLimitedPartnership | LimitedPartnership) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(SoleTrader) if isEnabled(SoleTraderFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(GeneralPartnership | ScottishPartnership | LimitedLiabilityPartnership) if isEnabled(PartnershipFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
         case Some(RegisteredSociety) if isEnabled(RegisteredSocietyFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
