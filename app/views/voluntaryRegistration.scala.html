@@ -30,20 +30,28 @@
         button: components.button
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("voluntaryRegistration.heading"))), backLink = true) {
+@headingKeySuffix = @{
+    if(isPartnership) {
+        "partnership"
+    } else {
+        "business"
+    }
+}
+
+@layout(pageTitle = Some(title(form, messages(s"voluntaryRegistration.heading.$headingKeySuffix"))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1(messages("voluntaryRegistration.heading"))
+    @h1(messages(s"voluntaryRegistration.heading.$headingKeySuffix"))
 
     @panelIndent{ @messages("voluntaryRegistration.text") }
 
     @formWithCsrf(action = VoluntaryRegistrationController.onSubmit(), 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
-            headingKey = "voluntaryRegistration.heading2",
+            headingKey = s"voluntaryRegistration.heading2.$headingKeySuffix",
             isPageHeading = false,
             classes = "govuk-visually-hidden"
         )

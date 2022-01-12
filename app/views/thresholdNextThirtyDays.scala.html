@@ -30,12 +30,12 @@
         button: components.button
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @hiddenContent = {
     @inputDate(
         form = form,
-        legendContent = "thresholdNextThirtyDays.heading2",
+        legendContent = s"thresholdNextThirtyDays.heading2.$headingKeySuffix",
         hintText = Some("thresholdNextThirtyDays.dateHint"),
         legendClasses = "govuk-fieldset__legend--m",
         id = "thresholdNextThirtyDaysDate",
@@ -43,17 +43,25 @@
     )
 }
 
-@layout(pageTitle = Some(title(form, messages("thresholdNextThirtyDays.heading"))), backLink = true) {
+@headingKeySuffix = @{
+    if(isPartnership) {
+        "partnership"
+    } else {
+        "business"
+    }
+}
+
+@layout(pageTitle = Some(title(form, messages(s"thresholdNextThirtyDays.heading.$headingKeySuffix"))), backLink = true) {
 
     @errorSummary(form.errors, Some(Map("thresholdNextThirtyDaysDate" -> "day")))
 
-    @h1(messages("thresholdNextThirtyDays.heading"))
+    @h1(messages(s"thresholdNextThirtyDays.heading.$headingKeySuffix"))
     @p{ @messages("thresholdNextThirtyDays.text") }
 
     @formWithCsrf(action = ThresholdNextThirtyDaysController.onSubmit(), 'autoComplete -> "off",'novalidate -> "novalidate") {
         @conditionalYesNoRadio(
             form = form,
-            headingKey = "thresholdNextThirtyDays.heading",
+            headingKey = s"thresholdNextThirtyDays.heading.$headingKeySuffix",
             ifYes = Some(hiddenContent),
             isPageHeading = false,
             classes = "govuk-visually-hidden"

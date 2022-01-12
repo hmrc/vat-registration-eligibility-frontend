@@ -34,38 +34,38 @@ class GoneOverThresholdViewSpec extends ViewSpecBase {
   }
 
   "GoneOverThreshold view" must {
-    val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+      val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text mustBe backLink
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text mustBe backLink
+      }
 
-    "have a correct title" in {
+      "have a correct title" in {
       doc.title() mustBe ExpectedContent.title
-    }
+      }
 
-    "have a correct heading" in {
+      "have a correct heading" in {
       doc.select(Selectors.h1).text() mustBe ExpectedContent.heading
-    }
+      }
 
-    "have the correct legend" in {
+      "have the correct legend" in {
       doc.select(Selectors.legend(1)).text() mustBe ExpectedContent.heading
-    }
+      }
 
-    "have a correct para" in {
-      doc.select(Selectors.p(1)).text() mustBe ExpectedContent.para + ExpectedContent.detailContent
-    }
+      "have a correct para" in {
+        doc.select(Selectors.p(1)).text() mustBe ExpectedContent.para + ExpectedContent.detailContent
+      }
 
-    "have the correct details summary" in {
-      doc.select(Selectors.detailsSummary).text() mustBe ExpectedContent.detailsSummary
-    }
+      "have the correct details summary" in {
+        doc.select(Selectors.detailsSummary).text() mustBe ExpectedContent.detailsSummary
+      }
 
-    "have the correct details content" in {
-      doc.select(Selectors.detailsContent).text() mustBe ExpectedContent.detailContent
-    }
+      "have the correct details content" in {
+        doc.select(Selectors.detailsContent).text() mustBe ExpectedContent.detailContent
+      }
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
     }
   }
-}

@@ -27,16 +27,24 @@
     button: components.button
 )
 
-@(regReasonForm:  Form[RegistrationReason], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
+@(regReasonForm:  Form[RegistrationReason], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
 
-@layout(pageTitle = Some(title(regReasonForm, messages("registrationReason.heading"))), backLink =  true) {
+@headingKey = @{
+    if (isPartnership) {
+        "registrationReason.heading.partnership"
+    } else {
+        "registrationReason.heading.business"
+    }
+}
+
+@layout(pageTitle = Some(title(regReasonForm, messages(headingKey))), backLink =  true) {
 
     @errorSummary(regReasonForm.errors, errorId = Some(sellingGoodsAndServicesKey))
 
     @formWithCsrf(action = routes.RegistrationReasonController.onSubmit) {
         @inputRadio(
             form = regReasonForm,
-            legend = Messages("registrationReason.heading"),
+            legend = Messages(headingKey),
             items = Seq(
                 RadioItem(id = Some(sellingGoodsAndServicesKey),
                     value = Some(sellingGoodsAndServicesKey),

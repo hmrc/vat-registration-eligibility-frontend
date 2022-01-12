@@ -34,40 +34,72 @@ class ThresholdInTwelveMonthsViewSpec extends ViewSpecBase {
   val form = new ThresholdInTwelveMonthsFormProvider(TestTimeMachine)()
   val view = app.injector.instanceOf[thresholdInTwelveMonths]
 
-  val h1 = "Has the business’s taxable turnover gone over £85,000 in any 12 month period?"
+  val h1Business = "Has the business’s taxable turnover gone over £85,000 in any 12 month period?"
+  val h1Partnership = "Has the partnership’s taxable turnover gone over £85,000 in any 12 month period?"
   val paragraph = "You must monitor your turnover every month and add up the total amount to cover the last 12 months. This is called a ‘rolling 12 month period’. If one month’s turnover takes you over £85,000 in any rolling 12 month period, you must register for VAT."
   val bullet1 = "Yes"
   val bullet2 = "No"
-  val h2 = "Has the business’s taxable turnover gone over £85,000 in any 12 month period? When did the business go over the threshold?"
+  val h2Business = "Has the business’s taxable turnover gone over £85,000 in any 12 month period? When did the business go over the threshold?"
+  val h2Partnership = "Has the partnership’s taxable turnover gone over £85,000 in any 12 month period? When did the partnership go over the threshold?"
   val button = "Continue"
 
-  object Selectors extends BaseSelectors
 
-  "ThresholdInTwelveMonths view" must {
-    val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+  "ThresholdInTwelveMonths view" when {
+    "Business entity is not partnership" must {
+      object Selectors extends BaseSelectors
+      val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have a heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
+      "have a heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Business
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Business)
+      }
+
+      "have a paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe paragraph
+      }
+
+      "have a continue button" in {
+        doc.select(Selectors.button).text() mustBe button
+      }
+
+      "contain a legend for the question" in {
+        doc.select(Selectors.legend(1)).text() mustBe h2Business
+      }
     }
+    "Business entity is partnership" must {
+      object Selectors extends BaseSelectors
+      val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+      "have a heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Partnership
+      }
 
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have a paragraph" in {
-      doc.select(Selectors.p(1)).text() mustBe paragraph
-    }
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+      }
 
-    "have a continue button" in {
-      doc.select(Selectors.button).text() mustBe button
-    }
+      "have a paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe paragraph
+      }
 
-    "contain a legend for the question" in {
-      doc.select(Selectors.legend(1)).text() mustBe h2
+      "have a continue button" in {
+        doc.select(Selectors.button).text() mustBe button
+      }
+
+      "contain a legend for the question" in {
+        doc.select(Selectors.legend(1)).text() mustBe h2Partnership
+      }
     }
   }
 }

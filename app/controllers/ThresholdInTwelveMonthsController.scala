@@ -54,7 +54,7 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
             case None => formProvider()
             case Some(value) => formProvider().fill(value)
           }
-          Ok(view(preparedForm, NormalMode))
+          Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership))
         case (Some(false), Some(_), Some(NETP | Overseas)) =>
           Redirect(navigator.pageIdToPageLoad(TaxableSuppliesInUkId))
         case _ => Redirect(routes.IntroductionController.onPageLoad)

@@ -26,8 +26,10 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
   val view = app.injector.instanceOf[RegistrationReasonView]
 
   object ExpectedContent {
-    val heading = "Why do you want to register the business for VAT?"
-    val title   = s"$heading - Register for VAT - GOV.UK"
+    val headingBusiness = "Why do you want to register the business for VAT?"
+    val titleBusiness   = s"$headingBusiness - Register for VAT - GOV.UK"
+    val headingPartnership = "Why do you want to register the partnership for VAT?"
+    val titlePartnership   = s"$headingPartnership - Register for VAT - GOV.UK"
     val radio1  = "It’s selling goods or services and needs or wants to charge VAT to customers"
     val radio2  = "It’s taking over a VAT registered business as a Transfer of a Going Concern"
     val radio3  = "You’re changing the legal entity of the business (for example, from sole trader to limited company)"
@@ -37,32 +39,63 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
     val error   = "Select the reason you want to register the business for VAT"
   }
 
-  "RegistrationReason view " must {
-    val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+  "RegistrationReason view " when {
+    "Business entity is not partnership" must {
+      val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text mustBe backLink
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text mustBe backLink
+      }
+
+      "have a correct title" in {
+        doc.title() mustBe ExpectedContent.titleBusiness
+      }
+
+      "have a correct heading" in {
+        doc.select(Selectors.h1).text() mustBe ExpectedContent.headingBusiness
+      }
+
+      "have the right radio options" in {
+        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
+      }
+
+      "have the right hint" in {
+        doc.select(Selectors.hint).text() mustBe ExpectedContent.hint
+      }
+
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
     }
+    "Business entity is partnership " must {
+      val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have a correct title" in {
-      doc.title() mustBe ExpectedContent.title
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text mustBe backLink
+      }
 
-    "have a correct heading" in {
-      doc.select(Selectors.h1).text() mustBe ExpectedContent.heading
-    }
+      "have a correct title" in {
+        doc.title() mustBe ExpectedContent.titlePartnership
+      }
 
-    "have the right radio options" in {
-      doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-      doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
-    }
+      "have a correct heading" in {
+        doc.select(Selectors.h1).text() mustBe ExpectedContent.headingPartnership
+      }
 
-    "have the right hint" in {
-      doc.select(Selectors.hint).text() mustBe ExpectedContent.hint
-    }
+      "have the right radio options" in {
+        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
+      }
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the right hint" in {
+        doc.select(Selectors.hint).text() mustBe ExpectedContent.hint
+      }
+
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
     }
   }
+  
 }

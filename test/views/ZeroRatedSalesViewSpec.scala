@@ -24,7 +24,8 @@ class ZeroRatedSalesViewSpec extends ViewSpecBase {
   val messageKeyPrefix = "zeroRatedSales"
   val form = new ZeroRatedSalesFormProvider()()
 
-  val h1 = "Does the business sell mainly zero-rated goods or services?"
+  val h1Business = "Does the business sell mainly zero-rated goods or services?"
+  val h1Partnership = "Does the partnership sell mainly zero-rated goods or services?"
   val detailsSummary = "Examples of zero-rated goods or services"
   val linkText = "VAT rates on different goods and services (opens in new tab)"
   val line1 = "Zero-rated goods and services are VAT-taxable but the VAT rate on them is 0%."
@@ -40,45 +41,88 @@ class ZeroRatedSalesViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
-  "ZeroRatedSales view" must {
-    lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+  "ZeroRatedSales view" when {
+    "Business entity is not partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Business)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Business
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Business
+      }
+
+      "have a dropdown summary" in {
+        doc.select(Selectors.detailsSummary).text() mustBe detailsSummary
+      }
+
+      "have the right paragraphs" in {
+        doc.select(Selectors.p(1)).text() mustBe line1
+        doc.select(Selectors.p(2)).text() mustBe line2
+        doc.select(Selectors.p(4)).text() mustBe line3
+      }
+
+      "have the right bullets" in {
+        doc.select(Selectors.bullet(1)).text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).text() mustBe bullet2
+        doc.select(Selectors.bullet(3)).text() mustBe bullet3
+        doc.select(Selectors.bullet(4)).text() mustBe bullet4
+        doc.select(Selectors.bullet(5)).text() mustBe bullet5
+      }
     }
+    "Business entity is partnership" must {
+      lazy val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
 
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+      }
 
-    "have the correct legend" in {
-      doc.select(Selectors.legend(1)).text() mustBe h1
-    }
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Partnership
+      }
 
-    "have a dropdown summary" in {
-      doc.select(Selectors.detailsSummary).text() mustBe detailsSummary
-    }
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Partnership
+      }
 
-    "have the right paragraphs" in {
-      doc.select(Selectors.p(1)).text() mustBe line1
-      doc.select(Selectors.p(2)).text() mustBe line2
-      doc.select(Selectors.p(4)).text() mustBe line3
-    }
+      "have a dropdown summary" in {
+        doc.select(Selectors.detailsSummary).text() mustBe detailsSummary
+      }
 
-    "have the right bullets" in {
-      doc.select(Selectors.bullet(1)).text() mustBe bullet1
-      doc.select(Selectors.bullet(2)).text() mustBe bullet2
-      doc.select(Selectors.bullet(3)).text() mustBe bullet3
-      doc.select(Selectors.bullet(4)).text() mustBe bullet4
-      doc.select(Selectors.bullet(5)).text() mustBe bullet5
+      "have the right paragraphs" in {
+        doc.select(Selectors.p(1)).text() mustBe line1
+        doc.select(Selectors.p(2)).text() mustBe line2
+        doc.select(Selectors.p(4)).text() mustBe line3
+      }
+
+      "have the right bullets" in {
+        doc.select(Selectors.bullet(1)).text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).text() mustBe bullet2
+        doc.select(Selectors.bullet(3)).text() mustBe bullet3
+        doc.select(Selectors.bullet(4)).text() mustBe bullet4
+        doc.select(Selectors.bullet(5)).text() mustBe bullet5
+      }
     }
   }
 }
