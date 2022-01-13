@@ -37,7 +37,8 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     NonUkCompanyFlow,
     NIPFlow,
     ThirdPartyTransactorFlow,
-    IndividualFlow
+    IndividualFlow,
+    VATGroupFlow
   )
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
@@ -110,4 +111,9 @@ case object ThirdPartyTransactorFlow extends FeatureSwitch {
 case object IndividualFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.use-individual-flow"
   override val displayName: String = "Use Individual flow"
+}
+
+case object VATGroupFlow extends FeatureSwitch {
+  override val configName: String = "feature-switch.vat-group-flow"
+  override val displayName: String = "Enable VAT Group flow"
 }
