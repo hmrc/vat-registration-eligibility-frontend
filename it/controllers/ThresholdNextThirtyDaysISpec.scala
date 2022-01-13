@@ -16,8 +16,10 @@ class ThresholdNextThirtyDaysISpec extends IntegrationSpecBase with AuthHelper w
 
   val dateFieldName = s"${ThresholdNextThirtyDaysId}Date"
 
+  class Setup extends SessionTest(app)
+
   s" ${controllers.routes.ThresholdNextThirtyDaysController.onSubmit()}" should {
-    s"redirect to ${controllers.routes.VATRegistrationExceptionController.onPageLoad} with value of true" in {
+    s"redirect to ${controllers.routes.VATRegistrationExceptionController.onPageLoad} with value of true" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -33,7 +35,7 @@ class ThresholdNextThirtyDaysISpec extends IntegrationSpecBase with AuthHelper w
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad.url)
     }
-    s"redirect to ${controllers.routes.VoluntaryRegistrationController.onPageLoad} with value of false" in {
+    s"redirect to ${controllers.routes.VoluntaryRegistrationController.onPageLoad} with value of false" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()

@@ -17,37 +17,39 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.SessionService
-import connectors.mocks.MockS4lConnector
+import connectors.mocks.{MockS4lConnector, MockSessionService}
 import models.CurrentProfile
 import models.requests.{CacheIdentifierRequest, OptionalDataRequest}
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
+import services.{FakeSessionService, SessionService}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with MockS4lConnector {
+class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with MockS4lConnector with MockSessionService {
 
   class Harness(sessionService: SessionService) extends DataRetrievalActionImpl(sessionService) {
     def callTransform[A](request: CacheIdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
   val testProfile = CurrentProfile("regId")
-  val testCacheMap = CacheMap("id", Map("some" -> Json.obj("existing" -> "value")))
+  val testCacheMap = CacheMap("sessionId", Map("some" -> Json.obj("existing" -> "value")))
+
+  override implicit val hc = HeaderCarrier(sessionId = Some(SessionId("sessionId")))
 
   "Data Retrieval Action" when {
     "there is no data in the cache" when {
       "set userAnswers to 'None' in the request" in {
-        val sessionService = mock[SessionService]
-        when(sessionService.fetch("id")) thenReturn Future(None)
+        mockSessionFetch()(Future.successful(None))
         mockS4LFetchAll(None)
 
-        val action = new Harness(sessionService)
+        val action = new Harness(sessionServiceMock)
 
-        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id", testProfile))
+        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "regId", "id"))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isEmpty mustBe true
@@ -57,11 +59,10 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
 
     "there is data in the cache" must {
       "build a userAnswers object and add it to the request" in {
-        val sessionService = mock[SessionService]
-        when(sessionService.fetch("id")) thenReturn Future(Some(new CacheMap("id", Map())))
-        val action = new Harness(sessionService)
+        mockSessionFetch()(Future.successful(Some(new CacheMap("regId", Map()))))
+        val action = new Harness(sessionServiceMock)
 
-        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "id", testProfile))
+        val futureResult = action.callTransform(new CacheIdentifierRequest(fakeRequest, "regId", "id"))
 
         whenReady(futureResult) { result =>
           result.userAnswers.isDefined mustBe true

@@ -30,6 +30,6 @@ object FakeCacheIdentifierAction extends CacheIdentifierAction {
   override def parser: BodyParser[AnyContent] = stubControllerComponents().parsers.defaultBodyParser
 
   override def invokeBlock[A](request: Request[A], block: CacheIdentifierRequest[A] => Future[Result]): Future[Result] =
-    block(CacheIdentifierRequest(request, "id", CurrentProfile("regId")))
+    block(CacheIdentifierRequest(request, "regId", "id"))
 
 }

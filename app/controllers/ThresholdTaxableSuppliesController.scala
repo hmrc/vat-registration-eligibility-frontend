@@ -17,13 +17,13 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.ThresholdTaxableSuppliesFormProvider
 import identifiers._
 import models.{DateFormElement, NormalMode}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.ThresholdTaxableSupplies
@@ -58,7 +58,7 @@ class ThresholdTaxableSuppliesController @Inject()(mcc: MessagesControllerCompon
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         formValue =>
-          sessionService.save[DateFormElement](request.internalId, ThresholdTaxableSuppliesId.toString, formValue).flatMap {
+          sessionService.save[DateFormElement](ThresholdTaxableSuppliesId.toString, formValue).flatMap {
             cacheMap => Future.successful(cacheMap)
           }.map(cMap => Redirect(navigator.nextPage(ThresholdTaxableSuppliesId, NormalMode)(new UserAnswers(cMap)))))
   }

@@ -17,16 +17,16 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.VATExceptionKickoutFormProvider
 import identifiers.VATExceptionKickoutId
+
 import javax.inject.{Inject, Singleton}
 import models.{NormalMode, RegistrationInformation}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TrafficManagementService
+import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.vatExceptionKickout
@@ -61,8 +61,8 @@ class VATExceptionKickoutController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, VATExceptionKickoutId.toString, value).flatMap(cacheMap =>
-            trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = true).map {
+          sessionService.save[Boolean](VATExceptionKickoutId.toString, value).flatMap(cacheMap =>
+            trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = true).map {
               case RegistrationInformation(_, _, _, _, _) =>
                 Redirect(navigator.nextPage(VATExceptionKickoutId, NormalMode)(new UserAnswers(cacheMap)))
             }

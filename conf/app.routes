@@ -4,6 +4,7 @@
 ->         /hmrc-frontend                               hmrcfrontend.Routes
 
 GET        /                                            controllers.IndexController.onPageLoad
+GET        /journey/:regId                              controllers.IndexController.initJourney(regId: String)
 
 GET        /question                                    controllers.IndexController.navigateToPageId(pageId: String ?= "")
 

@@ -27,8 +27,10 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
     )
   ))
 
+  class Setup extends SessionTest(app)
+
   s"${controllers.routes.NinoController.onSubmit}" should {
-    "redirect to VAT Exception if the answer is no" in {
+    "redirect to VAT Exception if the answer is no" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -43,7 +45,7 @@ class NinoControllerISpec extends IntegrationSpecBase with AuthHelper with Sessi
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
     }
 
-    "redirect to Traffic management resolver if the answer is yes" in {
+    "redirect to Traffic management resolver if the answer is yes" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()

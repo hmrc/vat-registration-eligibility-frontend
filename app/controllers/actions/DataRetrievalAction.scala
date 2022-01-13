@@ -17,9 +17,9 @@
 package controllers.actions
 
 import com.google.inject.Inject
-import connectors.SessionService
 import models.requests.{CacheIdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
+import services.SessionService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.UserAnswers
@@ -33,11 +33,11 @@ class DataRetrievalActionImpl @Inject()(val sessionService: SessionService)
   override protected def transform[A](request: CacheIdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    sessionService.fetch(request.cacheId).map {
+    sessionService.fetch.map {
       case None =>
-        OptionalDataRequest(request.request, request.cacheId, request.currentProfile, None)
+        OptionalDataRequest(request.request, request.regId, request.internalId, None)
       case Some(data) =>
-        OptionalDataRequest(request.request, request.cacheId, request.currentProfile, Some(new UserAnswers(data)))
+        OptionalDataRequest(request.request, request.regId, request.internalId, Some(new UserAnswers(data)))
     }
   }
 }

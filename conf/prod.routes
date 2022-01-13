@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->         /check-if-you-can-register-for-vat                    app.Routes
+->         /check-if-you-can-register-for-vat/                   app.Routes
 ->         /                                                     health.Routes
 
 GET        /admin/metrics                                        @com.kenshoo.play.metrics.MetricsController.metrics

@@ -13,8 +13,10 @@ class GoneOverThresholdControllerISpec extends IntegrationSpecBase with AuthHelp
     .configure(fakeConfig())
     .build()
 
+  class Setup extends SessionTest(app)
+
   s"${controllers.routes.GoneOverThresholdController.onSubmit}" should {
-    s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} when value is true" in {
+    s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} when value is true" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -28,7 +30,7 @@ class GoneOverThresholdControllerISpec extends IntegrationSpecBase with AuthHelp
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad().url)
     }
 
-    s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} when value is false" in {
+    s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} when value is false" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()

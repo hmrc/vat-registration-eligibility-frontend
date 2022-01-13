@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.VATRegistrationExceptionFormProvider
 import identifiers.VATRegistrationExceptionId
@@ -27,7 +26,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TrafficManagementService
+import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.vatRegistrationException
@@ -62,9 +61,9 @@ class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerCompon
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, VATRegistrationExceptionId.toString, value).map { cacheMap =>
+          sessionService.save[Boolean](VATRegistrationExceptionId.toString, value).map { cacheMap =>
             if (value) {
-              trafficManagementService.upsertRegistrationInformation(request.internalId, request.currentProfile.registrationID, isOtrs = true)
+              trafficManagementService.upsertRegistrationInformation(request.regId, request.regId, isOtrs = true)
             }
             Redirect(navigator.nextPage(VATRegistrationExceptionId, NormalMode)(new UserAnswers(cacheMap)))
           }

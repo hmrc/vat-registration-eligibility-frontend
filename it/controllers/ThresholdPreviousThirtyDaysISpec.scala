@@ -28,9 +28,11 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
     .overrides(bind[TimeMachine].to[FakeTimeMachine])
     .build()
 
+  class Setup extends SessionTest(app)
+
   s"GET ${controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad.url}" should {
     "render the page" when {
-      "no data is present in mongo" in {
+      "no data is present in mongo" in new Setup {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
@@ -41,11 +43,11 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
         response.status mustBe OK
       }
 
-      "data is present in mongo" in {
+      "data is present in mongo" in new Setup {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
-        cacheSessionData(internalId, s"$ThresholdPreviousThirtyDaysId", ConditionalDateFormElement(true, Some(LocalDate.of(2017, 12, 1))))
+        cacheSessionData(sessionId, s"$ThresholdPreviousThirtyDaysId", ConditionalDateFormElement(true, Some(LocalDate.of(2017, 12, 1))))
 
         val request = buildClient("/gone-over-threshold-period").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie()).get()
         val response = await(request)
@@ -60,12 +62,12 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
     val dateAfterIncorp = incorpDate.plusMonths(2)
 
     s"redirect to ${controllers.routes.VATRegistrationExceptionController.onPageLoad.url}" when {
-      "yes and a valid date is submitted, and Q1 is yes should also drop voluntary" in {
+      "yes and a valid date is submitted, and Q1 is yes should also drop voluntary" in new Setup {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
-        cacheSessionData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, ConditionalDateFormElement(true, Some(localDate)))
-        cacheSessionData[Boolean](internalId, VoluntaryRegistrationId.toString, true)
+        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId.toString, ConditionalDateFormElement(true, Some(localDate)))
+        cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId.toString, true)
 
         val request = buildClient("/gone-over-threshold-period").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
           .post(Map(
@@ -78,16 +80,16 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
         val response = await(request)
         response.status mustBe SEE_OTHER
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad.url)
-        verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdPreviousThirtyDaysId.toString, Some(ConditionalDateFormElement(true, Some(dateAfterIncorp))))
-        verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, Some(ConditionalDateFormElement(true, Some(localDate))))
-        verifySessionCacheData(internalId, VoluntaryRegistrationId.toString, Option.empty[Boolean])
+        verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdPreviousThirtyDaysId.toString, Some(ConditionalDateFormElement(true, Some(dateAfterIncorp))))
+        verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId.toString, Some(ConditionalDateFormElement(true, Some(localDate))))
+        verifySessionCacheData(sessionId, VoluntaryRegistrationId.toString, Option.empty[Boolean])
       }
-      "no is submitted" in {
+      "no is submitted" in new Setup {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
 
-        cacheSessionData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, ConditionalDateFormElement(true, Some(localDate)))
+        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId.toString, ConditionalDateFormElement(true, Some(localDate)))
 
         val request = buildClient("/gone-over-threshold-period").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
           .post(Map(
@@ -98,8 +100,8 @@ class ThresholdPreviousThirtyDaysISpec extends IntegrationSpecBase with AuthHelp
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad.url)
 
-        verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdPreviousThirtyDaysId.toString, Some(ConditionalDateFormElement(false, None)))
-        verifySessionCacheData[ConditionalDateFormElement](internalId, ThresholdInTwelveMonthsId.toString, Some(ConditionalDateFormElement(true, Some(localDate))))
+        verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdPreviousThirtyDaysId.toString, Some(ConditionalDateFormElement(false, None)))
+        verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId.toString, Some(ConditionalDateFormElement(true, Some(localDate))))
       }
     }
   }

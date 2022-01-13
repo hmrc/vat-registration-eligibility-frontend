@@ -17,15 +17,16 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.ZeroRatedSalesFormProvider
 import identifiers.{VATExemptionId, ZeroRatedSalesId}
+
 import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.zeroRatedSales
@@ -59,10 +60,10 @@ class ZeroRatedSalesController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, ZeroRatedSalesId.toString, value).flatMap {
+          sessionService.save[Boolean]( ZeroRatedSalesId.toString, value).flatMap {
             cacheMap =>
               val removeStaleData = (b: Boolean) => if (!b) VATExemptionId
-              sessionService.removeEntry(cacheMap.id, removeStaleData(value).toString).map(_ =>
+              sessionService.removeEntry(removeStaleData(value).toString).map(_ =>
                 Redirect(navigator.nextPage(ZeroRatedSalesId, NormalMode)(new UserAnswers(cacheMap))))
           }
       )

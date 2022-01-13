@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.FakeSessionService
+import connectors.mocks.MockSessionService
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
 import identifiers._
@@ -29,6 +29,7 @@ import org.mockito.Mockito._
 import play.api.data.Form
 import play.api.libs.json._
 import play.api.test.Helpers._
+import services.FakeSessionService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeNavigator, TimeMachine}
 import views.html.thresholdInTwelveMonths
@@ -37,7 +38,9 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 
-class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with TrafficManagementServiceMock {
+class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase
+  with TrafficManagementServiceMock
+  with MockSessionService {
 
   val view = app.injector.instanceOf[thresholdInTwelveMonths]
 
@@ -56,7 +59,7 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
   val getRequiredCacheMap: FakeDataRetrievalAction = getWithCacheMap(CacheMap(cacheMapId, data))
 
   def controller(dataRetrievalAction: DataRetrievalAction = getRequiredCacheMap) =
-    new ThresholdInTwelveMonthsController(controllerComponents, FakeSessionService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new ThresholdInTwelveMonthsController(controllerComponents, sessionServiceMock, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, mockTrafficManagementService, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequestIncorpedOver12m, messages, frontendAppConfig).toString
@@ -66,8 +69,8 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
   val testDate = LocalDate.now
 
   "ThresholdInTwelveMonths Controller" must {
-    when(mockSessionService.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
-    when(mockSessionService.removeEntry(anyString(), ArgumentMatchers.eq(ThresholdNextThirtyDaysId.toString))) thenReturn Future.successful(emptyCacheMap)
+    mockSessionRemoveEntry(VoluntaryRegistrationId.toString)(Future.successful(emptyCacheMap))
+    mockSessionRemoveEntry(ThresholdNextThirtyDaysId.toString)(Future.successful(emptyCacheMap))
 
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(fakeRequest)
@@ -94,8 +97,12 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
     }
 
     "redirect to the next page when valid data is submitted and also remove Voluntary registration because answer to question is true" in {
-      mockUpsertRegistrationInformation(testInternalId, testRegId, false)(Future.successful(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
       val date = LocalDate.parse("2019-01-01")
+      val answer = ConditionalDateFormElement(true, Some(date))
+      mockSessionCacheSave[ConditionalDateFormElement](ThresholdInTwelveMonthsId.toString)(answer)(
+        Future.successful(emptyCacheMap.copy(data = Map(ThresholdInTwelveMonthsId.toString -> Json.toJson(answer))))
+      )
+      mockUpsertRegistrationInformation(testInternalId, testRegId, false)(Future.successful(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true",
         "valueDate.year" -> date.getYear.toString,
         "valueDate.month" -> date.getMonthValue.toString
@@ -117,6 +124,7 @@ class ThresholdInTwelveMonthsControllerSpec extends ControllerSpecBase with Traf
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
+
       val result = controller(dontGetAnyData).onPageLoad(fakeRequest)
 
       status(result) mustBe SEE_OTHER

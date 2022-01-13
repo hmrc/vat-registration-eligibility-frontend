@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import featureswitch.core.config.FeatureSwitching
 import forms.GoneOverThresholdFormProvider
@@ -25,7 +24,7 @@ import identifiers.GoneOverThresholdId
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.S4LService
+import services.{S4LService, SessionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.GoneOverThreshold
@@ -63,7 +62,7 @@ class GoneOverThresholdController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, GoneOverThresholdId.toString, value).flatMap {
+          sessionService.save[Boolean](GoneOverThresholdId.toString, value).flatMap {
             cacheMap => Future.successful(cacheMap)
           }.map(cMap => Redirect(navigator.nextPage(GoneOverThresholdId, NormalMode)(new UserAnswers(cMap)))))
   }

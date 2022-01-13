@@ -22,7 +22,7 @@ import controllers.routes
 import models.requests.CacheIdentifierRequest
 import play.api.mvc.Results._
 import play.api.mvc._
-import services.CurrentProfileService
+import services.JourneyService
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, UnauthorizedException}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CacheIdentifierActionImpl @Inject()(override val authConnector: AuthConnector,
                                           config: FrontendAppConfig,
-                                          val currentProfileService: CurrentProfileService,
+                                          val journeyService: JourneyService,
                                           val parser: BodyParsers.Default
                                          )(implicit val executionContext: ExecutionContext)
   extends CacheIdentifierAction with AuthorisedFunctions {
@@ -42,11 +42,13 @@ class CacheIdentifierActionImpl @Inject()(override val authConnector: AuthConnec
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     authorised().retrieve(Retrievals.internalId) {
-      _.map {
-        internalId =>
-          currentProfileService.fetchOrBuildCurrentProfile(internalId) flatMap (cp =>
-            block(CacheIdentifierRequest(request, internalId, cp))
-            )
+      _.map { internalId =>
+          journeyService.getProfile.flatMap {
+            case Some(profile) =>
+              block(CacheIdentifierRequest(request, profile.registrationID, internalId))
+            case _ =>
+              Future.successful(Redirect(s"${config.vatRegFEURL}${config.vatRegFEURI}"))
+          }
       }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
     } recover {
       case ex: NotFoundException =>

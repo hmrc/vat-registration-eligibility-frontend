@@ -40,9 +40,11 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
 
   val pageUrl: String = routes.TrafficManagementResolverController.resolve.toString
 
+  class Setup extends SessionTest(app)
+
   s"POST $pageUrl" when {
     "the user has a fixed establishment in UK" should {
-      "redirect to the Threshold In Twelve Months page if the feature switch is disabled" in {
+      "redirect to the Threshold In Twelve Months page if the feature switch is disabled" in new Setup {
         disable(TrafficManagement)
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
@@ -50,16 +52,18 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", true)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", true)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
 
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url)
       }
 
-      "redirect to the Threshold In Twelve Months page if TrafficManagement returns allocated" in {
+      "redirect to the Threshold In Twelve Months page if TrafficManagement returns allocated" in new Setup {
         enable(TrafficManagement)
         stubSuccessfulLogin(enrolments = testEnrolments)
         stubSuccessfulRegIdGet()
@@ -72,18 +76,20 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", true)
-        cacheSessionData[RegistrationReason](testInternalId, s"$RegistrationReasonId", SellingGoodsAndServices)
+        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", UKCompany)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", true)
+        cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", SellingGoodsAndServices)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
 
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url)
       }
 
-      "redirect to the Turnover Estimate page if TrafficManagement returns Allocated for an Established UK Exporter reg reason" in {
+      "redirect to the Turnover Estimate page if TrafficManagement returns Allocated for an Established UK Exporter reg reason" in new Setup {
         enable(TrafficManagement)
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
@@ -96,17 +102,20 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", true)
-        cacheSessionData[RegistrationReason](testInternalId, s"$RegistrationReasonId", UkEstablishedOverseasExporter)
+        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", UKCompany)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", true)
+        cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", UkEstablishedOverseasExporter)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
+
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
       }
 
-      "redirect to VAT Exception Page if TrafficManagement returns Quota Reached" in {
+      "redirect to VAT Exception Page if TrafficManagement returns Quota Reached" in new Setup {
         enable(TrafficManagement)
         stubSuccessfulLogin(enrolments = testEnrolments)
         stubSuccessfulRegIdGet()
@@ -115,17 +124,19 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", UKCompany)
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", true)
+        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", UKCompany)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", true)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
 
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
       }
 
-      "redirect to the Threshold In Twelve Months page if TrafficManagement returns Quota Reached but RegistrationInformation matches" in {
+      "redirect to the Threshold In Twelve Months page if TrafficManagement returns Quota Reached but RegistrationInformation matches" in new Setup {
         enable(TrafficManagement)
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
@@ -134,9 +145,11 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubGetRegistrationInformation(testRegId)(OK, Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", true)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", true)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url)
@@ -144,7 +157,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
     }
 
     "the user doesn't have a fixed establishment in UK" should {
-      "redirect to the Threshold Taxable Supplies page if the feature switch is disabled" in {
+      "redirect to the Threshold Taxable Supplies page if the feature switch is disabled" in new Setup {
         disable(TrafficManagement)
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
@@ -152,16 +165,18 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", false)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", false)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
 
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdTaxableSuppliesController.onPageLoad.url)
       }
 
-      "redirect to the Threshold Taxable Supplies page if TrafficManagement returns allocated" in {
+      "redirect to the Threshold Taxable Supplies page if TrafficManagement returns allocated" in new Setup {
         enable(TrafficManagement)
         stubSuccessfulLogin(enrolments = testEnrolments)
         stubSuccessfulRegIdGet()
@@ -174,17 +189,19 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", Overseas)
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", false)
+        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", false)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
 
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdTaxableSuppliesController.onPageLoad.url)
       }
 
-      "redirect to OTRS if TrafficManagement returns Quota Reached" in {
+      "redirect to OTRS if TrafficManagement returns Quota Reached" in new Setup {
         enable(TrafficManagement)
         stubSuccessfulLogin(enrolments = testEnrolments)
         stubSuccessfulRegIdGet()
@@ -193,17 +210,19 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](testInternalId, s"$BusinessEntityId", Overseas)
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", false)
+        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", false)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
 
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some("https://tax.service.gov.uk/business-registration/select-taxes")
       }
 
-      "redirect to the Threshold Taxable Supplies page if TrafficManagement returns Quota Reached but RegistrationInformation matches" in {
+      "redirect to the Threshold Taxable Supplies page if TrafficManagement returns Quota Reached but RegistrationInformation matches" in new Setup {
         enable(TrafficManagement)
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
@@ -212,9 +231,12 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         stubGetRegistrationInformation(testRegId)(OK, Some(RegistrationInformation(testInternalId, testRegId, Draft, Some(testDate), VatReg)))
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](testInternalId, s"$FixedEstablishmentId", false)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", false)
 
-        val request = buildClient(pageUrl).get()
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
+
         val response = await(request)
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdTaxableSuppliesController.onPageLoad.url)

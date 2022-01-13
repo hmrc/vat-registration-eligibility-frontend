@@ -17,14 +17,15 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.RacehorsesFormProvider
 import identifiers.RacehorsesId
+
 import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.racehorses
@@ -58,7 +59,7 @@ class RacehorsesController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, RacehorsesId.toString, value) map { cacheMap =>
+          sessionService.save[Boolean](RacehorsesId.toString, value) map { cacheMap =>
             Redirect(navigator.nextPage(RacehorsesId, NormalMode)(new UserAnswers(cacheMap)))
           }
       )

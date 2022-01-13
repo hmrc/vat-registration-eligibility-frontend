@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.FakeSessionService
+import connectors.mocks.MockSessionService
 import controllers.actions._
 import forms.ThresholdPreviousThirtyDaysFormProvider
 import identifiers.{ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import services.FakeSessionService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeNavigator, TimeMachine}
 import views.html.thresholdPreviousThirtyDays
@@ -36,7 +37,7 @@ import views.html.thresholdPreviousThirtyDays
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class ThresholdPreviousThirtyDaysControllerSpec extends ControllerSpecBase {
+class ThresholdPreviousThirtyDaysControllerSpec extends ControllerSpecBase with MockSessionService {
 
   def onwardRoute: Call = routes.IndexController.onPageLoad
 
@@ -53,7 +54,7 @@ class ThresholdPreviousThirtyDaysControllerSpec extends ControllerSpecBase {
   val dataRequiredAction = new DataRequiredAction
 
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
-    new ThresholdPreviousThirtyDaysController(controllerComponents, FakeSessionService, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
+    new ThresholdPreviousThirtyDaysController(controllerComponents, sessionServiceMock, new FakeNavigator(desiredRoute = onwardRoute), FakeCacheIdentifierAction,
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 
   def viewAsString(form: Form[_] = form) = view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig).toString
@@ -77,8 +78,12 @@ class ThresholdPreviousThirtyDaysControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted with value of true with a date" in {
-      when(mockSessionService.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
       val date = LocalDate.parse("2019-01-01")
+      val answer = ConditionalDateFormElement(true, Some(date))
+      mockSessionCacheSave[ConditionalDateFormElement](ThresholdPreviousThirtyDaysId.toString)(answer)(
+        Future.successful(emptyCacheMap.copy(data = Map(ThresholdPreviousThirtyDaysId.toString -> Json.toJson(answer))))
+      )
+      mockSessionRemoveEntry(VoluntaryRegistrationId.toString)(Future.successful(emptyCacheMap))
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true",
         "thresholdPreviousThirtyDaysDate.year" -> date.getYear.toString,
         "thresholdPreviousThirtyDaysDate.month" -> date.getMonthValue.toString,
@@ -91,6 +96,10 @@ class ThresholdPreviousThirtyDaysControllerSpec extends ControllerSpecBase {
       redirectLocation(result) mustBe Some(onwardRoute.url)
     }
     "redirect to the next page when valid data is submitted with value of false" in {
+      val answer = ConditionalDateFormElement(false, None)
+      mockSessionCacheSave[ConditionalDateFormElement](ThresholdPreviousThirtyDaysId.toString)(answer)(
+        Future.successful(emptyCacheMap.copy(data = Map(ThresholdPreviousThirtyDaysId.toString -> Json.toJson(answer))))
+      )
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "false")
 
       val result = controller().onSubmit()(postRequest)

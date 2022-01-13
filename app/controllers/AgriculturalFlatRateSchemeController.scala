@@ -17,15 +17,16 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.AgriculturalFlatRateSchemeFormProvider
 import identifiers.AgriculturalFlatRateSchemeId
+
 import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.agriculturalFlatRateScheme
@@ -59,7 +60,7 @@ class AgriculturalFlatRateSchemeController @Inject()(mcc: MessagesControllerComp
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, AgriculturalFlatRateSchemeId.toString, value).map(cacheMap =>
+          sessionService.save[Boolean](AgriculturalFlatRateSchemeId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(AgriculturalFlatRateSchemeId, NormalMode)(new UserAnswers(cacheMap))))
       )
   }

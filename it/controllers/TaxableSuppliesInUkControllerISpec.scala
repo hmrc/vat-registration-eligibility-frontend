@@ -34,8 +34,10 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
 
   val pageUrl: String = routes.TaxableSuppliesInUkController.onSubmit.toString
 
+  class Setup extends SessionTest(app)
+
   s"POST $pageUrl" should {
-    "redirect to Do Not Need To Register if the answer is no" in {
+    "redirect to Do Not Need To Register if the answer is no" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -50,7 +52,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DoNotNeedToRegisterController.onPageLoad.url)
     }
 
-    "redirect to the Traffic Management Resolver if the answer is yes" in {
+    "redirect to the Traffic Management Resolver if the answer is yes" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()

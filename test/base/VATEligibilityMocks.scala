@@ -36,7 +36,7 @@ trait VATEligibilityMocks {
 
   //Services
   lazy val mockVRService = mock[VatRegistrationService]
-  lazy val mockCurrentProfileService = mock[CurrentProfileService]
+  lazy val mockJourneyService = mock[JourneyService]
 
   //Other
   lazy val mockHttpClient = mock[HttpClient]

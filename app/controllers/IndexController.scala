@@ -16,31 +16,41 @@
 
 package controllers
 
-import connectors.{SessionService, S4LConnector}
 import controllers.actions.{CacheIdentifierAction, DataRetrievalAction}
 import identifiers.Identifier
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.JourneyService
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Navigator
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class IndexController @Inject()(mcc: MessagesControllerComponents,
+class IndexController @Inject()(val authConnector: AuthConnector,
+                                mcc: MessagesControllerComponents,
                                 navigator: Navigator,
-                                sessionService: SessionService,
-                                s4LConnector: S4LConnector,
                                 identify: CacheIdentifierAction,
-                                getData: DataRetrievalAction
-                               )(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+                                getData: DataRetrievalAction,
+                                journeyService: JourneyService
+                               )(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport with AuthorisedFunctions {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData).async { implicit request =>
-    for {
-      _ <- sessionService.delete(request.internalId) //TODO Remove as part of SAR-6520
-      _ <- s4LConnector.clear(request.internalId)
-    } yield Redirect(routes.IntroductionController.onPageLoad)
+  def onPageLoad: Action[AnyContent] = (identify andThen getData) { implicit request =>
+    Redirect(routes.IntroductionController.onPageLoad)
+  }
+
+  def initJourney(regId: String): Action[AnyContent] = Action.async { implicit request =>
+    authorised().retrieve(Retrievals.internalId) {
+      case Some(internalId) =>
+        journeyService.initialiseJourney(internalId, regId).map { _ =>
+          Redirect(routes.IntroductionController.onPageLoad)
+        }
+      case _ =>
+        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+    }
   }
 
   def navigateToPageId(pageId: String): Action[AnyContent] = Action { _ =>

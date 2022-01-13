@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.FakeSessionService
+import connectors.mocks.MockSessionService
 import controllers.actions._
 import forms.ThresholdNextThirtyDaysFormProvider
 import identifiers.{ThresholdNextThirtyDaysId, VoluntaryRegistrationId}
@@ -29,6 +29,7 @@ import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.Helpers._
+import services.FakeSessionService
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.{FakeNavigator, TimeMachine}
 import views.html.thresholdNextThirtyDays
@@ -36,7 +37,7 @@ import views.html.thresholdNextThirtyDays
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
+class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase with MockSessionService {
 
   val view = app.injector.instanceOf[thresholdNextThirtyDays]
 
@@ -55,7 +56,7 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
   def controller(dataRetrievalAction: DataRetrievalAction = getEmptyCacheMap) =
     new ThresholdNextThirtyDaysController(
       controllerComponents,
-      FakeSessionService,
+      sessionServiceMock,
       new FakeNavigator(desiredRoute = onwardRoute),
       FakeCacheIdentifierAction,
       dataRetrievalAction,
@@ -67,7 +68,9 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
   def viewAsString(form: Form[_] = form): String = view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig).toString
 
   "ThresholdNextThirtyDays Controller" must {
-    when(mockSessionService.removeEntry(anyString(), ArgumentMatchers.eq(VoluntaryRegistrationId.toString))) thenReturn Future.successful(emptyCacheMap)
+
+    mockSessionRemoveEntry(VoluntaryRegistrationId.toString)(Future.successful(emptyCacheMap))
+
     "return OK and the correct view for a GET" in {
       val result = controller().onPageLoad(fakeDataRequestIncorped)
 
@@ -86,6 +89,10 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
 
     "redirect to the next page when valid data is submitted with answer true" in {
       val date = LocalDate.parse("2020-01-01")
+      val answer = ConditionalDateFormElement(true, Some(date))
+      mockSessionCacheSave[ConditionalDateFormElement](ThresholdNextThirtyDaysId.toString)(answer)(
+        Future.successful(emptyCacheMap.copy(data = Map(ThresholdNextThirtyDaysId.toString -> Json.toJson(answer))))
+      )
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "true",
         "thresholdNextThirtyDaysDate.year" -> date.getYear.toString,
         "thresholdNextThirtyDaysDate.month" -> date.getMonthValue.toString,
@@ -99,6 +106,10 @@ class ThresholdNextThirtyDaysControllerSpec extends ControllerSpecBase {
     }
 
     "redirect to the next page when valid data is submitted with answer false" in {
+      val answer = ConditionalDateFormElement(false, None)
+      mockSessionCacheSave[ConditionalDateFormElement](ThresholdNextThirtyDaysId.toString)(answer)(
+        Future.successful(emptyCacheMap.copy(data = Map(ThresholdNextThirtyDaysId.toString -> Json.toJson(answer))))
+      )
       val postRequest = fakeRequest.withFormUrlEncodedBody("value" -> "false")
 
       val result = controller().onSubmit()(postRequest)

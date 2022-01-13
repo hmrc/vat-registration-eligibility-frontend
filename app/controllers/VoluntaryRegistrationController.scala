@@ -17,15 +17,16 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.VoluntaryRegistrationFormProvider
 import identifiers.VoluntaryRegistrationId
+
 import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.voluntaryRegistration
@@ -59,7 +60,7 @@ class VoluntaryRegistrationController @Inject()(mcc: MessagesControllerComponent
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, VoluntaryRegistrationId.toString, value).map(cacheMap =>
+          sessionService.save[Boolean](VoluntaryRegistrationId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(VoluntaryRegistrationId, NormalMode)(new UserAnswers(cacheMap))))
       )
   }

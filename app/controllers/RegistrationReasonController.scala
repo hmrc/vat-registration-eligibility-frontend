@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import featureswitch.core.config.FeatureSwitching
 import forms.RegistrationReasonFormProvider
@@ -25,6 +24,7 @@ import identifiers.RegistrationReasonId
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.RegistrationReasonView
@@ -60,7 +60,7 @@ class RegistrationReasonController @Inject() (mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[RegistrationReason](request.internalId, RegistrationReasonId.toString, value)
+          sessionService.save[RegistrationReason](RegistrationReasonId.toString, value)
             .map(cacheMap  =>
               Redirect(navigator.nextPage(RegistrationReasonId, NormalMode)(new UserAnswers(cacheMap))))
           )

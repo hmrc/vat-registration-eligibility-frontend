@@ -17,7 +17,7 @@
 package services
 
 import java.time.format.DateTimeFormatter
-import connectors.{SessionService, VatRegistrationConnector}
+import connectors.VatRegistrationConnector
 import identifiers._
 
 import javax.inject.{Inject, Singleton}
@@ -39,10 +39,10 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
                                        val sessionService: SessionService,
                                        val messagesApi: MessagesApi) extends MessagesUtils {
 
-  def submitEligibility(internalId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, r: DataRequest[_]): Future[JsObject] = {
+  def submitEligibility(implicit hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[_]): Future[JsObject] = {
     for {
-      block <- createEligibilityBlock(internalId)
-      _ <- vrConnector.saveEligibility(r.currentProfile.registrationID, block)
+      block <- createEligibilityBlock
+      _ <- vrConnector.saveEligibility(request.regId, block)
     } yield {
       block
     }
@@ -159,11 +159,10 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
       )
     }
 
-  private def createEligibilityBlock(internalId: String)
-                                    (implicit hc: HeaderCarrier,
+  private def createEligibilityBlock(implicit hc: HeaderCarrier,
                                      executionContext: ExecutionContext,
                                      r: DataRequest[_]): Future[JsObject] = {
-    sessionService.fetch(internalId) map {
+    sessionService.fetch map {
       case Some(map) => Json.obj("sections" -> getEligibilitySections(map))
       case _ => throw new RuntimeException
     }

@@ -51,16 +51,16 @@ class TrafficManagementResolverController @Inject()(mcc: MessagesControllerCompo
       def redirectToNextPage: Result = Redirect(navigator.nextPage(TrafficManagementResolverId, NormalMode)(new UserAnswers(request.userAnswers.cacheMap)))
 
       if (isEnabled(TrafficManagement)) {
-        trafficManagementService.getRegistrationInformation(request.currentProfile.registrationID).flatMap {
+        trafficManagementService.getRegistrationInformation(request.regId).flatMap {
           case Some(RegistrationInformation(_, _, Draft, Some(date), VatReg)) if date == LocalDate.now =>
             Future.successful(redirectToNextPage)
           case _ =>
             trafficManagementService.allocate(
-              request.currentProfile.registrationID,
+              request.regId,
               request.userAnswers.businessEntity.getOrElse(throw new InternalServerException("[NinoController] Missing business entity"))
             ).flatMap {
               case Allocated =>
-                s4LService.save[CacheMap](request.currentProfile.registrationID, "eligibility-data", request.userAnswers.cacheMap) map { _ =>
+                s4LService.save[CacheMap](request.regId, "eligibility-data", request.userAnswers.cacheMap) map { _ =>
                   redirectToNextPage
                 }
               case QuotaReached =>
@@ -75,7 +75,7 @@ class TrafficManagementResolverController @Inject()(mcc: MessagesControllerCompo
       else {
         trafficManagementService.upsertRegistrationInformation(
           internalId = request.internalId,
-          regId = request.currentProfile.registrationID,
+          regId = request.regId,
           isOtrs = false
         ).map(_ => redirectToNextPage)
       }

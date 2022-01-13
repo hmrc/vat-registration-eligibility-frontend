@@ -17,15 +17,16 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.SessionService
 import controllers.actions._
 import forms.AnnualAccountingSchemeFormProvider
 import identifiers.AnnualAccountingSchemeId
+
 import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.annualAccountingScheme
@@ -60,7 +61,7 @@ class AnnualAccountingSchemeController @Inject()(mcc: MessagesControllerComponen
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](request.internalId, AnnualAccountingSchemeId.toString, value).map(cacheMap =>
+          sessionService.save[Boolean](AnnualAccountingSchemeId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(AnnualAccountingSchemeId, NormalMode)(new UserAnswers(cacheMap))))
       )
   }

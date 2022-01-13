@@ -50,15 +50,15 @@ trait SpecBase extends CommonSpecBase with GuiceOneAppPerSuite {
 
   def fakeRequest = FakeRequest("", "")
 
-  def fakeDataRetrievalAction = new FakeDataRetrievalAction(Some(CacheMap("id", Map())))
+  def fakeDataRetrievalAction = new FakeDataRetrievalAction(Some(CacheMap("regId", Map())))
 
-  def fakeDataRequestIncorped = new DataRequest(fakeRequest, "1", CurrentProfile("foo"), new UserAnswers((CacheMap("1", Map()))))
+  def fakeDataRequestIncorped = new DataRequest(fakeRequest, "foo", "1", new UserAnswers((CacheMap("1", Map()))))
 
-  def fakeDataRequestIncorpedOver12m = new DataRequest(fakeRequest, "1", CurrentProfile("foo"), new UserAnswers((CacheMap("1", Map()))))
+  def fakeDataRequestIncorpedOver12m = new DataRequest(fakeRequest, "foo", "1", new UserAnswers((CacheMap("1", Map()))))
 
-  def fakeDataRequest = new DataRequest(fakeRequest, "1", CurrentProfile("foo"), new UserAnswers(CacheMap("1", Map())))
+  def fakeDataRequest = new DataRequest(fakeRequest, "foo", "1", new UserAnswers(CacheMap("1", Map())))
 
-  def fakeCacheDataRequestIncorped = new CacheIdentifierRequest(fakeRequest, "1", CurrentProfile("foo"))
+  def fakeCacheDataRequestIncorped = new CacheIdentifierRequest(fakeRequest, "foo", "1")
 
   def messages: Messages = messagesApi.preferred(fakeRequest)
 
