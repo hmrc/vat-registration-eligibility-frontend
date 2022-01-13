@@ -29,6 +29,7 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
 
   val bullet1 = "over the past 2 years, you have had another self-employed business in the UK or Isle of Man (do not tell us if your only source of self-employed income was from being a landlord)"
   val bullet2 = "over the past 2 years, you have been a partner or director with a different business in the UK or Isle of Man"
+  val vatGroupBullet = "you want to set up a VAT group (opens in new tab)."
   val bullet4 = "the company used to be a different type of VAT-registered business, for example a sole trader"
   val bullet5 = "the company has taken over another VAT-registered company that was making a profit"
 
@@ -36,35 +37,70 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
-  "InvolvedInOtherBusiness view with no acting on behalf of officer" must {
-    lazy val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
+  "InvolvedInOtherBusiness view" when {
+    "showVatGroupBullet is set to true" must {
+      lazy val doc = asDocument(view(form, NormalMode, true)(fakeRequest, messages, frontendAppConfig))
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1
+      }
+
+      "display the bullet text correctly" in {
+        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
+        doc.select(Selectors.bullet(3)).first().text() mustBe vatGroupBullet
+        doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
+        doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
+      }
+    }
+    "showVatGroupBullet is set to false" must {
+      lazy val doc = asDocument(view(form, NormalMode, false)(fakeRequest, messages, frontendAppConfig))
+
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1
+      }
+
+      "display the bullet text correctly" in {
+        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
+        doc.select(Selectors.bullet(3)).first().text() mustBe bullet4
+        doc.select(Selectors.bullet(4)).first().text() mustBe bullet5
+      }
     }
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
-
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
-
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
-
-    "have the correct legend" in {
-      doc.select(Selectors.legend(1)).text() mustBe h1
-    }
-
-    "display the bullet text correctly" in {
-      doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
-      doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
-      doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
-      doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
-    }
   }
+
 
 }
