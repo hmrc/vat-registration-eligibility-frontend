@@ -42,20 +42,22 @@ object PageIdBinding extends FeatureSwitching {
 
     val isUkEstablishedOverseasExporter = userAnswers.registrationReason.contains(UkEstablishedOverseasExporter)
 
+    val isVatGroup = userAnswers.registrationReason.contains(SettingUpVatGroup)
+
     def ThresholdSectionValidationAndConstruction: PartialFunction[(Identifier, Option[Any]), (Identifier, Option[Any])] = {
-      case e@(ThresholdInTwelveMonthsId, None) if isOverseas || isUkEstablishedOverseasExporter => e
+      case e@(ThresholdInTwelveMonthsId, None) if isOverseas || isUkEstablishedOverseasExporter || isVatGroup => e
       case e@(ThresholdNextThirtyDaysId, Some(_)) => if (twelveMonthsValue) {
         illegalState(e._1)
       } else {
         e
       }
-      case e@(ThresholdNextThirtyDaysId, None) if twelveMonthsValue || isOverseas || isUkEstablishedOverseasExporter => e
+      case e@(ThresholdNextThirtyDaysId, None) if twelveMonthsValue || isOverseas || isUkEstablishedOverseasExporter || isVatGroup => e
       case e@(ThresholdPreviousThirtyDaysId, Some(_)) => if (!twelveMonthsValue) {
         illegalState(e._1)
       } else {
         e
       }
-      case e@(ThresholdPreviousThirtyDaysId, None) if !twelveMonthsValue || isOverseas || isUkEstablishedOverseasExporter => e
+      case e@(ThresholdPreviousThirtyDaysId, None) if !twelveMonthsValue || isOverseas || isUkEstablishedOverseasExporter || isVatGroup => e
       case e@(ThresholdTaxableSuppliesId, None) if !isOverseas => e
       case e@(VATRegistrationExceptionId, Some(_)) => if (twelveMonthsValue && nextThirtyDaysValue) {
         illegalState(e._1)
@@ -68,7 +70,7 @@ object PageIdBinding extends FeatureSwitching {
       } else {
         e
       }
-      case e@(VoluntaryRegistrationId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter => e
+      case e@(VoluntaryRegistrationId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter || isVatGroup => e
       case e@(VoluntaryInformationId, None) => e
       case e if (e._1 != VATRegistrationExceptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
     }

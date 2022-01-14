@@ -241,8 +241,8 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     },
     RegistrationReasonId -> { userAnswers =>
       userAnswers.registrationReason match {
-        case Some(SellingGoodsAndServices | UkEstablishedOverseasExporter) if isEnabled(IndividualFlow) => pageIdToPageLoad(TrafficManagementResolverId)
-        case Some(SellingGoodsAndServices | UkEstablishedOverseasExporter) => pageIdToPageLoad(NinoId)
+        case Some(SellingGoodsAndServices | UkEstablishedOverseasExporter | SettingUpVatGroup) if isEnabled(IndividualFlow) => pageIdToPageLoad(TrafficManagementResolverId)
+        case Some(SellingGoodsAndServices | UkEstablishedOverseasExporter | SettingUpVatGroup) => pageIdToPageLoad(NinoId)
       }
     },
     NinoId -> { userAnswers =>
@@ -304,7 +304,8 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     TrafficManagementResolverId -> { userAnswers =>
       userAnswers.fixedEstablishment match {
-        case Some(true) if userAnswers.registrationReason.contains(UkEstablishedOverseasExporter) => pageIdToPageLoad(TurnoverEstimateId)
+        case Some(true)
+          if Seq(UkEstablishedOverseasExporter, SettingUpVatGroup).exists(userAnswers.registrationReason.contains(_)) => pageIdToPageLoad(TurnoverEstimateId)
         case Some(true) => pageIdToPageLoad(ThresholdInTwelveMonthsId)
         case Some(false) => pageIdToPageLoad(ThresholdTaxableSuppliesId)
       }
