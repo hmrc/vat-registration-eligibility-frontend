@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
+import featureswitch.core.config.{FeatureSwitching, VATGroupFlow}
 import forms.InvolvedInOtherBusinessFormProvider
 import identifiers.InvolvedInOtherBusinessId
 
@@ -43,7 +44,9 @@ class InvolvedInOtherBusinessController @Inject()(mcc: MessagesControllerCompone
                                                   formProvider: InvolvedInOtherBusinessFormProvider,
                                                   view: involvedInOtherBusiness
                                                  )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
+
+  private def showVatGroupBullet = !isEnabled(VATGroupFlow)
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
@@ -51,14 +54,15 @@ class InvolvedInOtherBusinessController @Inject()(mcc: MessagesControllerCompone
         case None => formProvider.form
         case Some(value) => formProvider.form.fill(value)
       }
-      Future.successful(Ok(view(preparedForm, NormalMode)))
+
+      Future.successful(Ok(view(preparedForm, NormalMode, showVatGroupBullet)))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       formProvider.form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, NormalMode))),
+          Future.successful(BadRequest(view(formWithErrors, NormalMode, showVatGroupBullet))),
         value =>
           sessionService.save[Boolean](InvolvedInOtherBusinessId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(InvolvedInOtherBusinessId, NormalMode)(new UserAnswers(cacheMap))))
