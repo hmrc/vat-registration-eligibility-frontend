@@ -97,7 +97,7 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
       }
     }
     "VAT group flow is enabled" must {
-      val doc = asDocument(view(form, NormalMode, isVatGroupFlow = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
+      val doc = asDocument(view(form, NormalMode, showVatGroup = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the right radio options" in {
         doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1

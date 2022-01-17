@@ -22,6 +22,7 @@ import featureswitch.core.config.{FeatureSwitching, VATGroupFlow}
 import forms.RegistrationReasonFormProvider
 import identifiers.RegistrationReasonId
 import models._
+import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
@@ -45,20 +46,30 @@ class RegistrationReasonController @Inject() (mcc: MessagesControllerComponents,
                                                 executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 
+  def showVatGroup(isUkCompany: Boolean): Boolean = isUkCompany && isEnabled(VATGroupFlow)
+
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.registrationReason match {
         case None => formProvider()
         case Some(value) => formProvider().fill(value)
       }
-    Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership, isEnabled(VATGroupFlow)))
+    Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership, showVatGroup(request.userAnswers.isUkCompany)))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       formProvider().bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, NormalMode))),
+          Future.successful(
+            BadRequest(
+              view(
+                formWithErrors, NormalMode, request.userAnswers.isPartnership,
+                showVatGroup(request.userAnswers.isUkCompany
+              )
+            )
+          )
+        ),
         value =>
           sessionService.save[RegistrationReason](RegistrationReasonId.toString, value)
             .map(cacheMap  =>
