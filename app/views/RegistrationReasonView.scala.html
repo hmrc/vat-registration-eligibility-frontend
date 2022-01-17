@@ -28,7 +28,7 @@
     button: components.button
 )
 
-@(regReasonForm:  Form[RegistrationReason], mode: Mode, isPartnership: Boolean = false, isVatGroupFlow: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
+@(regReasonForm:  Form[RegistrationReason], mode: Mode, isPartnership: Boolean = false, showVatGroup: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
 
 @headingKey = @{
     if (isPartnership) {
@@ -39,7 +39,7 @@
 }
 
 @settingUpVatGroup = @{
-    if(isVatGroupFlow) {
+    if(showVatGroup) {
         Seq(
             RadioItem(id = Some(settingUpVatGroupKey),
                 value = Some(settingUpVatGroupKey),
