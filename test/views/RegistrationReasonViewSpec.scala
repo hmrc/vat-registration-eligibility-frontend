@@ -39,7 +39,7 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
     val error   = "Select the reason you want to register the business for VAT"
   }
 
-  "RegistrationReason view " when {
+  "RegistrationReason view" when {
     "Business entity is not partnership" must {
       val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
@@ -95,6 +95,16 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
       "have the correct continue button" in {
         doc.select(Selectors.button).text() mustBe continueButton
       }
+    }
+    "VAT group flow is enabled" must {
+      val doc = asDocument(view(form, NormalMode, isVatGroupFlow = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
+
+      "have the right radio options" in {
+        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio4
+      }
+
     }
   }
   

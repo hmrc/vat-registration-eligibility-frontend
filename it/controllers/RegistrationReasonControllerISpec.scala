@@ -62,6 +62,21 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.NinoController.onPageLoad.url)
     }
 
+    s"redirect to Nino when settingUpVatGroup value is selected" in new Setup {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> settingUpVatGroupKey))
+
+      val response = await(request)
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.NinoController.onPageLoad.url)
+    }
+
     s"redirect to Traffic management resolver when sellingGoodsAndServices value is selected and individual flow enabled" in new Setup {
       enable(IndividualFlow)
       stubSuccessfulLogin()
@@ -88,6 +103,22 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
       val request = buildClient("/registration-reason")
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
         .post(Map("value" -> ukEstablishedOverseasExporterKey))
+
+      val response = await(request)
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+    }
+
+    s"redirect to Traffic management resolver when settingUpVatGroup value is selected and individual flow enabled" in new Setup {
+      enable(IndividualFlow)
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> settingUpVatGroupKey))
 
       val response = await(request)
       response.status mustBe SEE_OTHER

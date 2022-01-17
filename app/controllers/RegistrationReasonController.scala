@@ -18,7 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
-import featureswitch.core.config.FeatureSwitching
+import featureswitch.core.config.{FeatureSwitching, VATGroupFlow}
 import forms.RegistrationReasonFormProvider
 import identifiers.RegistrationReasonId
 import models._
@@ -51,7 +51,7 @@ class RegistrationReasonController @Inject() (mcc: MessagesControllerComponents,
         case None => formProvider()
         case Some(value) => formProvider().fill(value)
       }
-    Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership))
+    Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership, isEnabled(VATGroupFlow)))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {

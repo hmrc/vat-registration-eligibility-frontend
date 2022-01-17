@@ -17,6 +17,7 @@
 @import config.FrontendAppConfig
 @import models.requests.DataRequest
 @import models.RegistrationReason._
+@import featureswitch.core.config._
 
 @this(
     layout: layouts.layout,
@@ -27,13 +28,27 @@
     button: components.button
 )
 
-@(regReasonForm:  Form[RegistrationReason], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
+@(regReasonForm:  Form[RegistrationReason], mode: Mode, isPartnership: Boolean = false, isVatGroupFlow: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
 
 @headingKey = @{
     if (isPartnership) {
         "registrationReason.heading.partnership"
     } else {
         "registrationReason.heading.business"
+    }
+}
+
+@settingUpVatGroup = @{
+    if(isVatGroupFlow) {
+        Seq(
+            RadioItem(id = Some(settingUpVatGroupKey),
+                value = Some(settingUpVatGroupKey),
+                content = Text(Messages("registrationReason.settingUp.radio")),
+                checked = regReasonForm("value").value.contains(settingUpVatGroupKey)
+            )
+        )
+    } else {
+        Nil
     }
 }
 
@@ -57,7 +72,7 @@
                     hint = Some(Hint(content = Text(messages("registrationReason.ukExporter.hint")))),
                     checked = regReasonForm("value").value.contains(ukEstablishedOverseasExporterKey)
                 )
-            )
+            ) ++ settingUpVatGroup
         )
 
         @button(messages("site.continue"))
