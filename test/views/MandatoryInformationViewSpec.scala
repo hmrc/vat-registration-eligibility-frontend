@@ -20,12 +20,13 @@ import views.html.mandatoryInformation
 
 class MandatoryInformationViewSpec extends ViewSpecBase {
 
-  val messageKeyPrefix = "mandatoryInformation"
-
-  val h1 = "You must sign up for Making Tax Digital for VAT"
-  val p1Text = "Most VAT registered businesses with a taxable turnover above £85,000 must use compatible software to keep VAT records and send VAT returns."
-  val p2Text = "As your taxable turnover is above, or will go above, £85,000 in a rolling 12 month period, you will sign up for Making Tax Digital for VAT as part of the registration process."
-  val buttonText = "Continue to register for VAT"
+  object ExpectedContent {
+    val h1 = "The business will be signed up for Making Tax Digital for VAT"
+    val p1Text = "Making Tax Digital for VAT means using software to submit VAT Returns directly to HMRC."
+    val p2Text = "Most VAT registered businesses with a taxable turnover above £85,000 must use compatible software to keep VAT records and send VAT returns."
+    val p3Text = "As the taxable turnover is above, or will go above, £85,000 in a rolling 12 month period, the business will be signed up for Making Tax Digital for VAT as part of the registration process."
+    val buttonText = "Continue to register for VAT"
+  }
 
   val view = app.injector.instanceOf[mandatoryInformation]
 
@@ -36,7 +37,7 @@ class MandatoryInformationViewSpec extends ViewSpecBase {
     lazy val doc = asDocument(view()(fakeRequest, messages, frontendAppConfig))
 
     "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe buttonText
+      doc.select(Selectors.button).text() mustBe ExpectedContent.buttonText
     }
 
     "have the correct back link" in {
@@ -44,19 +45,23 @@ class MandatoryInformationViewSpec extends ViewSpecBase {
     }
 
     "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
+      doc.select(Selectors.title).text() mustBe title(ExpectedContent.h1)
     }
 
     "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
+      doc.select(Selectors.h1).text() mustBe ExpectedContent.h1
     }
 
-    "have the correct paragraph" in {
-      doc.select(Selectors.p(1)).first.text mustBe p1Text
+    "have the correct first paragraph" in {
+      doc.select(Selectors.p(1)).first.text mustBe ExpectedContent.p1Text
+    }
+
+    "have the correct second paragraph" in {
+      doc.select(Selectors.p(2)).first.text mustBe ExpectedContent.p2Text
     }
 
     "have the correct 2nd paragraph" in {
-      doc.select(Selectors.indent).first.text mustBe p2Text
+      doc.select(Selectors.indent).first.text mustBe ExpectedContent.p3Text
     }
   }
 }

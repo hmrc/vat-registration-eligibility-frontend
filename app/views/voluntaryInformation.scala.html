@@ -24,6 +24,7 @@
         errorSummary: components.errorSummary,
         h1: components.h1,
         p: components.p,
+        details: components.details,
         formWithCsrf: FormWithCSRF,
         yesNoRadio: components.yesNoRadio,
         link: components.link,
@@ -39,16 +40,20 @@
     @h1(messages("voluntaryInformation.heading"))
 
     @p{
-        @messages("voluntaryInformation.text1")
+        @messages("voluntaryInformation.text")
     }
 
-
+   @details(
+        summary = messages("voluntaryInformation.detail.heading"),
+        content = detailsContent
+    )
 
     @formWithCsrf(action = VoluntaryInformationController.onSubmit(), 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
-            headingKey = "voluntaryBusiness.heading",
+            headingKey = "voluntaryInformation.heading",
             classes = "govuk-visually-hidden",
+            isPageHeading = false,
             yesText = Some(messages("voluntaryInformation.radioyes")),
             noText = Some(messages("voluntaryInformation.radiono"))
         )
@@ -60,3 +65,8 @@
     }
 }
 
+@detailsContent = {
+    @p {
+        @messages("voluntaryInformation.detail.para")
+    }
+}
