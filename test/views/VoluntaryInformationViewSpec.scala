@@ -21,21 +21,36 @@ import models.NormalMode
 import views.html.voluntaryInformation
 
 class VoluntaryInformationViewSpec extends ViewSpecBase {
-  val messageKeyPrefix = "voluntaryInformation"
   val form = new VoluntaryInformationFormProvider()()
 
   val view = app.injector.instanceOf[voluntaryInformation]
 
+  object ExpectedContent {
+    val heading = "Do you want to sign the business up to Making Tax Digital for VAT?"
+    val text1 = "Making Tax Digital for VAT means using software to submit VAT Returns directly to HMRC. From April 2022 all VAT-registered businesses will be signed up for Making Tax Digital for VAT. "
+    val text2 = "You do not need to sign the business up for Making Tax Digital for VAT yet as the business’s taxable turnover is below the threshold. However, it might find it convenient to start using compatible software to keep VAT records and submit them directly to HMRC before it’s signed up in April 2022. "
+    val text3 = "Find out more about Making Tax Digital for VAT (opens in new tab)"
+    val para = text1 + text2 + text3
+  }
+
   object Selectors extends BaseSelectors
 
   "BusinessEntity view" must {
+    lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
+
+    "have a heading" in {
+      doc.select(Selectors.h1).text() mustBe ExpectedContent.heading
+    }
+
+    "have a paragraph" in {
+      doc.select(Selectors.p(1)).text() mustBe ExpectedContent.para
+    }
 
     "have a set of radio inputs" which {
-      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
 
-      "for the option 'Yes, I would like to sign up to Making Tax Digital'" should {
+      "for the option 'Yes, sign the business up to Making Tax Digital'" should {
 
-        "have the text 'Yes, I would like to sign up to Making Tax Digital'" in {
+        "have the text 'Yes, sign the business up to Making Tax Digital'" in {
           doc.select("label[for=value]").text() mustEqual messages("voluntaryInformation.radioyes")
         }
 
@@ -53,9 +68,9 @@ class VoluntaryInformationViewSpec extends ViewSpecBase {
         }
       }
 
-      "for the option 'No, I do not want to sign up to Making Tax Digital'" should {
+      "for the option 'No, do not sign the business up to Making Tax Digital'" should {
 
-        "have the text 'No, I do not want to sign up to Making Tax Digital'" in {
+        "have the text 'No, do not sign the business up to Making Tax Digital'" in {
           doc.select("label[for=value-no]").text() mustEqual messages("voluntaryInformation.radiono")
         }
 

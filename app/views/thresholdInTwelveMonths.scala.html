@@ -24,6 +24,8 @@
         errorSummary: components.errorSummary,
         h1: components.h1,
         p: components.p,
+        details: components.details,
+        link: components.link,
         formWithCsrf: FormWithCSRF,
         conditionalYesNoRadio: components.conditionalYesNoRadio,
         inputDate: components.inputDate,
@@ -46,6 +48,11 @@
 
     @h1(messages(s"thresholdInTwelveMonths.headingIncorpMore12m.$headingKeySuffix"))
     @p{ @messages("thresholdInTwelveMonths.p1") }
+
+    @details(
+        summary = messages("thresholdInTwelveMonths.detail.heading"),
+        content = detailsContent
+    )
 
     @formWithCsrf(action = ThresholdInTwelveMonthsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
         @conditionalYesNoRadio(
@@ -72,3 +79,9 @@
     )
 }
 
+@detailsContent = {
+    @p {
+        @messages("thresholdInTwelveMonths.detail.para1")
+        @link(appConfig.calculateTurnoverUrl, "thresholdInTwelveMonths.detail.para2", isExternal = true)
+    }
+}
