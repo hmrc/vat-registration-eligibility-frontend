@@ -103,12 +103,13 @@ class Navigator @Inject extends Logging with FeatureSwitching {
 
   /**
    * Function decides next page in flow for all journeys when user is at `zeroRatedSales`
+   *
    * @return (Identifier, UserAnswers => Call) Identifier and returns Call (HTTP request for
    *         next page)
    *
-   * NETP flow is decided by `goneOverThreshold` identifier. `goneOverThreshold` takes precedence over `zeroRateSales`.
-   * In case of `true` uses 'MandatoryInformationId' and `false` uses 'VoluntaryInformationId'
-   * There is no `VATExemptionId` in NETP flow.
+   *         NETP flow is decided by `goneOverThreshold` identifier. `goneOverThreshold` takes precedence over `zeroRateSales`.
+   *         In case of `true` uses 'MandatoryInformationId' and `false` uses 'VoluntaryInformationId'
+   *         There is no `VATExemptionId` in NETP flow.
    */
   def nextOnZeroRateSales: (Identifier, UserAnswers => Call) = {
     ZeroRatedSalesId -> { ua: UserAnswers =>
@@ -211,11 +212,14 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       onSuccessPage = EligibilityDropoutId(VATExceptionKickoutId.toString),
       onFailPage = EligibilityDropoutId(VATRegistrationExceptionId.toString)
     ),
-    nextOn(false,
-      fromPage = InvolvedInOtherBusinessId,
-      onSuccessPage = RacehorsesId,
-      onFailPage = VATExceptionKickoutId
-    ),
+    InvolvedInOtherBusinessId -> { userAnswers =>
+      userAnswers.involvedInOtherBusiness match {
+        case Some(true) => pageIdToPageLoad(VATExceptionKickoutId)
+        case Some(false) if isEnabled(LandAndProperty) && isEnabled(EnableAAS) => pageIdToPageLoad(RegisteringBusinessId)
+        case Some(false) if isEnabled(LandAndProperty) => pageIdToPageLoad(AnnualAccountingSchemeId)
+        case Some(false) => pageIdToPageLoad(RacehorsesId)
+      }
+    },
     nextOnWithFeatureSwitch(false,
       featureSwitch = EnableAAS,
       fromPage = RacehorsesId,
