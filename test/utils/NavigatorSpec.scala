@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.routes
 import identifiers._
 import models._
-import play.api.libs.json.{JsBoolean, Json}
+import play.api.libs.json.{JsBoolean, JsValue, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -29,6 +29,8 @@ import java.time.LocalDate
 class NavigatorSpec extends SpecBase {
 
   val navigator = new Navigator
+  val testId = "testId"
+  def newCacheMap(map: Map[String, JsValue]) = new UserAnswers(CacheMap(testId, map))
 
   "Navigator" when {
     "in Normal mode" must {
@@ -71,70 +73,150 @@ class NavigatorSpec extends SpecBase {
   }
 
   "nextOnZeroRateSales" should {
-    "Skip Exemption" when {
-      "Exception is true and yes is answered" in {
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), VATRegistrationExceptionId.toString -> JsBoolean(true))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
-      }
-    }
-    "Redirect to Exemption" when {
-      "Not Voluntary Registration and yes is answered" in {
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
-      }
-    }
-    "Redirect to Voluntary" when {
-      "Is Voluntary Registration and yes is answered" in {
-        val testDate = LocalDate.of(1999, 12, 12)
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), ThresholdNextThirtyDaysId.toString -> Json.toJson(ConditionalDateFormElement(false, Some(testDate))))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
-      }
-    }
-    "Redirect to Voluntary" when {
-      "Is Voluntary Registration and no is answered" in {
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false), VoluntaryRegistrationId.toString -> JsBoolean(true))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
-      }
-      "goneOverThreshold is false and zeroRatedSales is true" in {
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), GoneOverThresholdId.toString -> JsBoolean(false))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
-      }
-      "goneOverThreshold is false and zeroRatedSales is false" in {
-        val testDate = LocalDate.of(1999, 12, 12)
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false),ThresholdInTwelveMonthsId.toString -> Json.toJson(ConditionalDateFormElement(true, Some(testDate))) , GoneOverThresholdId.toString -> JsBoolean(false))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
-      }
-    }
-    "Redirect to Mandatory" when {
-      "Is Mandatory Registration and no is answered" in {
-        val testDate = LocalDate.of(1999, 12, 12)
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false), ThresholdInTwelveMonthsId.toString -> Json.toJson(ConditionalDateFormElement(true, Some(testDate))))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
-      }
-      "goneOverThreshold is true and zeroRatedSales is false" in {
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(false), GoneOverThresholdId.toString -> JsBoolean(true))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
-      }
-      "goneOverThreshold is true and zeroRatedSales is true" in {
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), GoneOverThresholdId.toString -> JsBoolean(true))))
-        val result = navigator.nextOnZeroRateSales
-        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
-      }
-      "goneOverThreshold is true with other conditions" in {
-        val testDate = LocalDate.of(1999, 12, 12)
-        val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true), ThresholdNextThirtyDaysId.toString -> Json.toJson(ConditionalDateFormElement(false, Some(testDate))), GoneOverThresholdId.toString -> JsBoolean(true))))
+    "redirect to Mandatory Registration page (zero rated is false)" when {
+      "user is mandatory" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(false),
+          ThresholdNextThirtyDaysId.toString -> Json.toJson(ConditionalDateFormElement(value = true, Some(LocalDate.now())))
+        ))
         val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
       }
 
+      "user is overseas and gone over threshold" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(false),
+          GoneOverThresholdId.toString -> JsBoolean(true)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
+
+      "reg reason is VAT Group" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(false),
+          RegistrationReasonId.toString -> Json.toJson(SettingUpVatGroup)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
+
+      "reg reason is TOGC" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(false),
+          RegistrationReasonId.toString -> Json.toJson(TakingOverBusiness)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
+
+      "reg reason is COLE" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(false),
+          RegistrationReasonId.toString -> Json.toJson(ChangingLegalEntityOfBusiness)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
+    }
+    
+    "redirect to Mandatory Registration page and skip Exemption page (zero rated is true)" when {
+      "user is mandatory but exception is true" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(true),
+          VATRegistrationExceptionId.toString -> JsBoolean(true),
+          ThresholdInTwelveMonthsId.toString -> Json.toJson(ConditionalDateFormElement(value = true, Some(LocalDate.now())))
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
+    }
+
+    "redirect to Exemption page (zero rated is true)" when {
+      "user is mandatory" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(true),
+          ThresholdInTwelveMonthsId.toString -> Json.toJson(ConditionalDateFormElement(value = true, Some(LocalDate.now())))
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
+      }
+
+      "user is overseas and gone over threshold" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(true),
+          GoneOverThresholdId.toString -> JsBoolean(true)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
+      }
+
+      "reg reason is VAT Group" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(true),
+          RegistrationReasonId.toString -> Json.toJson(SettingUpVatGroup)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
+      }
+
+      "reg reason is TOGC" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(true),
+          RegistrationReasonId.toString -> Json.toJson(TakingOverBusiness)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
+      }
+
+      "reg reason is COLE" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(true),
+          RegistrationReasonId.toString -> Json.toJson(ChangingLegalEntityOfBusiness)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
+      }
+    }
+
+    "redirect to Voluntary Registration page" when {
+      "zero rated is true and user is not mandatory" in {
+        val data = newCacheMap(Map(ZeroRatedSalesId.toString -> JsBoolean(true)))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
+      }
+
+      "zero rated is false and user is not mandatory" in {
+        val data = newCacheMap(Map(ZeroRatedSalesId.toString -> JsBoolean(false)))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
+      }
+
+      "zero rates is true, overseas user below threshold" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(true),
+          GoneOverThresholdId.toString -> JsBoolean(false)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
+      }
+
+      "zero rates is false, overseas user below threshold" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(false),
+          GoneOverThresholdId.toString -> JsBoolean(false)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.VoluntaryInformationController.onPageLoad
+      }
+    }
+
+    "redirect to Zero Rated Sales page" when {
+      "zero rated is not answered" in {
+        val data = newCacheMap(Map())
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.ZeroRatedSalesController.onPageLoad
+      }
     }
   }
 }

@@ -101,32 +101,27 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     }
   }
 
-  /**
-   * Function decides next page in flow for all journeys when user is at `zeroRatedSales`
-   *
-   * @return (Identifier, UserAnswers => Call) Identifier and returns Call (HTTP request for
-   *         next page)
-   *
-   *         NETP flow is decided by `goneOverThreshold` identifier. `goneOverThreshold` takes precedence over `zeroRateSales`.
-   *         In case of `true` uses 'MandatoryInformationId' and `false` uses 'VoluntaryInformationId'
-   *         There is no `VATExemptionId` in NETP flow.
-   */
   def nextOnZeroRateSales: (Identifier, UserAnswers => Call) = {
     ZeroRatedSalesId -> { ua: UserAnswers =>
-      (ua.zeroRatedSales, ua.goneOverThreshold) match {
-        case (Some(false), None) if ThresholdHelper.q1DefinedAndTrue(ua) || ThresholdHelper.nextThirtyDaysDefinedAndTrue(ua) =>
+      val isMandatory: Boolean =
+        ua.thresholdInTwelveMonths.exists(_.value) ||
+        ua.thresholdNextThirtyDays.exists(_.value) ||
+        ua.goneOverThreshold.contains(true) ||
+        ua.registrationReason.exists(reason => List(SettingUpVatGroup, ChangingLegalEntityOfBusiness, TakingOverBusiness).contains(reason))
+
+      ua.zeroRatedSales match {
+        case Some(false) if isMandatory =>
           pageIdToPageLoad(MandatoryInformationId)
-        case (Some(false), None) =>
+        case Some(false) =>
           pageIdToPageLoad(VoluntaryInformationId)
-        case (Some(true), None) if ThresholdHelper.nextThirtyDaysDefinedAndFalse(ua) =>
-          pageIdToPageLoad(VoluntaryInformationId)
-        case (Some(true), None) if ua.vatRegistrationException.contains(true) =>
+        case Some(true) if isMandatory && ua.vatRegistrationException.contains(true) =>
           pageIdToPageLoad(MandatoryInformationId)
-        case (_, Some(true)) =>
-          pageIdToPageLoad(MandatoryInformationId)
-        case (_, Some(false)) =>
+        case Some(true) if isMandatory =>
+          pageIdToPageLoad(VATExemptionId)
+        case Some(true) =>
           pageIdToPageLoad(VoluntaryInformationId)
-        case _ => pageIdToPageLoad(VATExemptionId)
+        case None =>
+          pageIdToPageLoad(ZeroRatedSalesId)
       }
     }
   }
