@@ -16,11 +16,12 @@
 
 package views
 
+import featureswitch.core.config.{FeatureSwitching, TOGCFlow}
 import forms.RegistrationReasonFormProvider
 import models.NormalMode
 import views.html.RegistrationReasonView
 
-class RegistrationReasonViewSpec extends ViewSpecBase {
+class RegistrationReasonViewSpec extends ViewSpecBase with FeatureSwitching {
   object Selectors extends BaseSelectors
   val form = new RegistrationReasonFormProvider()()
   val view = app.injector.instanceOf[RegistrationReasonView]
@@ -41,7 +42,7 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
 
   "RegistrationReason view" when {
     "Business entity is not partnership" must {
-      val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+      val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = false)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the correct back link" in {
         doc.getElementById(Selectors.backLink).text mustBe backLink
@@ -101,10 +102,31 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
 
       "have the right radio options" in {
         doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
-        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio4
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio4
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio5
+      }
+    }
+    "TOGC and COLE is enabled" must {
+      "have the right radio options" in {
+        enable(TOGCFlow)
+        val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = false)(fakeDataRequestIncorped, messages, frontendAppConfig))
+
+        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
+        doc.select(Selectors.radio(4)).text() mustBe ExpectedContent.radio5
+        disable(TOGCFlow)
       }
 
+      "have the right radio options for an overseas user" in {
+        enable(TOGCFlow)
+        val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
+
+        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
+        disable(TOGCFlow)
+      }
     }
   }
   

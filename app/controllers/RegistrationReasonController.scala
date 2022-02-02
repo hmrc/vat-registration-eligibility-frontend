@@ -22,7 +22,6 @@ import featureswitch.core.config.{FeatureSwitching, VATGroupFlow}
 import forms.RegistrationReasonFormProvider
 import identifiers.RegistrationReasonId
 import models._
-import models.requests.DataRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
@@ -34,16 +33,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegistrationReasonController @Inject() (mcc: MessagesControllerComponents,
-                                              sessionService: SessionService,
-                                              navigator: Navigator,
-                                              identify: CacheIdentifierAction,
-                                              getData: DataRetrievalAction,
-                                              requireData: DataRequiredAction,
-                                              formProvider: RegistrationReasonFormProvider,
-                                              view: RegistrationReasonView
-                                             )(implicit appConfig: FrontendAppConfig,
-                                                executionContext: ExecutionContext)
+class RegistrationReasonController @Inject()(mcc: MessagesControllerComponents,
+                                             sessionService: SessionService,
+                                             navigator: Navigator,
+                                             identify: CacheIdentifierAction,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             formProvider: RegistrationReasonFormProvider,
+                                             view: RegistrationReasonView
+                                            )(implicit appConfig: FrontendAppConfig,
+                                              executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 
   def showVatGroup(isUkCompany: Boolean): Boolean = isUkCompany && isEnabled(VATGroupFlow)
@@ -54,7 +53,13 @@ class RegistrationReasonController @Inject() (mcc: MessagesControllerComponents,
         case None => formProvider()
         case Some(value) => formProvider().fill(value)
       }
-    Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership, showVatGroup(request.userAnswers.isUkCompany)))
+      Ok(view(
+        preparedForm,
+        NormalMode,
+        request.userAnswers.isPartnership,
+        showVatGroup(request.userAnswers.isUkCompany),
+        request.userAnswers.isOverseas
+      ))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -64,16 +69,18 @@ class RegistrationReasonController @Inject() (mcc: MessagesControllerComponents,
           Future.successful(
             BadRequest(
               view(
-                formWithErrors, NormalMode, request.userAnswers.isPartnership,
-                showVatGroup(request.userAnswers.isUkCompany
+                formWithErrors,
+                NormalMode,
+                request.userAnswers.isPartnership,
+                showVatGroup(request.userAnswers.isUkCompany),
+                request.userAnswers.isOverseas
               )
             )
-          )
-        ),
+          ),
         value =>
           sessionService.save[RegistrationReason](RegistrationReasonId.toString, value)
-            .map(cacheMap  =>
+            .map(cacheMap =>
               Redirect(navigator.nextPage(RegistrationReasonId, NormalMode)(new UserAnswers(cacheMap))))
-          )
+      )
   }
 }
