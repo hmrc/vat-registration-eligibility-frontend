@@ -130,6 +130,15 @@ class NavigatorSpec extends SpecBase {
         val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
       }
+
+      "reg reason is VAT Group" in {
+        val data = newCacheMap(Map(
+          ZeroRatedSalesId.toString -> JsBoolean(true),
+          RegistrationReasonId.toString -> Json.toJson(SettingUpVatGroup)
+        ))
+        val result = navigator.nextOnZeroRateSales
+        result._2(data) mustBe controllers.routes.MandatoryInformationController.onPageLoad
+      }
     }
 
     "redirect to Exemption page (zero rated is true)" when {
@@ -145,16 +154,18 @@ class NavigatorSpec extends SpecBase {
       "user is overseas and gone over threshold" in {
         val data = newCacheMap(Map(
           ZeroRatedSalesId.toString -> JsBoolean(true),
+          BusinessEntityId.toString -> Json.toJson(Overseas),
           GoneOverThresholdId.toString -> JsBoolean(true)
         ))
         val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
       }
 
-      "reg reason is VAT Group" in {
+      "user is overseas and not gone over threshold" in {
         val data = newCacheMap(Map(
           ZeroRatedSalesId.toString -> JsBoolean(true),
-          RegistrationReasonId.toString -> Json.toJson(SettingUpVatGroup)
+          BusinessEntityId.toString -> Json.toJson(NETP),
+          GoneOverThresholdId.toString -> JsBoolean(false)
         ))
         val result = navigator.nextOnZeroRateSales
         result._2(data) mustBe controllers.routes.VATExemptionController.onPageLoad
