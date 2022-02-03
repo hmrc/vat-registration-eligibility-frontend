@@ -16,7 +16,7 @@
 
 package controllers
 
-import featureswitch.core.config.{FeatureSwitching, ThirdPartyTransactorFlow}
+import featureswitch.core.config.{FeatureSwitching, TOGCFlow, ThirdPartyTransactorFlow}
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
 import identifiers.{BusinessEntityId, RegisteringBusinessId}
 import models.{BusinessEntity, NETP, Overseas, OwnBusiness, RegisteringBusiness, SomeoneElse}
@@ -151,6 +151,44 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with AuthHe
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
       verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
+    }
+
+    "navigate to Registration Reason for own business when flow is NETP and TOGC flow is enabled" in new Setup {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      disable(ThirdPartyTransactorFlow)
+      enable(TOGCFlow)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", NETP)
+
+      val request = buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq("own")))
+
+      val response = await(request)
+      response.status mustBe 303
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegistrationReasonController.onPageLoad.url)
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](OwnBusiness))
+      disable(TOGCFlow)
+    }
+
+    "navigate to Registration Reason for someone else's business when flow is Overseas and TOGC/ThirdParty flows are enabled" in new Setup {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      enable(ThirdPartyTransactorFlow)
+      enable(TOGCFlow)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
+
+      val request = buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> Seq("someone-else")))
+
+      val response = await(request)
+      response.status mustBe 303
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegistrationReasonController.onPageLoad.url)
+      verifySessionCacheData(sessionId, RegisteringBusinessId.toString, Option.apply[RegisteringBusiness](SomeoneElse))
+      disable(TOGCFlow)
     }
   }
 }

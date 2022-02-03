@@ -2,6 +2,8 @@ package controllers
 
 import featureswitch.core.config.{FeatureSwitching, IndividualFlow}
 import helpers.{AuthHelper, IntegrationSpecBase, S4LStub, SessionStub}
+import identifiers.BusinessEntityId
+import models.{BusinessEntity, Overseas}
 import models.RegistrationReason._
 import play.api.Application
 import play.api.http.Status.{OK, SEE_OTHER}
@@ -123,6 +125,54 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
       val response = await(request)
       response.status mustBe SEE_OTHER
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+    }
+
+    s"redirect to Traffic management resolver for an overseas user selecting takingOverBusiness" in new Setup {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
+
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> takingOverBusinessKey))
+
+      val response = await(request)
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+    }
+
+    s"redirect to Traffic management resolver for an overseas user selecting changingLegalEntityOfBusiness" in new Setup {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
+
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> changingLegalEntityOfBusinessKey))
+
+      val response = await(request)
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+    }
+
+    s"redirect to Taxable Supplies Page for an overseas user selecting sellingGoodsAndServices" in new Setup {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
+
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> sellingGoodsAndServicesKey))
+
+      val response = await(request)
+      response.status mustBe SEE_OTHER
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
     }
   }
 }

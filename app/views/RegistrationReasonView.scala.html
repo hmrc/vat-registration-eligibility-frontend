@@ -15,26 +15,47 @@
  *@
 
 @import config.FrontendAppConfig
-@import models.requests.DataRequest
-@import models.RegistrationReason._
 @import featureswitch.core.config._
+@import models.RegistrationReason._
+@import models.requests.DataRequest
 
 @this(
-    layout: layouts.layout,
-    errorSummary: components.errorSummary,
-    h1: components.h1,
-    formWithCsrf: FormWithCSRF,
-    inputRadio: components.inputRadio,
-    button: components.button
+        layout: layouts.layout,
+        errorSummary: components.errorSummary,
+        h1: components.h1,
+        formWithCsrf: FormWithCSRF,
+        inputRadio: components.inputRadio,
+        button: components.button
 )
 
-@(regReasonForm:  Form[RegistrationReason], mode: Mode, isPartnership: Boolean = false, showVatGroup: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig:  FrontendAppConfig)
+@(regReasonForm: Form[RegistrationReason], mode: Mode, isPartnership: Boolean = false, showVatGroup: Boolean = false, isOverseas: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @headingKey = @{
-    if (isPartnership) {
+    if(isPartnership) {
         "registrationReason.heading.partnership"
     } else {
         "registrationReason.heading.business"
+    }
+}
+
+@layout(pageTitle = Some(title(regReasonForm, messages(headingKey))), backLink = true) {
+
+    @errorSummary(regReasonForm.errors, errorId = Some(sellingGoodsAndServicesKey))
+
+    @formWithCsrf(action = routes.RegistrationReasonController.onSubmit) {
+        @inputRadio(
+            form = regReasonForm,
+            legend = Messages(headingKey),
+            items = Seq(
+                RadioItem(id = Some(sellingGoodsAndServicesKey),
+                    value = Some(sellingGoodsAndServicesKey),
+                    content = Text(Messages("registrationReason.sellingGoods.radio")),
+                    checked = regReasonForm("value").value.contains(sellingGoodsAndServicesKey)
+                )
+            ) ++ togcAndCole ++ settingUpVatGroup ++ overseasExporter
+        )
+
+        @button(messages("site.continue"))
     }
 }
 
@@ -52,29 +73,36 @@
     }
 }
 
-@layout(pageTitle = Some(title(regReasonForm, messages(headingKey))), backLink =  true) {
-
-    @errorSummary(regReasonForm.errors, errorId = Some(sellingGoodsAndServicesKey))
-
-    @formWithCsrf(action = routes.RegistrationReasonController.onSubmit) {
-        @inputRadio(
-            form = regReasonForm,
-            legend = Messages(headingKey),
-            items = Seq(
-                RadioItem(id = Some(sellingGoodsAndServicesKey),
-                    value = Some(sellingGoodsAndServicesKey),
-                    content = Text(Messages("registrationReason.sellingGoods.radio")),
-                    checked = regReasonForm("value").value.contains(sellingGoodsAndServicesKey)
-                ),
-                RadioItem(id = Some(ukEstablishedOverseasExporterKey),
-                    value = Some(ukEstablishedOverseasExporterKey),
-                    content = Text(Messages("registrationReason.ukExporter.radio")),
-                    hint = Some(Hint(content = Text(messages("registrationReason.ukExporter.hint")))),
-                    checked = regReasonForm("value").value.contains(ukEstablishedOverseasExporterKey)
-                )
-            ) ++ settingUpVatGroup
+@overseasExporter = @{
+    if(isOverseas) {
+        Nil
+    } else {
+        Seq(
+            RadioItem(id = Some(ukEstablishedOverseasExporterKey),
+                value = Some(ukEstablishedOverseasExporterKey),
+                content = Text(Messages("registrationReason.ukExporter.radio")),
+                hint = Some(Hint(content = Text(messages("registrationReason.ukExporter.hint")))),
+                checked = regReasonForm("value").value.contains(ukEstablishedOverseasExporterKey)
+            )
         )
+    }
+}
 
-        @button(messages("site.continue"))
+@togcAndCole = @{
+    if(appConfig.isEnabled(TOGCFlow)) {
+        Seq(
+            RadioItem(id = Some(takingOverBusinessKey),
+                value = Some(takingOverBusinessKey),
+                content = Text(Messages("registrationReason.takingOver.radio")),
+                checked = regReasonForm("value").value.contains(takingOverBusinessKey)
+            ),
+            RadioItem(id = Some(changingLegalEntityOfBusinessKey),
+                value = Some(changingLegalEntityOfBusinessKey),
+                content = Text(Messages("registrationReason.changingEntity.radio")),
+                checked = regReasonForm("value").value.contains(changingLegalEntityOfBusinessKey)
+            )
+        )
+    } else {
+        Nil
     }
 }
