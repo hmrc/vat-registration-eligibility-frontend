@@ -264,9 +264,11 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       onSuccessPage = VATRegistrationExceptionId,
       onFailPage = VoluntaryRegistrationId
     ),
-    nextOn(true,
+    nextOnWithFeatureSwitch(true,
+      featureSwitch = ExceptionExemptionFlow,
       fromPage = VATRegistrationExceptionId,
       onSuccessPage = EligibilityDropoutId(VATExceptionKickoutId.toString),
+      featureSwitchSuccessPage = TurnoverEstimateId,
       onFailPage = TurnoverEstimateId
     ),
     toNextPage(
@@ -274,9 +276,11 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       toPage = ZeroRatedSalesId
     ),
     nextOnZeroRateSales,
-    nextOn(true,
+    nextOnWithFeatureSwitch(true,
+      featureSwitch = ExceptionExemptionFlow,
       fromPage = VATExemptionId,
       onSuccessPage = EligibilityDropoutId(OTRS.toString),
+      featureSwitchSuccessPage = MandatoryInformationId,
       onFailPage = MandatoryInformationId
     ),
     nextOn(true,

@@ -40,7 +40,8 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     IndividualFlow,
     VATGroupFlow,
     LandAndProperty,
-    TOGCFlow
+    TOGCFlow,
+    ExceptionExemptionFlow
   )
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
@@ -128,4 +129,9 @@ case object LandAndProperty extends FeatureSwitch {
 case object TOGCFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.togc-cole-flow"
   override val displayName: String = "Enable Transfer of Going Concern (TOGC)"
+}
+
+case object ExceptionExemptionFlow extends FeatureSwitch {
+  override val configName: String = "feature-switch.exception-exemption-flow"
+  override val displayName: String = "Enable Exception Exemption flow"
 }
