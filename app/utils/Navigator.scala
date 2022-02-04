@@ -103,25 +103,37 @@ class Navigator @Inject extends Logging with FeatureSwitching {
 
   def nextOnZeroRateSales: (Identifier, UserAnswers => Call) = {
     ZeroRatedSalesId -> { ua: UserAnswers =>
-      val isMandatory: Boolean =
+      val isMandatoryMtd: Boolean =
         ua.thresholdInTwelveMonths.exists(_.value) ||
           ua.thresholdNextThirtyDays.exists(_.value) ||
           ua.goneOverThreshold.contains(true) ||
           ua.registrationReason.exists(reason => List(SettingUpVatGroup, ChangingLegalEntityOfBusiness, TakingOverBusiness).contains(reason))
 
+      val canApplyForExemption: Boolean =
+        ua.thresholdInTwelveMonths.exists(_.value) ||
+          ua.thresholdNextThirtyDays.exists(_.value) ||
+          ua.isOverseas ||
+          ua.registrationReason.exists(reason => List(ChangingLegalEntityOfBusiness, TakingOverBusiness).contains(reason))
+
       ua.zeroRatedSales match {
-        case Some(false) if isMandatory =>
-          pageIdToPageLoad(MandatoryInformationId)
-        case Some(false) =>
-          pageIdToPageLoad(VoluntaryInformationId)
-        case Some(true) if isMandatory && ua.vatRegistrationException.contains(true) =>
-          pageIdToPageLoad(MandatoryInformationId)
-        case Some(true) if isMandatory =>
+        case Some(true) if canApplyForExemption && !ua.vatRegistrationException.contains(true) =>
           pageIdToPageLoad(VATExemptionId)
-        case Some(true) =>
+        case Some(_) if isMandatoryMtd =>
+          pageIdToPageLoad(MandatoryInformationId)
+        case Some(_) =>
           pageIdToPageLoad(VoluntaryInformationId)
         case None =>
           pageIdToPageLoad(ZeroRatedSalesId)
+      }
+    }
+  }
+
+  def nextOnExemption: (Identifier, UserAnswers => Call) = {
+    VATExemptionId -> { ua: UserAnswers =>
+      (ua.vatExemption, ua.goneOverThreshold) match {
+        case (Some(true), _) if !isEnabled(ExceptionExemptionFlow) => pageIdToPageLoad(EligibilityDropoutId(OTRS.toString))
+        case (_, Some(false)) => pageIdToPageLoad(VoluntaryInformationId)
+        case _ => pageIdToPageLoad(MandatoryInformationId)
       }
     }
   }
@@ -282,13 +294,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       toPage = ZeroRatedSalesId
     ),
     nextOnZeroRateSales,
-    nextOnWithFeatureSwitch(true,
-      featureSwitch = ExceptionExemptionFlow,
-      fromPage = VATExemptionId,
-      onSuccessPage = EligibilityDropoutId(OTRS.toString),
-      featureSwitchSuccessPage = MandatoryInformationId,
-      onFailPage = MandatoryInformationId
-    ),
+    nextOnExemption,
     nextOn(true,
       fromPage = VoluntaryRegistrationId,
       onSuccessPage = TurnoverEstimateId,

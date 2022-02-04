@@ -3,8 +3,7 @@ package controllers
 import config.FrontendAppConfig
 import featureswitch.core.config.ExceptionExemptionFlow
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
-import identifiers.{ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId}
-import models.ConditionalDateFormElement
+import identifiers.GoneOverThresholdId
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.mvc.Http.HeaderNames
@@ -14,6 +13,9 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .configure(fakeConfig())
     .build()
+
+  lazy val voluntaryUrl: String = controllers.routes.VoluntaryInformationController.onPageLoad.url
+  lazy val mandatoryUrl: String = controllers.routes.MandatoryInformationController.onPageLoad.url
 
   val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
 
@@ -26,9 +28,6 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
         stubSuccessfulRegIdGet()
         stubAudits()
 
-        cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, None))
-        cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(false, None))
-
         val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
           .post(Map(
             "value" -> Seq("true")
@@ -37,13 +36,10 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
         response.status mustBe 303
         response.header(HeaderNames.LOCATION) mustBe Some(("/check-if-you-can-register-for-vat/cant-register/OTRS"))
       }
-      s"redirect the user to ${controllers.routes.MandatoryInformationController.onPageLoad} when answer is false and MTD is mandatory" in new Setup {
+      s"redirect the user to $mandatoryUrl when answer is false and MTD is mandatory" in new Setup {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
-
-        cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, None))
-        cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(false, None))
 
         val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
           .post(Map(
@@ -51,18 +47,45 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
           ))
         val response = await(request)
         response.status mustBe 303
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MandatoryInformationController.onPageLoad.url)
+        response.header(HeaderNames.LOCATION) mustBe Some(mandatoryUrl)
       }
-    }
-    "ExceptionExemption flow feature switch is enabled" should {
-      s"redirect the user to ${controllers.routes.MandatoryInformationController.onPageLoad} when answer is true and MTD is mandatory" in new Setup {
-        enable(ExceptionExemptionFlow)
+      s"redirect the user to $voluntaryUrl when answer is false and overseas user is below threshold" in new Setup {
         stubSuccessfulLogin()
         stubSuccessfulRegIdGet()
         stubAudits()
 
-        cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, None))
-        cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(false, None))
+        cacheSessionData[Boolean](sessionId, GoneOverThresholdId.toString, false)
+
+        val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .post(Map(
+            "value" -> Seq("false")
+          ))
+        val response = await(request)
+        response.status mustBe 303
+        response.header(HeaderNames.LOCATION) mustBe Some(voluntaryUrl)
+      }
+      s"redirect the user to $mandatoryUrl when answer is false and overseas user is above threshold" in new Setup {
+        stubSuccessfulLogin()
+        stubSuccessfulRegIdGet()
+        stubAudits()
+
+        cacheSessionData[Boolean](sessionId, GoneOverThresholdId.toString, true)
+
+        val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .post(Map(
+            "value" -> Seq("false")
+          ))
+        val response = await(request)
+        response.status mustBe 303
+        response.header(HeaderNames.LOCATION) mustBe Some(mandatoryUrl)
+      }
+    }
+    "ExceptionExemption flow feature switch is enabled" should {
+      s"redirect the user to $mandatoryUrl when answer is true and MTD is mandatory" in new Setup {
+        enable(ExceptionExemptionFlow)
+        stubSuccessfulLogin()
+        stubSuccessfulRegIdGet()
+        stubAudits()
 
         val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
           .post(Map(
@@ -70,7 +93,7 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
           ))
         val response = await(request)
         response.status mustBe 303
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MandatoryInformationController.onPageLoad.url)
+        response.header(HeaderNames.LOCATION) mustBe Some(mandatoryUrl)
       }
       s"redirect the user to ${controllers.routes.MandatoryInformationController.onPageLoad} when answer is false and MTD is mandatory" in new Setup {
         enable(ExceptionExemptionFlow)
@@ -78,16 +101,45 @@ class VATExemptionISpec extends IntegrationSpecBase with AuthHelper with Session
         stubSuccessfulRegIdGet()
         stubAudits()
 
-        cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, None))
-        cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(false, None))
-
         val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
           .post(Map(
             "value" -> Seq("false")
           ))
         val response = await(request)
         response.status mustBe 303
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MandatoryInformationController.onPageLoad.url)
+        response.header(HeaderNames.LOCATION) mustBe Some(mandatoryUrl)
+      }
+      s"redirect the user to $voluntaryUrl when answer is true and overseas user is below threshold" in new Setup {
+        enable(ExceptionExemptionFlow)
+        stubSuccessfulLogin()
+        stubSuccessfulRegIdGet()
+        stubAudits()
+
+        cacheSessionData[Boolean](sessionId, GoneOverThresholdId.toString, false)
+
+        val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .post(Map(
+            "value" -> Seq("true")
+          ))
+        val response = await(request)
+        response.status mustBe 303
+        response.header(HeaderNames.LOCATION) mustBe Some(voluntaryUrl)
+      }
+      s"redirect the user to $mandatoryUrl when answer is true and overseas user is above threshold" in new Setup {
+        enable(ExceptionExemptionFlow)
+        stubSuccessfulLogin()
+        stubSuccessfulRegIdGet()
+        stubAudits()
+
+        cacheSessionData[Boolean](sessionId, GoneOverThresholdId.toString, true)
+
+        val request = buildClient("/vat-exemption").withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .post(Map(
+            "value" -> Seq("true")
+          ))
+        val response = await(request)
+        response.status mustBe 303
+        response.header(HeaderNames.LOCATION) mustBe Some(mandatoryUrl)
       }
     }
 
