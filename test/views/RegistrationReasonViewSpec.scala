@@ -16,12 +16,12 @@
 
 package views
 
-import featureswitch.core.config.{FeatureSwitching, TOGCFlow}
+import featureswitch.core.config.TOGCFlow
 import forms.RegistrationReasonFormProvider
 import models.NormalMode
 import views.html.RegistrationReasonView
 
-class RegistrationReasonViewSpec extends ViewSpecBase with FeatureSwitching {
+class RegistrationReasonViewSpec extends ViewSpecBase {
   object Selectors extends BaseSelectors
   val form = new RegistrationReasonFormProvider()()
   val view = app.injector.instanceOf[RegistrationReasonView]

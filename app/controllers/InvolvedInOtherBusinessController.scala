@@ -46,8 +46,6 @@ class InvolvedInOtherBusinessController @Inject()(mcc: MessagesControllerCompone
                                                  )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 
-  private def showVatGroupBullet = !isEnabled(VATGroupFlow)
-
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       val preparedForm = request.userAnswers.involvedInOtherBusiness match {
@@ -55,14 +53,14 @@ class InvolvedInOtherBusinessController @Inject()(mcc: MessagesControllerCompone
         case Some(value) => formProvider.form.fill(value)
       }
 
-      Future.successful(Ok(view(preparedForm, NormalMode, showVatGroupBullet)))
+      Future.successful(Ok(view(preparedForm, NormalMode)))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       formProvider.form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, NormalMode, showVatGroupBullet))),
+          Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
           sessionService.save[Boolean](InvolvedInOtherBusinessId.toString, value).map(cacheMap =>
             Redirect(navigator.nextPage(InvolvedInOtherBusinessId, NormalMode)(new UserAnswers(cacheMap))))

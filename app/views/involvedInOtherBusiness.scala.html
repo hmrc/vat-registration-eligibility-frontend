@@ -17,6 +17,7 @@
 @import config.FrontendAppConfig
 @import controllers.routes._
 @import models.Mode
+@import featureswitch.core.config.{TOGCFlow, VATGroupFlow}
 
 @this(
     layout: views.html.layouts.layout,
@@ -29,7 +30,7 @@
         button: components.button
 )
 
-@(form: Form[_], mode: Mode, showVatGroupBullet: Boolean = true)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("involvedInOtherBusiness.heading"))), backLink = true) {
 
@@ -42,15 +43,17 @@
         <li id="involveBullet1">@messages(s"involvedInOtherBusiness.bullet1")</li>
         <li id="involveBullet2">@messages(s"involvedInOtherBusiness.bullet2")</li>
 
-        @if(showVatGroupBullet) {
+        @if(!appConfig.isEnabled(VATGroupFlow)) {
             <li id="involveBullet3">
                 @messages("involvedInOtherBusiness.beforeText")
                 @link(appConfig.VATSetUpVATGroup, messages("involvedInOtherBusiness.linkText"), isExternal = true).
             </li>
         }
 
-        <li id="involveBullet4">@messages(s"involvedInOtherBusiness.bullet4")</li>
-        <li id="involveBullet5">@messages(s"involvedInOtherBusiness.bullet5")</li>
+        @if(!appConfig.isEnabled(TOGCFlow)) {
+            <li id="involveBullet4">@messages(s"involvedInOtherBusiness.bullet4")</li>
+            <li id="involveBullet5">@messages(s"involvedInOtherBusiness.bullet5")</li>
+        }
     </ul>
 
     @formWithCsrf(action = InvolvedInOtherBusinessController.onSubmit(), 'autoComplete -> "off") {

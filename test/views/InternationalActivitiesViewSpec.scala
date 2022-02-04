@@ -21,7 +21,7 @@ import forms.InternationalActivitiesFormProvider
 import models.NormalMode
 import views.html.internationalActivities
 
-class InternationalActivitiesViewSpec extends ViewSpecBase with FeatureSwitching {
+class InternationalActivitiesViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix = "internationalActivities"
   val form = new InternationalActivitiesFormProvider()()
