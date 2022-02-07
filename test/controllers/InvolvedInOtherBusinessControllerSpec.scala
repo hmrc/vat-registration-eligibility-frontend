@@ -43,7 +43,7 @@ class InvolvedInOtherBusinessControllerSpec extends ControllerSpecBase with Feat
       dataRetrievalAction, dataRequiredAction, formProvider, view)
 
   def viewAsString(form: Form[_] = form, officer: Option[String] = None, showVatGroupBullet: Boolean = true) =
-    view(form, NormalMode, showVatGroupBullet)(fakeRequest, messages, frontendAppConfig).toString
+    view(form, NormalMode)(fakeRequest, messages, frontendAppConfig).toString
 
   "onPageLoad" when {
     "when the VatGroupFlow feature switch is enabled" must {

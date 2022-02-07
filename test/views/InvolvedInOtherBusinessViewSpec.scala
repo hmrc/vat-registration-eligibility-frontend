@@ -16,6 +16,7 @@
 
 package views
 
+import featureswitch.core.config.{TOGCFlow, VATGroupFlow}
 import forms.InvolvedInOtherBusinessFormProvider
 import models.NormalMode
 import views.html.involvedInOtherBusiness
@@ -39,7 +40,7 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
 
   "InvolvedInOtherBusiness view" when {
     "showVatGroupBullet is set to true" must {
-      lazy val doc = asDocument(view(form, NormalMode, true)(fakeRequest, messages, frontendAppConfig))
+      lazy val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
 
       "have the correct continue button" in {
         doc.select(Selectors.button).text() mustBe continueButton
@@ -68,39 +69,29 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
         doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
         doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
       }
-    }
-    "showVatGroupBullet is set to false" must {
-      lazy val doc = asDocument(view(form, NormalMode, false)(fakeRequest, messages, frontendAppConfig))
 
-      "have the correct continue button" in {
-        doc.select(Selectors.button).text() mustBe continueButton
-      }
+      "display the bullet text correctly if Vat Group flow is enabled" in {
+        enable(VATGroupFlow)
+        val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
 
-      "have the correct back link" in {
-        doc.getElementById(Selectors.backLink).text() mustBe backLink
-      }
-
-      "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1)
-      }
-
-      "have the correct heading" in {
-        doc.select(Selectors.h1).text() mustBe h1
-      }
-
-      "have the correct legend" in {
-        doc.select(Selectors.legend(1)).text() mustBe h1
-      }
-
-      "display the bullet text correctly" in {
         doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
         doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
         doc.select(Selectors.bullet(3)).first().text() mustBe bullet4
         doc.select(Selectors.bullet(4)).first().text() mustBe bullet5
+        doc.select(Selectors.bullet(5)).headOption mustBe None
+        disable(VATGroupFlow)
+      }
+
+      "display the bullet text correctly if TOGC/COLE flow is enabled" in {
+        enable(TOGCFlow)
+        val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
+
+        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
+        doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
+        doc.select(Selectors.bullet(3)).first().text() mustBe vatGroupBullet
+        doc.select(Selectors.bullet(4)).headOption mustBe None
+        disable(TOGCFlow)
       }
     }
-
   }
-
-
 }
