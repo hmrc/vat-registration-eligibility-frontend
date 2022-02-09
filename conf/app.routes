@@ -122,3 +122,6 @@ GET        /registration-reason                         controllers.Registration
 POST       /registration-reason                         controllers.RegistrationReasonController.onSubmit
 
 GET        /resolve-traffic-management                  controllers.TrafficManagementResolverController.resolve
+
+GET        /date-of-transfer                            controllers.DateOfBusinessTransferController.onPageLoad
+POST       /date-of-transfer                            controllers.DateOfBusinessTransferController.onSubmit()
