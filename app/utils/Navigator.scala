@@ -62,6 +62,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case MandatoryInformationId => routes.MandatoryInformationController.onPageLoad
     case EligibleId => routes.EligibleController.onPageLoad
     case TaxableSuppliesInUkId => routes.TaxableSuppliesInUkController.onPageLoad
+    case DateOfBusinessTransferId => routes.DateOfBusinessTransferController.onPageLoad
     case ThresholdTaxableSuppliesId => routes.ThresholdTaxableSuppliesController.onPageLoad
     case GoneOverThresholdId => routes.GoneOverThresholdController.onPageLoad
     case DoNotNeedToRegisterId => routes.DoNotNeedToRegisterController.onPageLoad
@@ -308,6 +309,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     toNextPage(
       fromPage = ThresholdTaxableSuppliesId,
       toPage = GoneOverThresholdId
+    ),
+    toNextPage(
+      fromPage = DateOfBusinessTransferId,
+      toPage = DateOfBusinessTransferId
     ),
     toNextPage(
       fromPage = GoneOverThresholdId,

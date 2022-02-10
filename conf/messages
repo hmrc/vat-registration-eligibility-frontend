@@ -335,3 +335,10 @@ registrationReason.settingUp.radio        = You’re setting up a VAT group
 registrationReason.ukExporter.radio       = It’s a UK established overseas exporter
 registrationReason.ukExporter.hint        = The business is established within the UK and will only make taxable supplies outside of the UK.
 registrationReason.error                  = Select the reason you want to register the business for VAT
+
+dateOfBusinessTransfer.togc.heading                 = What date did the transfer of business take place?
+dateOfBusinessTransfer.togc.dateHint                = For example, 27 03 2007
+dateOfBusinessTransfer.togc.error.date.required     = Enter a date for when the transfer of business took place
+dateOfBusinessTransfer.togc.error.date.minDate      = Enter a date on or after {0}
+dateOfBusinessTransfer.togc.error.date.maxDate      = Enter a date on or before {0}
+dateOfBusinessTransfer.togc.error.date.invalid      = Enter a date in the correct format
