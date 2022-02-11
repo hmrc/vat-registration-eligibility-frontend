@@ -342,3 +342,10 @@ dateOfBusinessTransfer.togc.error.date.required     = Enter a date for when the 
 dateOfBusinessTransfer.togc.error.date.minDate      = Enter a date on or after {0}
 dateOfBusinessTransfer.togc.error.date.maxDate      = Enter a date on or before {0}
 dateOfBusinessTransfer.togc.error.date.invalid      = Enter a date in the correct format
+
+previousBusinessName.heading.togc                   = What is the name of the previous business?
+previousBusinessName.heading.cole                   = What was the business name prior to the change of legal entity?
+previousBusinessName.text                           = If the business does not have a business name, enter the businesses trading name instead.
+previousBusinessName.error.name.required            = Enter the name of the previous business
+previousBusinessName.error.name.tooManyChars        = Enter a business name using 105 characters or less
+previousBusinessName.error.name.specialChars        = Enter a valid business name
