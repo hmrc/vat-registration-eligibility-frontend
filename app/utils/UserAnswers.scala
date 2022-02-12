@@ -95,4 +95,6 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def dateOfBusinessTransfer: Option[DateFormElement] = cacheMap.getEntry[DateFormElement](DateOfBusinessTransferId.toString)
 
   def previousBusinessName: Option[String] = cacheMap.getEntry[String](PreviousBusinessNameId.toString)
+
+  def keepOldVrn: Option[Boolean] = cacheMap.getEntry[Boolean](KeepOldVrnId.toString)
 }

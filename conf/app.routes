@@ -128,3 +128,6 @@ POST       /date-of-transfer                            controllers.DateOfBusine
 
 GET         /previous-business-name                     controllers.PreviousBusinessNameController.onPageLoad(mode : Mode = NormalMode)
 POST        /previous-business-name                     controllers.PreviousBusinessNameController.onSubmit(mode : Mode = NormalMode)
+
+GET         /keep-old-vrn                               controllers.KeepOldVrnController.onPageLoad
+POST        /keep-old-vrn                               controllers.KeepOldVrnController.onSubmit
