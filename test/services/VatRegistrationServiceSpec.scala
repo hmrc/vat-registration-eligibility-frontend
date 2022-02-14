@@ -99,8 +99,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
       s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
       s"$NinoId" -> JsBoolean(true),
       s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
-      s"$RacehorsesId" -> JsBoolean(false),
-      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
+      s"$RacehorsesId" -> JsBoolean(false)
     )
     "return the JsObject submitted to Vat registration" in new Setup {
       mockSessionFetch()(Future.successful(Some(new CacheMap("foo", fullListMapHappyPathTwelveMonthsFalse))))
@@ -126,7 +125,6 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
           | {"questionId":"annualAccountingScheme","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"registeringBusiness-value","question":"mocked message","answer":"mocked message","answerValue":"own"},
           | {"questionId":"registrationReason-value","question":"mocked message","answer":"mocked message","answerValue":"selling-goods-and-services"},
-          | {"questionId":"previousBusinessName","question":"mocked message","answer":"Al Pacino Ltd","answerValue":"Al Pacino Ltd"},
           | {"questionId":"nino","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"zeroRatedSales","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"vatExemption","question":"mocked message","answer":"mocked message","answerValue":false}
