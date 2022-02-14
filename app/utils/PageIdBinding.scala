@@ -115,6 +115,7 @@ object PageIdBinding extends FeatureSwitching {
           (AnnualAccountingSchemeId, userAnswers.annualAccountingScheme),
           (RegisteringBusinessId, userAnswers.registeringBusiness),
           (RegistrationReasonId, userAnswers.registrationReason),
+          (PreviousBusinessNameId, userAnswers.previousBusinessName),
           (NinoId, userAnswers.nino),
           (TaxableSuppliesInUkId, userAnswers.taxableSuppliesInUk),
           (GoneOverThresholdId, userAnswers.goneOverThreshold),

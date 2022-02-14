@@ -45,7 +45,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$VATExemptionId" -> JsBoolean(false),
     s"$VATRegistrationExceptionId" -> JsBoolean(false),
     s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
-    s"$RacehorsesId" -> JsBoolean(false)
+    s"$RacehorsesId" -> JsBoolean(false),
+    s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
   )
   val fullListMapHappyPathNETP: ListMap[String, JsValue] = ListMap[String, JsValue](
     "" -> JsString(""),
@@ -63,7 +64,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$AnnualAccountingSchemeId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
     s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
-    s"$RacehorsesId" -> JsBoolean(false)
+    s"$RacehorsesId" -> JsBoolean(false),
+  s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
   )
 
   fullListMapHappyPathTwelveMonthsFalse.foldLeft(Map[String, JsValue]()) {
@@ -101,7 +103,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true),
-      s"$VATRegistrationExceptionId" -> JsBoolean(false)
+      s"$VATRegistrationExceptionId" -> JsBoolean(false),
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested)))
   }
@@ -137,7 +140,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ZeroRatedSalesId" -> JsBoolean(false),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true),
-      s"$VATRegistrationExceptionId" -> JsBoolean(false)
+      s"$VATRegistrationExceptionId" -> JsBoolean(false),
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested)))
   }
@@ -214,7 +218,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-      s"$NinoId" -> JsBoolean(true)
+      s"$NinoId" -> JsBoolean(true),
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
 
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested)))
@@ -230,7 +235,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-      s"$NinoId" -> JsBoolean(true)
+      s"$NinoId" -> JsBoolean(true),
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
 
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested).-(s"$TaxableSuppliesInUkId")))
@@ -246,7 +252,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-      s"$NinoId" -> JsBoolean(true)
+      s"$NinoId" -> JsBoolean(true),
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
 
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested).-(s"$ThresholdTaxableSuppliesId")))
@@ -262,7 +269,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-      s"$NinoId" -> JsBoolean(true)
+      s"$NinoId" -> JsBoolean(true),
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
 
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested).-(s"$GoneOverThresholdId")))
@@ -314,8 +322,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-      s"$NinoId" -> JsBoolean(true)
-
+      s"$NinoId" -> JsBoolean(true),
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdNextThirtyDaysId")))
   }
@@ -329,7 +337,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdInTwelveMonthsId")))
   }
@@ -342,7 +350,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$VATExemptionId" -> JsBoolean(false),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdPreviousThirtyDaysId")))
   }
@@ -355,6 +363,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),
       s"$GoneOverThresholdId" -> JsBoolean(true),
       s"$ZeroRatedSalesId" -> JsBoolean(true),
+      s"$PreviousBusinessNameId" -> JsString("Al Pacino Ltd")
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$NinoId")))
   }

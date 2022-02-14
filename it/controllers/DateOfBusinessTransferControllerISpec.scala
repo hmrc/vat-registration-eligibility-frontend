@@ -47,7 +47,7 @@ class DateOfBusinessTransferControllerISpec extends IntegrationSpecBase with Aut
 
   s"POST ${controllers.routes.DateOfBusinessTransferController.onSubmit()}" should {
 
-    s"redirect to Name of the Previous Business" in new Setup {
+    s"redirect to Previous Business Name" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
@@ -60,8 +60,7 @@ class DateOfBusinessTransferControllerISpec extends IntegrationSpecBase with Aut
         ))
       val response = await(request)
       response.status mustBe 303
-      // TODO: Change the redirected page below to the correct page
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DateOfBusinessTransferController.onPageLoad.url)
+      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.PreviousBusinessNameController.onPageLoad.url)
     }
     "return a badrequest with form errors" when {
       "an invalid date is passed in" in new Setup {

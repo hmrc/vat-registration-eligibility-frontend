@@ -125,3 +125,6 @@ GET        /resolve-traffic-management                  controllers.TrafficManag
 
 GET        /date-of-transfer                            controllers.DateOfBusinessTransferController.onPageLoad
 POST       /date-of-transfer                            controllers.DateOfBusinessTransferController.onSubmit()
+
+GET         /previous-business-name                     controllers.PreviousBusinessNameController.onPageLoad(mode : Mode = NormalMode)
+POST        /previous-business-name                     controllers.PreviousBusinessNameController.onSubmit(mode : Mode = NormalMode)
