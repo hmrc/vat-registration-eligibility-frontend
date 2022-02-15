@@ -350,5 +350,14 @@ previousBusinessName.error.name.required            = Enter the name of the prev
 previousBusinessName.error.name.tooManyChars        = Enter a business name using 105 characters or less
 previousBusinessName.error.name.specialChars        = Enter a valid business name
 
-keepOldVrn.heading                = Do you want to keep the existing VAT registration number?
-keepOldVrn.error.required         = Select yes if you want to keep the existing VAT registration number
+keepOldVrn.heading                                  = Do you want to keep the existing VAT registration number?
+keepOldVrn.error.required                           = Select yes if you want to keep the existing VAT registration number
+
+vatNumber.heading.togc                              = What is the VAT registration number of the business being taken over?
+vatNumber.heading.cole                              = What is the business’s current VAT registration number?
+vatNumber.text                                      = This is 9 numbers, for example 123456789. You can find it on the business VAT registration certificate.
+vatNumber.error.togc.required                       = Enter the VAT registration number of the business being taken over
+vatNumber.error.cole.required                       = Enter the business’s current VAT registration number.
+vatNumber.error.length                              = VAT number must be 9 numbers
+vatNumber.error.nonNumeric                          = VAT number must only include numbers 0 to 9
+vatNumber.error.invalid                             = Enter a valid VAT number

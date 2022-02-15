@@ -142,6 +142,14 @@ trait Constraints {
         Invalid(errorKey, regex)
     }
 
+  protected def minLength(minimum: Int, errorKey: String): Constraint[String] =
+    Constraint {
+      case str if str.length >= minimum =>
+        Valid
+      case _ =>
+        Invalid(errorKey, minimum)
+    }
+
   protected def maxLength(maximum: Int, errorKey: String): Constraint[String] =
     Constraint {
       case str if str.length <= maximum =>
@@ -187,4 +195,25 @@ trait Constraints {
     }
   }
 
+  private def calcWeightedSum(value: String): Int = {
+    // not efficient but saves writing out a hardcoded calculation or a recursive function
+    val constants = (2 to 8).reverse
+    value.map(_.asDigit).zip(constants)
+      .map { case (digit, constant) => digit * constant }.sum
+  }
+
+  def isValidChecksum(errorKey: String): Constraint[String] = {
+    Constraint { vatNumber =>
+      val leading = vatNumber.substring(0, vatNumber.length - 2)
+      val checksum = vatNumber.substring(vatNumber.length - 2).toInt
+
+      val weightedSumPlusChecksum = calcWeightedSum(leading) + checksum
+
+      if((weightedSumPlusChecksum % 97) == 0 || ((weightedSumPlusChecksum + 55) % 97) == 0) {
+        Valid
+      } else {
+        Invalid(errorKey)
+      }
+    }
+  }
 }

@@ -23,6 +23,7 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 
 import javax.inject.Singleton
 
+// scalastyle:off
 @Singleton
 class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def fixedEstablishment: Option[Boolean] = cacheMap.getEntry[Boolean](FixedEstablishmentId.toString)
@@ -95,6 +96,8 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def dateOfBusinessTransfer: Option[DateFormElement] = cacheMap.getEntry[DateFormElement](DateOfBusinessTransferId.toString)
 
   def previousBusinessName: Option[String] = cacheMap.getEntry[String](PreviousBusinessNameId.toString)
+
+  def vatNumber: Option[String] = cacheMap.getEntry[String](VATNumberId.toString)
 
   def keepOldVrn: Option[Boolean] = cacheMap.getEntry[Boolean](KeepOldVrnId.toString)
 }
