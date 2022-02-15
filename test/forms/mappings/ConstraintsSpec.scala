@@ -137,6 +137,23 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints {
     }
   }
 
+  "minLength" must {
+    "return Valid for a string shorter than the allowed length" in {
+      val result = minLength(10, "error.length")("a" * 9)
+      result mustEqual Invalid("error.length", 10)
+    }
+
+    "return Valid for a string equal to the allowed length" in {
+      val result = minLength(10, "error.length")("a" * 10)
+      result mustEqual Valid
+    }
+
+    "return Invalid for a string shorter than the allowed length" in {
+      val result = minLength(10, "error.length")("a" * 11)
+      result mustEqual Valid
+    }
+  }
+
   "maxDate" must {
 
     val maximumDate = LocalDate.parse("2019-01-01")
@@ -164,6 +181,23 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints {
     "return Invalid for a date before the minimum" in {
       val result = minDate(minimumDate, "thresholdPreviousThirtyDays.error.date.inPast")(minimumDate.minusDays(1))
       result mustEqual Invalid("thresholdPreviousThirtyDays.error.date.inPast")
+    }
+  }
+
+  "isValidChecksum" should {
+    "returns Valid if the checksum is correct for a mod 97 number" in {
+      val testValue = "011000084"
+      isValidChecksum("vatNumber.error.invalid")(testValue) mustEqual Valid
+    }
+
+    "returns Invalid if the checksum is correct for a mod 9755 number" in {
+      val testValue = "011000029"
+      isValidChecksum("vatNumber.error.invalid")(testValue) mustEqual Valid
+    }
+
+    "returns Invalid if the checksum is incorrect" in {
+      val testValue = "999999999"
+      isValidChecksum("vatNumber.error.invalid")(testValue) mustEqual Invalid("vatNumber.error.invalid")
     }
   }
 }

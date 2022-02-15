@@ -31,7 +31,7 @@ class PreviousBusinessNameFormProviderSpec extends BooleanFieldBehaviours {
     val tooManyChars = s"$errorKeyRoot.name.tooManyChars"
     val specialChars = s"$errorKeyRoot.name.specialChars"
 
-    "should return errors" when {
+    "return errors" when {
 
       "a business name is not provided" in {
         form.bind(
@@ -59,7 +59,7 @@ class PreviousBusinessNameFormProviderSpec extends BooleanFieldBehaviours {
       }
     }
 
-    "should return no errors" when {
+    "return no errors" when {
       "a business name is provided in the correct format" in {
         form.bind(
           Map(
