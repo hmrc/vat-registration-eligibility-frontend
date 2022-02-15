@@ -349,3 +349,6 @@ previousBusinessName.text                           = If the business does not h
 previousBusinessName.error.name.required            = Enter the name of the previous business
 previousBusinessName.error.name.tooManyChars        = Enter a business name using 105 characters or less
 previousBusinessName.error.name.specialChars        = Enter a valid business name
+
+keepOldVrn.heading                = Do you want to keep the existing VAT registration number?
+keepOldVrn.error.required         = Select yes if you want to keep the existing VAT registration number

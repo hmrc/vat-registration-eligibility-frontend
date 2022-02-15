@@ -320,6 +320,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       toPage = PreviousBusinessNameId //TODO Update routing to Previous VRN page
     ),
     toNextPage(
+      fromPage = KeepOldVrnId,
+      toPage = TurnoverEstimateId
+    ),
+    toNextPage(
       fromPage = GoneOverThresholdId,
       toPage = TurnoverEstimateId
     ),
