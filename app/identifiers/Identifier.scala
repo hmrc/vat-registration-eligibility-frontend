@@ -18,4 +18,6 @@ package identifiers
 
 trait Identifier {
   override def equals(obj: scala.Any): Boolean = this.toString == obj.asInstanceOf[Identifier].toString
+
+  def toString: String
 }

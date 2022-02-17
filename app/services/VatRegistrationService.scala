@@ -16,11 +16,8 @@
 
 package services
 
-import java.time.format.DateTimeFormatter
 import connectors.VatRegistrationConnector
 import identifiers._
-
-import javax.inject.{Inject, Singleton}
 import models.BusinessEntity.businessEntityToString
 import models.RegisteringBusiness.registeringBusinessToString
 import models.RegistrationReason.registrationReasonToString
@@ -28,10 +25,12 @@ import models._
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.libs.json._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utils.{JsonSummaryRow, MessagesUtils, PageIdBinding}
 
+import java.time.format.DateTimeFormatter
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -49,7 +48,8 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
   }
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-  def businessOrPartnership(implicit data: DataRequest[_]): String = if(data.userAnswers.isPartnership) "partnership" else "business"
+
+  def businessOrPartnership(implicit data: DataRequest[_]): String = if (data.userAnswers.isPartnership) "partnership" else "business"
 
   private[services] def prepareQuestionData(key: String, data: Boolean, dynamicHeading: Boolean = false)(implicit r: DataRequest[_]): List[JsValue] = {
     JsonSummaryRow(
@@ -171,6 +171,43 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     JsonSummaryRow(s"$key-value", messages(s"$key.heading"), registeringBusinessToString(data)(messages), Json.toJson(data))
   }
 
+  private[services] def summaryRowBuilder[T](key: Identifier, data: T)(implicit r: DataRequest[_]): List[JsValue] = {
+    JsonSummaryRow(
+      s"$key-value",
+      messageFormatter(key),
+      answerFormatter(data),
+      answerJsonFormatter(data)
+    )
+  }
+
+  private def messageFormatter(key: Identifier)(implicit data: DataRequest[_]): String = {
+    messages(
+      key match {
+        case DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId =>
+          data.userAnswers.registrationReason match {
+            case Some(TakingOverBusiness) => s"checkYourAnswers.$key.togc"
+            case Some(ChangingLegalEntityOfBusiness) => s"checkYourAnswers.$key.cole"
+            case _ => throw new InternalServerException("Attempted to submit togc/cole data without a matching reg reason")
+          }
+        case _ => throw new InternalServerException(s"Generic VRS submission is not implemented for $key")
+      }
+    )
+  }
+
+  private def answerFormatter[T](answer: T)(implicit r: DataRequest[_]): String =
+    answer match {
+      case data: Boolean => messages(s"site.${if (data) "yes" else "no"}")
+      case data: String => data
+      case data: DateFormElement => data.date.format(formatter)
+    }
+
+  private def answerJsonFormatter[T](answer: T): JsValue =
+    answer match {
+      case data: Boolean => JsBoolean(data)
+      case data: String => JsString(data)
+      case data: DateFormElement => Json.toJson(data.date)
+    }
+
   private[services] def buildIndividualQuestion(implicit r: DataRequest[_]): PartialFunction[(Identifier, Any), List[JsValue]] = {
     case (id@BusinessEntityId, e: BusinessEntity) => prepareBusinessEntity(id.toString, e)
     case (id@ThresholdInTwelveMonthsId, e: ConditionalDateFormElement) => prepareThresholdInTwelveMonths(id.toString, e)
@@ -184,6 +221,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     case (VoluntaryRegistrationId, e: Boolean) => getVoluntaryRegistrationJson(e)
     case (VoluntaryInformationId, e: Boolean) => getVoluntaryInformationJson(e)
     case (id@(InternationalActivitiesId | ZeroRatedSalesId | AgriculturalFlatRateSchemeId | RacehorsesId), e: Boolean) => prepareQuestionData(id.toString, e, dynamicHeading = true)
+    case (id@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId), answer) => summaryRowBuilder(id, answer)
     case (id, e: Boolean) => prepareQuestionData(id.toString, e, dynamicHeading = false)
     case (id, e: String) => prepareQuestionData(id.toString, e)
   }

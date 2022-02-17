@@ -352,3 +352,12 @@ vatNumber.error.cole.required                       = Enter the business’s cur
 vatNumber.error.length                              = VAT number must be 9 numbers
 vatNumber.error.nonNumeric                          = VAT number must only include numbers 0 to 9
 vatNumber.error.invalid                             = Enter a valid VAT number
+
+checkYourAnswers.dateOfBusinessTransfer.togc        = Date of transfer of business
+checkYourAnswers.dateOfBusinessTransfer.cole        = Date of change of legal entity
+checkYourAnswers.previousBusinessName.togc          = Name of previous business
+checkYourAnswers.previousBusinessName.cole          = Business name prior to change of legal entity
+checkYourAnswers.keepOldVrn.togc                    = VAT registration number of taken over business
+checkYourAnswers.keepOldVrn.cole                    = Current VAT registration number
+checkYourAnswers.vatNumber.togc                     = Keep the existing VAT registration number
+checkYourAnswers.vatNumber.cole                     = Keep the existing VAT registration number
