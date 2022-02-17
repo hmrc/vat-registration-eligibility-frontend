@@ -16,7 +16,7 @@
 
 package utils
 
-import featureswitch.core.config.{EnableAAS, FeatureSwitching}
+import featureswitch.core.config.FeatureSwitching
 import identifiers.{ThresholdInTwelveMonthsId, _}
 import models._
 import org.scalatestplus.play.PlaySpec
@@ -36,7 +36,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
-    s"$AnnualAccountingSchemeId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
     s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
     s"$NinoId" -> JsBoolean(true),
@@ -61,7 +60,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$VoluntaryInformationId" -> JsBoolean(true),
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
-    s"$AnnualAccountingSchemeId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
     s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
     s"$RacehorsesId" -> JsBoolean(false)
@@ -263,18 +261,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$NinoId" -> JsBoolean(true)
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested).-(s"$GoneOverThresholdId")))
-  }
-  "throw exception if annual accounting scheme answer doesn't exist when EnableAAS is off" in {
-    disable(EnableAAS)
-    intercept[NoSuchElementException](PageIdBinding.sectionBindings(
-      new CacheMap("test", fullListMapHappyPathTwelveMonthsFalse.-(s"$AnnualAccountingSchemeId")))
-    )
-  }
-  "no exception if annual accounting scheme answer doesn't exist when EnableAAS is on" in {
-    enable(EnableAAS)
-    PageIdBinding.sectionBindings(
-      new CacheMap("test", fullListMapHappyPathTwelveMonthsFalse.-(s"$AnnualAccountingSchemeId"))
-    )
   }
 
   "throw exception if TaxableSuppliesInUk answer doesn't exist when NETP" in {

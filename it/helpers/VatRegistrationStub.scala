@@ -14,7 +14,6 @@ trait VatRegistrationStub {
     TurnoverEstimateId.toString -> Json.obj("amount" -> JsString("50000")),
     InternationalActivitiesId.toString -> JsBoolean(false),
     InvolvedInOtherBusinessId.toString -> JsBoolean(false),
-    AnnualAccountingSchemeId.toString -> JsBoolean(false),
     VoluntaryRegistrationId.toString -> JsBoolean(true),
     VATExemptionId.toString -> JsBoolean(false),
     ZeroRatedSalesId.toString -> JsBoolean(true),

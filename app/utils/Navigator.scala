@@ -44,7 +44,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case TurnoverEstimateId => routes.TurnoverEstimateController.onPageLoad
     case InvolvedInOtherBusinessId => routes.InvolvedInOtherBusinessController.onPageLoad
     case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad
-    case AnnualAccountingSchemeId => routes.AnnualAccountingSchemeController.onPageLoad
     case ZeroRatedSalesId => routes.ZeroRatedSalesController.onPageLoad
     case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad
     case NinoId => routes.NinoController.onPageLoad
@@ -225,20 +224,12 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     InvolvedInOtherBusinessId -> { userAnswers =>
       userAnswers.involvedInOtherBusiness match {
         case Some(true) => pageIdToPageLoad(VATExceptionKickoutId)
-        case Some(false) if isEnabled(LandAndProperty) && isEnabled(EnableAAS) => pageIdToPageLoad(RegisteringBusinessId)
-        case Some(false) if isEnabled(LandAndProperty) => pageIdToPageLoad(AnnualAccountingSchemeId)
+        case Some(false) if isEnabled(LandAndProperty)  => pageIdToPageLoad(RegisteringBusinessId)
         case Some(false) => pageIdToPageLoad(RacehorsesId)
       }
     },
-    nextOnWithFeatureSwitch(false,
-      featureSwitch = EnableAAS,
-      fromPage = RacehorsesId,
-      onSuccessPage = AnnualAccountingSchemeId,
-      featureSwitchSuccessPage = RegisteringBusinessId,
-      onFailPage = VATExceptionKickoutId
-    ),
     nextOn(false,
-      fromPage = AnnualAccountingSchemeId,
+      fromPage = RacehorsesId,
       onSuccessPage = RegisteringBusinessId,
       onFailPage = VATExceptionKickoutId
     ),
