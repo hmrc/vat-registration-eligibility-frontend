@@ -55,32 +55,6 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
   implicit val r: DataRequest[AnyContentAsEmpty.type] = fakeDataRequestIncorped
   val internalId = "internalID"
 
-  "prepareQuestionData" should {
-    "prepare simple boolean data" in new Setup {
-      val key = "thresholdNextThirtyDays"
-
-      service.prepareQuestionData(key, data = false) mustBe
-        List(Json.obj(
-          "questionId" -> key,
-          "question" -> "mocked message",
-          "answer" -> "mocked message",
-          "answerValue" -> false
-        ))
-    }
-
-    "prepare simple string data" in new Setup {
-      val key = "completionCapacity"
-
-      service.prepareQuestionData(key, "officer") mustBe
-        List(Json.obj(
-          "questionId" -> key,
-          "question" -> "mocked message",
-          "answer" -> "officer",
-          "answerValue" -> "officer"
-        ))
-    }
-  }
-
   "submitEligibility" should {
     "return the JsObject submitted to Vat registration" in new Setup {
       val fullListMapHappyPathTwelveMonthsFalse: ListMap[String, JsValue] = ListMap[String, JsValue](
@@ -113,21 +87,21 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
           |{"sections":[
           |{"title":"VAT-taxable sales",
           | "data":[
-          | {"questionId":"thresholdInTwelveMonths-value","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"thresholdNextThirtyDays-value","question":"mocked message","answer":"mocked message","answerValue":false},
+          | {"questionId":"thresholdInTwelveMonths","question":"mocked message","answer":"mocked message","answerValue":false},
+          | {"questionId":"thresholdNextThirtyDays","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"voluntaryRegistration","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"voluntaryInformation","question":"mocked message","answer":"mocked message","answerValue":true},
-          | {"questionId":"turnoverEstimate-value","question":"mocked message","answer":"£50,000","answerValue":50000}]},
+          | {"questionId":"turnoverEstimate","question":"mocked message","answer":"£50,000","answerValue":50000}]},
           | {"title":"Special situations",
           | "data":[{"questionId":"fixedEstablishment","question":"mocked message","answer":"mocked message","answerValue":true},
-          | {"questionId":"businessEntity-value","question":"mocked message","answer":"mocked message","answerValue":"50"},
+          | {"questionId":"businessEntity","question":"mocked message","answer":"mocked message","answerValue":"50"},
           | {"questionId":"agriculturalFlatRateScheme","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"internationalActivities","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"involvedInOtherBusiness","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"racehorses","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"annualAccountingScheme","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"registeringBusiness-value","question":"mocked message","answer":"mocked message","answerValue":"own"},
-          | {"questionId":"registrationReason-value","question":"mocked message","answer":"mocked message","answerValue":"selling-goods-and-services"},
+          | {"questionId":"registeringBusiness","question":"mocked message","answer":"mocked message","answerValue":"own"},
+          | {"questionId":"registrationReason","question":"mocked message","answer":"mocked message","answerValue":"selling-goods-and-services"},
           | {"questionId":"nino","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"zeroRatedSales","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"vatExemption","question":"mocked message","answer":"mocked message","answerValue":false}
@@ -171,25 +145,25 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
            |    {
            |      "title":"VAT-taxable sales",
            |      "data":[
-           |        {"questionId":"turnoverEstimate-value","question":"mocked message","answer":"£50,000","answerValue":50000},
-           |        {"questionId":"dateOfBusinessTransfer-value","question":"mocked message","answer":"${LocalDate.now().format(service.formatter)}","answerValue":"${LocalDate.now()}"},
-           |        {"questionId":"previousBusinessName-value","question":"mocked message","answer":"$testPreviousName","answerValue":"$testPreviousName"},
-           |        {"questionId":"vatNumber-value","question":"mocked message","answer":"$testVrn","answerValue":"$testVrn"},
-           |        {"questionId":"keepOldVrn-value","question":"mocked message","answer":"mocked message","answerValue":false}
+           |        {"questionId":"turnoverEstimate","question":"mocked message","answer":"£50,000","answerValue":50000},
+           |        {"questionId":"dateOfBusinessTransfer","question":"mocked message","answer":"${LocalDate.now().format(service.formatter)}","answerValue":"${LocalDate.now()}"},
+           |        {"questionId":"previousBusinessName","question":"mocked message","answer":"$testPreviousName","answerValue":"$testPreviousName"},
+           |        {"questionId":"vatNumber","question":"mocked message","answer":"$testVrn","answerValue":"$testVrn"},
+           |        {"questionId":"keepOldVrn","question":"mocked message","answer":"mocked message","answerValue":false}
            |      ]
            |    },
            |    {
            |      "title":"Special situations",
            |      "data":[
            |        {"questionId":"fixedEstablishment","question":"mocked message","answer":"mocked message","answerValue":true},
-           |        {"questionId":"businessEntity-value","question":"mocked message","answer":"mocked message","answerValue":"50"},
+           |        {"questionId":"businessEntity","question":"mocked message","answer":"mocked message","answerValue":"50"},
            |        {"questionId":"agriculturalFlatRateScheme","question":"mocked message","answer":"mocked message","answerValue":false},
            |        {"questionId":"internationalActivities","question":"mocked message","answer":"mocked message","answerValue":false},
            |        {"questionId":"involvedInOtherBusiness","question":"mocked message","answer":"mocked message","answerValue":false},
            |        {"questionId":"racehorses","question":"mocked message","answer":"mocked message","answerValue":false},
            |        {"questionId":"annualAccountingScheme","question":"mocked message","answer":"mocked message","answerValue":false},
-           |        {"questionId":"registeringBusiness-value","question":"mocked message","answer":"mocked message","answerValue":"own"},
-           |        {"questionId":"registrationReason-value","question":"mocked message","answer":"mocked message","answerValue":"taking-over-business"},
+           |        {"questionId":"registeringBusiness","question":"mocked message","answer":"mocked message","answerValue":"own"},
+           |        {"questionId":"registrationReason","question":"mocked message","answer":"mocked message","answerValue":"taking-over-business"},
            |        {"questionId":"nino","question":"mocked message","answer":"mocked message","answerValue":true},
            |        {"questionId":"zeroRatedSales","question":"mocked message","answer":"mocked message","answerValue":true},
            |        {"questionId":"vatExemption","question":"mocked message","answer":"mocked message","answerValue":false}
