@@ -2,13 +2,15 @@ package controllers
 
 import featureswitch.core.config.{FeatureSwitching, IndividualFlow}
 import helpers.{AuthHelper, IntegrationSpecBase, S4LStub, SessionStub}
-import identifiers.BusinessEntityId
-import models.{BusinessEntity, Overseas}
+import identifiers._
 import models.RegistrationReason._
+import models._
 import play.api.Application
 import play.api.http.Status.{OK, SEE_OTHER}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.mvc.Http.HeaderNames
+
+import java.time.LocalDate
 
 class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub with FeatureSwitching with S4LStub {
 
@@ -173,6 +175,42 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
       val response = await(request)
       response.status mustBe SEE_OTHER
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
+    }
+
+    "clear down threshold/togc data if reg reason is changed" in new Setup {
+      stubSuccessfulLogin()
+      stubSuccessfulRegIdGet()
+      stubAudits()
+      stubS4LGetNothing(testRegId)
+      cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", UKCompany)
+      cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", SellingGoodsAndServices)
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, Some(LocalDate.now())))
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(true, Some(LocalDate.now())))
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(true, Some(LocalDate.now())))
+      cacheSessionData[Boolean](sessionId, s"$VoluntaryRegistrationId", true)
+      cacheSessionData[DateFormElement](sessionId, s"$DateOfBusinessTransferId", DateFormElement(LocalDate.now()))
+      cacheSessionData[String](sessionId, s"$PreviousBusinessNameId", "test")
+      cacheSessionData[String](sessionId, s"$VATNumberId", "test")
+      cacheSessionData[Boolean](sessionId, s"$KeepOldVrnId", true)
+      cacheSessionData[Boolean](sessionId, s"$TaxableSuppliesInUkId", true)
+      cacheSessionData[Boolean](sessionId, s"$GoneOverThresholdId", true)
+      cacheSessionData[DateFormElement](sessionId, s"$ThresholdTaxableSuppliesId", DateFormElement(LocalDate.now()))
+
+      val request = buildClient("/registration-reason")
+        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+        .post(Map("value" -> ukEstablishedOverseasExporterKey))
+
+      val response = await(request)
+
+      List(
+        ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId,
+        DateOfBusinessTransferId, PreviousBusinessNameId, VATNumberId, KeepOldVrnId,
+        TaxableSuppliesInUkId, GoneOverThresholdId, ThresholdTaxableSuppliesId
+      ).foreach(id =>
+        verifySessionCacheData(sessionId, s"$id", None)
+      )
+
+      response.status mustBe SEE_OTHER
     }
   }
 }

@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import featureswitch.core.config.{FeatureSwitching, VATGroupFlow}
 import forms.RegistrationReasonFormProvider
-import identifiers.RegistrationReasonId
+import identifiers._
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -78,9 +78,29 @@ class RegistrationReasonController @Inject()(mcc: MessagesControllerComponents,
             )
           ),
         value =>
-          sessionService.save[RegistrationReason](RegistrationReasonId.toString, value)
-            .map(cacheMap =>
-              Redirect(navigator.nextPage(RegistrationReasonId, NormalMode)(new UserAnswers(cacheMap))))
+          for {
+            _ <- request.userAnswers.registrationReason match {
+              case reason if !reason.contains(value) =>
+                for {
+                  _ <- sessionService.removeEntry(ThresholdInTwelveMonthsId.toString)
+                  _ <- sessionService.removeEntry(ThresholdPreviousThirtyDaysId.toString)
+                  _ <- sessionService.removeEntry(ThresholdNextThirtyDaysId.toString)
+                  _ <- sessionService.removeEntry(VoluntaryRegistrationId.toString)
+                  _ <- sessionService.removeEntry(DateOfBusinessTransferId.toString)
+                  _ <- sessionService.removeEntry(PreviousBusinessNameId.toString)
+                  _ <- sessionService.removeEntry(VATNumberId.toString)
+                  _ <- sessionService.removeEntry(KeepOldVrnId.toString)
+                  _ <- sessionService.removeEntry(TaxableSuppliesInUkId.toString)
+                  _ <- sessionService.removeEntry(GoneOverThresholdId.toString)
+                  _ <- sessionService.removeEntry(ThresholdTaxableSuppliesId.toString)
+                } yield Future.successful()
+              case _ => Future.successful()
+            }
+            cacheMap <- sessionService.save[RegistrationReason](RegistrationReasonId.toString, value)
+            redirect = Redirect(navigator.nextPage(RegistrationReasonId, NormalMode)(new UserAnswers(cacheMap)))
+          } yield {
+            redirect
+          }
       )
   }
 }
