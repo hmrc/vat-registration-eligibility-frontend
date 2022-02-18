@@ -57,8 +57,6 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
   lazy val otrsUrl = servicesConfig.getConfString("otrs.url", throw new Exception("Couldn't get otrs URL"))
   lazy val VATNotice700_1supplementURL = servicesConfig.getConfString("gov-uk.VATNotice700_1supplementURL",
     throw new Exception("Couldn't get VATNotice700_1supplementURL URL"))
-  lazy val VATAnnualAccountingSchemeURL = servicesConfig.getConfString("gov-uk.VATAnnualAccountingSchemeURL",
-    throw new Exception("Couldn't get VATAnnualAccountingSchemeURL URL"))
   lazy val VAT1FormURL = servicesConfig.getConfString("gov-uk.VAT1FormURL", throw new Exception("Couldn't get VAT1FormURL URL"))
   lazy val VAT1AFormURL = servicesConfig.getConfString("gov-uk.VAT1AFormURL", throw new Exception("Couldn't get VAT1AFormURL URL"))
   lazy val VAT1BFormURL = servicesConfig.getConfString("gov-uk.VAT1BFormURL", throw new Exception("Couldn't get VAT1BFormURL URL"))
