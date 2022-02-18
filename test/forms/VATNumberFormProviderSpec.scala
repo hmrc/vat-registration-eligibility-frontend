@@ -20,16 +20,18 @@ import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
 class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
-  val form = new VATNumberFormProvider().apply()
 
+  val togc = "togc"
+  val cole = "cole"
   val vatNumberKey = "vatNumber"
   val errorKeyRoot = "vatNumber.error"
-  val vatNumberRequired = s"$errorKeyRoot.togc.required"
+  def vatNumberRequired(togcColeKey: String) = s"$errorKeyRoot.$togcColeKey.required"
   val vatNumberLength = s"$errorKeyRoot.length"
   val nonNumeric = s"$errorKeyRoot.nonNumeric"
   val invalid = s"$errorKeyRoot.invalid"
 
-  "bind" should {
+  s"bind in $togc form" should {
+    val form = new VATNumberFormProvider().apply(togc)
     "return errors" when {
       "VAT number is not provided" in {
         form.bind(
@@ -37,7 +39,58 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> ""
           )
         )
-          .errors shouldBe Seq(FormError(vatNumberKey, vatNumberRequired, Seq()))
+          .errors shouldBe Seq(FormError(vatNumberKey, vatNumberRequired(togc), Seq()))
+      }
+
+      "VAT number exceeds 9 characters" in {
+        form.bind(
+          Map(
+            vatNumberKey -> "01234567890"
+          )
+        )
+          .errors.headOption.map(_.message) shouldBe Some(vatNumberLength)
+      }
+
+      "VAT number with alphanumeric characters" in {
+        form.bind(
+          Map(
+            vatNumberKey -> "123test89"
+          )
+        )
+          .errors.headOption.map(_.message) shouldBe Some(nonNumeric)
+      }
+
+      "VAT number is invlaid" in {
+        form.bind(
+          Map(
+            vatNumberKey -> "789666321"
+          )
+        )
+          .errors.headOption.map(_.message) shouldBe Some(invalid)
+      }
+    }
+
+    "returns no errors" when {
+      "a valid VAT number is provided" in {
+        form.bind(
+          Map(
+            vatNumberKey -> "011000084"
+          )
+        ).errors shouldBe Nil
+      }
+    }
+  }
+
+  s"bind in $cole form" should {
+    val form = new VATNumberFormProvider().apply(cole)
+    "return errors" when {
+      "VAT number is not provided" in {
+        form.bind(
+          Map(
+            vatNumberKey -> ""
+          )
+        )
+          .errors shouldBe Seq(FormError(vatNumberKey, vatNumberRequired(cole), Seq()))
       }
 
       "VAT number exceeds 9 characters" in {

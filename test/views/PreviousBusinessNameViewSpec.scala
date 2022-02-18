@@ -27,6 +27,8 @@ class PreviousBusinessNameViewSpec extends ViewSpecBase {
   val view = app.injector.instanceOf[PreviousBusinessName]
 
   implicit val msgs = messages
+  val togc = "togc"
+  val cole = "cole"
   val messageKeyPrefix = "previousBusinessName"
   val h1Togc = "What is the name of the previous business?"
   val h1Cole = "What was the business name prior to the change of legal entity?"
@@ -34,23 +36,45 @@ class PreviousBusinessNameViewSpec extends ViewSpecBase {
 
   val form = new PreviousBusinessNameFormProvider()()
 
-  "PreviousBusinessName view" must {
-    lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+  "PreviousBusinessName view" when {
+    s"registration reason is $togc" must {
+      lazy val doc = asDocument(view(form, NormalMode, togc)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Togc
+      }
+
+      "have the correct text" in {
+        doc.select(Selectors.p(1)).text() mustBe text
+      }
     }
+    s"registration reason is $cole" must {
+      lazy val doc = asDocument(view(form, NormalMode, cole)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1Togc
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have the correct text" in {
-      doc.select(Selectors.p(1)).text() mustBe text
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Cole
+      }
+
+      "have the correct text" in {
+        doc.select(Selectors.p(1)).text() mustBe text
+      }
     }
   }
+
 }

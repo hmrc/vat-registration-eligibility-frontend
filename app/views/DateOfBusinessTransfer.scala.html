@@ -28,19 +28,19 @@
         button: components.button
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, togcColeKey: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("dateOfBusinessTransfer.togc.heading"))), backLink = true) {
+@layout(pageTitle = Some(title(form, messages(s"dateOfBusinessTransfer.heading.$togcColeKey"))), backLink = true) {
 
     @errorSummary(form.errors, Some(Map("relevantDate" -> "day")))
 
-    @h1(messages("dateOfBusinessTransfer.togc.heading"))
+    @h1(messages(s"dateOfBusinessTransfer.heading.$togcColeKey"))
 
     @formWithCsrf(action = routes.DateOfBusinessTransferController.onSubmit()) {
         @inputDate(
             form = form,
             legendContent = "",
-            hintText = Some("dateOfBusinessTransfer.togc.dateHint"),
+            hintText = Some(s"dateOfBusinessTransfer.dateHint"),
             legendClasses = "govuk-fieldset__legend--m",
             id = "relevantDate",
             legendAsPageHeading = false

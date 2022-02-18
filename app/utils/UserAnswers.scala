@@ -18,7 +18,10 @@ package utils
 
 import identifiers._
 import models._
+import models.requests.DataRequest
 import play.api.libs.json.{JsValue, Reads}
+import play.api.mvc.AnyContent
+import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import javax.inject.Singleton
@@ -43,6 +46,11 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def isOverseas: Boolean = businessEntity match {
     case Some(_: OverseasType) => true
     case _ => false
+  }
+
+  def togcColeKey: String = registrationReason match {
+    case Some(ChangingLegalEntityOfBusiness) => "cole"
+    case _ => "togc"
   }
 
   def racehorses: Option[Boolean] = cacheMap.getEntry[Boolean](RacehorsesId.toString)

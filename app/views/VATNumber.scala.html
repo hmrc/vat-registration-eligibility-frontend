@@ -28,13 +28,13 @@
     button: components.button
 )
 
-@(form: Form[String])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[String], togcColeKey: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("vatNumber.heading.togc"))), backLink = true) {
+@layout(pageTitle = Some(title(form, messages(s"vatNumber.heading.$togcColeKey"))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1("vatNumber.heading.togc")
+    @h1(s"vatNumber.heading.$togcColeKey")
 
     @p{ @messages("vatNumber.text") }
 
@@ -44,7 +44,7 @@
             id = "vatNumber",
             name = "vatNumber",
             classes = Some("govuk-input--width-10"),
-            label = "vatNumber.heading.togc",
+            label = s"vatNumber.heading.$togcColeKey",
             isPageHeading = false,
         )
 

@@ -30,12 +30,6 @@ import javax.inject.{Inject, Singleton}
 class DateOfBusinessTransferFormProvider @Inject()(timeMachine: TimeMachine) extends FormErrorHelper with Mappings {
 
   val relevantDate = "relevantDate"
-  val errorKeyRoot = "dateOfBusinessTransfer.togc.error"
-
-  val dateRequiredKey = s"$errorKeyRoot.date.required"
-  val minDateAllowedKey = s"$errorKeyRoot.date.minDate"
-  val maxDateAllowedKey = s"$errorKeyRoot.date.maxDate"
-  val dateInvalidKey = s"$errorKeyRoot.date.invalid"
 
   val minDateAllowed = LocalDate.parse("1973-04-01")
   val maxDateAllowed = timeMachine.today.plusMonths(3)
@@ -46,23 +40,32 @@ class DateOfBusinessTransferFormProvider @Inject()(timeMachine: TimeMachine) ext
 
   def now: LocalDate = LocalDate.now()
 
-  def apply(): Form[DateFormElement] = Form(
-    mapping(
-      relevantDate ->
-        tuple(
-          "day" -> default(text(), ""),
-          "month" -> default(text(), ""),
-          "year" -> default(text(), "")
-        ).verifying(firstError(
-          nonEmptyDate(dateRequiredKey),
-          validDate(dateInvalidKey))
-        ).transform[LocalDate](
-          { case (day, month, year) => LocalDate.of(year.toInt, month.toInt, day.toInt) },
-          date => (date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
-        ).verifying(
-          minDate(minDateAllowed, minDateAllowedKey, minDateAllowed.format(dateFormat)),
-          maxDate(maxDateAllowed, maxDateAllowedKey, maxDateAllowed.format(dateFormat))
-        )
-    )(DateFormElement.apply)(DateFormElement.unapply)
-  )
+  def apply(togcColeKey: String): Form[DateFormElement] = {
+
+    val errorKeyRoot = s"dateOfBusinessTransfer.error"
+
+    val dateRequiredKey = s"$errorKeyRoot.$togcColeKey.date.required"
+    val minDateAllowedKey = s"$errorKeyRoot.date.minDate"
+    val maxDateAllowedKey = s"$errorKeyRoot.date.maxDate"
+    val dateInvalidKey = s"$errorKeyRoot.date.invalid"
+    Form(
+      mapping(
+        relevantDate ->
+          tuple(
+            "day" -> default(text(), ""),
+            "month" -> default(text(), ""),
+            "year" -> default(text(), "")
+          ).verifying(firstError(
+            nonEmptyDate(dateRequiredKey),
+            validDate(dateInvalidKey))
+          ).transform[LocalDate](
+            { case (day, month, year) => LocalDate.of(year.toInt, month.toInt, day.toInt) },
+            date => (date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
+          ).verifying(
+            minDate(minDateAllowed, minDateAllowedKey, minDateAllowed.format(dateFormat)),
+            maxDate(maxDateAllowed, maxDateAllowedKey, maxDateAllowed.format(dateFormat))
+          )
+      )(DateFormElement.apply)(DateFormElement.unapply)
+    )
+  }
 }

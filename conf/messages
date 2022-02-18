@@ -336,12 +336,15 @@ registrationReason.ukExporter.radio       = It’s a UK established overseas exp
 registrationReason.ukExporter.hint        = The business is established within the UK and will only make taxable supplies outside of the UK.
 registrationReason.error                  = Select the reason you want to register the business for VAT
 
-dateOfBusinessTransfer.togc.heading                 = What date did the transfer of business take place?
-dateOfBusinessTransfer.togc.dateHint                = For example, 27 03 2007
-dateOfBusinessTransfer.togc.error.date.required     = Enter a date for when the transfer of business took place
-dateOfBusinessTransfer.togc.error.date.minDate      = Enter a date on or after {0}
-dateOfBusinessTransfer.togc.error.date.maxDate      = Enter a date on or before {0}
-dateOfBusinessTransfer.togc.error.date.invalid      = Enter a date in the correct format
+dateOfBusinessTransfer.heading.togc                 = What date did the transfer of business take place?
+dateOfBusinessTransfer.heading.cole                 = What date did the change of legal entity take place?
+dateOfBusinessTransfer.dateHint                     = For example, 27 03 2007
+dateOfBusinessTransfer.error.togc.date.required     = Enter a date for when the transfer of business took place
+dateOfBusinessTransfer.error.cole.date.required     = Enter a date for when the change of legal entity took place
+dateOfBusinessTransfer.error.date.minDate           = Enter a date on or after {0}
+dateOfBusinessTransfer.error.date.maxDate           = Enter a date on or before {0}
+dateOfBusinessTransfer.error.date.invalid           = Enter a date in the correct format
+
 
 previousBusinessName.heading.togc                   = What is the name of the previous business?
 previousBusinessName.heading.cole                   = What was the business name prior to the change of legal entity?

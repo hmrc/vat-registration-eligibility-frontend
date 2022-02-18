@@ -28,22 +28,25 @@ class VATNumberFormProvider  @Inject() extends FormErrorHelper with Mappings {
 
   val vatNumberKey = "vatNumber"
   val errorKeyRoot = s"vatNumber.error"
-  val vatNumberRequired = s"$errorKeyRoot.togc.required"
   val vatNumberLength = s"$errorKeyRoot.length"
   val nonNumeric = s"$errorKeyRoot.nonNumeric"
   val invalid = s"$errorKeyRoot.invalid"
   val regex = """^[0-9]{9}$"""
   val length = 9
 
-  def apply(): Form[String] = Form[String](
-    single(
-      vatNumberKey -> text(vatNumberRequired).verifying(StopOnFirstFail(
-        minLength(length, vatNumberLength),
-        maxLength(length, vatNumberLength),
-        regexp(regex, nonNumeric),
-        isValidChecksum(invalid)
+  def apply(togcColeKey: String): Form[String] = {
+    val vatNumberRequired = s"$errorKeyRoot.$togcColeKey.required"
+    Form[String](
+      single(
+        vatNumberKey -> text(vatNumberRequired).verifying(
+          StopOnFirstFail(
+            minLength(length, vatNumberLength),
+            maxLength(length, vatNumberLength),
+            regexp(regex, nonNumeric),
+            isValidChecksum(invalid)
+          )
         )
       )
     )
-  )
+  }
 }
