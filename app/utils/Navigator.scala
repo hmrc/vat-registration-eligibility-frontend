@@ -69,6 +69,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case RegistrationReasonId => routes.RegistrationReasonController.onPageLoad
     case PreviousBusinessNameId => routes.PreviousBusinessNameController.onPageLoad
     case VATNumberId => routes.VATNumberController.onPageLoad
+    case KeepOldVrnId => routes.KeepOldVrnController.onPageLoad
     case TrafficManagementResolverId => routes.TrafficManagementResolverController.resolve
     case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
       routes.IntroductionController.onPageLoad
@@ -244,10 +245,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     RegisteringBusinessId -> { userAnswers =>
       userAnswers.registeringBusiness match {
-        case Some(OwnBusiness) if !isEnabled(TOGCFlow) && (userAnswers.businessEntity.contains(NETP) || userAnswers.businessEntity.contains(Overseas)) =>
+        case Some(OwnBusiness) if !isEnabled(TOGCFlow) && userAnswers.isOverseas =>
           pageIdToPageLoad(TaxableSuppliesInUkId)
         case Some(OwnBusiness) => pageIdToPageLoad(RegistrationReasonId)
-        case Some(SomeoneElse) if !isEnabled(TOGCFlow) && isEnabled(ThirdPartyTransactorFlow) && (userAnswers.businessEntity.contains(NETP) || userAnswers.businessEntity.contains(Overseas)) =>
+        case Some(SomeoneElse) if !isEnabled(TOGCFlow) && isEnabled(ThirdPartyTransactorFlow) && userAnswers.isOverseas =>
           pageIdToPageLoad(TaxableSuppliesInUkId)
         case Some(SomeoneElse) if isEnabled(ThirdPartyTransactorFlow) => pageIdToPageLoad(RegistrationReasonId)
         case Some(SomeoneElse) => pageIdToPageLoad(VATExceptionKickoutId)
@@ -322,7 +323,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     toNextPage(
       fromPage = VATNumberId,
-      toPage = VATNumberId //TODO Update routing to keep VRN page
+      toPage = KeepOldVrnId
     ),
     toNextPage(
       fromPage = KeepOldVrnId,
@@ -338,8 +339,8 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     TrafficManagementResolverId -> { userAnswers =>
       userAnswers.fixedEstablishment match {
-//        case Some(_) if Seq(TakingOverBusiness, ChangingLegalEntityOfBusiness).exists(userAnswers.registrationReason.contains(_)) =>
-//          pageIdToPageLoad(DateOfBusinessTransferId)
+        case Some(_) if Seq(TakingOverBusiness, ChangingLegalEntityOfBusiness).exists(userAnswers.registrationReason.contains(_)) =>
+          pageIdToPageLoad(DateOfBusinessTransferId)
         case Some(true) if Seq(UkEstablishedOverseasExporter, SettingUpVatGroup).exists(userAnswers.registrationReason.contains(_)) =>
           pageIdToPageLoad(TurnoverEstimateId)
         case Some(true) =>

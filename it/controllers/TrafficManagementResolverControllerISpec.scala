@@ -89,31 +89,31 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url)
       }
 
-//      "redirect to the DateOfBusinessTransfer page if TrafficManagement returns allocated for COLE reg reason" in new Setup {
-//        enable(TrafficManagement)
-//        stubSuccessfulLogin(enrolments = testEnrolments)
-//        stubSuccessfulRegIdGet()
-//        stubAudits()
-//        stubAllocation(testRegId)(CREATED)
-//        stubFor(
-//          put(urlMatching("/save4later/vat-registration-eligibility-frontend/testRegId/data/eligibility-data"))
-//            .willReturn(aResponse.withStatus(CREATED).withBody(Json.stringify(Json.obj("id" -> testRegId, "data" -> Json.obj()))))
-//        )
-//        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
-//        stubS4LGetNothing(testRegId)
-//
-//        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", UKCompany)
-//        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", true)
-//        cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", ChangingLegalEntityOfBusiness)
-//
-//        val request = buildClient(pageUrl)
-//          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-//          .get()
-//
-//        val response = await(request)
-//        response.status mustBe 303
-//        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DateOfBusinessTransferController.onPageLoad.url)
-//      }
+      "redirect to the DateOfBusinessTransfer page if TrafficManagement returns allocated for COLE reg reason" in new Setup {
+        enable(TrafficManagement)
+        stubSuccessfulLogin(enrolments = testEnrolments)
+        stubSuccessfulRegIdGet()
+        stubAudits()
+        stubAllocation(testRegId)(CREATED)
+        stubFor(
+          put(urlMatching("/save4later/vat-registration-eligibility-frontend/testRegId/data/eligibility-data"))
+            .willReturn(aResponse.withStatus(CREATED).withBody(Json.stringify(Json.obj("id" -> testRegId, "data" -> Json.obj()))))
+        )
+        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
+        stubS4LGetNothing(testRegId)
+
+        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", UKCompany)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", true)
+        cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", ChangingLegalEntityOfBusiness)
+
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
+
+        val response = await(request)
+        response.status mustBe 303
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DateOfBusinessTransferController.onPageLoad.url)
+      }
 
       "redirect to the Turnover Estimate page if TrafficManagement returns Allocated for an Established UK Exporter reg reason" in new Setup {
         enable(TrafficManagement)
@@ -227,31 +227,31 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdTaxableSuppliesController.onPageLoad.url)
       }
 
-//      "redirect to the Date Of Business Transfer page if TrafficManagement returns allocated for a TOGC reg reason" in new Setup {
-//        enable(TrafficManagement)
-//        stubSuccessfulLogin(enrolments = testEnrolments)
-//        stubSuccessfulRegIdGet()
-//        stubAudits()
-//        stubAllocation(testRegId)(CREATED)
-//        stubFor(
-//          put(urlMatching("/save4later/vat-registration-eligibility-frontend/testRegId/data/eligibility-data"))
-//            .willReturn(aResponse.withStatus(CREATED).withBody(Json.stringify(Json.obj("id" -> testRegId, "data" -> Json.obj()))))
-//        )
-//        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
-//        stubS4LGetNothing(testRegId)
-//
-//        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
-//        cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", TakingOverBusiness)
-//        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", false)
-//
-//        val request = buildClient(pageUrl)
-//          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-//          .get()
-//
-//        val response = await(request)
-//        response.status mustBe 303
-//        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DateOfBusinessTransferController.onPageLoad.url)
-//      }
+      "redirect to the Date Of Business Transfer page if TrafficManagement returns allocated for a TOGC reg reason" in new Setup {
+        enable(TrafficManagement)
+        stubSuccessfulLogin(enrolments = testEnrolments)
+        stubSuccessfulRegIdGet()
+        stubAudits()
+        stubAllocation(testRegId)(CREATED)
+        stubFor(
+          put(urlMatching("/save4later/vat-registration-eligibility-frontend/testRegId/data/eligibility-data"))
+            .willReturn(aResponse.withStatus(CREATED).withBody(Json.stringify(Json.obj("id" -> testRegId, "data" -> Json.obj()))))
+        )
+        stubGetRegistrationInformation(testRegId)(NOT_FOUND, None)
+        stubS4LGetNothing(testRegId)
+
+        cacheSessionData[BusinessEntity](sessionId, s"$BusinessEntityId", Overseas)
+        cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", TakingOverBusiness)
+        cacheSessionData[Boolean](sessionId, s"$FixedEstablishmentId", false)
+
+        val request = buildClient(pageUrl)
+          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+          .get()
+
+        val response = await(request)
+        response.status mustBe 303
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DateOfBusinessTransferController.onPageLoad.url)
+      }
 
       "redirect to OTRS if TrafficManagement returns Quota Reached" in new Setup {
         enable(TrafficManagement)

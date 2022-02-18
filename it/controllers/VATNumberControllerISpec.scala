@@ -55,7 +55,7 @@ class VATNumberControllerISpec extends IntegrationSpecBase with AuthHelper with 
 
         val response = await(request)
         response.status mustBe 303
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATNumberController.onPageLoad.url) //TODO update routing to previous VRN page when available
+        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.KeepOldVrnController.onPageLoad.url)
       }
 
       "return a BAD_REQUEST with form errors" in new Setup {
