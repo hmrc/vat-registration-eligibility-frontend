@@ -26,7 +26,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
   val switches = Seq(
     TrafficManagement,
-    EnableAAS,
     SoleTraderFlow,
     PartnershipFlow,
     RegisteredSocietyFlow,
@@ -54,11 +53,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 case object TrafficManagement extends FeatureSwitch {
   override val configName: String = "feature-switch.traffic-management"
   override val displayName: String = "Use traffic management"
-}
-
-case object EnableAAS extends FeatureSwitch {
-  override val configName: String = "feature-switch.enable-aas"
-  override val displayName: String = "Enable AAS (only use with the frontend AAS feature switch)"
 }
 
 case object SoleTraderFlow extends FeatureSwitch {

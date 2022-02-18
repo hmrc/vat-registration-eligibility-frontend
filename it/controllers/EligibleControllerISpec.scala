@@ -55,7 +55,6 @@ class EligibleControllerISpec extends IntegrationSpecBase
       cacheSessionData[TurnoverEstimateFormElement](sessionId, s"$TurnoverEstimateId", TurnoverEstimateFormElement("50000"))
       cacheSessionData[Boolean](sessionId, s"$InternationalActivitiesId", false)
       cacheSessionData[Boolean](sessionId, s"$InvolvedInOtherBusinessId", false)
-      cacheSessionData[Boolean](sessionId, s"$AnnualAccountingSchemeId", false)
       cacheSessionData[Boolean](sessionId, s"$ZeroRatedSalesId", false)
       cacheSessionData[RegisteringBusiness](sessionId, s"$RegisteringBusinessId", OwnBusiness)
       cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", SellingGoodsAndServices)

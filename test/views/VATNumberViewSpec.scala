@@ -17,7 +17,6 @@
 package views
 
 import forms.VATNumberFormProvider
-import models.NormalMode
 import views.html.VATNumber
 
 class VATNumberViewSpec extends ViewSpecBase {

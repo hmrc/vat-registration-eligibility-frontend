@@ -16,7 +16,7 @@
 
 package controllers
 
-import featureswitch.core.config.{EnableAAS, FeatureSwitching, LandAndProperty}
+import featureswitch.core.config.{FeatureSwitching, LandAndProperty}
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
 import identifiers.{InvolvedInOtherBusinessId, RacehorsesId}
 import play.api.Application
@@ -53,27 +53,10 @@ class InvolvedInOtherBusinessControllerISpec extends IntegrationSpecBase with Au
       verifySessionCacheData(sessionId, InvolvedInOtherBusinessId.toString, Option.apply[Boolean](false))
     }
 
-    "navigate to Annual Accounting page when false and LandAndProperty is on" in new Setup {
+    "navigate to Registering Business page when false and LandAndProperty is on" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
-      enable(LandAndProperty)
-
-      val request = buildClient(pageUrl)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AnnualAccountingSchemeController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InvolvedInOtherBusinessId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Registering Business page when false and LandAndProperty with EnableAAS is on" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      enable(EnableAAS)
       enable(LandAndProperty)
 
       val request = buildClient(pageUrl)

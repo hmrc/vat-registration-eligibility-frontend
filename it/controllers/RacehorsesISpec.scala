@@ -16,7 +16,7 @@
 
 package controllers
 
-import featureswitch.core.config.{EnableAAS, FeatureSwitching}
+import featureswitch.core.config.FeatureSwitching
 import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
 import identifiers.RacehorsesId
 import play.api.Application
@@ -35,27 +35,10 @@ class RacehorsesISpec extends IntegrationSpecBase with AuthHelper with SessionSt
   class Setup extends SessionTest(app)
 
   s"POST ${controllers.routes.RacehorsesController.onSubmit().url}" should {
-    "navigate to Registering Business when false and EnableAAS is off" in new Setup {
+    "navigate to Registering Business when false" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
-      disable(EnableAAS)
-
-      val request = buildClient(controllers.routes.RacehorsesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AnnualAccountingSchemeController.onPageLoad.url)
-      verifySessionCacheData(sessionId, RacehorsesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Registering Business when false and EnableAAS is on" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      enable(EnableAAS)
 
       val request = buildClient(controllers.routes.RacehorsesController.onSubmit().url)
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")

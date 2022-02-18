@@ -240,18 +240,6 @@ zeroRatedSales.bullet4 = children’s clothes and shoes
 zeroRatedSales.bullet5 = most goods you export to non-EU countries
 zeroRatedSales.linkText = Find out about VAT rates on different goods and services
 
-annualAccountingScheme.heading = Is the business applying for the Annual Accounting Scheme?
-annualAccountingScheme.checkYourAnswersLabel = annualAccountingScheme
-annualAccountingScheme.error.required = Select yes if the company is applying for the Annual Accounting Scheme
-annualAccountingScheme.text = This scheme is an option for companies with an estimated VAT-taxable turnover of £1.35 million or less.
-annualAccountingScheme.bulletAText = Companies on the scheme:
-annualAccountingScheme.bulletA1 = submit one VAT Return a year, rather than quarterly or monthly returns
-annualAccountingScheme.bulletA2 = make monthly or quarterly payments, based on an HMRC estimate of their end-of-year VAT bill
-annualAccountingScheme.bulletBText = It may not suit companies that:
-annualAccountingScheme.bulletB1 = want to keep up to date with the exact amount of VAT they owe or need to reclaim
-annualAccountingScheme.bulletB2 = regularly reclaim more VAT than they charge, because they will only get one VAT refund a year
-annualAccountingScheme.linkText = Find out more about the Annual Accounting Scheme
-
 registeringBusiness.heading = Whose business do you want to register?
 registeringBusiness.radioOwn = Your own
 registeringBusiness.radioElse = Someone else’s
