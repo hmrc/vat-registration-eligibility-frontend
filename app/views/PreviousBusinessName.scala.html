@@ -28,13 +28,13 @@
     button: components.button
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, togcColeKey: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("previousBusinessName.heading.togc"))), backLink = true) {
+@layout(pageTitle = Some(title(form, messages(s"previousBusinessName.heading.$togcColeKey"))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1("previousBusinessName.heading.togc")
+    @h1(s"previousBusinessName.heading.$togcColeKey")
 
     @p{ @messages("previousBusinessName.text") }
 
@@ -44,7 +44,7 @@
             id = "previousBusinessName",
             name = "previousBusinessName",
             classes = Some("govuk-input--width-20"),
-            label = "previousBusinessName.heading.togc",
+            label = s"previousBusinessName.heading.$togcColeKey",
             isPageHeading = false,
         )
 

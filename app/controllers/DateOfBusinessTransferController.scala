@@ -44,19 +44,20 @@ class DateOfBusinessTransferController @Inject()(mcc: MessagesControllerComponen
                                                     executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
-    implicit request =>
+    implicit request => {
       val preparedForm = request.userAnswers.dateOfBusinessTransfer match {
-        case None => formProvider()
-        case Some(value) => formProvider().fill(value)
+        case None => formProvider(request.userAnswers.togcColeKey)
+        case Some(value) => formProvider(request.userAnswers.togcColeKey).fill(value)
       }
-      Ok(view(preparedForm, NormalMode))
+      Ok(view(preparedForm, NormalMode, request.userAnswers.togcColeKey))
+    }
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(request.userAnswers.togcColeKey).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, NormalMode))),
+          Future.successful(BadRequest(view(formWithErrors, NormalMode, request.userAnswers.togcColeKey))),
         formValue =>
           sessionService.save[DateFormElement](DateOfBusinessTransferId.toString, formValue).flatMap {
             cacheMap => Future.successful(cacheMap)

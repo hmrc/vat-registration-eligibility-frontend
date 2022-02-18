@@ -49,14 +49,14 @@ class PreviousBusinessNameController @Inject()(mcc: MessagesControllerComponents
         case None => formProvider()
         case Some(value) => formProvider().fill(value)
       }
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, mode, request.userAnswers.togcColeKey))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       formProvider().bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.userAnswers.togcColeKey))),
         value =>
           sessionService.save[String](PreviousBusinessNameId.toString, value) map { cacheMap =>
             Redirect(navigator.nextPage(PreviousBusinessNameId, mode)(new UserAnswers(cacheMap)))

@@ -33,35 +33,70 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
-  val form = new DateOfBusinessTransferFormProvider(TestTimeMachine)()
-
-  val h1 = "What date did the transfer of business take place?"
+  val h1Togc = "What date did the transfer of business take place?"
+  val h1Cole = "What date did the change of legal entity take place?"
   val testHint = "For example, 27 03 2007"
   val testButton = "Continue"
+  val togc = "togc"
+  val cole = "cole"
 
   val view = app.injector.instanceOf[DateOfBusinessTransfer]
 
-  "DateOfBusinessTransfer view" must {
-    val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+  "DateOfBusinessTransfer view" when {
+    s"registration reason is $togc" must {
+      val doc =
+        asDocument(view
+          (new DateOfBusinessTransferFormProvider(TestTimeMachine)(togc), NormalMode, togc)
+          (fakeDataRequestIncorped, messages, frontendAppConfig)
+        )
 
-    "have the correct continue button" in {
-      doc.select(Selectors.button).text() mustBe continueButton
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
+
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
+
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Togc)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Togc
+      }
+
+      "have the correct hint" in {
+        doc.select(Selectors.hint).text() mustBe testHint
+      }
     }
 
-    "have the correct back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
-    }
+    s"registration reason is $cole" must {
+      val doc =
+        asDocument(view
+        (new DateOfBusinessTransferFormProvider(TestTimeMachine)(cole), NormalMode, cole)
+        (fakeDataRequestIncorped, messages, frontendAppConfig)
+        )
 
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
-    }
+      "have the correct continue button" in {
+        doc.select(Selectors.button).text() mustBe continueButton
+      }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
+      "have the correct back link" in {
+        doc.getElementById(Selectors.backLink).text() mustBe backLink
+      }
 
-    "have the correct hint" in {
-      doc.select(Selectors.hint).text() mustBe testHint
+      "have the correct browser title" in {
+        doc.select(Selectors.title).text() mustBe title(h1Cole)
+      }
+
+      "have the correct heading" in {
+        doc.select(Selectors.h1).text() mustBe h1Cole
+      }
+
+      "have the correct hint" in {
+        doc.select(Selectors.hint).text() mustBe testHint
+      }
     }
   }
 }
