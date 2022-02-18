@@ -131,3 +131,6 @@ POST       /keep-old-vrn                                controllers.KeepOldVrnCo
 
 GET        /vat-number                                  controllers.VATNumberController.onPageLoad
 POST       /vat-number                                  controllers.VATNumberController.onSubmit()
+
+GET        /terms-and-conditions                        controllers.TermsAndConditionsController.onPageLoad
+POST       /terms-and-conditions                        controllers.TermsAndConditionsController.onSubmit

@@ -69,6 +69,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case PreviousBusinessNameId => routes.PreviousBusinessNameController.onPageLoad
     case VATNumberId => routes.VATNumberController.onPageLoad
     case KeepOldVrnId => routes.KeepOldVrnController.onPageLoad
+    case TermsAndConditionsId => routes.TermsAndConditionsController.onPageLoad
     case TrafficManagementResolverId => routes.TrafficManagementResolverController.resolve
     case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
       routes.IntroductionController.onPageLoad
@@ -316,8 +317,13 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       fromPage = VATNumberId,
       toPage = KeepOldVrnId
     ),
-    toNextPage(
+    nextOn(true,
       fromPage = KeepOldVrnId,
+      onSuccessPage = TermsAndConditionsId,
+      onFailPage = TurnoverEstimateId
+    ),
+    toNextPage(
+      fromPage = TermsAndConditionsId,
       toPage = TurnoverEstimateId
     ),
     toNextPage(
