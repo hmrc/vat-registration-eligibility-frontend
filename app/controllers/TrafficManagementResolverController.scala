@@ -52,7 +52,7 @@ class TrafficManagementResolverController @Inject()(mcc: MessagesControllerCompo
 
       if (isEnabled(TrafficManagement)) {
         trafficManagementService.getRegistrationInformation(request.regId).flatMap {
-          case Some(RegistrationInformation(_, _, Draft, Some(date), VatReg)) if date == LocalDate.now =>
+          case Some(RegistrationInformation(_, _, Draft, Some(date), VatReg)) =>
             Future.successful(redirectToNextPage)
           case _ =>
             trafficManagementService.allocate(
