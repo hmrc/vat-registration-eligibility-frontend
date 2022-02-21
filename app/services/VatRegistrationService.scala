@@ -16,11 +16,8 @@
 
 package services
 
-import java.time.format.DateTimeFormatter
 import connectors.VatRegistrationConnector
 import identifiers._
-
-import javax.inject.{Inject, Singleton}
 import models.BusinessEntity.businessEntityToString
 import models.RegisteringBusiness.registeringBusinessToString
 import models.RegistrationReason.registrationReasonToString
@@ -28,10 +25,13 @@ import models._
 import models.requests.DataRequest
 import play.api.i18n.MessagesApi
 import play.api.libs.json._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
 import utils.{JsonSummaryRow, MessagesUtils, PageIdBinding}
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -48,144 +48,13 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     }
   }
 
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-  def businessOrPartnership(implicit data: DataRequest[_]): String = if(data.userAnswers.isPartnership) "partnership" else "business"
-
-  private[services] def prepareQuestionData(key: String, data: Boolean, dynamicHeading: Boolean = false)(implicit r: DataRequest[_]): List[JsValue] = {
-    JsonSummaryRow(
-      key,
-      if (dynamicHeading) messages(s"$key.heading.$businessOrPartnership") else messages(s"$key.heading"),
-      messages(s"site.${if (data) "yes" else "no"}"),
-      Json.toJson(data)
-    )
-  }
-
-  private[services] def getVoluntaryRegistrationJson(data: Boolean)(implicit r: DataRequest[_]): List[JsValue] = {
-    val key = VoluntaryRegistrationId.toString
-    JsonSummaryRow(
-      key,
-      messages(s"$key.heading.$businessOrPartnership"),
-      messages(s"site.${if (data) "yes" else "no"}"),
-      Json.toJson(data)
-    )
-  }
-
-  private[services] def getVoluntaryInformationJson(data: Boolean)(implicit r: DataRequest[_]): List[JsValue] = {
-    val key = VoluntaryInformationId.toString
-    JsonSummaryRow(key, messages(s"$key.heading"), messages(s"site.${if (data) "yes" else "no"}"), Json.toJson(data))
-  }
-
-  private[services] def prepareQuestionData(key: String, data: String)(implicit r: DataRequest[_]): List[JsValue] = {
-    JsonSummaryRow(key, messages(s"$key.heading"), data, Json.toJson(data))
-  }
-
-  private[services] def prepareQuestionData(key: String, data: ConditionalDateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
-    val value = JsonSummaryRow(s"$key-value", messages(s"$key.heading"), messages(if (data.value) s"site.yes" else "site.no"), Json.toJson(data.value))
-    val dataObj = data.optionalData.map(date => JsonSummaryRow(s"$key-optionalData", messages(s"$key.heading2"), date.format(formatter), Json.toJson(date)))
-
-    dataObj.foldLeft(value)((old, list) => old ++ list)
-  }
-
-  private[services] def prepareThresholdInTwelveMonths(key: String, data: ConditionalDateFormElement)
-                                                      (implicit r: DataRequest[_]): List[JsValue] = {
-    val value = JsonSummaryRow(
-      questionId = s"$key-value",
-      question = messages(s"thresholdInTwelveMonths.headingIncorpMore12m.$businessOrPartnership"),
-      answer = messages(if (data.value) s"site.yes" else "site.no"),
-      answerValue = Json.toJson(data.value)
-    )
-
-    val dataObj = data.optionalData.map(date =>
-      JsonSummaryRow(
-        s"$key-optionalData",
-        messages(s"thresholdInTwelveMonths.heading2.$businessOrPartnership"),
-        date.format(formatter),
-        Json.toJson(date)
-      )
-    )
-
-    dataObj.foldLeft(value)((old, list) => old ++ list)
-  }
-
-  private[services] def prepareThresholdPreviousThirty(key: String, data: ConditionalDateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
-    val value = JsonSummaryRow(
-      s"$key-value",
-      messages(s"thresholdPreviousThirtyDays.heading.$businessOrPartnership"),
-      messages(if (data.value) s"site.yes" else "site.no"),
-      Json.toJson(data.value)
-    )
-    val dataObj = data.optionalData.map(date => JsonSummaryRow(
-      s"$key-optionalData",
-      messages(s"$key.heading2.$businessOrPartnership"),
-      date.format(formatter),
-      Json.toJson(date)
-    ))
-
-    dataObj.foldLeft(value)((old, list) => old ++ list)
-  }
-
-  private[services] def prepareBusinessEntity(key: String, data: BusinessEntity)(implicit r: DataRequest[_]): List[JsValue] = {
-    JsonSummaryRow(s"$key-value", messages(s"$key.heading"), businessEntityToString(data)(messages), Json.toJson(data))
-  }
-
-  private[services] def prepareConditionalDateData(key: String, data: ConditionalDateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
-    val value = JsonSummaryRow(
-      s"$key-value",
-      messages(s"$key.heading.$businessOrPartnership"),
-      messages(if (data.value) s"site.yes" else "site.no"),
-      Json.toJson(data.value)
-    )
-    val dataObj = data.optionalData.map(date => JsonSummaryRow(
-      s"$key-optionalData",
-      messages(s"$key.heading2.$businessOrPartnership"),
-      date.format(formatter),
-      Json.toJson(date)
-    ))
-
-    dataObj.foldLeft(value)((old, list) => old ++ list)
-  }
-
-  private[services] def prepareDateData(key: String, data: DateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
-    JsonSummaryRow(s"$key-value", messages(s"$key.heading"), data.date.format(formatter), Json.toJson(data.date))
-  }
-
-  private[services] def prepareQuestionData(key: String, data: TurnoverEstimateFormElement)(implicit r: DataRequest[_]): List[JsValue] = {
-    JsonSummaryRow(
-      s"$key-value",
-      messages(s"$key.heading.$businessOrPartnership"),
-      s"£${"%,d".format(data.value.toLong)}",
-      JsNumber(BigDecimal(data.value.toLong))
-    )
-  }
-
-  private[services] def prepareRegistrationReasonData(key: String, data: RegistrationReason)(implicit r: DataRequest[_]): List[JsValue] = {
-    JsonSummaryRow(
-      s"$key-value",
-      messages(s"$key.heading.$businessOrPartnership"),
-      registrationReasonToString(data)(messages),
-      Json.toJson(data)
-    )
-  }
-
-  private[services] def prepareRegisteringBusinessData(key: String, data: RegisteringBusiness)(implicit r: DataRequest[_]): List[JsValue] = {
-    JsonSummaryRow(s"$key-value", messages(s"$key.heading"), registeringBusinessToString(data)(messages), Json.toJson(data))
-  }
-
-  private[services] def buildIndividualQuestion(implicit r: DataRequest[_]): PartialFunction[(Identifier, Any), List[JsValue]] = {
-    case (id@BusinessEntityId, e: BusinessEntity) => prepareBusinessEntity(id.toString, e)
-    case (id@ThresholdInTwelveMonthsId, e: ConditionalDateFormElement) => prepareThresholdInTwelveMonths(id.toString, e)
-    case (id@ThresholdNextThirtyDaysId, e: ConditionalDateFormElement) => prepareConditionalDateData(id.toString, e)
-    case (id@ThresholdPreviousThirtyDaysId, e: ConditionalDateFormElement) => prepareThresholdPreviousThirty(id.toString, e)
-    case (id@ThresholdTaxableSuppliesId, e: DateFormElement) => prepareDateData(id.toString, e)
-    case (id@RegistrationReasonId, e: RegistrationReason) => prepareRegistrationReasonData(id.toString, e)
-    case (id@RegisteringBusinessId, e: RegisteringBusiness) => prepareRegisteringBusinessData(id.toString, e)
-    case (id, e: ConditionalDateFormElement) => prepareQuestionData(id.toString, e)
-    case (id, e: TurnoverEstimateFormElement) => prepareQuestionData(id.toString, e)
-    case (VoluntaryRegistrationId, e: Boolean) => getVoluntaryRegistrationJson(e)
-    case (VoluntaryInformationId, e: Boolean) => getVoluntaryInformationJson(e)
-    case (id@(InternationalActivitiesId | ZeroRatedSalesId | AgriculturalFlatRateSchemeId | RacehorsesId), e: Boolean) => prepareQuestionData(id.toString, e, dynamicHeading = true)
-    case (id, e: Boolean) => prepareQuestionData(id.toString, e, dynamicHeading = false)
-    case (id, e: String) => prepareQuestionData(id.toString, e)
+  private def createEligibilityBlock(implicit hc: HeaderCarrier,
+                                     executionContext: ExecutionContext,
+                                     r: DataRequest[_]): Future[JsObject] = {
+    sessionService.fetch map {
+      case Some(map) => Json.obj("sections" -> getEligibilitySections(map))
+      case _ => throw new RuntimeException
+    }
   }
 
   private def getEligibilitySections(cacheMap: CacheMap)(implicit r: DataRequest[_]) =
@@ -195,18 +64,83 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
         "data" -> (questionIds flatMap {
           case (questionId, userAnswer) =>
             userAnswer.fold(List[JsValue]())(
-              answer => buildIndividualQuestion(r)((questionId, answer))
+              answer => summaryRowBuilder(questionId, answer)
             )
         })
       )
     }
 
-  private def createEligibilityBlock(implicit hc: HeaderCarrier,
-                                     executionContext: ExecutionContext,
-                                     r: DataRequest[_]): Future[JsObject] = {
-    sessionService.fetch map {
-      case Some(map) => Json.obj("sections" -> getEligibilitySections(map))
-      case _ => throw new RuntimeException
+  private[services] def summaryRowBuilder[T](key: Identifier, data: T)(implicit r: DataRequest[_]): List[JsValue] = {
+    data match {
+      case ConditionalDateFormElement(answer, optDate) =>
+        JsonSummaryRow(
+          s"$key",
+          messageFormatter(key),
+          answerFormatter(answer),
+          answerJsonFormatter(answer)
+        ) ++ optDate.toList.flatMap(date =>
+          JsonSummaryRow(
+            s"$key-optionalData",
+            messageFormatter(key, isOptData = true),
+            answerFormatter[LocalDate](date),
+            answerJsonFormatter[LocalDate](date)
+          )
+        )
+      case _ =>
+        JsonSummaryRow(
+          s"$key",
+          messageFormatter(key),
+          answerFormatter(data),
+          answerJsonFormatter(data)
+        )
     }
   }
+
+  private def messageFormatter(key: Identifier, isOptData: Boolean = false)(implicit data: DataRequest[_]): String = {
+    val optDataKey = if (isOptData) ".optional" else ""
+    messages(
+      key match {
+        case DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId =>
+          data.userAnswers.registrationReason match {
+            case Some(TakingOverBusiness) => s"checkYourAnswers.$key$optDataKey.togc"
+            case Some(ChangingLegalEntityOfBusiness) => s"checkYourAnswers.$key$optDataKey.cole"
+            case _ => throw new InternalServerException("Attempted to submit togc/cole data without a matching reg reason")
+          }
+        case InternationalActivitiesId | ZeroRatedSalesId | AgriculturalFlatRateSchemeId | RacehorsesId |
+             VoluntaryRegistrationId | ThresholdInTwelveMonthsId | ThresholdNextThirtyDaysId |
+             ThresholdPreviousThirtyDaysId | TurnoverEstimateId | RegistrationReasonId =>
+          val businessOrPartnership = if (data.userAnswers.isPartnership) ".partnership" else ".business"
+          s"checkYourAnswers.$key$optDataKey$businessOrPartnership"
+        case _ =>
+          s"checkYourAnswers.$key$optDataKey"
+      }
+    )
+  }
+
+  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+
+  private def answerFormatter[T](answer: T)(implicit r: DataRequest[_]): String =
+    answer match {
+      case data: Boolean => messages(s"site.${if (data) "yes" else "no"}")
+      case data: String => data
+      case data: DateFormElement => data.date.format(formatter)
+      case data: LocalDate => data.format(formatter)
+      case data: RegistrationReason => registrationReasonToString(data)(messages)
+      case data: RegisteringBusiness => registeringBusinessToString(data)(messages)
+      case data: BusinessEntity => businessEntityToString(data)(messages)
+      case data: TurnoverEstimateFormElement => s"£${"%,d".format(data.value.toLong)}"
+    }
+
+  private def answerJsonFormatter[T](answer: T): JsValue =
+    answer match {
+      case data: Boolean => JsBoolean(data)
+      case data: String => JsString(data)
+      case data: DateFormElement => Json.toJson(data.date)
+      case data: LocalDate => JsString(data.format(DateTimeFormatter.ISO_LOCAL_DATE))
+      case data: RegistrationReason => Json.toJson(data)(RegistrationReason.writes)
+      case data: RegisteringBusiness => Json.toJson(data)(RegisteringBusiness.writes)
+      case data: BusinessEntity => Json.toJson(data)(BusinessEntity.writes)
+      case data: TurnoverEstimateFormElement => JsNumber(BigDecimal(data.value.toLong))
+    }
+
 }

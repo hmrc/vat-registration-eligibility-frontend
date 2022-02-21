@@ -17,5 +17,5 @@
 package identifiers
 
 case object RegistrationReasonId extends Identifier {
-  override val toString: String = "registrationReason"
+  override def toString: String = "registrationReason"
 }

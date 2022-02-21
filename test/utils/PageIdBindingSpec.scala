@@ -17,7 +17,7 @@
 package utils
 
 import featureswitch.core.config.FeatureSwitching
-import identifiers.{ThresholdInTwelveMonthsId, _}
+import identifiers.{DateOfBusinessTransferId, ThresholdInTwelveMonthsId, _}
 import models._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
@@ -338,4 +338,40 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$NinoId")))
   }
+
+  "PageIdBinding for a user on TOGC/COLE flow" must {
+    val testPreviousName = "testPreviousName"
+    val testVrn = "testVrn"
+
+    def fullListMap(partyType: BusinessEntity, regReason: RegistrationReason): ListMap[String, JsValue] = ListMap[String, JsValue](
+      s"$FixedEstablishmentId" -> JsBoolean(true),
+      s"$BusinessEntityId" -> Json.toJson(partyType),
+      s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
+      s"$InternationalActivitiesId" -> JsBoolean(false),
+      s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
+      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
+      s"$RegistrationReasonId" -> Json.toJson(regReason),
+      s"$NinoId" -> JsBoolean(true),
+      s"$ZeroRatedSalesId" -> JsBoolean(true),
+      s"$VATExemptionId" -> JsBoolean(false),
+      s"$VATRegistrationExceptionId" -> JsBoolean(false),
+      s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
+      s"$RacehorsesId" -> JsBoolean(false),
+      s"$DateOfBusinessTransferId" -> Json.obj("date" -> JsString("2020-12-12")),
+      s"$PreviousBusinessNameId" -> JsString(testPreviousName),
+      s"$VATNumberId" -> JsString(testVrn),
+      s"$KeepOldVrnId" -> JsBoolean(false)
+    )
+
+    List(TakingOverBusiness, ChangingLegalEntityOfBusiness).foreach { reason =>
+      s"pass Full Happy Path, when the user is UkCompany on $reason flow" in {
+        PageIdBinding.sectionBindings(new CacheMap("test", fullListMap(UKCompany, reason)))
+      }
+
+      s"pass Full Happy Path, when the user is NETP on $reason flow" in {
+        PageIdBinding.sectionBindings(new CacheMap("test", fullListMap(NETP, reason)))
+      }
+    }
+  }
+
 }

@@ -46,7 +46,7 @@
 
     @errorSummary(form.errors, Some(Map("valueDate" -> "month")))
 
-    @h1(messages(s"thresholdInTwelveMonths.headingIncorpMore12m.$headingKeySuffix"))
+    @h1(messages(s"thresholdInTwelveMonths.heading.$headingKeySuffix"))
     @p{ @messages("thresholdInTwelveMonths.p1") }
 
     @details(
@@ -57,7 +57,7 @@
     @formWithCsrf(action = ThresholdInTwelveMonthsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
         @conditionalYesNoRadio(
             form = form,
-            headingKey = messages(s"thresholdInTwelveMonths.headingIncorpMore12m.$headingKeySuffix"),
+            headingKey = messages(s"thresholdInTwelveMonths.heading.$headingKeySuffix"),
             ifYes = Some(hiddenYesContent),
             isPageHeading = false,
             classes = "govuk-visually-hidden"

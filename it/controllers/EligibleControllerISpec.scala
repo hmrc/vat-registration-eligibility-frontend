@@ -61,8 +61,6 @@ class EligibleControllerISpec extends IntegrationSpecBase
       cacheSessionData[Boolean](sessionId, s"$AgriculturalFlatRateSchemeId", false)
       cacheSessionData[Boolean](sessionId, s"$NinoId", true)
       cacheSessionData[Boolean](sessionId, s"$RacehorsesId", false)
-      cacheSessionData[String](sessionId, s"$PreviousBusinessNameId", "Al Pacino Ltd")
-      cacheSessionData[String](sessionId, s"$VATNumberId", "123456789")
 
       stubSaveEligibilityData(testRegId)
       stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
