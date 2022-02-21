@@ -90,6 +90,7 @@ class RegistrationReasonController @Inject()(mcc: MessagesControllerComponents,
                   _ <- sessionService.removeEntry(PreviousBusinessNameId.toString)
                   _ <- sessionService.removeEntry(VATNumberId.toString)
                   _ <- sessionService.removeEntry(KeepOldVrnId.toString)
+                  _ <- sessionService.removeEntry(TermsAndConditionsId.toString)
                   _ <- sessionService.removeEntry(TaxableSuppliesInUkId.toString)
                   _ <- sessionService.removeEntry(GoneOverThresholdId.toString)
                   _ <- sessionService.removeEntry(ThresholdTaxableSuppliesId.toString)

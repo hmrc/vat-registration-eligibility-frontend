@@ -75,6 +75,7 @@ object PageIdBinding extends FeatureSwitching {
       case e@(VoluntaryInformationId, None) => e
       case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, None) if !isTogcCole => e
       case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, Some(_)) if !isTogcCole => illegalState(e._1)
+      case e@(TermsAndConditionsId, None) if !isTogcCole || userAnswers.keepOldVrn.contains(false) => e
       case e if (e._1 != VATRegistrationExceptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
     }
 
@@ -108,7 +109,8 @@ object PageIdBinding extends FeatureSwitching {
           (DateOfBusinessTransferId, userAnswers.dateOfBusinessTransfer),
           (PreviousBusinessNameId, userAnswers.previousBusinessName),
           (VATNumberId, userAnswers.vatNumber),
-          (KeepOldVrnId, userAnswers.keepOldVrn)
+          (KeepOldVrnId, userAnswers.keepOldVrn),
+          (TermsAndConditionsId, userAnswers.termsAndConditions)
         ).collect(ThresholdSectionValidationAndConstruction),
       "Special situations" ->
         Seq(

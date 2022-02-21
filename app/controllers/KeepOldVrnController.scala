@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import featureswitch.core.config.FeatureSwitching
 import forms.KeepOldVrnFormProvider
-import identifiers.KeepOldVrnId
+import identifiers.{KeepOldVrnId, TermsAndConditionsId}
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -41,8 +41,8 @@ class KeepOldVrnController @Inject()(mcc: MessagesControllerComponents,
                                      requireData: DataRequiredAction,
                                      formProvider: KeepOldVrnFormProvider,
                                      view: KeepOldVrn
-                              )(implicit appConfig: FrontendAppConfig,
-                                executionContext: ExecutionContext)
+                                    )(implicit appConfig: FrontendAppConfig,
+                                      executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
@@ -60,9 +60,11 @@ class KeepOldVrnController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          sessionService.save[Boolean](KeepOldVrnId.toString, value).map { cacheMap =>
-            Redirect(navigator.nextPage(KeepOldVrnId, NormalMode)(new UserAnswers(cacheMap)))
-          }
+          for {
+            _ <- if (!value) sessionService.removeEntry(TermsAndConditionsId.toString) else Future.successful()
+            cacheMap <- sessionService.save[Boolean](KeepOldVrnId.toString, value)
+            redirect = Redirect(navigator.nextPage(KeepOldVrnId, NormalMode)(new UserAnswers(cacheMap)))
+          } yield redirect
       )
   }
 

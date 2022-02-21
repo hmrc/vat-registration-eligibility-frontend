@@ -1,6 +1,7 @@
 package controllers
 
 import helpers.{AuthHelper, IntegrationSpecBase, S4LStub, SessionStub}
+import identifiers.TermsAndConditionsId
 import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -31,11 +32,12 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with AuthHelper with
   }
 
   s"POST ${controllers.routes.KeepOldVrnController.onSubmit}" should {
-    "redirect to Turnover Estimate if the answer is no" in new Setup {
+    "redirect to Turnover Estimate and clear down old T&C answer if the answer is no" in new Setup {
       stubSuccessfulLogin()
       stubSuccessfulRegIdGet()
       stubAudits()
       stubS4LGetNothing(testRegId)
+      cacheSessionData[Boolean](sessionId, s"$TermsAndConditionsId", true)
 
       val request = buildClient("/keep-old-vrn")
         .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
@@ -44,6 +46,7 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with AuthHelper with
       val response = await(request)
       response.status mustBe 303
       response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+      verifySessionCacheData[Boolean](sessionId, s"$TermsAndConditionsId", None)
     }
 
     "redirect to Terms & Conditions page if the answer is yes" in new Setup {

@@ -100,7 +100,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     val optDataKey = if (isOptData) ".optional" else ""
     messages(
       key match {
-        case DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId =>
+        case DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId | TermsAndConditionsId =>
           data.userAnswers.registrationReason match {
             case Some(TakingOverBusiness) => s"checkYourAnswers.$key$optDataKey.togc"
             case Some(ChangingLegalEntityOfBusiness) => s"checkYourAnswers.$key$optDataKey.cole"

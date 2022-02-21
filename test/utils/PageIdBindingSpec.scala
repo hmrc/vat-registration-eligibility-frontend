@@ -360,7 +360,8 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$DateOfBusinessTransferId" -> Json.obj("date" -> JsString("2020-12-12")),
       s"$PreviousBusinessNameId" -> JsString(testPreviousName),
       s"$VATNumberId" -> JsString(testVrn),
-      s"$KeepOldVrnId" -> JsBoolean(false)
+      s"$KeepOldVrnId" -> JsBoolean(true),
+      s"$TermsAndConditionsId" -> JsBoolean(true)
     )
 
     List(TakingOverBusiness, ChangingLegalEntityOfBusiness).foreach { reason =>

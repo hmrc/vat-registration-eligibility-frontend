@@ -127,7 +127,8 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
         s"$DateOfBusinessTransferId" -> Json.obj("date" -> LocalDate.now()),
         s"$PreviousBusinessNameId" -> JsString(testPreviousName),
         s"$VATNumberId" -> JsString(testVrn),
-        s"$KeepOldVrnId" -> JsBoolean(false)
+        s"$KeepOldVrnId" -> JsBoolean(true),
+        s"$TermsAndConditionsId" -> JsBoolean(true)
       )
 
       implicit val r: DataRequest[AnyContentAsEmpty.type] = fakeDataRequestIncorped.copy(userAnswers = new UserAnswers(CacheMap("1", togcColeData)))
@@ -146,7 +147,8 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
            |        {"questionId":"dateOfBusinessTransfer","question":"mocked message","answer":"${LocalDate.now().format(service.formatter)}","answerValue":"${LocalDate.now()}"},
            |        {"questionId":"previousBusinessName","question":"mocked message","answer":"$testPreviousName","answerValue":"$testPreviousName"},
            |        {"questionId":"vatNumber","question":"mocked message","answer":"$testVrn","answerValue":"$testVrn"},
-           |        {"questionId":"keepOldVrn","question":"mocked message","answer":"mocked message","answerValue":false}
+           |        {"questionId":"keepOldVrn","question":"mocked message","answer":"mocked message","answerValue":true},
+           |        {"questionId":"termsAndConditions","question":"mocked message","answer":"mocked message","answerValue":true}
            |      ]
            |    },
            |    {
