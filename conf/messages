@@ -353,6 +353,15 @@ vatNumber.error.length                              = VAT number must be 9 numbe
 vatNumber.error.nonNumeric                          = VAT number must only include numbers 0 to 9
 vatNumber.error.invalid                             = Enter a valid VAT number
 
+termsAndConditions.heading                          = Terms and conditions
+termsAndConditions.para                             = By choosing to keep its current VAT registration number, the business agrees:
+termsAndConditions.bullet1                          = to submit its first VAT return to HMRC, with the VAT due for the whole period on the form
+termsAndConditions.bullet2                          = to submit any of the previous owner’s outstanding VAT returns
+termsAndConditions.bullet3                          = to pay HMRC any VAT due on the previous owner’s stocks, assets and any supplies they made
+termsAndConditions.bullet4                          = that any VAT return the previous owner made after the transfer date, will be treated as though made by the current business
+termsAndConditions.bullet5                          = it will have no right to claim money HMRC paid the previous owner before the transfer of the business
+termsAndConditions.button                           = Accept and continue
+
 checkYourAnswers.thresholdInTwelveMonths.business                   = Has the business’s taxable turnover gone over £85,000 in any 12 month period?
 checkYourAnswers.thresholdInTwelveMonths.partnership                = Has the partnership’s taxable turnover gone over £85,000 in any 12 month period?
 checkYourAnswers.thresholdInTwelveMonths.optional.business          = When did the business go over the threshold?
