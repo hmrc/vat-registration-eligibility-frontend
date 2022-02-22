@@ -1,27 +1,24 @@
 package controllers
 
-
-import helpers.{IntegrationSpecBase, S4LStub}
-import identifiers.{KeepOldVrnId, TermsAndConditionsId}
+import helpers.IntegrationSpecBase
+import identifiers.VoluntaryInformationId
 import org.jsoup.Jsoup
-import play.api.http.Status._
 import play.api.libs.json.Json
+import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
-class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
+class VoluntaryInformationControllerISpec extends IntegrationSpecBase {
 
-  val pageUrl = "/keep-old-vrn"
+  val pageUrl = "/voluntary-information"
   val yesRadio = "value"
   val noRadio = "value-no"
-
-  "GET /keep-old-vrn" when {
-    "an answer exists for the page" must {
+  "GET /voluntary-information" when {
+    "an answer already exists for the page" must {
       "return OK with the answer pre-populated" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        stubS4LGetNothing(testRegId)
 
-        cacheSessionData(sessionId, KeepOldVrnId, true)
+        cacheSessionData(sessionId, VoluntaryInformationId, true)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)
@@ -44,33 +41,30 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
         doc.radioIsSelected(noRadio) mustBe false
       }
     }
+
   }
 
-  s"POST /keep-old-vrn" when {
-    "the user answers" must {
-      "redirect to Turnover Estimate and clear down old T&C answer if the answer is no" in new Setup {
+  "POST /voluntary-information" when {
+    "the user answers 'Yes'" must {
+      "redirect to the Eligible page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, TermsAndConditionsId, true)
-
-        val res = await(buildClient(pageUrl).post(Map("value" -> Seq("false"))))
+        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
-        verifySessionCacheData[Boolean](sessionId, TermsAndConditionsId, None)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibleController.onPageLoad.url)
       }
-
-      "redirect to Terms & Conditions page if the answer is yes" in new Setup {
+    }
+    "the user answers 'N'o" must {
+      "redirect to the Eligible page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        stubS4LGetNothing(testRegId)
 
-        val res = await(buildClient("/keep-old-vrn").post(Map("value" -> Seq("true"))))
+        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TermsAndConditionsController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibleController.onPageLoad.url)
       }
     }
     "the user doesn't answer" must {
@@ -84,4 +78,5 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
       }
     }
   }
+
 }

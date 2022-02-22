@@ -38,12 +38,14 @@
             legend = messages("businessEntityOverseas.heading"),
             items = Seq(
                 RadioItem(
-                    content = Text(messages("businessEntityOverseas.netp")),
+                    id = Some(netpKey),
                     value = Some(netpKey),
+                    content = Text(messages("businessEntityOverseas.netp")),
                     hint = Some(Hint(content = Text(messages("businessEntityOverseas.hint")))),
                     checked = form("value").value.contains(netpKey)
                 ),
                 RadioItem(
+                    id = Some(overseasKey),
                     content = Text(messages("businessEntityOverseas.overseas")),
                     value = Some(overseasKey),
                     checked = form("value").value.contains(overseasKey)

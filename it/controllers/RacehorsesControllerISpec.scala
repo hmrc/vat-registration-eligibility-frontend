@@ -16,28 +16,28 @@
 
 package controllers
 
-import featureswitch.core.config.{FeatureSwitching, LandAndProperty}
+import featureswitch.core.config.FeatureSwitching
 import helpers.IntegrationSpecBase
-import identifiers.InvolvedInOtherBusinessId
+import identifiers.RacehorsesId
 import org.jsoup.Jsoup
 import play.api.http.Status._
 import play.api.libs.json.Format._
 import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames
 
-class InvolvedInOtherBusinessControllerISpec extends IntegrationSpecBase with FeatureSwitching {
+class RacehorsesControllerISpec extends IntegrationSpecBase with FeatureSwitching {
 
-  val pageUrl = "/involved-more-business-changing-status"
+  val pageUrl = "/own-racehorses-buy-sell-property"
   val yesRadio = "value"
   val noRadio = "value-no"
 
-  "GET /involved-more-business-changing-statuss" when {
+  "GET /own-racehorses-buy-sell-property" when {
     "an answer exists for the page" must {
       "return OK with the answer pre-populated" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, InvolvedInOtherBusinessId, true)
+        cacheSessionData(sessionId, RacehorsesId, true)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)
@@ -62,32 +62,18 @@ class InvolvedInOtherBusinessControllerISpec extends IntegrationSpecBase with Fe
     }
   }
 
-  s"POST $pageUrl" when {
+  s"POST /own-racehorses-buy-sell-property" when {
     "the user answers" must {
-      "navigate to Racehorses page when false and LandAndProperty is off" in new Setup {
+      "navigate to Registering Business when false" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        disable(LandAndProperty)
-
-        val res = await(buildClient(pageUrl).post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InvolvedInOtherBusinessId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Registering Business page when false and LandAndProperty is on" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        enable(LandAndProperty)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> Seq("false"))))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegisteringBusinessController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InvolvedInOtherBusinessId, Option.apply[Boolean](false))
+        verifySessionCacheData(sessionId, RacehorsesId, Option.apply[Boolean](false))
       }
-
       "navigate to VAT Exception when true" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
@@ -96,7 +82,7 @@ class InvolvedInOtherBusinessControllerISpec extends IntegrationSpecBase with Fe
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InvolvedInOtherBusinessId, Option.apply[Boolean](true))
+        verifySessionCacheData(sessionId, RacehorsesId, Option.apply[Boolean](true))
       }
     }
     "the user doesn't answer" must {

@@ -28,7 +28,8 @@ import utils.ExtraSessionKeys
 
 import java.net.{URLDecoder, URLEncoder}
 
-object SessionCookieBaker extends IntegrationSpecBase {
+trait SessionCookieBaker {
+  self: IntegrationSpecBase =>
 
   val cookieKey = "gvBoGdgzqG1AarzF1LY0zQ=="
 
@@ -41,7 +42,7 @@ object SessionCookieBaker extends IntegrationSpecBase {
 
       val cookieSignerCache: Application => CookieSigner = Application.instanceCache[CookieSigner]
 
-      def cookieSigner: CookieSigner = cookieSignerCache(app)
+      def cookieSigner: CookieSigner = cookieSignerCache(self.app)
 
       PlainText(cookieSigner.sign(encoded, key) + "-" + encoded)
     }
@@ -69,14 +70,14 @@ object SessionCookieBaker extends IntegrationSpecBase {
 
   def cookieData(userId: String = "anyUserId"): Map[String, String] = {
     Map(
-      SessionKeys.sessionId -> "session-ac4ed3e7-dbc3-4150-9574-40771c4285c1",
+      SessionKeys.sessionId -> sessionId,
       ExtraSessionKeys.token -> "RANDOMTOKEN",
       ExtraSessionKeys.userId -> userId)
   }
 
   def requestWithSession(req: FakeRequest[AnyContentAsFormUrlEncoded], userId: String): FakeRequest[AnyContentAsFormUrlEncoded] =
     req.withSession(
-      SessionKeys.sessionId -> "session-ac4ed3e7-dbc3-4150-9574-40771c4285c1",
+      SessionKeys.sessionId -> sessionId,
       ExtraSessionKeys.token -> "RANDOMTOKEN",
       ExtraSessionKeys.userId -> userId)
 

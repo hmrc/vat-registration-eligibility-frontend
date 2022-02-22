@@ -87,7 +87,6 @@ GET        /registration-exception                      controllers.VATRegistrat
 POST       /registration-exception                      controllers.VATRegistrationExceptionController.onSubmit()
 
 GET        /apply-writing                               controllers.ApplyInWritingController.onPageLoad
-POST       /apply-writing                               controllers.ApplyInWritingController.onSubmit()
 
 GET        /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onPageLoad
 POST       /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onSubmit()

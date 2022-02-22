@@ -63,7 +63,7 @@ class VATExemptionController @Inject()(mcc: MessagesControllerComponents,
         value =>
           sessionService.save[Boolean](VATExemptionId.toString, value).map { cacheMap =>
             if (value) {
-              trafficManagementService.upsertRegistrationInformation(request.regId, request.regId, isOtrs = true)
+              trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = true)
             }
             Redirect(navigator.nextPage(VATExemptionId, NormalMode)(new UserAnswers(cacheMap)))
           }

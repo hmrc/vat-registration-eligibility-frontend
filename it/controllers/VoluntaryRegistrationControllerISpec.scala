@@ -1,29 +1,27 @@
-
-
 package controllers
 
 import helpers.IntegrationSpecBase
-import identifiers.GoneOverThresholdId
+import identifiers.VoluntaryRegistrationId
 import org.jsoup.Jsoup
-import play.api.http.Status._
 import play.api.libs.json.Json
+import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
-class GoneOverThresholdControllerISpec extends IntegrationSpecBase {
+class VoluntaryRegistrationControllerISpec extends IntegrationSpecBase {
 
-  val pageUrl = "/gone-over-threshold-netp"
+  val pageUrl = "/register-voluntarily"
   val yesRadio = "value"
   val noRadio = "value-no"
 
-  "GET /gone-over-threshold-netp" when {
-    "an answer exists for the page" must {
+  "GET /register-voluntarily" when {
+    "an answer already exists for the page" must {
       "return OK with the answer pre-populated" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, GoneOverThresholdId, true)
+        cacheSessionData(sessionId, VoluntaryRegistrationId, true)
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
@@ -36,7 +34,7 @@ class GoneOverThresholdControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
@@ -46,26 +44,27 @@ class GoneOverThresholdControllerISpec extends IntegrationSpecBase {
     }
   }
 
-  s"POST /gone-over-threshold-netp" when {
-    "the user answers" must {
-      s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} when value is true" in new Setup {
+  "POST /register-voluntarily" when {
+    "the user answers 'Yes'" must {
+      "redirect to the Turnover Estimates page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
+        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad().url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.TurnoverEstimateController.onPageLoad.url)
       }
-
-      s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} when value is false" in new Setup {
+    }
+    "the user answers 'No'" must {
+      "redirect to the Chose Not To Register page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Map("value" -> "false")))
+        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad().url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.ChoseNotToRegisterController.onPageLoad.url)
       }
     }
     "the user doesn't answer" must {
@@ -79,4 +78,5 @@ class GoneOverThresholdControllerISpec extends IntegrationSpecBase {
       }
     }
   }
+
 }

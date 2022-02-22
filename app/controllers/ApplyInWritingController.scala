@@ -35,7 +35,4 @@ class ApplyInWritingController @Inject()(mcc: MessagesControllerComponents,
       Ok(view())
   }
 
-  def onSubmit: Action[AnyContent] = Action { _ =>
-    Redirect(controllers.routes.ApplyInWritingController.onPageLoad)
-  }
 }

@@ -1,30 +1,20 @@
 package controllers
 
-import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
-import play.api.inject.guice.GuiceApplicationBuilder
+import helpers.IntegrationSpecBase
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
-class IntroductionControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub {
-
-  override implicit lazy val app = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .build
+class IntroductionControllerISpec extends IntegrationSpecBase {
 
   val testUrl = controllers.routes.IntroductionController.onPageLoad.url
-
-  class Setup extends SessionTest(app)
 
   "GET /introduction" must {
     "return OK" in new Setup {
       stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
       stubAudits()
 
-      val res = await(buildClient(testUrl)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .get)
+      val res = await(buildClient(testUrl).get)
 
       res.status mustBe OK
     }
@@ -33,12 +23,9 @@ class IntroductionControllerISpec extends IntegrationSpecBase with AuthHelper wi
   "POST /introduction" must {
     "Redirect to the FixedEstablishmentController" in new Setup {
       stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
       stubAudits()
 
-      val res = await(buildClient(testUrl)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Json.obj()))
+      val res = await(buildClient(testUrl).post(Json.obj()))
 
       res.status mustBe SEE_OTHER
       res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)

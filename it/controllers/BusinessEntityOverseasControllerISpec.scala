@@ -17,114 +17,119 @@
 package controllers
 
 import featureswitch.core.config.{NETPFlow, NonUkCompanyFlow}
-import helpers.{AuthHelper, IntegrationSpecBase, SessionStub}
+import helpers.IntegrationSpecBase
 import identifiers.BusinessEntityId
 import models.BusinessEntity.{netpKey, overseasKey}
-import models.{BusinessEntity, CurrentProfile, NETP, Overseas}
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers.{await, _}
+import models.{BusinessEntity, NETP, Overseas}
+import org.jsoup.Jsoup
+import play.api.libs.json.Json
+import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
-import repositories.{DatedCacheMap, SessionRepository}
-import services.SessionService
-import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
-import utils.PageIdBinding.{disable, enable}
 
-import scala.concurrent.ExecutionContext
-import scala.concurrent.ExecutionContext.Implicits.global
+class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
 
-class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub {
+  val pageUrl = "/business-entity-overseas"
 
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .build()
+  "GET /business-entity-overseas" when {
+    "an answer aleady exists for the page" must {
+      "return OK with the answer pre-populated" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
 
-  class Setup extends SessionTest(app)
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NETP)
 
-  "GET /business-entity-overseas" must {
-    "return OK" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
+        val res = await(buildClient(pageUrl).get)
+        val doc = Jsoup.parse(res.body)
 
-      val res = await(
-        buildClient(controllers.routes.BusinessEntityOverseasController.onPageLoad.url)
-          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-          .get
-      )
+        res.status mustBe OK
+        doc.radioIsSelected(netpKey) mustBe true
+        doc.radioIsSelected(overseasKey) mustBe false
+      }
+    }
+    "an answer doesn't exist for the page" must {
+      "return OK with an empty form" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
 
-      res.status mustBe OK
+        val res = await(buildClient(pageUrl).get)
+        val doc = Jsoup.parse(res.body)
+
+        res.status mustBe OK
+        doc.radioIsSelected(netpKey) mustBe false
+        doc.radioIsSelected(overseasKey) mustBe false
+      }
     }
   }
 
-  s"POST /business-entity-overseas" should {
-    "return a redirect to Agricultural Flat Rate Scheme when NETP is selected with FS Enabled" in new Setup {
-      enable(NETPFlow)
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
+  s"POST /business-entity-overseas" when {
+    "the user answers" must {
+      "return a redirect to Agricultural Flat Rate Scheme when NETP is selected with FS Enabled" in new Setup {
+        enable(NETPFlow)
+        stubSuccessfulLogin()
+        stubAudits()
 
-      val request = buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq(netpKey)))
+        val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
+          .post(Map("value" -> Seq(netpKey))))
 
-      val response = await(request)
-      response.status mustBe SEE_OTHER
-      response.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
 
-      verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId.toString, Some(NETP))
+        verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(NETP))
+      }
+
+      "return a redirect to International Activities Dropout when NETP is selected with FS Disabled" in new Setup {
+        disable(NETPFlow)
+        stubSuccessfulLogin()
+        stubAudits()
+
+        val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
+          .post(Map("value" -> Seq(netpKey))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
+
+        verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(NETP))
+      }
+
+      "return a redirect to Agricultural Flat Rate Scheme when NonUkCompany is selected with FS Enabled" in new Setup {
+        enable(NonUkCompanyFlow)
+        stubSuccessfulLogin()
+        stubAudits()
+
+        val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
+          .post(Map("value" -> Seq(overseasKey))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
+
+        verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(Overseas))
+      }
+
+      "return a redirect to International Activities Dropout when Overseas is selected with FS Disabled" in new Setup {
+        disable(NonUkCompanyFlow)
+        stubSuccessfulLogin()
+        stubAudits()
+
+        val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
+          .post(Map("value" -> Seq(overseasKey))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
+
+        verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(Overseas))
+      }
     }
+    "the user doesn't answer" must {
+      "return BAD_REQUEST" in new Setup {
+        enable(NETPFlow)
+        stubSuccessfulLogin()
+        stubAudits()
 
-    "return a redirect to International Activities Dropout when NETP is selected with FS Disabled" in new Setup {
-      disable(NETPFlow)
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
+        val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
+          .post(Json.obj()))
 
-      val request = buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq(netpKey)))
-
-      val response = await(request)
-      response.status mustBe SEE_OTHER
-      response.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
-
-      verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId.toString, Some(NETP))
-    }
-
-    "return a redirect to Agricultural Flat Rate Scheme when NonUkCompany is selected with FS Enabled" in new Setup {
-      enable(NonUkCompanyFlow)
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-
-      val request = buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq(overseasKey)))
-
-      val response = await(request)
-      response.status mustBe SEE_OTHER
-      response.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
-
-      verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId.toString, Some(Overseas))
-    }
-
-    "return a redirect to International Activities Dropout when Overseas is selected with FS Disabled" in new Setup {
-      disable(NonUkCompanyFlow)
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-
-      val request = buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq(overseasKey)))
-
-      val response = await(request)
-      response.status mustBe SEE_OTHER
-      response.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
-
-      verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId.toString, Some(Overseas))
+        res.status mustBe BAD_REQUEST
+      }
     }
   }
 }

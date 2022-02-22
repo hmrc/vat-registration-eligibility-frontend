@@ -40,7 +40,6 @@ class JourneyService @Inject()(val sessionService: SessionService,
   def getProfile(implicit hc: HeaderCarrier): Future[Option[CurrentProfile]] =
     sessionService.getEntry[CurrentProfile](profileKey)
 
-
   def initialiseJourney(internalId: String, regId: String)(implicit hc: HeaderCarrier): Future[CacheMap] =
     sessionService.fetch(internalId)
       .flatMap {

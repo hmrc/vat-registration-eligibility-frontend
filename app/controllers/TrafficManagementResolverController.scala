@@ -57,7 +57,7 @@ class TrafficManagementResolverController @Inject()(mcc: MessagesControllerCompo
           case _ =>
             trafficManagementService.allocate(
               request.regId,
-              request.userAnswers.businessEntity.getOrElse(throw new InternalServerException("[NinoController] Missing business entity"))
+              request.userAnswers.businessEntity.getOrElse(throw new InternalServerException("[TrafficManagementResolverController] Missing business entity"))
             ).flatMap {
               case Allocated =>
                 s4LService.save[CacheMap](request.regId, "eligibility-data", request.userAnswers.cacheMap) map { _ =>

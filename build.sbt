@@ -1,7 +1,6 @@
 import uk.gov.hmrc._
 import DefaultBuildSettings._
 import play.sbt.routes.RoutesKeys
-import sbt.Resolver
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.SbtBobbyPlugin.BobbyKeys.bobbyRulesURL
@@ -16,7 +15,7 @@ scalaVersion := "2.12.12"
 val scoverageSettings = Seq(
   ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
     ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;.*SessionService;" +
-    ".*ControllerConfiguration;.*LanguageSwitchController",
+    ".*ControllerConfiguration;.*LanguageSwitchController;.*featureswitch.*;.*config.*",
   ScoverageKeys.coverageMinimum := 90,
   ScoverageKeys.coverageFailOnMinimum := false,
   ScoverageKeys.coverageHighlighting := true,

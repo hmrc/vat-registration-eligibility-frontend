@@ -17,229 +17,239 @@
 package controllers
 
 import featureswitch.core.config._
-import helpers.{AuthHelper, IntegrationSpecBase, S4LStub, SessionStub}
+import helpers.{IntegrationSpecBase, S4LStub}
 import identifiers.{BusinessEntityId, InternationalActivitiesId}
 import models._
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import org.jsoup.Jsoup
+import play.api.http.Status._
 import play.api.libs.json.Format._
+import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames
 
-class InternationalActivitiesControllerISpec extends IntegrationSpecBase with AuthHelper with SessionStub with FeatureSwitching with S4LStub {
+class InternationalActivitiesControllerISpec extends IntegrationSpecBase with FeatureSwitching with S4LStub {
 
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .build()
+  val pageUrl = "/business-activities-next-12-months"
+  val yesRadio = "value"
+  val noRadio = "value-no"
 
-  val internalId = "testInternalId"
-
-  class Setup extends SessionTest(app)
-
-  s"POST ${controllers.routes.InternationalActivitiesController.onSubmit().url}" should {
-    "navigate to International Activities dropout when true" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, UKCompany)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("true")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.EligibilityDropoutController.internationalActivitiesDropout().url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](true))
-    }
-
-    "navigate to Involved In Other Business when false and UKCompany" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, UKCompany)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Involved In Other Business when false and SoleTrader when FS is on" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-      enable(SoleTraderFlow)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, SoleTrader)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Involved In Other Business when false and Partnership when FS is on" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-      enable(PartnershipFlow)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, GeneralPartnership)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Involved In Other Business when false and Limited Liability Partnership" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-      enable(PartnershipFlow)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, LimitedLiabilityPartnership)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Involved In Other Business when false and Registered Society when FS is on" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-      enable(RegisteredSocietyFlow)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, RegisteredSociety)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Involved In Other Business when false and Non-Incorporated Trust when FS is on" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-      enable(NonIncorpTrustFlow)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, NonIncorporatedTrust)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Involved In Other Business when false and Charitable Incorporated Organisation (ICO) when FS is on" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-      enable(CharityFlow)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, CharitableIncorporatedOrganisation)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Involved In Other Business when an Unincorporated Association and Unincorporated Association FS is turned on" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
-      enable(UnincorporatedAssociationFlow)
-
-      cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, UnincorporatedAssociation)
-
-      val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-        .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map("value" -> Seq("false")))
-
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
-      verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
-    }
-
-    "navigate to Vat Exception Kickout when false but business entity is not allowed" in new Setup {
-      disable(PartnershipFlow)
-      disable(SoleTraderFlow)
-      disable(RegisteredSocietyFlow)
-      disable(NonIncorpTrustFlow)
-      disable(CharityFlow)
-      disable(UnincorporatedAssociationFlow)
-
-      val entityList = Seq(
-        SoleTrader,
-        GeneralPartnership,
-        ScottishPartnership,
-        CharitableIncorporatedOrganisation,
-        NonIncorporatedTrust,
-        RegisteredSociety,
-        UnincorporatedAssociation,
-        Division
-      )
-
-      entityList.map { entity =>
+  "GET /business-activities-next-12-months" when {
+    "an answer exists for the page" must {
+      "return OK with the answer pre-populated" in new Setup {
         stubSuccessfulLogin()
-        stubSuccessfulRegIdGet()
+        stubAudits()
+
+        cacheSessionData(sessionId, InternationalActivitiesId, true)
+
+        val res = await(buildClient(pageUrl).get)
+        val doc = Jsoup.parse(res.body)
+
+        res.status mustBe OK
+        doc.radioIsSelected(yesRadio) mustBe true
+        doc.radioIsSelected(noRadio) mustBe false
+      }
+    }
+    "an answer doesn't exist for the page" must {
+      "return OK with an empty form" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+
+        val res = await(buildClient(pageUrl).get)
+        val doc = Jsoup.parse(res.body)
+
+        res.status mustBe OK
+        doc.radioIsSelected(yesRadio) mustBe false
+        doc.radioIsSelected(noRadio) mustBe false
+      }
+    }
+  }
+
+  s"POST /business-activities-next-12-months" when {
+    "the user answers" must {
+      "navigate to International Activities dropout when true" in new Setup {
+        stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId.toString, entity)
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
 
-        val request = buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-          .post(Map("value" -> Seq("false")))
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("true"))))
 
-        val response = await(request)
-        response.status mustBe 303
-        response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId.toString, Option.apply[Boolean](false))
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.EligibilityDropoutController.internationalActivitiesDropout().url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](true))
+      }
+
+      "navigate to Involved In Other Business when false and UKCompany" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Involved In Other Business when false and SoleTrader when FS is on" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(SoleTraderFlow)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, SoleTrader)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Involved In Other Business when false and Partnership when FS is on" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(PartnershipFlow)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, GeneralPartnership)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Involved In Other Business when false and Limited Liability Partnership" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(PartnershipFlow)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, LimitedLiabilityPartnership)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Involved In Other Business when false and Registered Society when FS is on" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(RegisteredSocietyFlow)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, RegisteredSociety)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Involved In Other Business when false and Non-Incorporated Trust when FS is on" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(NonIncorpTrustFlow)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NonIncorporatedTrust)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Involved In Other Business when false and Charitable Incorporated Organisation (ICO) when FS is on" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(CharityFlow)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, CharitableIncorporatedOrganisation)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Involved In Other Business when an Unincorporated Association and Unincorporated Association FS is turned on" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(UnincorporatedAssociationFlow)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UnincorporatedAssociation)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.InvolvedInOtherBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Vat Exception Kickout when false but business entity is not allowed" in new Setup {
+        disable(PartnershipFlow)
+        disable(SoleTraderFlow)
+        disable(RegisteredSocietyFlow)
+        disable(NonIncorpTrustFlow)
+        disable(CharityFlow)
+        disable(UnincorporatedAssociationFlow)
+
+        val entityList = Seq(
+          SoleTrader,
+          GeneralPartnership,
+          ScottishPartnership,
+          CharitableIncorporatedOrganisation,
+          NonIncorporatedTrust,
+          RegisteredSociety,
+          UnincorporatedAssociation,
+          Division
+        )
+
+        entityList.map { entity =>
+          stubSuccessfulLogin()
+          stubAudits()
+          stubS4LGetNothing(testRegId)
+
+          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, entity)
+
+          val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+            .post(Map("value" -> Seq("false"))))
+
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
+          verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+        }
+      }
+    }
+    "the user doesn't answer" must {
+      "return BAD_REQUEST" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+
+        val res = await(buildClient(pageUrl).post(Json.obj()))
+
+        res.status mustBe BAD_REQUEST
       }
     }
   }

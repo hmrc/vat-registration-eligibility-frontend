@@ -2,8 +2,9 @@ package controllers
 
 import featureswitch.core.config.FeatureSwitching
 import helpers._
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import identifiers.TaxableSuppliesInUkId
+import org.jsoup.Jsoup
+import play.api.http.Status._
 import play.api.libs.json.{JsArray, Json}
 import play.mvc.Http.HeaderNames
 import services.TrafficManagementService
@@ -11,14 +12,8 @@ import services.TrafficManagementService
 import java.time.LocalDate
 
 class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
-  with AuthHelper
-  with SessionStub
   with FeatureSwitching
   with S4LStub {
-
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .build()
 
   val testDate: LocalDate = LocalDate.now
 
@@ -32,39 +27,74 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
     )
   ))
 
-  val pageUrl: String = routes.TaxableSuppliesInUkController.onSubmit.toString
+  val pageUrl: String = "/made-or-intend-to-make-taxable-supplies"
+  val yesRadio = "value"
+  val noRadio = "value-no"
 
-  class Setup extends SessionTest(app)
+  "GET /made-or-intend-to-make-taxable-supplies" when {
+    "an answer exists for the page" must {
+      "return OK with the answer pre-populated" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
 
-  s"POST $pageUrl" should {
-    "redirect to Do Not Need To Register if the answer is no" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
+        cacheSessionData(sessionId, TaxableSuppliesInUkId, true)
 
-      val request = buildClient(pageUrl).withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map(
-          "value" -> Seq("false"))
-        )
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DoNotNeedToRegisterController.onPageLoad.url)
+        val res = await(buildClient(pageUrl).get)
+        val doc = Jsoup.parse(res.body)
+
+        res.status mustBe OK
+        doc.radioIsSelected(yesRadio) mustBe true
+        doc.radioIsSelected(noRadio) mustBe false
+      }
     }
+    "an answer doesn't exist for the page" must {
+      "return OK with an empty form" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
 
-    "redirect to the Traffic Management Resolver if the answer is yes" in new Setup {
-      stubSuccessfulLogin()
-      stubSuccessfulRegIdGet()
-      stubAudits()
-      stubS4LGetNothing(testRegId)
+        val res = await(buildClient(pageUrl).get)
+        val doc = Jsoup.parse(res.body)
 
-      val request = buildClient(pageUrl).withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
-        .post(Map(
-          "value" -> Seq("true"))
-        )
-      val response = await(request)
-      response.status mustBe 303
-      response.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+        res.status mustBe OK
+        doc.radioIsSelected(yesRadio) mustBe false
+        doc.radioIsSelected(noRadio) mustBe false
+      }
+    }
+  }
+
+  s"POST /made-or-intend-to-make-taxable-supplies" when {
+    "the user answers" must {
+      "redirect to Do Not Need To Register if the answer is no" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+
+        val res = await(buildClient(pageUrl).post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DoNotNeedToRegisterController.onPageLoad.url)
+      }
+
+      "redirect to the Traffic Management Resolver if the answer is yes" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+
+        val res = await(buildClient(pageUrl).post(Map("value" -> Seq("true"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+      }
+    }
+    "the user doesn't answer" must {
+      "return BAD_REQUEST" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+
+        val res = await(buildClient(pageUrl).post(Json.obj()))
+
+        res.status mustBe BAD_REQUEST
+      }
     }
   }
 }
