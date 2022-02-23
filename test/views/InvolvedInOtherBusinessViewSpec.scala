@@ -27,7 +27,7 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
   val form = new InvolvedInOtherBusinessFormProvider().form
 
   val h1 = "Have you been involved with another business or taken over a VAT-registered business?"
-
+  val togcH1 = "Have you been involved with another business?"
   val bullet1 = "over the past 2 years, you have had another self-employed business in the UK or Isle of Man (do not tell us if your only source of self-employed income was from being a landlord)"
   val bullet2 = "over the past 2 years, you have been a partner or director with a different business in the UK or Isle of Man"
   val vatGroupBullet = "you want to set up a VAT group (opens in new tab)."
@@ -56,6 +56,14 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
 
       "have the correct heading" in {
         doc.select(Selectors.h1).text() mustBe h1
+      }
+
+      "have the correct heading when the TOGC/COLE flow is enabled" in {
+        enable(TOGCFlow)
+        val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
+
+        doc.select(Selectors.h1).text() mustBe togcH1
+        disable(TOGCFlow)
       }
 
       "have the correct legend" in {

@@ -181,6 +181,7 @@ turnoverEstimate.error.amount.giveLessThan  = Give an estimate that’s less tha
 completionCapacity.noneOfThese = None of these
 
 involvedInOtherBusiness.heading                 = Have you been involved with another business or taken over a VAT-registered business?
+involvedInOtherBusiness.headingTogcCole         = Have you been involved with another business?
 involvedInOtherBusiness.error.required          = Select yes if you have ever been involved with another business or taken over a VAT-registered business
 involvedInOtherBusiness.text                    = Tell us if any of the following apply:
 
