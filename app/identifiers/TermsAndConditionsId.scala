@@ -17,5 +17,5 @@
 package identifiers
 
 case object TermsAndConditionsId extends Identifier {
-  override val toString: String = "termsAndConditions"
+  override def toString: String = "termsAndConditions"
 }

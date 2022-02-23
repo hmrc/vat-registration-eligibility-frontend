@@ -186,12 +186,13 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
       cacheSessionData[RegistrationReason](sessionId, s"$RegistrationReasonId", SellingGoodsAndServices)
       cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdInTwelveMonthsId", ConditionalDateFormElement(true, Some(LocalDate.now())))
       cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(true, Some(LocalDate.now())))
-      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdNextThirtyDaysId", ConditionalDateFormElement(true, Some(LocalDate.now())))
+      cacheSessionData[ConditionalDateFormElement](sessionId, s"$ThresholdPreviousThirtyDaysId", ConditionalDateFormElement(true, Some(LocalDate.now())))
       cacheSessionData[Boolean](sessionId, s"$VoluntaryRegistrationId", true)
       cacheSessionData[DateFormElement](sessionId, s"$DateOfBusinessTransferId", DateFormElement(LocalDate.now()))
       cacheSessionData[String](sessionId, s"$PreviousBusinessNameId", "test")
       cacheSessionData[String](sessionId, s"$VATNumberId", "test")
       cacheSessionData[Boolean](sessionId, s"$KeepOldVrnId", true)
+      cacheSessionData[Boolean](sessionId, s"$TermsAndConditionsId", true)
       cacheSessionData[Boolean](sessionId, s"$TaxableSuppliesInUkId", true)
       cacheSessionData[Boolean](sessionId, s"$GoneOverThresholdId", true)
       cacheSessionData[DateFormElement](sessionId, s"$ThresholdTaxableSuppliesId", DateFormElement(LocalDate.now()))
@@ -204,7 +205,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with AuthHel
 
       List(
         ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId,
-        DateOfBusinessTransferId, PreviousBusinessNameId, VATNumberId, KeepOldVrnId,
+        DateOfBusinessTransferId, PreviousBusinessNameId, VATNumberId, KeepOldVrnId, TermsAndConditionsId,
         TaxableSuppliesInUkId, GoneOverThresholdId, ThresholdTaxableSuppliesId
       ).foreach(id =>
         verifySessionCacheData(sessionId, s"$id", None)

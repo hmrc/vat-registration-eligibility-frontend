@@ -106,4 +106,6 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def vatNumber: Option[String] = cacheMap.getEntry[String](VATNumberId.toString)
 
   def keepOldVrn: Option[Boolean] = cacheMap.getEntry[Boolean](KeepOldVrnId.toString)
+
+  def termsAndConditions: Option[Boolean] = cacheMap.getEntry[Boolean](TermsAndConditionsId.toString)
 }
