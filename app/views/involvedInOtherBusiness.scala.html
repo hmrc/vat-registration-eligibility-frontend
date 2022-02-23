@@ -32,11 +32,11 @@
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("involvedInOtherBusiness.heading"))), backLink = true) {
+@layout(pageTitle = Some(title(form, messages(headingKey))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1(messages("involvedInOtherBusiness.heading"))
+    @h1(messages(headingKey))
     @p{ @messages("involvedInOtherBusiness.text") }
 
     <ul class="govuk-list govuk-list--bullet">
@@ -59,7 +59,7 @@
     @formWithCsrf(action = InvolvedInOtherBusinessController.onSubmit(), 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
-            headingKey = "involvedInOtherBusiness.heading",
+            headingKey = headingKey,
             isPageHeading = false,
             classes = "govuk-visually-hidden"
         )
@@ -68,3 +68,12 @@
     }
 
 }
+
+@headingKey = @{
+    if(appConfig.isEnabled(TOGCFlow)) {
+        "involvedInOtherBusiness.headingTogcCole"
+    } else {
+        "involvedInOtherBusiness.heading"
+    }
+}
+
