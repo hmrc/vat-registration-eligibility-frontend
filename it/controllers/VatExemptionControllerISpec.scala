@@ -1,15 +1,17 @@
 package controllers
 
 import featureswitch.core.config.ExceptionExemptionFlow
-import helpers.IntegrationSpecBase
+import helpers.{IntegrationSpecBase, TrafficManagementStub}
 import identifiers.{GoneOverThresholdId, VATExemptionId}
-import models.OTRS
+import models.{Draft, OTRS, RegistrationInformation}
 import org.jsoup.Jsoup
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
-class VatExemptionControllerISpec extends IntegrationSpecBase {
+import java.time.LocalDate
+
+class VatExemptionControllerISpec extends IntegrationSpecBase with TrafficManagementStub {
 
   val pageUrl = "/vat-exemption"
   val yesRadio = "value"
@@ -48,20 +50,6 @@ class VatExemptionControllerISpec extends IntegrationSpecBase {
 
   "POST /vat-exemption" when {
     "the user answers 'Yes'" when {
-      "the ExceptionExemptionFlow FS is disabled" must {
-        "redirect to the Can't Register (OTRS) page" in new Setup {
-          disable(ExceptionExemptionFlow)
-          stubSuccessfulLogin()
-          stubAudits()
-
-          cacheSessionData(sessionId, GoneOverThresholdId, false)
-
-          val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
-
-          res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.onPageLoad(OTRS.toString).url)
-        }
-      }
       "the ExceptionExemptionFlow FS is enabled" when {
         "the user has gone over the VAT registration threshold" must {
           "redirect to the Mandatory MTD Information page" in new Setup {
@@ -93,7 +81,23 @@ class VatExemptionControllerISpec extends IntegrationSpecBase {
           }
         }
       }
+      "the ExceptionExemptionFlow FS is disabled" must {
+        "redirect to the Can't Register (OTRS) page" in new Setup {
+          disable(ExceptionExemptionFlow)
+          stubSuccessfulLogin()
+          stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), OTRS))
+          stubAudits()
+
+          cacheSessionData(sessionId, GoneOverThresholdId, false)
+
+          val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
+
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.onPageLoad(OTRS.toString).url)
+        }
+      }
     }
+
     "the user answers 'No'" when {
       "the user has gone over the VAT registration threshold" must {
         "redirect to the Mandatory MTD Information page" in new Setup {

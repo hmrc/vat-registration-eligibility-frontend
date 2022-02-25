@@ -1,14 +1,17 @@
 package controllers
 
 import featureswitch.core.config.ExceptionExemptionFlow
-import helpers.IntegrationSpecBase
+import helpers.{IntegrationSpecBase, TrafficManagementStub}
 import identifiers.VATRegistrationExceptionId
+import models.{Draft, OTRS, RegistrationInformation}
 import play.mvc.Http.HeaderNames
 import org.jsoup.Jsoup
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 
-class VATRegistrationExceptionISpec extends IntegrationSpecBase {
+import java.time.LocalDate
+
+class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficManagementStub {
 
   val pageUrl = "/registration-exception"
   val yesRadio = "value"
@@ -50,7 +53,9 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase {
     "the user answers" must {
       "ExceptionExemption flow feature switch is not enabled" should {
         s"redirect to ${"/check-if-you-can-register-for-vat/cant-register/vatExceptionKickout"} if answer is yes" in new Setup {
+          disable(ExceptionExemptionFlow)
           stubSuccessfulLogin()
+          stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), OTRS))
           stubAudits()
 
           val res = await(buildClient("/registration-exception").post(Map("value" -> Seq("true"))))
