@@ -1,27 +1,40 @@
 package controllers
 
-
 import helpers.{IntegrationSpecBase, S4LStub}
-import identifiers.{KeepOldVrnId, TermsAndConditionsId}
+import identifiers.NinoId
 import org.jsoup.Jsoup
 import play.api.http.Status._
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, Json}
 import play.mvc.Http.HeaderNames
+import services.TrafficManagementService
 
-class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
+import java.time.LocalDate
 
-  val pageUrl = "/keep-old-vrn"
+class NinoControllerControllerISpec extends IntegrationSpecBase with S4LStub {
+
+  val testDate: LocalDate = LocalDate.now
+
+  val testEnrolments: JsArray = Json.arr(Json.obj(
+    "key" -> TrafficManagementService.companyEnrolment,
+    "identifiers" -> Json.arr(
+      Json.obj(
+        "key" -> "testKey",
+        "value" -> "testValue"
+      )
+    )
+  ))
+
+  val pageUrl = "/have-nino"
   val yesRadio = "value"
   val noRadio = "value-no"
 
-  "GET /keep-old-vrn" when {
+  "GET /have-nino" when {
     "an answer exists for the page" must {
       "return OK with the answer pre-populated" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        stubS4LGetNothing(testRegId)
 
-        cacheSessionData(sessionId, KeepOldVrnId, true)
+        cacheSessionData(sessionId, NinoId, true)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)
@@ -46,31 +59,27 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
     }
   }
 
-  s"POST /keep-old-vrn" when {
+  s"POST /have-nino" when {
     "the user answers" must {
-      "redirect to Turnover Estimate and clear down old T&C answer if the answer is no" in new Setup {
+      "redirect to VAT Exception if the answer is no" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, TermsAndConditionsId, true)
-
-        val res = await(buildClient(pageUrl).post(Map("value" -> Seq("false"))))
+        val res = await(buildClient("/have-nino").post(Map("value" -> Seq("false"))))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
-        verifySessionCacheData[Boolean](sessionId, TermsAndConditionsId, None)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
       }
-
-      "redirect to Terms & Conditions page if the answer is yes" in new Setup {
+      "redirect to Traffic management resolver if the answer is yes" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        val res = await(buildClient("/keep-old-vrn").post(Map("value" -> Seq("true"))))
+        val res = await(buildClient("/have-nino").post(Map("value" -> Seq("true"))))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TermsAndConditionsController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
       }
     }
     "the user doesn't answer" must {
@@ -78,7 +87,7 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient("/have-nino").post(Json.obj()))
 
         res.status mustBe BAD_REQUEST
       }

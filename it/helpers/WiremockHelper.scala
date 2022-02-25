@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package itutil
+package helpers
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
-import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.libs.ws.WSClient
+import play.mvc.Http.HeaderNames
 
 object WiremockHelper {
   val wiremockPort = 11111
@@ -29,7 +29,7 @@ object WiremockHelper {
 }
 
 trait WiremockHelper {
-  self: GuiceOneServerPerSuite =>
+  self: IntegrationSpecBase =>
 
   import WiremockHelper._
 
@@ -48,7 +48,9 @@ trait WiremockHelper {
   def resetWiremock() = WireMock.reset()
 
   def buildClient(path: String) =
-    ws.url(s"http://localhost:$port/check-if-you-can-register-for-vat${path.replace("/check-if-you-can-register-for-vat", "")}").withFollowRedirects(false)
+    ws.url(s"http://localhost:$port/check-if-you-can-register-for-vat${path.replace("/check-if-you-can-register-for-vat", "")}")
+      .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
+      .withFollowRedirects(false)
 
   def listAllStubs = listAllStubMappings
 

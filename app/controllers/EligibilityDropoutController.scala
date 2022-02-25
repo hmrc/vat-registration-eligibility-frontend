@@ -59,7 +59,7 @@ class EligibilityDropoutController @Inject()(mcc: MessagesControllerComponents,
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = true).map {
       case RegistrationInformation(_, _, _, _, _) =>
-        Redirect(controllers.routes.EligibilityDropoutController.onPageLoad(""))
+        Redirect(appConfig.otrsUrl)
     }
   }
 }

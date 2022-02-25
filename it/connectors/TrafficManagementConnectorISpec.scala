@@ -1,22 +1,14 @@
 package connectors
 
 import featureswitch.core.config.FeatureSwitching
-import helpers.{AuthHelper, IntegrationSpecBase, SessionStub, TrafficManagementStub}
+import helpers.{IntegrationSpecBase, TrafficManagementStub}
 import models.UKCompany
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
 class TrafficManagementConnectorISpec extends IntegrationSpecBase
-  with AuthHelper
-  with SessionStub
   with TrafficManagementStub
   with FeatureSwitching {
-
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .build()
 
   val connector = app.injector.instanceOf[TrafficManagementConnector]
 
@@ -24,6 +16,7 @@ class TrafficManagementConnectorISpec extends IntegrationSpecBase
     "return Allocated when the API responds with CREATED" in {
       stubSuccessfulLogin()
       stubAllocation(testRegId)(CREATED)
+      stubAudits()
 
       val res = await(connector.allocate(testRegId, UKCompany, isEnrolled = true)(HeaderCarrier()))
 
@@ -32,6 +25,7 @@ class TrafficManagementConnectorISpec extends IntegrationSpecBase
     "return QuotaReached when the API responds with TOO_MANY_REQUESTS" in {
       stubSuccessfulLogin()
       stubAllocation(testRegId)(TOO_MANY_REQUESTS)
+      stubAudits()
 
       val res = await(connector.allocate(testRegId, UKCompany, isEnrolled = true)(HeaderCarrier()))
 
@@ -40,6 +34,7 @@ class TrafficManagementConnectorISpec extends IntegrationSpecBase
     "throw an exception for any other status" in {
       stubSuccessfulLogin()
       stubAllocation(testRegId)(IM_A_TEAPOT)
+      stubAudits()
 
       intercept[Exception] {
         await(connector.allocate(testRegId, UKCompany, isEnrolled = true)(HeaderCarrier()))

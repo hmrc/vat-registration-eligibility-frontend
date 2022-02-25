@@ -60,13 +60,13 @@ class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerCompon
       formProvider().bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
-        value =>
+        value => {
           sessionService.save[Boolean](VATRegistrationExceptionId.toString, value).map { cacheMap =>
             if (value) {
-              trafficManagementService.upsertRegistrationInformation(request.regId, request.regId, isOtrs = true)
+              trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = true)
             }
             Redirect(navigator.nextPage(VATRegistrationExceptionId, NormalMode)(new UserAnswers(cacheMap)))
-          }
+          }}
       )
   }
 }

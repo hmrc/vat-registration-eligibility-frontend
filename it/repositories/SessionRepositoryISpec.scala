@@ -1,18 +1,12 @@
 package repositories
 
 import helpers.IntegrationSpecBase
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SessionRepositoryISpec extends IntegrationSpecBase {
-
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(fakeConfig())
-    .build()
 
   class Setup {
     val newMongoInstance = app.injector.instanceOf[SessionRepository]
