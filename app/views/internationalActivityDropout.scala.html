@@ -34,11 +34,7 @@
     @h1(messages("eligibilityDropout.heading"))
     @p{ @messages("eligibility.international.special.text") }
 
-    @if(appConfig.isEnabled(NIPFlow)) {
-        @bulletsHtml(bullet1, bullet5)
-    } else {
-        @bulletsHtml(bullet1, bullet2, bullet3, bullet4, bullet5)
-    }
+    @bulletsHtml(bullet1, bullet2)
 }
 
 @bullet1 = {
@@ -48,20 +44,5 @@
 
 @bullet2 = {
     @messages("eligibility.international.bullet2")
-    @link(appConfig.otrsUrl, messages("eligibility.international.link2"))
-}
-
-@bullet3 = {
-    @messages("eligibility.international.bullet3")
-    @link(appConfig.otrsUrl, messages("eligibility.international.link3"))
-}
-
-@bullet4 = {
-    @messages("eligibility.international.bullet4")
-    @link(appConfig.VAT1BFormURL, messages("eligibility.international.link4"))
-}
-
-@bullet5 = {
-    @messages("eligibility.international.bullet5")
-    @link(appConfig.VAT1BFormURL, messages("eligibility.international.link5"))
+    @link(appConfig.VAT1BFormURL, messages("eligibility.international.link2"))
 }

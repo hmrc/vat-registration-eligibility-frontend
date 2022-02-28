@@ -31,10 +31,7 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
   val linkParagraph ="Use the GOV.UK Brexit checker (opens in new tab) to find out if the EU exit will impact your business."
   val paragraph = "Tell us if the business will:"
   val bullet1 = "sell assets bought from outside the UK and claim a repayment of VAT under Directive 2008/9EC or Thirteenth VAT Directive"
-  val bullet2 = "sell goods located in Northern Ireland at the time of sale"
-  val bullet3 = "sell or move goods from Northern Ireland to an EU member state"
-  val bullet4 = "bring goods into Northern Ireland from an EU member state"
-  val bullet5 = "sell goods into Northern Ireland from an EU member state"
+  val bullet2 = "sell goods into Northern Ireland from an EU member state"
 
   val view = app.injector.instanceOf[internationalActivities]
   object Selectors extends BaseSelectors
@@ -75,16 +72,6 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
       "display the bullet text correctly" in {
         doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
         doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
-        doc.select(Selectors.bullet(3)).first().text() mustBe bullet3
-        doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
-        doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
-      }
-
-      "display the bullet text correctly when the NIPFlow feature switch is enabled" in {
-        enable(NIPFlow)
-        val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
-        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
-        doc.select(Selectors.bullet(2)).first().text() mustBe bullet5
       }
     }
     "Business entity is partnership" must {
@@ -122,16 +109,6 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
       "display the bullet text correctly" in {
         doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
         doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
-        doc.select(Selectors.bullet(3)).first().text() mustBe bullet3
-        doc.select(Selectors.bullet(4)).first().text() mustBe bullet4
-        doc.select(Selectors.bullet(5)).first().text() mustBe bullet5
-      }
-
-      "display the bullet text correctly when the NIPFlow feature switch is enabled" in {
-        enable(NIPFlow)
-        val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequest, messages, frontendAppConfig))
-        doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
-        doc.select(Selectors.bullet(2)).first().text() mustBe bullet5
       }
     }
   }

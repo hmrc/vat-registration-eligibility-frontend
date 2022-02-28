@@ -34,7 +34,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     UnincorporatedAssociationFlow,
     NETPFlow,
     NonUkCompanyFlow,
-    NIPFlow,
     ThirdPartyTransactorFlow,
     IndividualFlow,
     VATGroupFlow,
@@ -93,11 +92,6 @@ case object NETPFlow extends FeatureSwitch {
 case object NonUkCompanyFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.enable-non-uk-company"
   override val displayName: String = "Enable non-uk company (Overseas) flow"
-}
-
-case object NIPFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.enable-nip"
-  override val displayName: String = "Enable Northern Ireland protocol (NIP) flow"
 }
 
 case object ThirdPartyTransactorFlow extends FeatureSwitch {

@@ -56,20 +56,10 @@
 
     @p{ @messages("internationalActivities.bulletText") }
 
-    @if(appConfig.isEnabled(NIPFlow)) {
-        @bullets(
-            messages("internationalActivities.bullet1"),
-            messages("internationalActivities.bullet5")
-        )
-    } else {
-        @bullets(
-            messages("internationalActivities.bullet1"),
-            messages("internationalActivities.bullet2"),
-            messages("internationalActivities.bullet3"),
-            messages("internationalActivities.bullet4"),
-            messages("internationalActivities.bullet5")
-        )
-    }
+    @bullets(
+        messages("internationalActivities.bullet1"),
+        messages("internationalActivities.bullet2")
+    )
 
 
     @formWithCsrf(action = InternationalActivitiesController.onSubmit(), 'autoComplete -> "off") {
