@@ -45,7 +45,12 @@ object PageIdBinding extends FeatureSwitching {
     val isVatGroup = userAnswers.registrationReason.contains(SettingUpVatGroup)
     val isTogcCole = userAnswers.registrationReason.exists(List(TakingOverBusiness, ChangingLegalEntityOfBusiness).contains(_))
 
-    def ThresholdSectionValidationAndConstruction: PartialFunction[(Identifier, Option[Any]), (Identifier, Option[Any])] = {
+    def ValidationAndConstruction: PartialFunction[(Identifier, Option[Any]), (Identifier, Option[Any])] = {
+      case e@(RacehorsesId, None) if isEnabled(LandAndProperty) => e
+      case e@(RegistrationReasonId, None) => e
+      case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, None) if !isTogcCole => e
+      case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, Some(_)) if !isTogcCole => illegalState(e._1)
+      case e@(TermsAndConditionsId, None) if !isTogcCole || userAnswers.keepOldVrn.contains(false) => e
       case e@(ThresholdInTwelveMonthsId, None) if isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
       case e@(ThresholdNextThirtyDaysId, Some(_)) => if (twelveMonthsValue) {
         illegalState(e._1)
@@ -65,7 +70,7 @@ object PageIdBinding extends FeatureSwitching {
       } else {
         e
       }
-      case e@(VATRegistrationExceptionId, None) if twelveMonthsValue => illegalState(e._1)
+      case e@(VATRegistrationExceptionId, None) => if (twelveMonthsValue || nextThirtyDaysValue) elemMiss(e._1) else e
       case e@(VoluntaryRegistrationId, Some(_)) => if (isMandatory) {
         illegalState(e._1)
       } else {
@@ -73,46 +78,22 @@ object PageIdBinding extends FeatureSwitching {
       }
       case e@(VoluntaryRegistrationId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
       case e@(VoluntaryInformationId, None) => e
-      case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, None) if !isTogcCole => e
-      case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, Some(_)) if !isTogcCole => illegalState(e._1)
-      case e@(TermsAndConditionsId, None) if !isTogcCole || userAnswers.keepOldVrn.contains(false) => e
-      case e if (e._1 != VATRegistrationExceptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
-    }
-
-    def SpecialSituationsValidateAndConstruction: PartialFunction[(Identifier, Option[Any]), (Identifier, Option[Any])] = {
       case e@(VATExemptionId, Some(_)) =>
         if (userAnswers.zeroRatedSales.contains(false)) {
           illegalState(e._1)
         } else {
           e
         }
+      case e@(VATExemptionId, None) if (userAnswers.zeroRatedSales.contains(true) && userAnswers.vatRegistrationException.contains(false)) =>
+        elemMiss(e._1)
       case e@(TaxableSuppliesInUkId, None) if !isOverseas || isTogcCole => e
       case e@(GoneOverThresholdId, None) if !isOverseas || isTogcCole => e
-      case e@(RegistrationReasonId, None) => e
       case e@(NinoId, None) if isOverseas || isEnabled(IndividualFlow) => e
-      case e@(VATExemptionId, None) if (!userAnswers.zeroRatedSales.contains(false) && userAnswers.vatRegistrationException.contains(false)) => elemMiss(e._1)
-      case e@(RacehorsesId, None) if isEnabled(LandAndProperty) => e
       case e if (e._1 != VATExemptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
     }
 
     Map(
-      "VAT-taxable sales" ->
-        Seq(
-          (ThresholdInTwelveMonthsId, userAnswers.thresholdInTwelveMonths),
-          (ThresholdNextThirtyDaysId, userAnswers.thresholdNextThirtyDays),
-          (ThresholdPreviousThirtyDaysId, userAnswers.thresholdPreviousThirtyDays),
-          (ThresholdTaxableSuppliesId, userAnswers.thresholdTaxableSupplies),
-          (VATRegistrationExceptionId, userAnswers.vatRegistrationException),
-          (VoluntaryRegistrationId, userAnswers.voluntaryRegistration),
-          (VoluntaryInformationId, userAnswers.voluntaryInformation),
-          (TurnoverEstimateId, userAnswers.turnoverEstimate),
-          (DateOfBusinessTransferId, userAnswers.dateOfBusinessTransfer),
-          (PreviousBusinessNameId, userAnswers.previousBusinessName),
-          (VATNumberId, userAnswers.vatNumber),
-          (KeepOldVrnId, userAnswers.keepOldVrn),
-          (TermsAndConditionsId, userAnswers.termsAndConditions)
-        ).collect(ThresholdSectionValidationAndConstruction),
-      "Special situations" ->
+      "Registration Reason" ->
         Seq(
           (FixedEstablishmentId, userAnswers.fixedEstablishment),
           (BusinessEntityId, userAnswers.businessEntity),
@@ -123,11 +104,24 @@ object PageIdBinding extends FeatureSwitching {
           (RegisteringBusinessId, userAnswers.registeringBusiness),
           (RegistrationReasonId, userAnswers.registrationReason),
           (NinoId, userAnswers.nino),
+          (DateOfBusinessTransferId, userAnswers.dateOfBusinessTransfer),
+          (PreviousBusinessNameId, userAnswers.previousBusinessName),
+          (VATNumberId, userAnswers.vatNumber),
+          (KeepOldVrnId, userAnswers.keepOldVrn),
+          (TermsAndConditionsId, userAnswers.termsAndConditions),
+          (ThresholdInTwelveMonthsId, userAnswers.thresholdInTwelveMonths),
+          (ThresholdNextThirtyDaysId, userAnswers.thresholdNextThirtyDays),
+          (ThresholdPreviousThirtyDaysId, userAnswers.thresholdPreviousThirtyDays),
+          (VATRegistrationExceptionId, userAnswers.vatRegistrationException),
+          (VoluntaryRegistrationId, userAnswers.voluntaryRegistration),
           (TaxableSuppliesInUkId, userAnswers.taxableSuppliesInUk),
+          (ThresholdTaxableSuppliesId, userAnswers.thresholdTaxableSupplies),
           (GoneOverThresholdId, userAnswers.goneOverThreshold),
+          (TurnoverEstimateId, userAnswers.turnoverEstimate),
           (ZeroRatedSalesId, userAnswers.zeroRatedSales),
-          (VATExemptionId, userAnswers.vatExemption)
-        ).collect(SpecialSituationsValidateAndConstruction)
+          (VATExemptionId, userAnswers.vatExemption),
+          (VoluntaryInformationId, userAnswers.voluntaryInformation)
+        ).collect(ValidationAndConstruction)
     )
   }
 }
