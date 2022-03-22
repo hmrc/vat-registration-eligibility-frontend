@@ -23,8 +23,9 @@ class KeepOldVrnFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "keepOldVrn.error.required"
   val invalidKey = "error.boolean"
+  val togc = "togc"
 
-  val form = new KeepOldVrnFormProvider()()
+  val form = new KeepOldVrnFormProvider()(togc)
 
   ".value" must {
 

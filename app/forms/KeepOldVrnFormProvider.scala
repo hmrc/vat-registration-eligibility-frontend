@@ -24,8 +24,9 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class KeepOldVrnFormProvider @Inject() extends FormErrorHelper with Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(togcColeKey: String): Form[Boolean] = {
     Form(
       "value" -> boolean("keepOldVrn.error.required")
     )
+  }
 }
