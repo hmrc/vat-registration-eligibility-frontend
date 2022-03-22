@@ -48,17 +48,17 @@ class KeepOldVrnController @Inject()(mcc: MessagesControllerComponents,
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.keepOldVrn match {
-        case None => formProvider()
-        case Some(value) => formProvider().fill(value)
+        case None => formProvider(request.userAnswers.togcColeKey)
+        case Some(value) => formProvider(request.userAnswers.togcColeKey).fill(value)
       }
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, request.userAnswers.togcColeKey))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(request.userAnswers.togcColeKey).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, request.userAnswers.togcColeKey))),
         value =>
           for {
             _ <- if (!value) sessionService.removeEntry(TermsAndConditionsId.toString) else Future.successful()

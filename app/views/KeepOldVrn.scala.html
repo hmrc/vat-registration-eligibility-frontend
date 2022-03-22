@@ -23,22 +23,30 @@
     layout: views.html.layouts.layout,
     errorSummary: components.errorSummary,
     formWithCsrf: FormWithCSRF,
-    yesNoRadio: components.yesNoRadio,
-    button: components.button
+    conditionalYesNoRadio: components.conditionalYesNoRadio,
+    button: components.button,
+    p: components.p
 )
 
-@(form: Form[_])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], togcColeKey: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("keepOldVrn.heading"))), backLink = true) {
 
     @errorSummary(form.errors)
 
     @formWithCsrf(action = KeepOldVrnController.onSubmit, 'autoComplete -> "off") {
-        @yesNoRadio(
+        @conditionalYesNoRadio(
             form = form,
-            headingKey = "keepOldVrn.heading"
+            headingKey = "keepOldVrn.heading",
+            ifYes = Some(hiddenYesContent)
         )
 
         @button(messages("site.continue"))
     }
+}
+
+@hiddenYesContent = {
+    @p { @messages(s"keepOldVrn.$togcColeKey.yesText") }
+    @p { @messages(s"keepOldVrn.$togcColeKey.yesText2") }
+    @p { @messages(s"keepOldVrn.$togcColeKey.yesText3") }
 }
