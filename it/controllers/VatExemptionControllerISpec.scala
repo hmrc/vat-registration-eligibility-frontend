@@ -2,7 +2,7 @@ package controllers
 
 import featureswitch.core.config.ExceptionExemptionFlow
 import helpers.{IntegrationSpecBase, TrafficManagementStub}
-import identifiers.{GoneOverThresholdId, VATExemptionId}
+import identifiers.VATExemptionId
 import models.{Draft, OTRS, RegistrationInformation}
 import org.jsoup.Jsoup
 import play.api.libs.json.Json
@@ -52,32 +52,28 @@ class VatExemptionControllerISpec extends IntegrationSpecBase with TrafficManage
     "the user answers 'Yes'" when {
       "the ExceptionExemptionFlow FS is enabled" when {
         "the user has gone over the VAT registration threshold" must {
-          "redirect to the Mandatory MTD Information page" in new Setup {
+          "redirect to the MTD Information page" in new Setup {
             enable(ExceptionExemptionFlow)
             stubSuccessfulLogin()
             stubAudits()
 
-            cacheSessionData(sessionId, GoneOverThresholdId, true)
-
             val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
 
             res.status mustBe SEE_OTHER
-            res.header(HeaderNames.LOCATION) mustBe Some(routes.MandatoryInformationController.onPageLoad.url)
+            res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
           }
 
         }
         "the user hasn't gone over the VAT registration threshold" must {
-          "redirect to the Voluntary MTD Information page" in new Setup {
+          "redirect to the MTD Information page" in new Setup {
             enable(ExceptionExemptionFlow)
             stubSuccessfulLogin()
             stubAudits()
 
-            cacheSessionData(sessionId, GoneOverThresholdId, false)
-
             val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
 
             res.status mustBe SEE_OTHER
-            res.header(HeaderNames.LOCATION) mustBe Some(routes.VoluntaryInformationController.onPageLoad.url)
+            res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
           }
         }
       }
@@ -87,8 +83,6 @@ class VatExemptionControllerISpec extends IntegrationSpecBase with TrafficManage
           stubSuccessfulLogin()
           stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), OTRS))
           stubAudits()
-
-          cacheSessionData(sessionId, GoneOverThresholdId, false)
 
           val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
 
@@ -100,31 +94,27 @@ class VatExemptionControllerISpec extends IntegrationSpecBase with TrafficManage
 
     "the user answers 'No'" when {
       "the user has gone over the VAT registration threshold" must {
-        "redirect to the Mandatory MTD Information page" in new Setup {
+        "redirect to the MTD Information page" in new Setup {
           disable(ExceptionExemptionFlow)
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData(sessionId, GoneOverThresholdId, true)
-
           val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
 
           res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(routes.MandatoryInformationController.onPageLoad.url)
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
         }
       }
       "the user hasn't gone over the VAT registration threshold" must {
-        "redirect to the Voluntary MTD Information page" in new Setup {
+        "redirect to the MTD Information page" in new Setup {
           disable(ExceptionExemptionFlow)
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData(sessionId, GoneOverThresholdId, false)
-
           val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
 
           res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(routes.VoluntaryInformationController.onPageLoad.url)
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
         }
       }
     }

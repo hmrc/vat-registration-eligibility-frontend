@@ -133,22 +133,12 @@ voluntaryRegistration.text                  = Only register voluntarily if the b
 choseNotToRegister.title    = You have chosen not to register the business for VAT
 choseNotToRegister.heading  = You have chosen not to register the business for VAT
 
-voluntaryInformation.heading               = Do you want to sign the business up to Making Tax Digital for VAT?
-voluntaryInformation.error.required        = Select yes if you would like to sign up to Making Tax Digital
-voluntaryInformation.text                  = Making Tax Digital for VAT means using software to submit VAT Returns directly to HMRC. From April 2022 all VAT-registered businesses will be signed up for Making Tax Digital for VAT.
-voluntaryInformation.detail.heading        = What is the benefit of signing up today?
-voluntaryInformation.detail.para           = You do not need to sign the business up for Making Tax Digital for VAT yet as the business’s taxable turnover is below the threshold. However, it might find it convenient to start using compatible software to keep VAT records and submit them directly to HMRC before it’s signed up in April 2022.
-voluntaryInformation.radioyes              = Yes, sign the business up to Making Tax Digital
-voluntaryInformation.radiono               = No, do not sign the business up to Making Tax Digital
-voluntaryInformation.linkText              = Find out more about Making Tax Digital for VAT
-voluntaryInformation.button                = Continue to register for VAT
-
-mandatoryInformation.heading               = The business will be signed up for Making Tax Digital for VAT
-mandatoryInformation.text1                 = Making Tax Digital for VAT means using software to submit VAT Returns directly to HMRC.
-mandatoryInformation.text2                 = Most VAT registered businesses with a taxable turnover above £85,000 must use compatible software to keep VAT records and send VAT returns.
-mandatoryInformation.text3                 = As the taxable turnover is above, or will go above, £85,000 in a rolling 12 month period, the business will be signed up for Making Tax Digital for VAT as part of the registration process.
-mandatoryInformation.linkText              = Find out more about Making Tax Digital for VAT
-mandatoryInformation.button                = Continue to register for VAT
+mtdInformation.heading               = The business will be signed up for Making Tax Digital for VAT
+mtdInformation.text1                 = Businesses signed up to Making Tax Digital for VAT must use software to:
+mtdInformation.bullet1               = keep digital records
+mtdInformation.bullet2               = submit VAT Returns directly to HMRC
+mtdInformation.linkText              = Find out more about Making Tax Digital for VAT
+mtdInformation.button                = Continue to register for VAT
 
 thresholdInTwelveMonths.title.business                      = Has the business’s taxable turnover gone over £85,000 in any 12 month period?
 thresholdInTwelveMonths.title.partnership                   = Has the partnership’s taxable turnover gone over £85,000 in any 12 month period?
@@ -300,13 +290,6 @@ doNotNeedToRegister.heading  = Currently you do not need to register for VAT
 doNotNeedToRegister.p1       = From the answers provided, you do not need to register for VAT as you have not and do not plan to make taxable supplies in the UK.
 doNotNeedToRegister.p2       = If this changes, the business should register for VAT.
 
-goneOverThreshold.heading               = Has the business’s taxable turnover gone over £85,000 in any 12 month period?
-goneOverThreshold.para                  = You must monitor your turnover every month and add up the total amount to cover the last 12 months. This is called a ‘rolling 12 month period’. If one month’s turnover takes you over £85,000 in any rolling 12 month period, you must register for VAT.
-goneOverThreshold.error.required        = Select yes if the business’s taxable turnover has gone over £85,000 in any 12 month period
-goneOverThreshold.dropdownText          = What is taxable turnover?
-goneOverThreshold.dropdown.para         = VAT taxable turnover is the total value of everything you sell that is not exempt from VAT.
-goneOverThreshold.linkText              = Find out more about how to calculate your VAT taxable turnover
-
 registrationReason.heading.business       = Why do you want to register the business for VAT?
 registrationReason.heading.partnership    = Why do you want to register the partnership for VAT?
 registrationReason.sellingGoods.radio     = It’s selling goods or services and needs or wants to charge VAT to customers
@@ -405,7 +388,6 @@ checkYourAnswers.registrationReason.business                        = Why do you
 checkYourAnswers.registrationReason.partnership                     = Why do you want to register the partnership for VAT?
 checkYourAnswers.nino                                               = Do you have a UK National Insurance number?
 checkYourAnswers.taxableSuppliesInUk                                = Has the business made taxable supplies in the UK?
-checkYourAnswers.goneOverThreshold                                  = Has the business’s taxable turnover gone over £85,000 in any 12 month period?
 checkYourAnswers.zeroRatedSales.business                            = Does the business sell mainly zero-rated goods or services?
 checkYourAnswers.zeroRatedSales.partnership                         = Does the partnership sell mainly zero-rated goods or services?
 checkYourAnswers.vatExemption                                       = Does the business want to apply for a VAT exemption?

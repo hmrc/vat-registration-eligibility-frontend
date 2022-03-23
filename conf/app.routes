@@ -42,11 +42,8 @@ POST       /make-more-taxable-sales                     controllers.ThresholdNex
 GET        /gone-over-threshold-period                  controllers.ThresholdPreviousThirtyDaysController.onPageLoad
 POST       /gone-over-threshold-period                  controllers.ThresholdPreviousThirtyDaysController.onSubmit()
 
-GET        /voluntary-information                       controllers.VoluntaryInformationController.onPageLoad
-POST       /voluntary-information                       controllers.VoluntaryInformationController.onSubmit()
-
-GET        /mtd-mandatory-information                   controllers.MandatoryInformationController.onPageLoad
-POST       /mtd-mandatory-information                   controllers.MandatoryInformationController.onSubmit()
+GET        /mtd-mandatory-information                   controllers.MtdInformationController.onPageLoad
+POST       /mtd-mandatory-information                   controllers.MtdInformationController.onSubmit()
 
 GET        /register-voluntarily                        controllers.VoluntaryRegistrationController.onPageLoad
 POST       /register-voluntarily                        controllers.VoluntaryRegistrationController.onSubmit()
@@ -110,9 +107,6 @@ POST       /made-or-intend-to-make-taxable-supplies     controllers.TaxableSuppl
 
 GET        /do-not-need-to-register                     controllers.DoNotNeedToRegisterController.onPageLoad
 POST       /do-not-need-to-register                     controllers.DoNotNeedToRegisterController.onSubmit()
-
-GET        /gone-over-threshold-netp                    controllers.GoneOverThresholdController.onPageLoad
-POST       /gone-over-threshold-netp                    controllers.GoneOverThresholdController.onSubmit
 
 GET        /registration-reason                         controllers.RegistrationReasonController.onPageLoad
 POST       /registration-reason                         controllers.RegistrationReasonController.onSubmit

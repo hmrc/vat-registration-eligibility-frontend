@@ -70,10 +70,8 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
     throw new Exception("Couldn't get VATRateDifferentGoodsURL URL"))
   lazy val VATSetUpVATGroup = servicesConfig.getConfString("gov-uk.VATSetUpVATGroup",
     throw new Exception("Couldn't get VATSetUpVATGroup URL"))
-  lazy val VATVoluntaryInformationGroup = servicesConfig.getConfString("gov-uk.VATVoluntaryInformationGroup",
-    throw new Exception("Couldn't get VATVoluntaryInformationGroup URL"))
-  lazy val VATMandatoryInformationGroup = servicesConfig.getConfString("gov-uk.VATMandatoryInformationGroup",
-    throw new Exception("Couldn't get VATMandatoryInformationGroup URL"))
+  lazy val VATMtdInformationGroup = servicesConfig.getConfString("gov-uk.VATMtdInformationGroup",
+    throw new Exception("Couldn't get VATMtdInformationGroup URL"))
   lazy val VATFileChanges = servicesConfig.getConfString("gov-uk.VATFileChanges", throw new Exception("Couldn't get VATFileChanges URL"))
   lazy val languageTranslationEnabled = runModeConfiguration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
   lazy val calculateTurnoverUrl = "https://www.gov.uk/vat-registration/calculate-turnover"

@@ -50,7 +50,7 @@ class ZeroRateSalesControllerISpec extends IntegrationSpecBase {
 
   s"POST /zero-rated-sales" when {
     "the user answers" must {
-      s"navigate to ${controllers.routes.VoluntaryInformationController.onPageLoad} when false and in the voluntary flow" in new Setup {
+      s"navigate to ${controllers.routes.MtdInformationController.onPageLoad} when false and in the voluntary flow" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         cacheSessionData(sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(false, None))
@@ -59,10 +59,10 @@ class ZeroRateSalesControllerISpec extends IntegrationSpecBase {
         val res = await(buildClient(controllers.routes.ZeroRatedSalesController.onSubmit().url).post(Map("value" -> Seq("false"))))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryInformationController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
         verifySessionCacheData(sessionId, ZeroRatedSalesId, Option.apply[Boolean](false))
       }
-      s"navigate to ${controllers.routes.VoluntaryInformationController.onPageLoad} when true and in the voluntary flow" in new Setup {
+      s"navigate to ${controllers.routes.MtdInformationController.onPageLoad} when true and in the voluntary flow" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         cacheSessionData(sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(false, None))
@@ -72,7 +72,7 @@ class ZeroRateSalesControllerISpec extends IntegrationSpecBase {
           .post(Map("value" -> Seq("true"))))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VoluntaryInformationController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
         verifySessionCacheData(sessionId, ZeroRatedSalesId, Option.apply[Boolean](true))
       }
       "navigate to VAT Exemption when true and in the mandatory flow" in new Setup {
@@ -88,7 +88,7 @@ class ZeroRateSalesControllerISpec extends IntegrationSpecBase {
         verifySessionCacheData(sessionId, ZeroRatedSalesId, Option.apply[Boolean](true))
       }
 
-      s"navigate to ${controllers.routes.MandatoryInformationController.onPageLoad} when false and in the mandatory flow" in new Setup {
+      s"navigate to ${controllers.routes.MtdInformationController.onPageLoad} when false and in the mandatory flow" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         cacheSessionData(sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(localDate)))
@@ -97,7 +97,7 @@ class ZeroRateSalesControllerISpec extends IntegrationSpecBase {
           .post(Map("value" -> Seq("false"))))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MandatoryInformationController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
         verifySessionCacheData(sessionId, ZeroRatedSalesId, Option.apply[Boolean](false))
         verifySessionCacheData(sessionId, RegisteringBusinessId, Option.empty[Boolean])
       }

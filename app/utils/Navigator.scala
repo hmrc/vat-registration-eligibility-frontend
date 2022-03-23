@@ -57,13 +57,11 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     }
     case AgriculturalFlatRateSchemeId => routes.AgriculturalFlatRateSchemeController.onPageLoad
     case RacehorsesId => routes.RacehorsesController.onPageLoad
-    case VoluntaryInformationId => routes.VoluntaryInformationController.onPageLoad
-    case MandatoryInformationId => routes.MandatoryInformationController.onPageLoad
+    case MtdInformationId => routes.MtdInformationController.onPageLoad
     case EligibleId => routes.EligibleController.onPageLoad
     case TaxableSuppliesInUkId => routes.TaxableSuppliesInUkController.onPageLoad
     case DateOfBusinessTransferId => routes.DateOfBusinessTransferController.onPageLoad
     case ThresholdTaxableSuppliesId => routes.ThresholdTaxableSuppliesController.onPageLoad
-    case GoneOverThresholdId => routes.GoneOverThresholdController.onPageLoad
     case DoNotNeedToRegisterId => routes.DoNotNeedToRegisterController.onPageLoad
     case RegistrationReasonId => routes.RegistrationReasonController.onPageLoad
     case PreviousBusinessNameId => routes.PreviousBusinessNameController.onPageLoad
@@ -107,12 +105,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
 
   def nextOnZeroRateSales: (Identifier, UserAnswers => Call) = {
     ZeroRatedSalesId -> { ua: UserAnswers =>
-      val isMandatoryMtd: Boolean =
-        ua.thresholdInTwelveMonths.exists(_.value) ||
-          ua.thresholdNextThirtyDays.exists(_.value) ||
-          ua.goneOverThreshold.contains(true) ||
-          ua.registrationReason.exists(reason => List(SettingUpVatGroup, ChangingLegalEntityOfBusiness, TakingOverBusiness).contains(reason))
-
       val canApplyForExemption: Boolean =
         ua.thresholdInTwelveMonths.exists(_.value) ||
           ua.thresholdNextThirtyDays.exists(_.value) ||
@@ -122,10 +114,8 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       ua.zeroRatedSales match {
         case Some(true) if canApplyForExemption && !ua.vatRegistrationException.contains(true) =>
           pageIdToPageLoad(VATExemptionId)
-        case Some(_) if isMandatoryMtd =>
-          pageIdToPageLoad(MandatoryInformationId)
         case Some(_) =>
-          pageIdToPageLoad(VoluntaryInformationId)
+          pageIdToPageLoad(MtdInformationId)
         case None =>
           pageIdToPageLoad(ZeroRatedSalesId)
       }
@@ -134,10 +124,9 @@ class Navigator @Inject extends Logging with FeatureSwitching {
 
   def nextOnExemption: (Identifier, UserAnswers => Call) = {
     VATExemptionId -> { ua: UserAnswers =>
-      (ua.vatExemption, ua.goneOverThreshold) match {
-        case (Some(true), _) if !isEnabled(ExceptionExemptionFlow) => pageIdToPageLoad(EligibilityDropoutId(OTRS.toString))
-        case (_, Some(false)) => pageIdToPageLoad(VoluntaryInformationId)
-        case _ => pageIdToPageLoad(MandatoryInformationId)
+      ua.vatExemption match {
+        case Some(true) if !isEnabled(ExceptionExemptionFlow) => pageIdToPageLoad(EligibilityDropoutId(OTRS.toString))
+        case _ => pageIdToPageLoad(MtdInformationId)
       }
     }
   }
@@ -303,7 +292,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     toNextPage(
       fromPage = ThresholdTaxableSuppliesId,
-      toPage = GoneOverThresholdId
+      toPage = TurnoverEstimateId
     ),
     toNextPage(
       fromPage = DateOfBusinessTransferId,
@@ -325,14 +314,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     toNextPage(
       fromPage = TermsAndConditionsId,
       toPage = TurnoverEstimateId
-    ),
-    toNextPage(
-      fromPage = GoneOverThresholdId,
-      toPage = TurnoverEstimateId
-    ),
-    toNextPage(
-      fromPage = VoluntaryInformationId,
-      toPage = EligibleId
     ),
     TrafficManagementResolverId -> { userAnswers =>
       userAnswers.fixedEstablishment match {

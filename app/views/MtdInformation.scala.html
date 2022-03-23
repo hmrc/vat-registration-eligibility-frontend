@@ -21,7 +21,7 @@
     layout: views.html.layouts.layout,
     h1: components.h1,
     p: components.p,
-    panelIndent: components.panelIndent,
+    bullets: components.bullets,
     formWithCsrf: FormWithCSRF,
     link: components.link,
     button: components.button
@@ -29,25 +29,22 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(titleNoForm(messages("mandatoryInformation.heading"))), backLink = true) {
+@layout(pageTitle = Some(titleNoForm(messages("mtdInformation.heading"))), backLink = true) {
 
-    @h1(messages("mandatoryInformation.heading"))
+    @h1(messages("mtdInformation.heading"))
 
-    @p{
-        @messages("mandatoryInformation.text1")
-    }
-    @p{
-        @messages("mandatoryInformation.text2")
-    }
-    @panelIndent{
-        @messages("mandatoryInformation.text3")
+    @p {
+        @messages("mtdInformation.text1")
     }
 
-    @formWithCsrf(action = MandatoryInformationController.onSubmit(), 'autoComplete -> "off") {
-        @p {
-            @link(appConfig.VATMandatoryInformationGroup ,"mandatoryInformation.linkText", isExternal = true)
-        }
-        @button(messages("mandatoryInformation.button"))
+    @bullets("mtdInformation.bullet1", "mtdInformation.bullet2")
+
+    @p {
+        @link(appConfig.VATMtdInformationGroup, "mtdInformation.linkText", isExternal = true)
+    }
+
+    @formWithCsrf(action = MtdInformationController.onSubmit(), 'autoComplete -> "off") {
+        @button(messages("mtdInformation.button"))
     }
 }
 
