@@ -318,6 +318,8 @@ registrationReason.error                  = Select the reason you want to regist
 
 dateOfBusinessTransfer.heading.togc                 = What date did the transfer of business take place?
 dateOfBusinessTransfer.heading.cole                 = What date did the change of legal entity take place?
+dateOfBusinessTransfer.para.togc                    = The date of transfer must match the date the previous owner of the business gave us.
+dateOfBusinessTransfer.para.cole                    = The change of legal entity date must match the date the previous entity gave us.
 dateOfBusinessTransfer.dateHint                     = For example, 27 03 2007
 dateOfBusinessTransfer.error.togc.date.required     = Enter a date for when the transfer of business took place
 dateOfBusinessTransfer.error.cole.date.required     = Enter a date for when the change of legal entity took place
@@ -335,12 +337,11 @@ previousBusinessName.error.name.specialChars        = Enter a valid business nam
 
 keepOldVrn.heading                                  = Do you want to keep the existing VAT registration number?
 keepOldVrn.error.required                           = Select yes if you want to keep the existing VAT registration number
-keepOldVrn.togc.yesText                             = The date of transfer you entered must match the date provided to HM Revenue and Customs (HMRC) by the previous owner of the business.
-keepOldVrn.togc.yesText2                            = The Transfer of a Going Concern (TOGC) will only be completed when the previous owner has successfully deregistered the business for VAT.  It is recommended that they deregister and notify HMRC of the transfer using the ‘Change registration details’ online service.
-keepOldVrn.togc.yesText3                            = For the purpose of VAT Registration you are required to obtain and keep the trading records for the business.
-keepOldVrn.cole.yesText                             = The date of transfer you entered must match the date provided to HM Revenue and Customs (HMRC) by the previous legal entity.
-keepOldVrn.cole.yesText2                            = The quickest way for them to do this would be to use the ‘Change registration details’ service, and select the option ‘Change of Legal Entity’ which can be accessed via HMRC Online Services. If they use this service, we can deregister their business without cancelling their VAT registration number.
-keepOldVrn.cole.yesText3                            = You will need to apply to register for VAT within 30 days of the old entity applying to cancel their registration. If you don’t meet this deadline, their VAT registration number will be cancelled automatically, and we won’t be able to transfer it to you. Instead, we will issue you with a new VAT registration number.
+keepOldVrn.para                                     = To keep the number:
+keepOldVrn.bullet1.togc                             = the previous owner must deregister the business for VAT, ideally using the ‘Change registration details’ online service
+keepOldVrn.bullet2.togc                             = you must apply for VAT no more than 30 days after the previous owner applies to deregister
+keepOldVrn.bullet1.cole                             = the previous entity must deregister for VAT, ideally using the ‘Change registration details’ online service
+keepOldVrn.bullet2.cole                             = you must apply for VAT no more than 30 days after the previous entity applies to deregister
 
 vatNumber.heading.togc                              = What is the VAT registration number of the business being taken over?
 vatNumber.heading.cole                              = What is the business’s current VAT registration number?

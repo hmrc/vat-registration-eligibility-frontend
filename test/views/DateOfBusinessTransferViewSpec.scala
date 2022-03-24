@@ -35,6 +35,8 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
 
   val h1Togc = "What date did the transfer of business take place?"
   val h1Cole = "What date did the change of legal entity take place?"
+  val paraTogc = "The date of transfer must match the date the previous owner of the business gave us."
+  val paraCole = "The change of legal entity date must match the date the previous entity gave us."
   val testHint = "For example, 27 03 2007"
   val testButton = "Continue"
   val togc = "togc"
@@ -66,6 +68,10 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
         doc.select(Selectors.h1).text() mustBe h1Togc
       }
 
+      "have the correct paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe paraTogc
+      }
+
       "have the correct hint" in {
         doc.select(Selectors.hint).text() mustBe testHint
       }
@@ -92,6 +98,10 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
 
       "have the correct heading" in {
         doc.select(Selectors.h1).text() mustBe h1Cole
+      }
+
+      "have the correct paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe paraCole
       }
 
       "have the correct hint" in {
