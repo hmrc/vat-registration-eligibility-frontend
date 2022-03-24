@@ -36,6 +36,8 @@
 
     @h1(messages(s"dateOfBusinessTransfer.heading.$togcColeKey"))
 
+    @p{ @messages(s"dateOfBusinessTransfer.para.$togcColeKey") }
+
     @formWithCsrf(action = routes.DateOfBusinessTransferController.onSubmit()) {
         @inputDate(
             form = form,

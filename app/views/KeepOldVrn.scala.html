@@ -25,7 +25,9 @@
     formWithCsrf: FormWithCSRF,
     conditionalYesNoRadio: components.conditionalYesNoRadio,
     button: components.button,
-    p: components.p
+    p: components.p,
+    bullets: components.bullets,
+    h1: components.h1
 )
 
 @(form: Form[_], togcColeKey: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
@@ -34,19 +36,23 @@
 
     @errorSummary(form.errors)
 
+    @h1("keepOldVrn.heading")
+
+    @p{ @messages("keepOldVrn.para") }
+
+    @bullets(
+        s"keepOldVrn.bullet1.$togcColeKey",
+        s"keepOldVrn.bullet2.$togcColeKey"
+    )
+
     @formWithCsrf(action = KeepOldVrnController.onSubmit, 'autoComplete -> "off") {
         @conditionalYesNoRadio(
             form = form,
             headingKey = "keepOldVrn.heading",
-            ifYes = Some(hiddenYesContent)
+            isPageHeading = false,
+            classes = "govuk-visually-hidden"
         )
 
         @button(messages("site.continue"))
     }
-}
-
-@hiddenYesContent = {
-    @p { @messages(s"keepOldVrn.$togcColeKey.yesText") }
-    @p { @messages(s"keepOldVrn.$togcColeKey.yesText2") }
-    @p { @messages(s"keepOldVrn.$togcColeKey.yesText3") }
 }

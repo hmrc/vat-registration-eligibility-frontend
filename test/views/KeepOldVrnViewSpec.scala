@@ -26,12 +26,11 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
   val cole = "cole"
 
   val h1 = "Do you want to keep the existing VAT registration number?"
-  val togcText1 = "The date of transfer you entered must match the date provided to HM Revenue and Customs (HMRC) by the previous owner of the business."
-  val togcText2 = "The Transfer of a Going Concern (TOGC) will only be completed when the previous owner has successfully deregistered the business for VAT. It is recommended that they deregister and notify HMRC of the transfer using the ‘Change registration details’ online service."
-  val togcText3 = "For the purpose of VAT Registration you are required to obtain and keep the trading records for the business."
-  val coleText1 = "The date of transfer you entered must match the date provided to HM Revenue and Customs (HMRC) by the previous legal entity."
-  val coleText2 = "The quickest way for them to do this would be to use the ‘Change registration details’ service, and select the option ‘Change of Legal Entity’ which can be accessed via HMRC Online Services. If they use this service, we can deregister their business without cancelling their VAT registration number."
-  val coleText3 = "You will need to apply to register for VAT within 30 days of the old entity applying to cancel their registration. If you don’t meet this deadline, their VAT registration number will be cancelled automatically, and we won’t be able to transfer it to you. Instead, we will issue you with a new VAT registration number."
+  val para = "To keep the number:"
+  val togcBullet1 = "the previous owner must deregister the business for VAT, ideally using the ‘Change registration details’ online service"
+  val togcBullet2 = "you must apply for VAT no more than 30 days after the previous owner applies to deregister"
+  val coleBullet1 = "the previous entity must deregister for VAT, ideally using the ‘Change registration details’ online service"
+  val coleBullet2 = "you must apply for VAT no more than 30 days after the previous entity applies to deregister"
 
   val view = app.injector.instanceOf[KeepOldVrn]
 
@@ -58,10 +57,13 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
         doc.select(Selectors.h1).text() mustBe h1
       }
 
-      "have the correct yes text" in {
-        doc.select(Selectors.p(1)).text() mustBe togcText1
-        doc.select(Selectors.p(2)).text() mustBe togcText2
-        doc.select(Selectors.p(3)).text() mustBe togcText3
+      "have the correct paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe para
+      }
+
+      "have the correct bullets" in {
+        doc.select(Selectors.bullet(1)).text() mustBe togcBullet1
+        doc.select(Selectors.bullet(2)).text() mustBe togcBullet2
       }
     }
 
@@ -85,10 +87,13 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
         doc.select(Selectors.h1).text() mustBe h1
       }
 
-      "have the correct yes text" in {
-        doc.select(Selectors.p(1)).text() mustBe coleText1
-        doc.select(Selectors.p(2)).text() mustBe coleText2
-        doc.select(Selectors.p(3)).text() mustBe coleText3
+      "have the correct paragraph" in {
+        doc.select(Selectors.p(1)).text() mustBe para
+      }
+
+      "have the correct bullets" in {
+        doc.select(Selectors.bullet(1)).text() mustBe coleBullet1
+        doc.select(Selectors.bullet(2)).text() mustBe coleBullet2
       }
     }
   }
