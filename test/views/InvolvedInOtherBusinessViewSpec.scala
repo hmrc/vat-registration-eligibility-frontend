@@ -16,7 +16,7 @@
 
 package views
 
-import featureswitch.core.config.{TOGCFlow, VATGroupFlow}
+import featureswitch.core.config.{OBIFlow, TOGCFlow, VATGroupFlow}
 import forms.InvolvedInOtherBusinessFormProvider
 import models.NormalMode
 import views.html.involvedInOtherBusiness
@@ -28,6 +28,7 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
 
   val h1 = "Have you been involved with another business or taken over a VAT-registered business?"
   val togcH1 = "Have you been involved with another business?"
+  val obiH1 = "Have you taken over a VAT-registered business?"
   val bullet1 = "over the past 2 years, you have had another self-employed business in the UK or Isle of Man (do not tell us if your only source of self-employed income was from being a landlord)"
   val bullet2 = "over the past 2 years, you have been a partner or director with a different business in the UK or Isle of Man"
   val vatGroupBullet = "you want to set up a VAT group (opens in new tab)."
@@ -66,6 +67,14 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
         disable(TOGCFlow)
       }
 
+      "have the correct heading when the OBI flow is enabled" in {
+        enable(OBIFlow)
+        val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
+
+        doc.select(Selectors.h1).text() mustBe obiH1
+        disable(OBIFlow)
+      }
+
       "have the correct legend" in {
         doc.select(Selectors.legend(1)).text() mustBe h1
       }
@@ -99,6 +108,17 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
         doc.select(Selectors.bullet(3)).first().text() mustBe vatGroupBullet
         doc.select(Selectors.bullet(4)).headOption mustBe None
         disable(TOGCFlow)
+      }
+
+      "display the bullet text correctly when OBI flow is enabled" in {
+        enable(OBIFlow)
+        val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
+
+        doc.select(Selectors.bullet(1)).first().text() mustBe vatGroupBullet
+        doc.select(Selectors.bullet(2)).first().text() mustBe bullet4
+        doc.select(Selectors.bullet(3)).first().text() mustBe bullet5
+        doc.select(Selectors.bullet(4)).headOption mustBe None
+        disable(OBIFlow)
       }
     }
   }
