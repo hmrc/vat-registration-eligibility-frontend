@@ -17,7 +17,7 @@
 @import config.FrontendAppConfig
 @import controllers.routes._
 @import models.Mode
-@import featureswitch.core.config.{TOGCFlow, VATGroupFlow}
+@import featureswitch.core.config.{TOGCFlow, VATGroupFlow, OBIFlow}
 
 @this(
     layout: views.html.layouts.layout,
@@ -40,8 +40,10 @@
     @p{ @messages("involvedInOtherBusiness.text") }
 
     <ul class="govuk-list govuk-list--bullet">
-        <li id="involveBullet1">@messages(s"involvedInOtherBusiness.bullet1")</li>
-        <li id="involveBullet2">@messages(s"involvedInOtherBusiness.bullet2")</li>
+        @if(!appConfig.isEnabled(OBIFlow)) {
+            <li id="involveBullet1">@messages(s"involvedInOtherBusiness.bullet1")</li>
+            <li id="involveBullet2">@messages(s"involvedInOtherBusiness.bullet2")</li>
+        }
 
         @if(!appConfig.isEnabled(VATGroupFlow)) {
             <li id="involveBullet3">
@@ -72,6 +74,8 @@
 @headingKey = @{
     if(appConfig.isEnabled(TOGCFlow)) {
         "involvedInOtherBusiness.headingTogcCole"
+    } else if(appConfig.isEnabled(OBIFlow)) {
+        "involvedInOtherBusiness.headingObi"
     } else {
         "involvedInOtherBusiness.heading"
     }
