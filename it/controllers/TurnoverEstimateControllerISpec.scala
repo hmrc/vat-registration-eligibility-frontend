@@ -4,9 +4,9 @@ import helpers.IntegrationSpecBase
 import identifiers.{ThresholdInTwelveMonthsId, TurnoverEstimateId}
 import models.{ConditionalDateFormElement, TurnoverEstimateFormElement}
 import org.jsoup.Jsoup
-import play.api.test.Helpers._
 import play.api.http.HeaderNames
 import play.api.libs.json.Json
+import play.api.test.Helpers._
 
 import java.time.LocalDate
 
@@ -60,16 +60,16 @@ class TurnoverEstimateControllerISpec extends IntegrationSpecBase {
       }
     }
     "the user enters zero" must {
-      "redirect to the Voluntary MTD Information page when voluntary" in new Setup {
+      "redirect to the MTD Information page when voluntary" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj(turnoverBox -> "0")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.VoluntaryInformationController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
       }
-      "redirect to the Mandatory MTD Information page when mandatory" in new Setup {
+      "redirect to the MTD Information page when mandatory" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
@@ -78,7 +78,7 @@ class TurnoverEstimateControllerISpec extends IntegrationSpecBase {
         val res = await(buildClient(pageUrl).post(Json.obj(turnoverBox -> "0")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.MandatoryInformationController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
       }
     }
     "the user doesn't answer" must {

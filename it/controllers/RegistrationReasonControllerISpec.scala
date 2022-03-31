@@ -206,7 +206,6 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         cacheSessionData[String](sessionId, VATNumberId, "test")
         cacheSessionData[Boolean](sessionId, KeepOldVrnId, true)
         cacheSessionData[Boolean](sessionId, TaxableSuppliesInUkId, true)
-        cacheSessionData[Boolean](sessionId, GoneOverThresholdId, true)
         cacheSessionData[DateFormElement](sessionId, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
 
         val res = await(buildClient(pageUrl).post(Map("value" -> ukEstablishedOverseasExporterKey)))
@@ -214,7 +213,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         List(
           ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId,
           DateOfBusinessTransferId, PreviousBusinessNameId, VATNumberId, KeepOldVrnId, TermsAndConditionsId,
-          TaxableSuppliesInUkId, GoneOverThresholdId, ThresholdTaxableSuppliesId
+          TaxableSuppliesInUkId, ThresholdTaxableSuppliesId
         ).foreach(id =>
           verifySessionCacheData(sessionId, id, None)
         )

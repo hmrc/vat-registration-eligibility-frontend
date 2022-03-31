@@ -17,7 +17,7 @@
 package utils
 
 import featureswitch.core.config.FeatureSwitching
-import identifiers.{DateOfBusinessTransferId, ThresholdInTwelveMonthsId, _}
+import identifiers._
 import models._
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.{JsBoolean, JsString, JsValue, Json}
@@ -53,11 +53,9 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$BusinessEntityId" -> Json.toJson(NETP),
     s"$TaxableSuppliesInUkId" -> JsBoolean(true),
     s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),
-    s"$GoneOverThresholdId" -> JsBoolean(true),
     s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
     s"$ZeroRatedSalesId" -> JsBoolean(true),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
-    s"$VoluntaryInformationId" -> JsBoolean(true),
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
@@ -260,7 +258,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
     )
-    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested).-(s"$GoneOverThresholdId")))
+    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested)))
   }
 
   "throw exception if TaxableSuppliesInUk answer doesn't exist when NETP" in {
@@ -272,12 +270,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   "throw exception if ThresholdTaxableSupplies answer doesn't exist when NETP" in {
     intercept[NoSuchElementException](PageIdBinding.sectionBindings(
       new CacheMap("test", fullListMapHappyPathNETP.-(s"$ThresholdTaxableSuppliesId")))
-    )
-  }
-
-  "throw exception if GoneOverThreshold answer doesn't exist when NETP" in {
-    intercept[NoSuchElementException](PageIdBinding.sectionBindings(
-      new CacheMap("test", fullListMapHappyPathNETP.-(s"$GoneOverThresholdId")))
     )
   }
 
@@ -333,7 +325,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$BusinessEntityId" -> Json.toJson(NETP),
       s"$TaxableSuppliesInUkId" -> JsBoolean(true),
       s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),
-      s"$GoneOverThresholdId" -> JsBoolean(true),
       s"$ZeroRatedSalesId" -> JsBoolean(true)
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$NinoId")))

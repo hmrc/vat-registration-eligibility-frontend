@@ -77,7 +77,6 @@ object PageIdBinding extends FeatureSwitching {
         e
       }
       case e@(VoluntaryRegistrationId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
-      case e@(VoluntaryInformationId, None) => e
       case e@(VATExemptionId, Some(_)) =>
         if (userAnswers.zeroRatedSales.contains(false)) {
           illegalState(e._1)
@@ -87,7 +86,6 @@ object PageIdBinding extends FeatureSwitching {
       case e@(VATExemptionId, None) if (userAnswers.zeroRatedSales.contains(true) && userAnswers.vatRegistrationException.contains(false)) =>
         elemMiss(e._1)
       case e@(TaxableSuppliesInUkId, None) if !isOverseas || isTogcCole => e
-      case e@(GoneOverThresholdId, None) if !isOverseas || isTogcCole => e
       case e@(NinoId, None) if isOverseas || isEnabled(IndividualFlow) => e
       case e if (e._1 != VATExemptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
     }
@@ -116,11 +114,9 @@ object PageIdBinding extends FeatureSwitching {
           (VoluntaryRegistrationId, userAnswers.voluntaryRegistration),
           (TaxableSuppliesInUkId, userAnswers.taxableSuppliesInUk),
           (ThresholdTaxableSuppliesId, userAnswers.thresholdTaxableSupplies),
-          (GoneOverThresholdId, userAnswers.goneOverThreshold),
           (TurnoverEstimateId, userAnswers.turnoverEstimate),
           (ZeroRatedSalesId, userAnswers.zeroRatedSales),
-          (VATExemptionId, userAnswers.vatExemption),
-          (VoluntaryInformationId, userAnswers.voluntaryInformation)
+          (VATExemptionId, userAnswers.vatExemption)
         ).collect(ValidationAndConstruction)
     )
   }

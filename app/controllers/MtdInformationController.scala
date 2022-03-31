@@ -18,17 +18,18 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.CacheIdentifierAction
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.mandatoryInformation
+import views.html.MtdInformation
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
-class MandatoryInformationController @Inject()(mcc: MessagesControllerComponents,
-                                               identify: CacheIdentifierAction,
-                                               view: mandatoryInformation
-                                              )(implicit appConfig: FrontendAppConfig)
+class MtdInformationController @Inject()(mcc: MessagesControllerComponents,
+                                         identify: CacheIdentifierAction,
+                                         view: MtdInformation)
+                                        (implicit appConfig: FrontendAppConfig)
   extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify { implicit request =>

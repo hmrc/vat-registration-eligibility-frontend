@@ -5,7 +5,7 @@ import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
-class MandatoryInformationControllerISpec extends IntegrationSpecBase {
+class MtdInformationControllerISpec extends IntegrationSpecBase {
 
   val pageUrl = "/mtd-mandatory-information"
 

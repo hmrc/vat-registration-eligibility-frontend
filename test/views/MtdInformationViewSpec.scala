@@ -16,22 +16,23 @@
 
 package views
 
-import views.html.mandatoryInformation
+import views.html.MtdInformation
 
-class MandatoryInformationViewSpec extends ViewSpecBase {
+class MtdInformationViewSpec extends ViewSpecBase {
 
   object ExpectedContent {
     val h1 = "The business will be signed up for Making Tax Digital for VAT"
-    val p1Text = "Making Tax Digital for VAT means using software to submit VAT Returns directly to HMRC."
-    val p2Text = "Most VAT registered businesses with a taxable turnover above £85,000 must use compatible software to keep VAT records and send VAT returns."
-    val p3Text = "As the taxable turnover is above, or will go above, £85,000 in a rolling 12 month period, the business will be signed up for Making Tax Digital for VAT as part of the registration process."
+    val para = "Businesses signed up to Making Tax Digital for VAT must use software to:"
+    val bullet1 = "keep digital records"
+    val bullet2 = "submit VAT Returns directly to HMRC"
+    val linkText = "Find out more about Making Tax Digital for VAT (opens in new tab)"
+    val link = "https://www.gov.uk/guidance/making-tax-digital-for-vat"
     val buttonText = "Continue to register for VAT"
   }
 
-  val view = app.injector.instanceOf[mandatoryInformation]
+  val view: MtdInformation = app.injector.instanceOf[MtdInformation]
 
   object Selectors extends BaseSelectors
-
 
   "Introduction view" must {
     lazy val doc = asDocument(view()(fakeRequest, messages, frontendAppConfig))
@@ -53,15 +54,17 @@ class MandatoryInformationViewSpec extends ViewSpecBase {
     }
 
     "have the correct first paragraph" in {
-      doc.select(Selectors.p(1)).first.text mustBe ExpectedContent.p1Text
+      doc.select(Selectors.p(1)).first.text mustBe ExpectedContent.para
     }
 
-    "have the correct second paragraph" in {
-      doc.select(Selectors.p(2)).first.text mustBe ExpectedContent.p2Text
+    "have the correct bullets" in {
+      doc.select(Selectors.bullet(1)).text() mustBe ExpectedContent.bullet1
+      doc.select(Selectors.bullet(2)).text() mustBe ExpectedContent.bullet2
     }
 
-    "have the correct 2nd paragraph" in {
-      doc.select(Selectors.indent).first.text mustBe ExpectedContent.p3Text
+    "have the correct link" in {
+      doc.select(Selectors.links).toList.head.text() mustBe ExpectedContent.linkText
+      doc.select(Selectors.links).toList.head.attr("href") mustBe ExpectedContent.link
     }
   }
 }
