@@ -42,7 +42,7 @@ class VATNumberViewSpec extends ViewSpecBase {
       }
 
       "have the correct back link" in {
-        doc.getElementById(Selectors.backLink).text() mustBe backLink
+        doc.select(Selectors.backLink).text() mustBe backLink
       }
 
       "have the correct heading" in {
@@ -62,7 +62,7 @@ class VATNumberViewSpec extends ViewSpecBase {
       }
 
       "have the correct back link" in {
-        doc.getElementById(Selectors.backLink).text() mustBe backLink
+        doc.select(Selectors.backLink).text() mustBe backLink
       }
 
       "have the correct heading" in {

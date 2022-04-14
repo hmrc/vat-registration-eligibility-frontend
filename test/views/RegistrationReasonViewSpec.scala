@@ -45,7 +45,7 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
       val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = false)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the correct back link" in {
-        doc.getElementById(Selectors.backLink).text mustBe backLink
+        doc.select(Selectors.backLink).text mustBe backLink
       }
 
       "have a correct title" in {
@@ -73,7 +73,7 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
       val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the correct back link" in {
-        doc.getElementById(Selectors.backLink).text mustBe backLink
+        doc.select(Selectors.backLink).text mustBe backLink
       }
 
       "have a correct title" in {

@@ -34,7 +34,7 @@ class DoNotNeedToRegisterViewSpec extends ViewSpecBase {
     lazy val doc = asDocument(view()(fakeCacheDataRequestIncorped, messages, frontendAppConfig))
 
     "have a back link" in {
-      doc.getElementById(Selectors.backLink).text() mustBe backLink
+      doc.select(Selectors.backLink).text() mustBe backLink
     }
 
     "have the correct title" in {
