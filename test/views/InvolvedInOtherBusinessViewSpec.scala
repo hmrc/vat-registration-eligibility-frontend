@@ -48,7 +48,7 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
       }
 
       "have the correct back link" in {
-        doc.getElementById(Selectors.backLink).text() mustBe backLink
+        doc.select(Selectors.backLink).text() mustBe backLink
       }
 
       "have the correct browser title" in {

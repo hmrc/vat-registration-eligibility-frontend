@@ -1,4 +1,4 @@
-var backLink = document.querySelector('#back-link[href="#"]')
+var backLink = document.querySelector('.govuk-back-link[href="#"]')
 
 if (backLink != null) {
     backLink.addEventListener('click', function(e) {
