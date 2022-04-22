@@ -16,8 +16,8 @@
 
 package utils
 
-import featureswitch.core.config.{FeatureSwitching, IndividualFlow, LandAndProperty}
-import identifiers.{Identifier, _}
+import featureswitch.core.config._
+import identifiers._
 import models._
 import uk.gov.hmrc.http.cache.client.CacheMap
 
@@ -87,6 +87,7 @@ object PageIdBinding extends FeatureSwitching {
         elemMiss(e._1)
       case e@(TaxableSuppliesInUkId, None) if !isOverseas || isTogcCole => e
       case e@(NinoId, None) if isOverseas || isEnabled(IndividualFlow) => e
+      case e@(InvolvedInOtherBusinessId, None) if isEnabled(TOGCFlow) && isEnabled(OBIFlow) && isEnabled(VATGroupFlow) => e
       case e if (e._1 != VATExemptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
     }
 

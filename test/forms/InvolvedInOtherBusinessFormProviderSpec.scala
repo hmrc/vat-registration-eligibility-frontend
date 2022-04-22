@@ -16,30 +16,84 @@
 
 package forms
 
+import featureswitch.core.config.{FeatureSwitching, OBIFlow, TOGCFlow}
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.{Form, FormError}
 
-class InvolvedInOtherBusinessFormProviderSpec extends BooleanFieldBehaviours {
+class InvolvedInOtherBusinessFormProviderSpec extends BooleanFieldBehaviours with FeatureSwitching {
 
-  val requiredKey             = "involvedInOtherBusiness.error.required"
-  val invalidKey              = "error.boolean"
+  val requiredKey = "involvedInOtherBusiness.error.required"
+  val requiredObiKey = "involvedInOtherBusiness.error.required.obi"
+  val requiredTogcKey = "involvedInOtherBusiness.error.required.takingOver"
+  val requiredVatGroupKey = "involvedInOtherBusiness.error.required.vatGroup"
+  val invalidKey = "error.boolean"
+  val fieldName = "value"
 
-  val form: Form[Boolean] = new InvolvedInOtherBusinessFormProvider().form
+  def form: Form[Boolean] = new InvolvedInOtherBusinessFormProvider().form
 
-  ".value" must {
+  ".value" when {
+    "no feature switches are set" must {
+      behave like booleanField(
+        form,
+        fieldName,
+        invalidError = FormError(fieldName, invalidKey)
+      )
 
-    val fieldName = "value"
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
+    }
 
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
+    "TOGC FS is set" must {
+      enable(TOGCFlow)
+      behave like booleanField(
+        form,
+        fieldName,
+        invalidError = FormError(fieldName, invalidKey)
+      )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredObiKey)
+      )
+      disable(TOGCFlow)
+    }
+
+    "OBI FS is set" must {
+      enable(OBIFlow)
+      behave like booleanField(
+        form,
+        fieldName,
+        invalidError = FormError(fieldName, invalidKey)
+      )
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredTogcKey)
+      )
+      disable(OBIFlow)
+    }
+
+    "OBI and TOGC FS is set" must {
+      enable(TOGCFlow)
+      enable(OBIFlow)
+      behave like booleanField(
+        form,
+        fieldName,
+        invalidError = FormError(fieldName, invalidKey)
+      )
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredVatGroupKey)
+      )
+      disable(TOGCFlow)
+      disable(OBIFlow)
+    }
   }
 }

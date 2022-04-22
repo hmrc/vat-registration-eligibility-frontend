@@ -170,19 +170,23 @@ turnoverEstimate.error.amount.giveMoreThan  = Give an estimate that is more than
 turnoverEstimate.error.amount.giveLessThan  = Give an estimate that’s less than or equal to £{0}
 completionCapacity.noneOfThese = None of these
 
-involvedInOtherBusiness.heading                 = Have you been involved with another business or taken over a VAT-registered business?
-involvedInOtherBusiness.headingTogcCole         = Have you been involved with another business?
-involvedInOtherBusiness.headingObi              = Have you taken over a VAT-registered business?
-involvedInOtherBusiness.error.required          = Select yes if you have ever been involved with another business or taken over a VAT-registered business
-involvedInOtherBusiness.text                    = Tell us if any of the following apply:
+involvedInOtherBusiness.heading                     = Have you been involved with another business or taken over a VAT-registered business?
+involvedInOtherBusiness.headingObi                  = Have you been involved with another business?
+involvedInOtherBusiness.headingTakingOver           = Have you taken over a VAT-registered business?
+involvedInOtherBusiness.headingVatGroup             = Do you want to set up a VAT group?
+involvedInOtherBusiness.error.required              = Select yes if you have ever been involved with another business or taken over a VAT-registered business
+involvedInOtherBusiness.error.required.obi          = Select yes if you have ever been involved with another business
+involvedInOtherBusiness.error.required.takingOver   = Select yes if you have taken over a VAT-registered business
+involvedInOtherBusiness.error.required.vatGroup     = Select yes if you want to set up a VAT group
+involvedInOtherBusiness.text                        = Tell us if any of the following apply:
 
-involvedInOtherBusiness.bullet1                 = over the past 2 years, you have had another self-employed business in the UK or Isle of Man (do not tell us if your only source of self-employed income was from being a landlord)
-involvedInOtherBusiness.bullet2                 = over the past 2 years, you have been a partner or director with a different business in the UK or Isle of Man
-involvedInOtherBusiness.bullet4                 = the company used to be a different type of VAT-registered business, for example a sole trader
-involvedInOtherBusiness.bullet5                 = the company has taken over another VAT-registered company that was making a profit
+involvedInOtherBusiness.bullet1                     = over the past 2 years, you have had another self-employed business in the UK or Isle of Man (do not tell us if your only source of self-employed income was from being a landlord)
+involvedInOtherBusiness.bullet2                     = over the past 2 years, you have been a partner or director with a different business in the UK or Isle of Man
+involvedInOtherBusiness.bullet4                     = the company used to be a different type of VAT-registered business, for example a sole trader
+involvedInOtherBusiness.bullet5                     = the company has taken over another VAT-registered company that was making a profit
 
-involvedInOtherBusiness.beforeText              = you want to
-involvedInOtherBusiness.linkText                = set up a VAT group
+involvedInOtherBusiness.beforeText                  = you want to
+involvedInOtherBusiness.linkText                    = set up a VAT group
 
 eligibilityDropout.heading                      = The business must register for VAT using a different service
 eligibilityDropout.ApplicantUKNinoId.variant    = This is because the person whose name is on the VAT application must have a UK National Insurance number.
@@ -381,6 +385,9 @@ checkYourAnswers.agriculturalFlatRateScheme.partnership             = Is the par
 checkYourAnswers.internationalActivities.business                   = Will the business do any of the following activities over the next 12 months?
 checkYourAnswers.internationalActivities.partnership                = Will the partnership do any of the following activities over the next 12 months?
 checkYourAnswers.involvedInOtherBusiness                            = Have you been involved with another business or taken over a VAT-registered business?
+checkYourAnswers.involvedInOtherBusiness.headingObi                 = Have you been involved with another business?
+checkYourAnswers.involvedInOtherBusiness.headingTakingOver          = Have you taken over a VAT-registered business?
+checkYourAnswers.involvedInOtherBusiness.headingVatGroup            = Do you want to set up a VAT group?
 checkYourAnswers.racehorses.business                                = Will the business be doing any of the following?
 checkYourAnswers.racehorses.partnership                             = Will the partnership be doing any of the following?
 checkYourAnswers.registeringBusiness                                = Whose business do you want to register?
