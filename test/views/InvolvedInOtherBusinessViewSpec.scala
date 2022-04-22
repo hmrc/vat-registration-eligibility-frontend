@@ -27,8 +27,9 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
   val form = new InvolvedInOtherBusinessFormProvider().form
 
   val h1 = "Have you been involved with another business or taken over a VAT-registered business?"
-  val togcH1 = "Have you been involved with another business?"
-  val obiH1 = "Have you taken over a VAT-registered business?"
+  val obiH1 = "Have you been involved with another business?"
+  val togcH1 = "Have you taken over a VAT-registered business?"
+  val vatGroupH1 = "Do you want to set up a VAT group?"
   val bullet1 = "over the past 2 years, you have had another self-employed business in the UK or Isle of Man (do not tell us if your only source of self-employed income was from being a landlord)"
   val bullet2 = "over the past 2 years, you have been a partner or director with a different business in the UK or Isle of Man"
   val vatGroupBullet = "you want to set up a VAT group (opens in new tab)."
@@ -63,7 +64,7 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
         enable(TOGCFlow)
         val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
 
-        doc.select(Selectors.h1).text() mustBe togcH1
+        doc.select(Selectors.h1).text() mustBe obiH1
         disable(TOGCFlow)
       }
 
@@ -71,8 +72,18 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
         enable(OBIFlow)
         val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
 
-        doc.select(Selectors.h1).text() mustBe obiH1
+        doc.select(Selectors.h1).text() mustBe togcH1
         disable(OBIFlow)
+      }
+
+      "have the correct heading when the OBI and TOGC flow are enabled" in {
+        enable(OBIFlow)
+        enable(TOGCFlow)
+        val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
+
+        doc.select(Selectors.h1).text() mustBe vatGroupH1
+        disable(OBIFlow)
+        disable(TOGCFlow)
       }
 
       "have the correct legend" in {
@@ -119,6 +130,17 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
         doc.select(Selectors.bullet(3)).first().text() mustBe bullet5
         doc.select(Selectors.bullet(4)).headOption mustBe None
         disable(OBIFlow)
+      }
+
+      "display the bullet text correctly when OBI and TOGC flows are enabled" in {
+        enable(OBIFlow)
+        enable(TOGCFlow)
+        val doc = asDocument(view(form, NormalMode)(fakeRequest, messages, frontendAppConfig))
+
+        doc.select(Selectors.bullet(1)).first().text() mustBe vatGroupBullet
+        doc.select(Selectors.bullet(2)).headOption mustBe None
+        disable(OBIFlow)
+        disable(TOGCFlow)
       }
     }
   }

@@ -18,11 +18,9 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import featureswitch.core.config.{FeatureSwitching, VATGroupFlow}
+import featureswitch.core.config.FeatureSwitching
 import forms.InvolvedInOtherBusinessFormProvider
 import identifiers.InvolvedInOtherBusinessId
-
-import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -32,6 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.involvedInOtherBusiness
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

@@ -16,11 +16,11 @@
 
 @import config.FrontendAppConfig
 @import controllers.routes._
+@import featureswitch.core.config.{OBIFlow, TOGCFlow, VATGroupFlow}
 @import models.Mode
-@import featureswitch.core.config.{TOGCFlow, VATGroupFlow, OBIFlow}
 
 @this(
-    layout: views.html.layouts.layout,
+        layout: views.html.layouts.layout,
         errorSummary: components.errorSummary,
         h1: components.h1,
         p: components.p,
@@ -37,7 +37,9 @@
     @errorSummary(form.errors)
 
     @h1(messages(headingKey))
-    @p{ @messages("involvedInOtherBusiness.text") }
+    @p {
+        @messages("involvedInOtherBusiness.text")
+    }
 
     <ul class="govuk-list govuk-list--bullet">
         @if(!appConfig.isEnabled(OBIFlow)) {
@@ -68,14 +70,15 @@
 
         @button(messages("site.continue"))
     }
-
 }
 
 @headingKey = @{
-    if(appConfig.isEnabled(TOGCFlow)) {
-        "involvedInOtherBusiness.headingTogcCole"
-    } else if(appConfig.isEnabled(OBIFlow)) {
+    if(appConfig.isEnabled(TOGCFlow) && appConfig.isEnabled(OBIFlow)) {
+        "involvedInOtherBusiness.headingVatGroup"
+    } else if(appConfig.isEnabled(TOGCFlow)) {
         "involvedInOtherBusiness.headingObi"
+    } else if(appConfig.isEnabled(OBIFlow)) {
+        "involvedInOtherBusiness.headingTakingOver"
     } else {
         "involvedInOtherBusiness.heading"
     }

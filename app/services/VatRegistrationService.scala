@@ -17,6 +17,7 @@
 package services
 
 import connectors.VatRegistrationConnector
+import featureswitch.core.config.{FeatureSwitching, OBIFlow, TOGCFlow}
 import identifiers._
 import models.BusinessEntity.businessEntityToString
 import models.RegisteringBusiness.registeringBusinessToString
@@ -37,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector,
                                        val sessionService: SessionService,
-                                       val messagesApi: MessagesApi) extends MessagesUtils {
+                                       val messagesApi: MessagesApi) extends MessagesUtils with FeatureSwitching {
 
   def submitEligibility(implicit hc: HeaderCarrier, ec: ExecutionContext, request: DataRequest[_]): Future[JsObject] = {
     for {
@@ -100,6 +101,16 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     val optDataKey = if (isOptData) ".optional" else ""
     messages(
       key match {
+        case InvolvedInOtherBusinessId =>
+          if (isEnabled(TOGCFlow) && isEnabled(OBIFlow)) {
+            s"checkYourAnswers.$key.headingVatGroup"
+          } else if (isEnabled(TOGCFlow)) {
+            s"checkYourAnswers.$key.headingObi"
+          } else if (isEnabled(OBIFlow)) {
+            s"checkYourAnswers.$key.headingTakingOver"
+          } else {
+            s"checkYourAnswers.$key"
+          }
         case DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId | TermsAndConditionsId =>
           data.userAnswers.registrationReason match {
             case Some(TakingOverBusiness) => s"checkYourAnswers.$key$optDataKey.togc"

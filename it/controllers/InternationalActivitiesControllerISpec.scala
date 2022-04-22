@@ -207,6 +207,43 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
       }
 
+      "navigate to Racehorses when OBI, VAT Group and TOGC FS are turned on" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(OBIFlow)
+        enable(TOGCFlow)
+        enable(VATGroupFlow)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
+      "navigate to Registering Business when OBI, VAT Group, TOGC and Land and Property FS are turned on" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+        enable(OBIFlow)
+        enable(TOGCFlow)
+        enable(VATGroupFlow)
+        enable(LandAndProperty)
+
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
+
+        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
+          .post(Map("value" -> Seq("false"))))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegisteringBusinessController.onPageLoad.url)
+        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+      }
+
       "navigate to Vat Exception Kickout when false but business entity is not allowed" in new Setup {
         disable(PartnershipFlow)
         disable(SoleTraderFlow)

@@ -20,7 +20,7 @@ import config.Logging
 import controllers.routes
 import featureswitch.core.config._
 import featureswitch.core.models.FeatureSwitch
-import identifiers.{Identifier, _}
+import identifiers._
 import models._
 import play.api.libs.json.Reads
 import play.api.mvc.Call
@@ -193,17 +193,26 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       }
     },
     InternationalActivitiesId -> { userAnswers =>
+
+      def nextPage = if (isEnabled(OBIFlow) && isEnabled(VATGroupFlow) && isEnabled(TOGCFlow) && isEnabled(LandAndProperty)) {
+        pageIdToPageLoad(RegisteringBusinessId)
+      } else if (isEnabled(OBIFlow) && isEnabled(VATGroupFlow) && isEnabled(TOGCFlow)) {
+        pageIdToPageLoad(RacehorsesId)
+      } else {
+        pageIdToPageLoad(InvolvedInOtherBusinessId)
+      }
+
       userAnswers.businessEntity match {
         case Some(_) if userAnswers.internationalActivities.contains(true) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
-        case Some(UKCompany | ScottishLimitedPartnership | LimitedPartnership) => pageIdToPageLoad(InvolvedInOtherBusinessId)
-        case Some(SoleTrader) if isEnabled(SoleTraderFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
-        case Some(GeneralPartnership | ScottishPartnership | LimitedLiabilityPartnership) if isEnabled(PartnershipFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
-        case Some(RegisteredSociety) if isEnabled(RegisteredSocietyFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
-        case Some(NonIncorporatedTrust) if isEnabled(NonIncorpTrustFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
-        case Some(CharitableIncorporatedOrganisation) if isEnabled(CharityFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
-        case Some(UnincorporatedAssociation) if isEnabled(UnincorporatedAssociationFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
-        case Some(NETP) if isEnabled(NETPFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
-        case Some(Overseas) if isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(InvolvedInOtherBusinessId)
+        case Some(UKCompany | ScottishLimitedPartnership | LimitedPartnership) => nextPage
+        case Some(SoleTrader) if isEnabled(SoleTraderFlow) => nextPage
+        case Some(GeneralPartnership | ScottishPartnership | LimitedLiabilityPartnership) if isEnabled(PartnershipFlow) => nextPage
+        case Some(RegisteredSociety) if isEnabled(RegisteredSocietyFlow) => nextPage
+        case Some(NonIncorporatedTrust) if isEnabled(NonIncorpTrustFlow) => nextPage
+        case Some(CharitableIncorporatedOrganisation) if isEnabled(CharityFlow) => nextPage
+        case Some(UnincorporatedAssociation) if isEnabled(UnincorporatedAssociationFlow) => nextPage
+        case Some(NETP) if isEnabled(NETPFlow) => nextPage
+        case Some(Overseas) if isEnabled(NonUkCompanyFlow) => nextPage
         case _ => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
@@ -215,7 +224,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     InvolvedInOtherBusinessId -> { userAnswers =>
       userAnswers.involvedInOtherBusiness match {
         case Some(true) => pageIdToPageLoad(VATExceptionKickoutId)
-        case Some(false) if isEnabled(LandAndProperty)  => pageIdToPageLoad(RegisteringBusinessId)
+        case Some(false) if isEnabled(LandAndProperty) => pageIdToPageLoad(RegisteringBusinessId)
         case Some(false) => pageIdToPageLoad(RacehorsesId)
       }
     },

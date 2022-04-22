@@ -16,15 +16,25 @@
 
 package forms
 
+import featureswitch.core.config.{FeatureSwitching, OBIFlow, TOGCFlow}
 import forms.mappings.Mappings
-import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 
+import javax.inject.{Inject, Singleton}
+
 @Singleton
-class InvolvedInOtherBusinessFormProvider @Inject() extends FormErrorHelper with Mappings {
+class InvolvedInOtherBusinessFormProvider @Inject() extends FormErrorHelper with Mappings with FeatureSwitching {
 
   def form: Form[Boolean] = {
-    val key = "involvedInOtherBusiness.error.required"
+    val key = if (isEnabled(TOGCFlow) && isEnabled(OBIFlow)) {
+      "involvedInOtherBusiness.error.required.vatGroup"
+    } else if (isEnabled(TOGCFlow)) {
+      "involvedInOtherBusiness.error.required.obi"
+    } else if (isEnabled(OBIFlow)) {
+      "involvedInOtherBusiness.error.required.takingOver"
+    } else {
+      "involvedInOtherBusiness.error.required"
+    }
     Form(
       "value" -> boolean(key)
     )
