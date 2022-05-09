@@ -70,7 +70,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case TermsAndConditionsId => routes.TermsAndConditionsController.onPageLoad
     case TrafficManagementResolverId => routes.TrafficManagementResolverController.resolve
     case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
-      routes.IntroductionController.onPageLoad
+      controllers.routes.FixedEstablishmentController.onPageLoad
   }
 
   private[utils] def nextOn[T](condition: T, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)
@@ -339,5 +339,5 @@ class Navigator @Inject extends Logging with FeatureSwitching {
   )
 
   def nextPage(id: Identifier, mode: Mode): UserAnswers => Call =
-    routeMap.getOrElse(id, _ => routes.IntroductionController.onPageLoad)
+    routeMap.getOrElse(id, _ => controllers.routes.FixedEstablishmentController.onPageLoad)
 }

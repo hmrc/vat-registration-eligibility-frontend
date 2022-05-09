@@ -37,7 +37,7 @@ class NavigatorSpec extends SpecBase {
     "in Normal mode" must {
       "go to Index from an identifier that doesn't exist in the route map" in {
         case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, NormalMode)(mock[UserAnswers]) mustBe routes.IntroductionController.onPageLoad
+        navigator.nextPage(UnknownIdentifier, NormalMode)(mock[UserAnswers]) mustBe controllers.routes.FixedEstablishmentController.onPageLoad
       }
     }
   }
@@ -58,7 +58,7 @@ class NavigatorSpec extends SpecBase {
         val fakeId = new Identifier {
           override def toString: String = "fudge"
         }
-        navigator.pageIdToPageLoad(fakeId).url mustBe routes.IntroductionController.onPageLoad.url
+        navigator.pageIdToPageLoad(fakeId).url mustBe controllers.routes.FixedEstablishmentController.onPageLoad.url
       }
     }
   }

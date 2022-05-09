@@ -61,7 +61,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
         val res = await(buildClient("/gone-over-threshold").get())
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.IntroductionController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
       }
     }
   }

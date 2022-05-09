@@ -90,9 +90,6 @@ businessEntityOverseas.netp = Non-established taxable person (NETP)
 businessEntityOverseas.overseas = Non UK Company
 businessEntityOverseas.error.required = Select the type of business you want to register for VAT
 
-introduction.heading                                = Check if you can register for VAT online
-introduction.p1                                     = We will ask you some questions about the nature of the business to check if this is the best way for you to register.
-
 thresholdNextThirtyDays.heading.business            = Does the business expect to make more than £85,000 in a single month or a 30-day period?
 thresholdNextThirtyDays.heading.partnership         = Does the partnership expect to make more than £85,000 in a single month or a 30-day period?
 thresholdNextThirtyDays.heading2.business           = What date did the business realise it would go over the threshold?

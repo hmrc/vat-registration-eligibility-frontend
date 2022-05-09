@@ -14,7 +14,7 @@ class IndexControllerISpec extends IntegrationSpecBase {
       val res = await(buildClient("/").get)
 
       res.status mustBe SEE_OTHER
-      res.header(HeaderNames.LOCATION) mustBe Some(routes.IntroductionController.onPageLoad.url)
+      res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
     }
   }
 
@@ -27,7 +27,7 @@ class IndexControllerISpec extends IntegrationSpecBase {
         val res = await(buildClient(s"/journey/$testRegId").get)
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.IntroductionController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
       }
     }
   }
@@ -37,7 +37,7 @@ class IndexControllerISpec extends IntegrationSpecBase {
       val result = await(buildClient("/question?pageId=foo").get())
 
       result.status mustBe SEE_OTHER
-      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.IntroductionController.onPageLoad.url)
+      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
     }
     "redirect to page specified" in {
       val result = await(buildClient("/question?pageId=zeroRatedSales").get())
