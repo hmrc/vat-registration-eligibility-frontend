@@ -39,14 +39,14 @@ class IndexController @Inject()(val authConnector: AuthConnector,
                                )(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport with AuthorisedFunctions {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData) { implicit request =>
-    Redirect(routes.IntroductionController.onPageLoad)
+    Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
   }
 
   def initJourney(regId: String): Action[AnyContent] = Action.async { implicit request =>
     authorised().retrieve(Retrievals.internalId) {
       case Some(internalId) =>
         journeyService.initialiseJourney(internalId, regId).map { _ =>
-          Redirect(routes.IntroductionController.onPageLoad)
+          Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
         }
       case _ =>
         Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))

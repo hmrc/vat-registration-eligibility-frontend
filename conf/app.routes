@@ -8,9 +8,6 @@ GET        /journey/:regId                              controllers.IndexControl
 
 GET        /question                                    controllers.IndexController.navigateToPageId(pageId: String ?= "")
 
-GET        /introduction                                controllers.IntroductionController.onPageLoad
-POST       /introduction                                controllers.IntroductionController.onSubmit
-
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
