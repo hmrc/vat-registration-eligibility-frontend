@@ -58,7 +58,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case AgriculturalFlatRateSchemeId => routes.AgriculturalFlatRateSchemeController.onPageLoad
     case RacehorsesId => routes.RacehorsesController.onPageLoad
     case MtdInformationId => routes.MtdInformationController.onPageLoad
-    case EligibleId => routes.EligibleController.onPageLoad
     case TaxableSuppliesInUkId => routes.TaxableSuppliesInUkController.onPageLoad
     case DateOfBusinessTransferId => routes.DateOfBusinessTransferController.onPageLoad
     case ThresholdTaxableSuppliesId => routes.ThresholdTaxableSuppliesController.onPageLoad
