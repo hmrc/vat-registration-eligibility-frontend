@@ -16,12 +16,12 @@
 
 package forms.mappings
 
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatestplus.play.PlaySpec
 import play.api.data.validation.{Invalid, Valid}
 
 import java.time.LocalDate
 
-class ConstraintsSpec extends WordSpec with MustMatchers with Constraints {
+class ConstraintsSpec extends PlaySpec with Constraints {
 
 
   "firstError" must {
@@ -184,7 +184,7 @@ class ConstraintsSpec extends WordSpec with MustMatchers with Constraints {
     }
   }
 
-  "isValidChecksum" should {
+  "isValidChecksum" must {
     "returns Valid if the checksum is correct for a mod 97 number" in {
       val testValue = "011000084"
       isValidChecksum("vatNumber.error.invalid")(testValue) mustEqual Valid

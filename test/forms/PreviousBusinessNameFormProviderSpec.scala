@@ -23,7 +23,7 @@ class PreviousBusinessNameFormProviderSpec extends BooleanFieldBehaviours {
 
   val form = new PreviousBusinessNameFormProvider().apply()
 
-  "bind" should {
+  "bind" must {
 
     val previousBusinessNameKey = "previousBusinessName"
     val errorKeyRoot = s"previousBusinessName.error"
@@ -39,7 +39,7 @@ class PreviousBusinessNameFormProviderSpec extends BooleanFieldBehaviours {
             previousBusinessNameKey -> ""
           )
         )
-          .errors shouldBe Seq(FormError(previousBusinessNameKey, businessNameRequired))
+          .errors mustBe Seq(FormError(previousBusinessNameKey, businessNameRequired))
       }
 
       "the business name provided exceeds 105 characters" in {
@@ -47,7 +47,7 @@ class PreviousBusinessNameFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             previousBusinessNameKey -> "Al Pacino Ltd Al Pacino Ltd Al Pacino Ltd Al Pacino Ltd Al Pacino Ltd Al Pacino Ltd Al Pacino Ltd Al Pacino Ltd"
           )
-        ).errors.headOption.map(_.message) shouldBe Some(tooManyChars)
+        ).errors.headOption.map(_.message) mustBe Some(tooManyChars)
       }
 
       "the business name provided includes special characters that are invalid" in {
@@ -55,7 +55,7 @@ class PreviousBusinessNameFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             previousBusinessNameKey -> "^`|~"
           )
-        ).errors.headOption.map(_.message) shouldBe Some(specialChars)
+        ).errors.headOption.map(_.message) mustBe Some(specialChars)
       }
     }
 
@@ -65,7 +65,7 @@ class PreviousBusinessNameFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             previousBusinessNameKey -> "Al Pacino Ltd"
           )
-        ).errors shouldBe Nil
+        ).errors mustBe Nil
       }
 
       "the business name provided includes special characters that are valid" in {
@@ -73,7 +73,7 @@ class PreviousBusinessNameFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             previousBusinessNameKey -> "#!$ %&' *+ -/=? _{}"
           )
-        ).errors shouldBe Nil
+        ).errors mustBe Nil
       }
     }
   }

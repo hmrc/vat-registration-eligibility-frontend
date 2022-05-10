@@ -13,7 +13,7 @@ class DateOfBusinessTransferControllerISpec extends IntegrationSpecBase {
   val pageUrl = "/date-of-transfer"
   val dateFieldName = "relevantDate"
 
-  "GET /date-of-transfer" should {
+  "GET /date-of-transfer" must {
     "render the page" when {
       "no prepop data is present in mongo" in new Setup {
         stubSuccessfulLogin()
@@ -35,7 +35,7 @@ class DateOfBusinessTransferControllerISpec extends IntegrationSpecBase {
     }
   }
 
-  "POST /date-of-transfer" should {
+  "POST /date-of-transfer" must {
     "redirect to Previous Business Name" in new Setup {
       stubSuccessfulLogin()
       stubAudits()

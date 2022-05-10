@@ -32,7 +32,7 @@ class IndexControllerISpec extends IntegrationSpecBase {
     }
   }
 
-  s"GET ${controllers.routes.IndexController.navigateToPageId("foo").url}" should {
+  s"GET ${controllers.routes.IndexController.navigateToPageId("foo").url}" must {
     "redirect to the start of eligibility because question id is invalid" in {
       val result = await(buildClient("/question?pageId=foo").get())
 

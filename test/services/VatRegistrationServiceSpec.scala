@@ -55,7 +55,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
   implicit val r: DataRequest[AnyContentAsEmpty.type] = fakeDataRequestIncorped
   val internalId = "internalID"
 
-  "submitEligibility" should {
+  "submitEligibility" must {
     "return the JsObject submitted to Vat registration" in new Setup {
       val fullListMapHappyPathTwelveMonthsFalse: ListMap[String, JsValue] = ListMap[String, JsValue](
         "" -> JsString(""),

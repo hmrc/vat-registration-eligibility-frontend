@@ -42,7 +42,7 @@ class NavigatorSpec extends SpecBase {
     }
   }
 
-  "pageIdToPageLoad" should {
+  "pageIdToPageLoad" must {
     "load a page" when {
       Seq[(Identifier, Call)](
 
@@ -63,7 +63,7 @@ class NavigatorSpec extends SpecBase {
     }
   }
 
-  "next on" should {
+  "next on" must {
     "return and id and call" when {
       "true is passed in" in {
         val data = new UserAnswers(CacheMap("some-id", Map(ZeroRatedSalesId.toString -> JsBoolean(true))))
@@ -73,7 +73,7 @@ class NavigatorSpec extends SpecBase {
     }
   }
 
-  "nextOnZeroRateSales" should {
+  "nextOnZeroRateSales" must {
     "redirect to MTD page (zero rated is false)" when {
       "user is mandatory" in {
         val data = newCacheMap(Map(

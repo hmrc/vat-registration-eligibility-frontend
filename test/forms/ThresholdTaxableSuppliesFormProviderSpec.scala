@@ -50,10 +50,10 @@ class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
   val requiredKey = "thresholdTaxableSupplies.error.date.required"
 
 
-  "bind" should {
+  "bind" must {
     "return errors" when {
       "nothing is selected" in {
-        form.bind(Map("" -> "")).errors shouldBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
+        form.bind(Map("" -> "")).errors mustBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
       }
 
       "an invalid date is provided" in {
@@ -64,7 +64,7 @@ class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"sdsdf",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors shouldBe Seq(FormError(dateFieldName, dateInvalidKey))
+        ).errors mustBe Seq(FormError(dateFieldName, dateInvalidKey))
       }
 
       "a date in the future is provided" in {
@@ -75,7 +75,7 @@ class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors shouldBe Seq(FormError(dateFieldName, dateOutsideRangeKey, Seq(minDate, maxDate)))
+        ).errors mustBe Seq(FormError(dateFieldName, dateOutsideRangeKey, Seq(minDate, maxDate)))
       }
 
       "a date in the past is provided" in {
@@ -86,7 +86,7 @@ class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors shouldBe Seq(FormError(dateFieldName, dateOutsideRangeKey, Seq(minDate, maxDate)))
+        ).errors mustBe Seq(FormError(dateFieldName, dateOutsideRangeKey, Seq(minDate, maxDate)))
       }
     }
 
@@ -99,7 +99,7 @@ class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).value shouldBe Some(DateFormElement(date))
+        ).value mustBe Some(DateFormElement(date))
       }
     }
   }

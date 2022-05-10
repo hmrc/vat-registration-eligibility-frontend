@@ -21,7 +21,7 @@ class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase {
   val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
   val localDate = LocalDate.of(2020, 1, 1)
 
-  s"GET ${controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad.url}" should {
+  s"GET ${controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad.url}" must {
     "render the page" when {
       "no data is present in mongo" in new Setup {
         stubSuccessfulLogin()

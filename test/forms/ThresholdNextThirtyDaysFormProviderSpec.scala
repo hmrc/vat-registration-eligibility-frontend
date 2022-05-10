@@ -42,14 +42,14 @@ class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
   val dateInFutureKey = "thresholdNextThirtyDays.error.date.inFuture"
   val dateInvalidKey = "thresholdNextThirtyDays.error.date.invalid"
 
-  "bind" should {
+  "bind" must {
     "return errors" when {
       "nothing is selected" in {
-        form.bind(Map("" -> "")).errors shouldBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
+        form.bind(Map("" -> "")).errors mustBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
       }
 
       "yes is selected but no date is provided" in {
-        form.bind(Map(selectionFieldName -> "true")).errors shouldBe Seq(FormError(dateFieldName, dateRequiredKey, Seq()))
+        form.bind(Map(selectionFieldName -> "true")).errors mustBe Seq(FormError(dateFieldName, dateRequiredKey, Seq()))
       }
 
       "yes is selected but an invalid date is provided" in {
@@ -61,7 +61,7 @@ class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"sdsdf",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors shouldBe Seq(FormError(dateFieldName, dateInvalidKey))
+        ).errors mustBe Seq(FormError(dateFieldName, dateInvalidKey))
       }
 
       "yes is selected but a date in the future is provided" in {
@@ -73,7 +73,7 @@ class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors shouldBe Seq(FormError(dateFieldName, dateInFutureKey))
+        ).errors mustBe Seq(FormError(dateFieldName, dateInFutureKey))
       }
     }
 
@@ -87,11 +87,11 @@ class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).value shouldBe Some(ConditionalDateFormElement(value = true, Some(date)))
+        ).value mustBe Some(ConditionalDateFormElement(value = true, Some(date)))
       }
 
       "no is selected" in {
-        form.bind(Map(selectionFieldName -> "false")).value shouldBe Some(ConditionalDateFormElement(value = false, None))
+        form.bind(Map(selectionFieldName -> "false")).value mustBe Some(ConditionalDateFormElement(value = false, None))
       }
     }
   }

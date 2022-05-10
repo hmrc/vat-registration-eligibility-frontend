@@ -46,11 +46,11 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
 
   val dateFieldName = "relevantDate"
 
-  s"bind in $togc form" should {
+  s"bind in $togc form" must {
     val form = new DateOfBusinessTransferFormProvider(TestTimeMachine)(togc)
     "return errors" when {
       "nothing is selected" in {
-        form.bind(Map("" -> "")).errors shouldBe Seq(FormError(dateFieldName, dateRequiredKey(togc), Seq()))
+        form.bind(Map("" -> "")).errors mustBe Seq(FormError(dateFieldName, dateRequiredKey(togc), Seq()))
       }
 
       "an invalid date is provided" in {
@@ -60,7 +60,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"sdsdf",
             s"$dateFieldName.year" -> s"${testDate.getYear}"
           )
-        ).errors shouldBe Seq(FormError(dateFieldName, dateInvalidKey))
+        ).errors mustBe Seq(FormError(dateFieldName, dateInvalidKey))
       }
 
       "a date in the future is provided" in {
@@ -71,7 +71,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors.headOption.map(_.message) shouldBe Some(maxDateKey)
+        ).errors.headOption.map(_.message) mustBe Some(maxDateKey)
       }
 
       "a date in the past is provided" in {
@@ -82,7 +82,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors.headOption.map(_.message) shouldBe Some(minDateKey)
+        ).errors.headOption.map(_.message) mustBe Some(minDateKey)
       }
     }
 
@@ -95,7 +95,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).value shouldBe Some(DateFormElement(date))
+        ).value mustBe Some(DateFormElement(date))
       }
       "a date is lower bound date in the allowed date range" in {
         form.bind(
@@ -104,7 +104,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${testMinDate.getMonthValue}",
             s"$dateFieldName.year" -> s"${testMinDate.getYear}"
           )
-        ).value shouldBe Some(DateFormElement(testMinDate))
+        ).value mustBe Some(DateFormElement(testMinDate))
       }
       "a date is upper bound date in the allowed date range" in {
         form.bind(
@@ -113,16 +113,16 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${testMaxDate.getMonthValue}",
             s"$dateFieldName.year" -> s"${testMaxDate.getYear}"
           )
-        ).value shouldBe Some(DateFormElement(testMaxDate))
+        ).value mustBe Some(DateFormElement(testMaxDate))
       }
     }
   }
 
-  s"bind in $cole form" should {
+  s"bind in $cole form" must {
     val form = new DateOfBusinessTransferFormProvider(TestTimeMachine)(cole)
     "return errors" when {
       "nothing is selected" in {
-        form.bind(Map("" -> "")).errors shouldBe Seq(FormError(dateFieldName, dateRequiredKey(cole), Seq()))
+        form.bind(Map("" -> "")).errors mustBe Seq(FormError(dateFieldName, dateRequiredKey(cole), Seq()))
       }
 
       "an invalid date is provided" in {
@@ -132,7 +132,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"sdsdf",
             s"$dateFieldName.year" -> s"${testDate.getYear}"
           )
-        ).errors shouldBe Seq(FormError(dateFieldName, dateInvalidKey))
+        ).errors mustBe Seq(FormError(dateFieldName, dateInvalidKey))
       }
 
       "a date in the future is provided" in {
@@ -143,7 +143,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors.headOption.map(_.message) shouldBe Some(maxDateKey)
+        ).errors.headOption.map(_.message) mustBe Some(maxDateKey)
       }
 
       "a date in the past is provided" in {
@@ -154,7 +154,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors.headOption.map(_.message) shouldBe Some(minDateKey)
+        ).errors.headOption.map(_.message) mustBe Some(minDateKey)
       }
     }
 
@@ -167,7 +167,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).value shouldBe Some(DateFormElement(date))
+        ).value mustBe Some(DateFormElement(date))
       }
       "a date is lower bound date in the allowed date range" in {
         form.bind(
@@ -176,7 +176,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${testMinDate.getMonthValue}",
             s"$dateFieldName.year" -> s"${testMinDate.getYear}"
           )
-        ).value shouldBe Some(DateFormElement(testMinDate))
+        ).value mustBe Some(DateFormElement(testMinDate))
       }
       "a date is upper bound date in the allowed date range" in {
         form.bind(
@@ -185,7 +185,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${testMaxDate.getMonthValue}",
             s"$dateFieldName.year" -> s"${testMaxDate.getYear}"
           )
-        ).value shouldBe Some(DateFormElement(testMaxDate))
+        ).value mustBe Some(DateFormElement(testMaxDate))
       }
     }
   }

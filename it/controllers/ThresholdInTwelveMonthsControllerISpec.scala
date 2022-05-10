@@ -18,7 +18,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
   val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
   val testDate = LocalDate.of(2017, 12, 1)
 
-  s"GET ${controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url}" should {
+  s"GET ${controllers.routes.ThresholdInTwelveMonthsController.onPageLoad.url}" must {
     "render the page" when {
       "no prepop data is present in mongo" in new Setup {
         stubSuccessfulLogin()
@@ -66,7 +66,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
     }
   }
 
-  s"POST ${controllers.routes.ThresholdInTwelveMonthsController.onSubmit().url}" should {
+  s"POST ${controllers.routes.ThresholdInTwelveMonthsController.onSubmit().url}" must {
     val incorpDate = LocalDate.now().minusMonths(14)
     val dateBeforeIncorp = incorpDate.minusMonths(2)
     val dateAfterIncorp = incorpDate.plusMonths(2)

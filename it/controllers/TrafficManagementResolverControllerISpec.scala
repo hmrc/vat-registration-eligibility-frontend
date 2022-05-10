@@ -33,7 +33,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
   val pageUrl: String = routes.TrafficManagementResolverController.resolve.toString
 
   s"POST $pageUrl" when {
-    "the user has a fixed establishment in UK" should {
+    "the user has a fixed establishment in UK" must {
       "redirect to the Threshold In Twelve Months page if the feature switch is disabled" in new Setup {
         disable(TrafficManagement)
         stubSuccessfulLogin()
@@ -149,7 +149,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
       }
     }
 
-    "the user doesn't have a fixed establishment in UK" should {
+    "the user doesn't have a fixed establishment in UK" must {
       "redirect to the Threshold Taxable Supplies page if the feature switch is disabled" in new Setup {
         disable(TrafficManagement)
         stubSuccessfulLogin()
