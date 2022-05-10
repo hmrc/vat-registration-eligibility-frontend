@@ -46,7 +46,7 @@ class PreviousBusinessNameControllerISpec extends IntegrationSpecBase with Featu
     }
   }
 
-  s"POST /previous-business-name" should {
+  s"POST /previous-business-name" must {
     "redirect to Previous VRN" in new Setup {
       stubSuccessfulLogin()
       stubAudits()

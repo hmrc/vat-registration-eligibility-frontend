@@ -23,7 +23,7 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
 
   val form = new TurnoverEstimateFormProvider().apply()
 
-  "bind" should {
+  "bind" must {
     val amountFieldName = s"turnoverEstimateAmount"
     val errorKeyRoot = s"turnoverEstimate.error"
     val turnoverEstimateRequired = s"$errorKeyRoot.required"
@@ -39,7 +39,7 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
             amountFieldName -> ""
           )
         )
-          .errors shouldBe Seq(FormError(amountFieldName, turnoverEstimateRequired, Seq()))
+          .errors mustBe Seq(FormError(amountFieldName, turnoverEstimateRequired, Seq()))
       }
 
       "an invalid amount is provided" in {
@@ -47,7 +47,7 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             amountFieldName -> "abcd"
           )
-        ).errors shouldBe Seq(FormError(amountFieldName, turnoverEstimateNeedsNumbers))
+        ).errors mustBe Seq(FormError(amountFieldName, turnoverEstimateNeedsNumbers))
       }
 
       "the amount is too low" in {
@@ -56,7 +56,7 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             amountFieldName -> "-100"
           )
-        ).errors shouldBe Seq(FormError(amountFieldName, turnoverEstimateAmountMoreThan, wrappedArray))
+        ).errors mustBe Seq(FormError(amountFieldName, turnoverEstimateAmountMoreThan, wrappedArray))
       }
 
       "the amount is too high" in {
@@ -65,7 +65,7 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             amountFieldName -> "99999999999999999999999999"
           )
-        ).errors shouldBe Seq(FormError(amountFieldName, turnoverEstimateAmountLessThan, wrappedArray))
+        ).errors mustBe Seq(FormError(amountFieldName, turnoverEstimateAmountLessThan, wrappedArray))
       }
     }
     "should return no errors" when {
@@ -74,14 +74,14 @@ class TurnoverEstimateFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             amountFieldName -> "0"
           )
-        ).errors shouldBe Nil
+        ).errors mustBe Nil
       }
       "the amount is valid" in {
         form.bind(
             Map(
               amountFieldName -> "12000"
         )
-        ).errors shouldBe Nil
+        ).errors mustBe Nil
       }
     }
   }

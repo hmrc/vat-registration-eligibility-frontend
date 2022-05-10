@@ -47,13 +47,13 @@ class BusinessEntityViewSpec extends ViewSpecBase {
     "have a set of radio inputs" which {
       lazy val doc = Jsoup.parse(page.body)
 
-      "for the option 'Uk company'" should {
+      "for the option 'Uk company'" must {
 
         "have the text 'Limited company'" in {
           doc.select("label[for=50]").text() mustEqual messages("businessEntity.limited-company")
         }
 
-        "have an input under the label that" should {
+        "have an input under the label that" must {
 
           lazy val optionLabel = doc.select("#50")
 
@@ -67,13 +67,13 @@ class BusinessEntityViewSpec extends ViewSpecBase {
         }
       }
 
-      "for the option 'Sole Trader'" should {
+      "for the option 'Sole Trader'" must {
 
         "have the text 'Sole Trader'" in {
           doc.select("label[for=Z1]").text() mustEqual messages("businessEntity.soletrader")
         }
 
-        "have an input under the label that" should {
+        "have an input under the label that" must {
 
           lazy val optionLabel = doc.select("#Z1")
 
@@ -86,13 +86,13 @@ class BusinessEntityViewSpec extends ViewSpecBase {
           }
         }
       }
-      "for the option 'Partnership'" should {
+      "for the option 'Partnership'" must {
 
         "have the text 'Partnership'" in {
           doc.select("label[for=partnership]").text() mustEqual messages("businessEntity.partnership")
         }
 
-        "have an input under the label that" should {
+        "have an input under the label that" must {
 
           lazy val optionLabel = doc.select("#partnership")
 
@@ -106,13 +106,13 @@ class BusinessEntityViewSpec extends ViewSpecBase {
         }
       }
 
-      "for the option 'Other'" should {
+      "for the option 'Other'" must {
 
         "have the text 'Other'" in {
           doc.select("label[for=other]").text() mustEqual messages("businessEntity.other")
         }
 
-        "have an input under the label that" should {
+        "have an input under the label that" must {
 
           lazy val optionLabel = doc.select("#other")
 

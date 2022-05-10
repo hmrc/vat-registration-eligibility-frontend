@@ -18,7 +18,7 @@ class SessionRepositoryISpec extends IntegrationSpecBase {
     val record4 = CacheMap("4",Map("foo" -> Json.obj("wuzz" -> "buzz"),"bar" -> Json.obj("fudge" -> "wizz")))
   }
 
-  "removeEntry" should {
+  "removeEntry" must {
     "throw an exception if the document does not exist in the repository" in new Setup {
       await(newMongoInstance.drop)
       intercept[Exception](await(newMongoInstance.removeEntry("int1","bar")))

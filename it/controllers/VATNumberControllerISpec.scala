@@ -13,7 +13,7 @@ class VATNumberControllerISpec extends IntegrationSpecBase with FeatureSwitching
   val testVatNumber = "123456782"
   val textbox = "vatNumber"
 
-  s"GET /vat-number" should {
+  s"GET /vat-number" must {
     "render the page" when {
       "an answer doesn't exist for the page" must {
         "return OK wth an empty form" in new Setup {
@@ -44,7 +44,7 @@ class VATNumberControllerISpec extends IntegrationSpecBase with FeatureSwitching
       }
     }
 
-    s"POST /vat-number" should {
+    s"POST /vat-number" must {
       "redirect to Keep existing VRN" in new Setup {
         stubSuccessfulLogin()
         stubAudits()

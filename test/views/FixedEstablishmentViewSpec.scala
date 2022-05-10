@@ -17,13 +17,13 @@
 package views
 
 import forms.FixedEstablishmentFormProvider
-import views.html.fixedEstablishment
+import views.html.FixedEstablishment
 
 class FixedEstablishmentViewSpec extends ViewSpecBase {
 
   val form = new FixedEstablishmentFormProvider()()
   implicit val msgs = messages
-  val view = app.injector.instanceOf[fixedEstablishment]
+  val view = app.injector.instanceOf[FixedEstablishment]
 
   object Selectors extends BaseSelectors
 

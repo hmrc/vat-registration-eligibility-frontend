@@ -41,7 +41,7 @@ class RegisteringBusinessFormProviderSpec extends BooleanFieldBehaviours {
       valueList.map {
         case (entity, key) =>
           val res = form.bind(Map(fieldName -> key))
-          res.value should contain(entity)
+          res.value must contain(entity)
       }
     }
 

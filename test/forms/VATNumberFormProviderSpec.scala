@@ -30,7 +30,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
   val nonNumeric = s"$errorKeyRoot.nonNumeric"
   val invalid = s"$errorKeyRoot.invalid"
 
-  s"bind in $togc form" should {
+  s"bind in $togc form" must {
     val form = new VATNumberFormProvider().apply(togc)
     "return errors" when {
       "VAT number is not provided" in {
@@ -39,7 +39,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> ""
           )
         )
-          .errors shouldBe Seq(FormError(vatNumberKey, vatNumberRequired(togc), Seq()))
+          .errors mustBe Seq(FormError(vatNumberKey, vatNumberRequired(togc), Seq()))
       }
 
       "VAT number exceeds 9 characters" in {
@@ -48,7 +48,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> "01234567890"
           )
         )
-          .errors.headOption.map(_.message) shouldBe Some(vatNumberLength)
+          .errors.headOption.map(_.message) mustBe Some(vatNumberLength)
       }
 
       "VAT number with alphanumeric characters" in {
@@ -57,7 +57,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> "123test89"
           )
         )
-          .errors.headOption.map(_.message) shouldBe Some(nonNumeric)
+          .errors.headOption.map(_.message) mustBe Some(nonNumeric)
       }
 
       "VAT number is invlaid" in {
@@ -66,7 +66,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> "789666321"
           )
         )
-          .errors.headOption.map(_.message) shouldBe Some(invalid)
+          .errors.headOption.map(_.message) mustBe Some(invalid)
       }
     }
 
@@ -76,12 +76,12 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             vatNumberKey -> "011000084"
           )
-        ).errors shouldBe Nil
+        ).errors mustBe Nil
       }
     }
   }
 
-  s"bind in $cole form" should {
+  s"bind in $cole form" must {
     val form = new VATNumberFormProvider().apply(cole)
     "return errors" when {
       "VAT number is not provided" in {
@@ -90,7 +90,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> ""
           )
         )
-          .errors shouldBe Seq(FormError(vatNumberKey, vatNumberRequired(cole), Seq()))
+          .errors mustBe Seq(FormError(vatNumberKey, vatNumberRequired(cole), Seq()))
       }
 
       "VAT number exceeds 9 characters" in {
@@ -99,7 +99,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> "01234567890"
           )
         )
-          .errors.headOption.map(_.message) shouldBe Some(vatNumberLength)
+          .errors.headOption.map(_.message) mustBe Some(vatNumberLength)
       }
 
       "VAT number with alphanumeric characters" in {
@@ -108,7 +108,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> "123test89"
           )
         )
-          .errors.headOption.map(_.message) shouldBe Some(nonNumeric)
+          .errors.headOption.map(_.message) mustBe Some(nonNumeric)
       }
 
       "VAT number is invlaid" in {
@@ -117,7 +117,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
             vatNumberKey -> "789666321"
           )
         )
-          .errors.headOption.map(_.message) shouldBe Some(invalid)
+          .errors.headOption.map(_.message) mustBe Some(invalid)
       }
     }
 
@@ -127,7 +127,7 @@ class VATNumberFormProviderSpec extends BooleanFieldBehaviours {
           Map(
             vatNumberKey -> "011000084"
           )
-        ).errors shouldBe Nil
+        ).errors mustBe Nil
       }
     }
   }

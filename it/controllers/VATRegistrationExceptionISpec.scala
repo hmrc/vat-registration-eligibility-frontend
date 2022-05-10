@@ -51,7 +51,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficMana
 
   s"POST /registration-exception" when {
     "the user answers" must {
-      "ExceptionExemption flow feature switch is not enabled" should {
+      "ExceptionExemption flow feature switch is not enabled" must {
         s"redirect to ${"/check-if-you-can-register-for-vat/cant-register/vatExceptionKickout"} if answer is yes" in new Setup {
           disable(ExceptionExemptionFlow)
           stubSuccessfulLogin()
@@ -73,7 +73,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficMana
           res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
         }
       }
-      "ExceptionExemption flow feature switch is enabled" should {
+      "ExceptionExemption flow feature switch is enabled" must {
         s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} if answer is yes" in new Setup {
           enable(ExceptionExemptionFlow)
           stubSuccessfulLogin()

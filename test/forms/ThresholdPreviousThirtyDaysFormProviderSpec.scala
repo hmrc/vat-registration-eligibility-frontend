@@ -36,7 +36,7 @@ class ThresholdPreviousThirtyDaysFormProviderSpec extends BooleanFieldBehaviours
   val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
   val optionalDateForm = new ThresholdPreviousThirtyDaysFormProvider(TestTimeMachine)()
 
-  "bind" should {
+  "bind" must {
     val selectionFieldName = s"value"
     val dateFieldName = s"thresholdPreviousThirtyDaysDate"
     val dateRequiredKey = "thresholdPreviousThirtyDays.error.date.required"
@@ -45,11 +45,11 @@ class ThresholdPreviousThirtyDaysFormProviderSpec extends BooleanFieldBehaviours
 
     "return errors" when {
       "nothing is selected" in {
-        optionalDateForm.bind(Map("" -> "")).errors shouldBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
+        optionalDateForm.bind(Map("" -> "")).errors mustBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
       }
 
       "yes is selected but no date is provided" in {
-        optionalDateForm.bind(Map(selectionFieldName -> "true")).errors shouldBe Seq(FormError(dateFieldName, dateRequiredKey, Seq()))
+        optionalDateForm.bind(Map(selectionFieldName -> "true")).errors mustBe Seq(FormError(dateFieldName, dateRequiredKey, Seq()))
       }
 
       "yes is selected but an invalid date is provided" in {
@@ -60,7 +60,7 @@ class ThresholdPreviousThirtyDaysFormProviderSpec extends BooleanFieldBehaviours
             s"${dateFieldName}.day" -> s"${date.getDayOfMonth}",
             s"${dateFieldName}.month" -> s"sdsdf",
             s"${dateFieldName}.year" -> s"${date.getYear}")
-        ).errors shouldBe Seq(FormError(dateFieldName, dateInvalidKey))
+        ).errors mustBe Seq(FormError(dateFieldName, dateInvalidKey))
       }
 
       "yes is selected but a date in the future is provided" in {
@@ -71,7 +71,7 @@ class ThresholdPreviousThirtyDaysFormProviderSpec extends BooleanFieldBehaviours
             s"${dateFieldName}.day" -> s"${date.getDayOfMonth}",
             s"${dateFieldName}.month" -> s"${date.getMonthValue}",
             s"${dateFieldName}.year" -> s"${date.getYear}")
-        ).errors shouldBe Seq(FormError(dateFieldName, dateInFutureKey))
+        ).errors mustBe Seq(FormError(dateFieldName, dateInFutureKey))
       }
     }
 
@@ -84,10 +84,10 @@ class ThresholdPreviousThirtyDaysFormProviderSpec extends BooleanFieldBehaviours
             s"${dateFieldName}.day" -> s"${date.getDayOfMonth}",
             s"${dateFieldName}.month" -> s"${date.getMonthValue}",
             s"${dateFieldName}.year" -> s"${date.getYear}")
-        ).value shouldBe Some(ConditionalDateFormElement(true, Some(date)))
+        ).value mustBe Some(ConditionalDateFormElement(true, Some(date)))
       }
       "no is selected" in {
-        optionalDateForm.bind(Map(selectionFieldName -> "false")).value shouldBe Some(ConditionalDateFormElement(false, None))
+        optionalDateForm.bind(Map(selectionFieldName -> "false")).value mustBe Some(ConditionalDateFormElement(false, None))
       }
     }
   }
