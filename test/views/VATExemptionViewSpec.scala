@@ -18,11 +18,11 @@ package views
 
 import forms.VATExemptionFormProvider
 import models.NormalMode
-import views.html.vatExemption
+import views.html.VatExemption
 
 class VATExemptionViewSpec extends ViewSpecBase {
 
-  val view = app.injector.instanceOf[vatExemption]
+  val view = app.injector.instanceOf[VatExemption]
   val messageKeyPrefix = "vatExemption"
   val form = new VATExemptionFormProvider()()
 

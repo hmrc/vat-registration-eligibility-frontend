@@ -6,7 +6,7 @@ import models.{Draft, RegistrationInformation, VatReg}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
-import views.html.{agriculturalDropout, internationalActivityDropout, vatDivisionDropout}
+import views.html.{agriculturalDropout, internationalActivityDropout, VatDivisionDropout}
 
 import java.time.LocalDate
 
@@ -47,7 +47,7 @@ class EligibilityDropoutControllerISpec extends IntegrationSpecBase with Traffic
       stubSuccessfulLogin()
       stubAudits()
 
-      val view = app.injector.instanceOf[vatDivisionDropout]
+      val view = app.injector.instanceOf[VatDivisionDropout]
       val res = await(buildClient(cantRegisterUrl(BusinessEntityId.toString)).get)
 
       res.status mustBe OK

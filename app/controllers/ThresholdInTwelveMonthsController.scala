@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.thresholdInTwelveMonths
+import views.html.ThresholdInTwelveMonths
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +41,7 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
                                                   requireData: DataRequiredAction,
                                                   formProvider: ThresholdInTwelveMonthsFormProvider,
                                                   trafficManagementService: TrafficManagementService,
-                                                  view: thresholdInTwelveMonths
+                                                  view: ThresholdInTwelveMonths
                                                  )(implicit appConfig: FrontendAppConfig,
                                                    executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 

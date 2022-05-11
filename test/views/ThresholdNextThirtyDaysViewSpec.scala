@@ -19,7 +19,7 @@ package views
 import forms.ThresholdNextThirtyDaysFormProvider
 import models.NormalMode
 import utils.TimeMachine
-import views.html.thresholdNextThirtyDays
+import views.html.ThresholdNextThirtyDays
 
 import java.time.LocalDate
 
@@ -43,7 +43,7 @@ class ThresholdNextThirtyDaysViewSpec extends ViewSpecBase {
   val testHint = "For example, 13 02 2017"
   val testButton = "Continue"
 
-  val view = app.injector.instanceOf[thresholdNextThirtyDays]
+  val view = app.injector.instanceOf[ThresholdNextThirtyDays]
 
   "ThresholdNextThirtyDays view" when {
     "Business entity is not partnership" must {

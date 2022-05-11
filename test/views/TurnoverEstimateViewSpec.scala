@@ -18,12 +18,12 @@ package views
 
 import forms.TurnoverEstimateFormProvider
 import models.NormalMode
-import views.html.turnoverEstimate
+import views.html.TurnoverEstimateView
 
 class TurnoverEstimateViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
-  val view = app.injector.instanceOf[turnoverEstimate]
+  val view = app.injector.instanceOf[TurnoverEstimateView]
 
   implicit val msgs = messages
   val messageKeyPrefix = "turnoverEstimate"

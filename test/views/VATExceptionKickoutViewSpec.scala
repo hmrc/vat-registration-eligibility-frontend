@@ -18,10 +18,10 @@ package views
 
 import forms.VATExceptionKickoutFormProvider
 import models.NormalMode
-import views.html.vatExceptionKickout
+import views.html.VatExceptionKickout
 
 class VATExceptionKickoutViewSpec extends ViewSpecBase {
-  val view = app.injector.instanceOf[vatExceptionKickout]
+  val view = app.injector.instanceOf[VatExceptionKickout]
   val messageKeyPrefix = "vatRegistrationException"
   val form = new VATExceptionKickoutFormProvider()()
 

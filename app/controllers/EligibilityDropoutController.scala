@@ -24,7 +24,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrafficManagementService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{vatDivisionDropout, _}
+import views.html.{VatDivisionDropout, _}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -37,7 +37,7 @@ class EligibilityDropoutController @Inject()(mcc: MessagesControllerComponents,
                                              trafficManagementService: TrafficManagementService,
                                              internationalActivityDropoutView: internationalActivityDropout,
                                              agriculturalDropoutView: agriculturalDropout,
-                                             vatDivisionDropoutView: vatDivisionDropout
+                                             vatDivisionDropoutView: VatDivisionDropout
                                             )(implicit appConfig: FrontendAppConfig,
                                               executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 

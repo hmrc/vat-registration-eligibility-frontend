@@ -16,7 +16,7 @@
 
 package views
 
-import views.html.session_expired
+import views.html.SessionExpired
 
 class SessionExpiredViewSpec extends ViewSpecBase {
 
@@ -24,7 +24,7 @@ class SessionExpiredViewSpec extends ViewSpecBase {
 
   val h1 = "For your security, this service has been reset"
   val p1 = "The details you have given have been deleted because you did not continue the service for 1 hour."
-  val view = app.injector.instanceOf[session_expired]
+  val view = app.injector.instanceOf[SessionExpired]
 
   "Session Expired view" must {
     lazy val doc = asDocument(view()(fakeRequest, messages, frontendAppConfig))

@@ -63,17 +63,16 @@
 
 @detailsContent = {
     @p{ @messages("zeroRatedSales.dropdownLine1") }
-    @p{
-        @messages("zeroRatedSales.dropdownLine2")
-        @bullets(
-            messages("zeroRatedSales.bullet1"),
-            messages("zeroRatedSales.bullet2"),
-            messages("zeroRatedSales.bullet3"),
-            messages("zeroRatedSales.bullet4"),
-            messages("zeroRatedSales.bullet5")
-        )
-    }
-    @p{
-        @link(appConfig.VATRateDifferentGoodsURL, "zeroRatedSales.linkText", isExternal = true)
-    }
+
+    @p{ @messages("zeroRatedSales.dropdownLine2") }
+
+    @bullets(
+        messages("zeroRatedSales.bullet1"),
+        messages("zeroRatedSales.bullet2"),
+        messages("zeroRatedSales.bullet3"),
+        messages("zeroRatedSales.bullet4"),
+        messages("zeroRatedSales.bullet5")
+    )
+
+    @link(appConfig.VATRateDifferentGoodsURL, "zeroRatedSales.linkText", isExternal = true)
 }

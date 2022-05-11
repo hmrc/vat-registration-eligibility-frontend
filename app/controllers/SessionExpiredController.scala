@@ -21,11 +21,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.session_expired
+import views.html.SessionExpired
 
 @Singleton
 class SessionExpiredController @Inject()(mcc: MessagesControllerComponents,
-                                         view: session_expired)
+                                         view: SessionExpired)
                                         (implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>

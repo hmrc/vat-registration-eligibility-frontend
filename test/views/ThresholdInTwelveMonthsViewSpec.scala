@@ -19,7 +19,7 @@ package views
 import forms.ThresholdInTwelveMonthsFormProvider
 import models.NormalMode
 import utils.TimeMachine
-import views.html.thresholdInTwelveMonths
+import views.html.ThresholdInTwelveMonths
 
 import java.time.LocalDate
 
@@ -31,7 +31,7 @@ class ThresholdInTwelveMonthsViewSpec extends ViewSpecBase {
   }
 
   val form = new ThresholdInTwelveMonthsFormProvider(TestTimeMachine)()
-  val view = app.injector.instanceOf[thresholdInTwelveMonths]
+  val view = app.injector.instanceOf[ThresholdInTwelveMonths]
 
   object ExpectedContent {
     val h1Business = "Has the business’s taxable turnover gone over £85,000 in any 12 month period?"
