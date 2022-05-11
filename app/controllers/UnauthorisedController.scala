@@ -21,11 +21,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.unauthorised
+import views.html.Unauthorised
 
 @Singleton
 class UnauthorisedController @Inject()(mcc: MessagesControllerComponents,
-                                       view: unauthorised)
+                                       view: Unauthorised)
                                       (implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>

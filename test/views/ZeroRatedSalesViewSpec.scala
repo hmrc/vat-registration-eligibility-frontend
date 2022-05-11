@@ -18,7 +18,7 @@ package views
 
 import forms.ZeroRatedSalesFormProvider
 import models.NormalMode
-import views.html.zeroRatedSales
+import views.html.ZeroRatedSales
 
 class ZeroRatedSalesViewSpec extends ViewSpecBase {
   val messageKeyPrefix = "zeroRatedSales"
@@ -30,14 +30,14 @@ class ZeroRatedSalesViewSpec extends ViewSpecBase {
   val linkText = "VAT rates on different goods and services (opens in new tab)"
   val line1 = "Zero-rated goods and services are VAT-taxable but the VAT rate on them is 0%."
   val line2 = "They include:"
-  val line3 = s"Find out about $linkText"
+  val guidanceLink = s"Find out about $linkText"
   val bullet1 = "most food and drink (but not things like alcoholic drinks, confectionery, crisps and savoury snacks, hot food, sports drinks, hot takeaways, ice cream, soft drinks and mineral water)"
   val bullet2 = "books and newspapers"
   val bullet3 = "printing services for brochures, leaflets or pamphlets"
   val bullet4 = "children’s clothes and shoes"
   val bullet5 = "most goods you export to non-EU countries"
 
-  val view = app.injector.instanceOf[zeroRatedSales]
+  val view = app.injector.instanceOf[ZeroRatedSales]
 
   object Selectors extends BaseSelectors
 
@@ -72,7 +72,10 @@ class ZeroRatedSalesViewSpec extends ViewSpecBase {
       "have the right paragraphs" in {
         doc.select(Selectors.p(1)).text() mustBe line1
         doc.select(Selectors.p(2)).text() mustBe line2
-        doc.select(Selectors.p(4)).text() mustBe line3
+      }
+
+      "have the correct guidance link" in {
+        doc.select("main a").first.text mustBe guidanceLink
       }
 
       "have the right bullets" in {
@@ -113,7 +116,10 @@ class ZeroRatedSalesViewSpec extends ViewSpecBase {
       "have the right paragraphs" in {
         doc.select(Selectors.p(1)).text() mustBe line1
         doc.select(Selectors.p(2)).text() mustBe line2
-        doc.select(Selectors.p(4)).text() mustBe line3
+      }
+
+      "have the correct guidance link" in {
+        doc.select("main a").first.text mustBe guidanceLink
       }
 
       "have the right bullets" in {

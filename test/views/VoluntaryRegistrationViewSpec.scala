@@ -18,7 +18,7 @@ package views
 
 import forms.VoluntaryRegistrationFormProvider
 import models.NormalMode
-import views.html.voluntaryRegistration
+import views.html.VoluntaryRegistration
 
 class VoluntaryRegistrationViewSpec extends ViewSpecBase {
 
@@ -35,7 +35,7 @@ class VoluntaryRegistrationViewSpec extends ViewSpecBase {
   val h2Partnership = "Does the partnership want to register voluntarily?"
   val indentText = "Only register voluntarily if the business intends to start reporting VAT in the next 3 months."
 
-  val view = app.injector.instanceOf[voluntaryRegistration]
+  val view = app.injector.instanceOf[VoluntaryRegistration]
 
   object Selectors extends BaseSelectors
 

@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.vatExceptionKickout
+import views.html.VatExceptionKickout
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -42,7 +42,7 @@ class VATExceptionKickoutController @Inject()(mcc: MessagesControllerComponents,
                                               requireData: DataRequiredAction,
                                               formProvider: VATExceptionKickoutFormProvider,
                                               trafficManagementService: TrafficManagementService,
-                                              view: vatExceptionKickout
+                                              view: VatExceptionKickout
                                              )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 

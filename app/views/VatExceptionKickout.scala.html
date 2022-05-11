@@ -29,7 +29,7 @@
         button: components.button
 )
 
-@(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("vatExceptionKickout.title"))), backLink = true) {
 

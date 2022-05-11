@@ -18,7 +18,7 @@ package views
 
 import forms.VATRegistrationExceptionFormProvider
 import models.NormalMode
-import views.html.vatRegistrationException
+import views.html.VatRegistrationException
 
 class VATRegistrationExceptionViewSpec extends ViewSpecBase {
   val messageKeyPrefix = "vatRegistrationException"
@@ -28,7 +28,7 @@ class VATRegistrationExceptionViewSpec extends ViewSpecBase {
   val p1 = "You can apply for a registration exception if the business goes over the VAT threshold temporarily."
   val p2 = "If you apply for an exception and are successful, we will contact you to tell you your request has been accepted."
 
-  val view = app.injector.instanceOf[vatRegistrationException]
+  val view = app.injector.instanceOf[VatRegistrationException]
 
   object Selectors extends BaseSelectors
 

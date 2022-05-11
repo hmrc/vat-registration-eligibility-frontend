@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.voluntaryRegistration
+import views.html.VoluntaryRegistration
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +41,7 @@ class VoluntaryRegistrationController @Inject()(mcc: MessagesControllerComponent
                                                 getData: DataRetrievalAction,
                                                 requireData: DataRequiredAction,
                                                 formProvider: VoluntaryRegistrationFormProvider,
-                                                view: voluntaryRegistration
+                                                view: VoluntaryRegistration
                                                )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 

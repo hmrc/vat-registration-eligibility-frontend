@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,28 +12,27 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package views
+@import config.FrontendAppConfig
 
-import views.html.Unauthorised
+@this(
+        layout: views.html.layouts.layout,
+        errorSummary: components.errorSummary,
+        h1: components.h1,
+        p: components.p,
+        link: components.link
+)
 
-class UnauthorisedViewSpec extends ViewSpecBase {
+@()(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-  val h1 = "You can’t access this service with this account"
-  val view = app.injector.instanceOf[Unauthorised]
+@layout(pageTitle = Some(titleNoForm(messages("eligibilityDropout.heading"))), backLink = true) {
 
-  object Selectors extends BaseSelectors
+    @h1(messages("eligibilityDropout.heading"))
 
-  "Unauthorised view" must {
-    lazy val doc = asDocument(view()(fakeRequest, messages, frontendAppConfig))
-
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
+    @p{
+        @messages("eligibility.divisionDropout.text")
+        @link(appConfig.VATDivisionURL, messages("eligibility.divisionDropout.link"))
     }
 
-    "have the correct heading" in {
-      doc.select(Selectors.h1).text() mustBe h1
-    }
-  }
 }

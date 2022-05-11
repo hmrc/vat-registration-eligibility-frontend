@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Enumerable, Navigator, UserAnswers}
-import views.html.turnoverEstimate
+import views.html.TurnoverEstimateView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +41,7 @@ class TurnoverEstimateController @Inject()(mcc: MessagesControllerComponents,
                                            getData: DataRetrievalAction,
                                            requireData: DataRequiredAction,
                                            formProvider: TurnoverEstimateFormProvider,
-                                           view: turnoverEstimate
+                                           view: TurnoverEstimateView
                                           )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with Enumerable.Implicits {
 

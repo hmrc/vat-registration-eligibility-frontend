@@ -18,13 +18,13 @@ package views
 
 import forms.RegisteringBusinessFormProvider
 import models.NormalMode
-import views.html.registeringBusiness
+import views.html.RegisteringBusinessView
 
 class RegisteringBusinessViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix = "registeringBusiness"
   val form = new RegisteringBusinessFormProvider()()
-  val view = app.injector.instanceOf[registeringBusiness]
+  val view = app.injector.instanceOf[RegisteringBusinessView]
 
   object Selectors extends BaseSelectors
 

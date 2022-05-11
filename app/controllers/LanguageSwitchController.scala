@@ -17,12 +17,13 @@
 package controllers
 
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.{I18nSupport, Lang}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.play.language.LanguageUtils
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class LanguageSwitchController @Inject()(configuration: Configuration,

@@ -18,35 +18,43 @@
 @import controllers.routes._
 @import models.Mode
 @import models.requests.DataRequest
+@import models.RegisteringBusiness._
 
 @this(
-        layout: views.html.layouts.layout,
+        layout: layouts.layout,
         errorSummary: components.errorSummary,
-        h1: components.h1,
-        p: components.p,
         formWithCsrf: FormWithCSRF,
-        yesNoRadio: components.yesNoRadio,
+        link: components.link,
+        inputRadio: components.inputRadio,
         button: components.button
 )
 
 @(form: Form[_], mode: Mode)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("vatExemption.title"))), backLink = true) {
+@layout(pageTitle = Some(title(form, messages("registeringBusiness.heading"))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @h1(messages("vatExemption.heading"))
-    @p{ @messages("vatExemption.text") }
-
-    @formWithCsrf(action = VATExemptionController.onSubmit(), 'autoComplete -> "off") {
-        @yesNoRadio(
+    @formWithCsrf(action = RegisteringBusinessController.onSubmit, 'autoComplete -> "off") {
+        @inputRadio(
             form = form,
-            headingKey = "vatExemption.heading",
-            isPageHeading = false,
-            classes = "govuk-visually-hidden"
+            legend = Messages("registeringBusiness.heading"),
+            inline = true,
+            items = Seq (
+                RadioItem(id = Some(ownBusinessKey),
+                    value = Some(ownBusinessKey),
+                    content = Text(Messages("registeringBusiness.radioOwn")),
+                    checked = form("value").value.contains(ownBusinessKey)
+                ),
+                RadioItem(id = Some(someoneElseKey),
+                    value = Some(someoneElseKey),
+                    content = Text(Messages("registeringBusiness.radioElse")),
+                    checked = form("value").value.contains(someoneElseKey)
+                )
+            )
         )
 
         @button(messages("site.continue"))
     }
-
 }
+

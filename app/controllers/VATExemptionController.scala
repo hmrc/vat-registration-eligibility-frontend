@@ -30,7 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.vatExemption
+import views.html.VatExemption
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,7 +43,7 @@ class VATExemptionController @Inject()(mcc: MessagesControllerComponents,
                                        requireData: DataRequiredAction,
                                        formProvider: VATExemptionFormProvider,
                                        trafficManagementService: TrafficManagementService,
-                                       view: vatExemption
+                                       view: VatExemption
                                       )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 

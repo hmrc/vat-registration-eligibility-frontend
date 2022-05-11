@@ -20,7 +20,7 @@ import forms.ThresholdPreviousThirtyDaysFormProvider
 import models.NormalMode
 import play.api.i18n.Messages
 import utils.TimeMachine
-import views.html.thresholdPreviousThirtyDays
+import views.html.ThresholdPreviousThirtyDays
 
 import java.time.LocalDate
 
@@ -40,7 +40,7 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase {
   val legendPartnership = "When did the partnership expect to go over the threshold?"
   val paragraph = "This could happen if, for example, a business planned to run an exhibition and anticipated selling so many tickets it expected to go over the VAT threshold. The business must register for VAT when you expected it to go over the threshold, not when it actually went over the threshold."
 
-  val view = app.injector.instanceOf[thresholdPreviousThirtyDays]
+  val view = app.injector.instanceOf[ThresholdPreviousThirtyDays]
 
   object Selectors extends BaseSelectors
 

@@ -30,7 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.vatRegistrationException
+import views.html.VatRegistrationException
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,7 +43,7 @@ class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerCompon
                                                    requireData: DataRequiredAction,
                                                    formProvider: VATRegistrationExceptionFormProvider,
                                                    trafficManagementService: TrafficManagementService,
-                                                   view: vatRegistrationException
+                                                   view: VatRegistrationException
                                                   )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 

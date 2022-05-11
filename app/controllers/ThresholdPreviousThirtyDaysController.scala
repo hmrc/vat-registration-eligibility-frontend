@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.thresholdPreviousThirtyDays
+import views.html.ThresholdPreviousThirtyDays
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +41,7 @@ class ThresholdPreviousThirtyDaysController @Inject()(mcc: MessagesControllerCom
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: ThresholdPreviousThirtyDaysFormProvider,
-                                                      view: thresholdPreviousThirtyDays
+                                                      view: ThresholdPreviousThirtyDays
                                                      )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 

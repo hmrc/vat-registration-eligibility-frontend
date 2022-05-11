@@ -15,26 +15,37 @@
  *@
 
 @import config.FrontendAppConfig
-@import models.requests.CacheIdentifierRequest
+@import controllers.routes._
+@import models.Mode
 
 @this(
         layout: views.html.layouts.layout,
         errorSummary: components.errorSummary,
         h1: components.h1,
         p: components.p,
-        link: components.link
+        formWithCsrf: FormWithCSRF,
+        yesNoRadio: components.yesNoRadio,
+        button: components.button
 )
 
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@()(implicit request: CacheIdentifierRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@layout(pageTitle = Some(title(form, messages("vatExemption.title"))), backLink = true) {
 
-@layout(pageTitle = Some(titleNoForm(messages("eligibilityDropout.heading"))), backLink = true) {
+    @errorSummary(form.errors)
 
-    @h1(messages("eligibilityDropout.heading"))
+    @h1(messages("vatExemption.heading"))
+    @p{ @messages("vatExemption.text") }
 
-    @p{
-        @messages("eligibility.divisionDropout.text")
-        @link(appConfig.VATDivisionURL, messages("eligibility.divisionDropout.link"))
+    @formWithCsrf(action = VATExemptionController.onSubmit(), 'autoComplete -> "off") {
+        @yesNoRadio(
+            form = form,
+            headingKey = "vatExemption.heading",
+            isPageHeading = false,
+            classes = "govuk-visually-hidden"
+        )
+
+        @button(messages("site.continue"))
     }
 
 }

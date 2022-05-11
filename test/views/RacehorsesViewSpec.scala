@@ -18,7 +18,7 @@ package views
 
 import forms.RacehorsesFormProvider
 import models.NormalMode
-import views.html.racehorses
+import views.html.Racehorses
 
 class RacehorsesViewSpec extends ViewSpecBase {
 
@@ -35,7 +35,7 @@ class RacehorsesViewSpec extends ViewSpecBase {
   val bullet1 = "buy, sell or rent out land or property as a business activity (not just to have its own premises)"
   val bullet2 = "own one or more racehorses"
 
-  val view = app.injector.instanceOf[racehorses]
+  val view = app.injector.instanceOf[Racehorses]
 
   "Racehorses view" when {
     "Business entity is not partnership" must {

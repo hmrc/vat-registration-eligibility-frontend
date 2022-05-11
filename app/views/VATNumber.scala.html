@@ -15,8 +15,6 @@
  *@
 
 @import config.FrontendAppConfig
-@import models.Mode
-@import models.requests.DataRequest
 
 @this(
     layout: views.html.layouts.layout,
@@ -28,7 +26,7 @@
     button: components.button
 )
 
-@(form: Form[String], togcColeKey: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[String], togcColeKey: String)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages(s"vatNumber.heading.$togcColeKey"))), backLink = true) {
 
