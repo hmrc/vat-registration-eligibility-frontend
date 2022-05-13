@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{S4LService, SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.nino
+import views.html.Nino
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,7 +43,7 @@ class NinoController @Inject()(mcc: MessagesControllerComponents,
                                requireData: DataRequiredAction,
                                formProvider: NinoFormProvider,
                                trafficManagementService: TrafficManagementService,
-                               view: nino
+                               view: Nino
                               )(implicit appConfig: FrontendAppConfig,
                                 executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {

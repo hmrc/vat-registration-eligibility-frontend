@@ -16,7 +16,7 @@
 
 package views
 
-import views.html.choseNotToRegister
+import views.html.ChoseNotToRegister
 
 class ChoseNotToRegisterViewSpec extends ViewSpecBase {
 
@@ -24,7 +24,7 @@ class ChoseNotToRegisterViewSpec extends ViewSpecBase {
 
   val h1 = "You have chosen not to register the business for VAT"
   val finishButton = "Finish"
-  val view = app.injector.instanceOf[choseNotToRegister]
+  val view = app.injector.instanceOf[ChoseNotToRegister]
 
   object Selectors extends BaseSelectors
 

@@ -18,7 +18,7 @@ package views
 
 import forms.NinoFormProvider
 import models.NormalMode
-import views.html.nino
+import views.html.Nino
 
 class NinoViewSpec extends ViewSpecBase {
 
@@ -27,7 +27,7 @@ class NinoViewSpec extends ViewSpecBase {
 
   val h1 = "Do you have a UK National Insurance number?"
 
-  val view = app.injector.instanceOf[nino]
+  val view = app.injector.instanceOf[Nino]
 
   object Selectors extends BaseSelectors
 

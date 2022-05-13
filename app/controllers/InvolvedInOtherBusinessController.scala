@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.involvedInOtherBusiness
+import views.html.InvolvedInOtherBusiness
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +41,7 @@ class InvolvedInOtherBusinessController @Inject()(mcc: MessagesControllerCompone
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: InvolvedInOtherBusinessFormProvider,
-                                                  view: involvedInOtherBusiness
+                                                  view: InvolvedInOtherBusiness
                                                  )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 

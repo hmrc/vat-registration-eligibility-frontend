@@ -16,14 +16,14 @@
 
 package views
 
-import views.html.index
+import views.html.Index
 
 class IndexViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
   val h1 = "vat-registration-eligibility-frontend"
-  val view = app.injector.instanceOf[index]
+  val view = app.injector.instanceOf[Index]
 
   "Index view" must {
     lazy val doc = asDocument(view()(fakeRequest, messages, frontendAppConfig))

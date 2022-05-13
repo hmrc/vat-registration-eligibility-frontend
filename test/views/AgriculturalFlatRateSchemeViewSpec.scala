@@ -18,7 +18,7 @@ package views
 
 import forms.AgriculturalFlatRateSchemeFormProvider
 import models.NormalMode
-import views.html.agriculturalFlatRateScheme
+import views.html.AgriculturalFlatRateScheme
 
 class AgriculturalFlatRateSchemeViewSpec extends ViewSpecBase {
 
@@ -35,7 +35,7 @@ class AgriculturalFlatRateSchemeViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
-  val view = app.injector.instanceOf[agriculturalFlatRateScheme]
+  val view = app.injector.instanceOf[AgriculturalFlatRateScheme]
 
   "AgriculturalFlatRateScheme view" when {
     

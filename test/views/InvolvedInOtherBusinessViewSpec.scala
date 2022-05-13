@@ -19,7 +19,7 @@ package views
 import featureswitch.core.config.{OBIFlow, TOGCFlow, VATGroupFlow}
 import forms.InvolvedInOtherBusinessFormProvider
 import models.NormalMode
-import views.html.involvedInOtherBusiness
+import views.html.InvolvedInOtherBusiness
 
 class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
 
@@ -36,7 +36,7 @@ class InvolvedInOtherBusinessViewSpec extends ViewSpecBase {
   val bullet4 = "the company used to be a different type of VAT-registered business, for example a sole trader"
   val bullet5 = "the company has taken over another VAT-registered company that was making a profit"
 
-  val view = app.injector.instanceOf[involvedInOtherBusiness]
+  val view = app.injector.instanceOf[InvolvedInOtherBusiness]
 
   object Selectors extends BaseSelectors
 

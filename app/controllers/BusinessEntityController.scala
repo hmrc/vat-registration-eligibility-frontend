@@ -26,7 +26,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.businessEntity
+import views.html.BusinessEntityView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,7 @@ class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: BusinessEntityFormProvider,
-                                         view: businessEntity
+                                         view: BusinessEntityView
                                         )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 

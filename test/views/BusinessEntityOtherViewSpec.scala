@@ -22,7 +22,7 @@ import org.jsoup.Jsoup
 import play.api.mvc.{AnyContentAsEmpty, Call}
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import views.html.businessEntityOther
+import views.html.BusinessEntityOther
 
 class BusinessEntityOtherViewSpec extends ViewSpecBase {
 
@@ -33,7 +33,7 @@ class BusinessEntityOtherViewSpec extends ViewSpecBase {
 
   val testCall: Call = Call("POST", "/test-url")
   val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
-  val view: businessEntityOther = app.injector.instanceOf[businessEntityOther]
+  val view: BusinessEntityOther = app.injector.instanceOf[BusinessEntityOther]
 
   lazy val page: HtmlFormat.Appendable = view(
     formProvider,

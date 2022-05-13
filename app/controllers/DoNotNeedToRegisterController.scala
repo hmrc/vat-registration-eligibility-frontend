@@ -21,13 +21,14 @@ import controllers.actions._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.doNotNeedToRegister
+import views.html.DoNotNeedToRegister
+
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class DoNotNeedToRegisterController @Inject()(mcc: MessagesControllerComponents,
                                               identify: CacheIdentifierAction,
-                                              view: doNotNeedToRegister)
+                                              view: DoNotNeedToRegister)
                                              (implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify {
