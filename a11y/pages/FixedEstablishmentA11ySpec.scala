@@ -16,6 +16,11 @@ class FixedEstablishmentA11ySpec extends A11ySpec {
         view(form()).toString must passAccessibilityChecks
       }
     }
-  }
 
+    "the page is rendered with errors for missing form value" must {
+      "pass all accessibility tests" in {
+        view(form().bind(Map("value" -> ""))).toString must passAccessibilityChecks
+      }
+    }
+  }
 }

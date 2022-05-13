@@ -19,7 +19,7 @@ package views
 import featureswitch.core.config._
 import forms.InternationalActivitiesFormProvider
 import models.NormalMode
-import views.html.internationalActivities
+import views.html.InternationalActivities
 
 class InternationalActivitiesViewSpec extends ViewSpecBase {
 
@@ -33,7 +33,7 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
   val bullet1 = "sell assets bought from outside the UK and claim a repayment of VAT under Directive 2008/9EC or Thirteenth VAT Directive"
   val bullet2 = "sell goods into Northern Ireland from an EU member state"
 
-  val view = app.injector.instanceOf[internationalActivities]
+  val view = app.injector.instanceOf[InternationalActivities]
   object Selectors extends BaseSelectors
 
   "InternationalActivities view" when {

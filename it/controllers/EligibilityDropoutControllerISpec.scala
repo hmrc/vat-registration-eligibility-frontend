@@ -6,7 +6,7 @@ import models.{Draft, RegistrationInformation, VatReg}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
-import views.html.{agriculturalDropout, internationalActivityDropout, VatDivisionDropout}
+import views.html.{AgriculturalDropout, InternationalActivityDropout, VatDivisionDropout}
 
 import java.time.LocalDate
 
@@ -22,7 +22,7 @@ class EligibilityDropoutControllerISpec extends IntegrationSpecBase with Traffic
       stubSuccessfulLogin()
       stubAudits()
 
-      val view = app.injector.instanceOf[agriculturalDropout]
+      val view = app.injector.instanceOf[AgriculturalDropout]
       val res = await(buildClient(cantRegisterUrl(AgriculturalFlatRateSchemeId.toString)).get)
 
       res.status mustBe OK
@@ -72,7 +72,7 @@ class EligibilityDropoutControllerISpec extends IntegrationSpecBase with Traffic
       stubSuccessfulLogin()
       stubAudits()
 
-      val view = app.injector.instanceOf[internationalActivityDropout]
+      val view = app.injector.instanceOf[InternationalActivityDropout]
       val res = await(buildClient(internationalActivitiesUrl).get)
 
       res.status mustBe OK

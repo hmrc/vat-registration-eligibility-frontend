@@ -16,7 +16,7 @@
 
 package views
 
-import views.html.applyInWriting
+import views.html.ApplyInWriting
 
 class ApplyInWritingViewSpec extends ViewSpecBase {
 
@@ -27,7 +27,7 @@ class ApplyInWritingViewSpec extends ViewSpecBase {
   val h1 = "You must apply in writing"
   val p1 = "Please use form VAT1 to apply for an exemption from VAT registration."
 
-  val view = app.injector.instanceOf[applyInWriting]
+  val view = app.injector.instanceOf[ApplyInWriting]
 
   "ApplyInWriting view" must {
     lazy val doc = asDocument(view()(fakeRequest, messages, frontendAppConfig))

@@ -20,8 +20,6 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.AgriculturalFlatRateSchemeFormProvider
 import identifiers.AgriculturalFlatRateSchemeId
-
-import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -29,8 +27,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.agriculturalFlatRateScheme
+import views.html.AgriculturalFlatRateScheme
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -41,7 +40,7 @@ class AgriculturalFlatRateSchemeController @Inject()(mcc: MessagesControllerComp
                                                      getData: DataRetrievalAction,
                                                      requireData: DataRequiredAction,
                                                      formProvider: AgriculturalFlatRateSchemeFormProvider,
-                                                     view: agriculturalFlatRateScheme
+                                                     view: AgriculturalFlatRateScheme
                                                     )(implicit appConfig: FrontendAppConfig,
                                                       executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
 

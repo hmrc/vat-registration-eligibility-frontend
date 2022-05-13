@@ -35,8 +35,8 @@ class EligibilityDropoutController @Inject()(mcc: MessagesControllerComponents,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              trafficManagementService: TrafficManagementService,
-                                             internationalActivityDropoutView: internationalActivityDropout,
-                                             agriculturalDropoutView: agriculturalDropout,
+                                             internationalActivityDropoutView: InternationalActivityDropout,
+                                             agriculturalDropoutView: AgriculturalDropout,
                                              vatDivisionDropoutView: VatDivisionDropout
                                             )(implicit appConfig: FrontendAppConfig,
                                               executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {

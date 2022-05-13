@@ -18,16 +18,17 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.choseNotToRegister
+import views.html.ChoseNotToRegister
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ChoseNotToRegisterController @Inject()(mcc: MessagesControllerComponents,
                                              identify: CacheIdentifierAction,
-                                             view: choseNotToRegister
+                                             view: ChoseNotToRegister
                                             )(implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify {

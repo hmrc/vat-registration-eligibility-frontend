@@ -16,7 +16,7 @@
 
 package views
 
-import views.html.doNotNeedToRegister
+import views.html.DoNotNeedToRegister
 
 class DoNotNeedToRegisterViewSpec extends ViewSpecBase {
 
@@ -26,7 +26,7 @@ class DoNotNeedToRegisterViewSpec extends ViewSpecBase {
   val p1 = "From the answers provided, you do not need to register for VAT as you have not and do not plan to make taxable supplies in the UK."
   val p2 = "If this changes, the business should register for VAT."
   val button = "Finish and sign out"
-  val view = app.injector.instanceOf[doNotNeedToRegister]
+  val view = app.injector.instanceOf[DoNotNeedToRegister]
 
   object Selectors extends BaseSelectors
 

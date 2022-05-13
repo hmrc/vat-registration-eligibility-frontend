@@ -18,16 +18,17 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.applyInWriting
+import views.html.ApplyInWriting
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ApplyInWritingController @Inject()(mcc: MessagesControllerComponents,
                                          identify: CacheIdentifierAction,
-                                         view: applyInWriting
+                                         view: ApplyInWriting
                                         )(implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = identify {

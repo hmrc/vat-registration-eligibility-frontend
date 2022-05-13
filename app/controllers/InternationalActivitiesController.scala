@@ -20,8 +20,6 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.InternationalActivitiesFormProvider
 import identifiers.InternationalActivitiesId
-
-import javax.inject.{Inject, Singleton}
 import models.NormalMode
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -29,8 +27,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
-import views.html.internationalActivities
+import views.html.InternationalActivities
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -41,7 +40,7 @@ class InternationalActivitiesController @Inject()(mcc: MessagesControllerCompone
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: InternationalActivitiesFormProvider,
-                                                  view: internationalActivities
+                                                  view: InternationalActivities
                                                  )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
