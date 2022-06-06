@@ -23,7 +23,7 @@ import identifiers.FixedEstablishmentId
 import models.NormalMode
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SessionService
+import services.{DataCleardownService, SessionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.FixedEstablishment
@@ -39,7 +39,8 @@ class FixedEstablishmentController @Inject()(mcc: MessagesControllerComponents,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: FixedEstablishmentFormProvider,
-                                             view: FixedEstablishment
+                                             view: FixedEstablishment,
+                                             dataCleardownService: DataCleardownService
                                             )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport {
 
@@ -58,9 +59,11 @@ class FixedEstablishmentController @Inject()(mcc: MessagesControllerComponents,
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          sessionService.save[Boolean](FixedEstablishmentId.toString, value) map { cacheMap =>
-            Redirect(navigator.nextPage(FixedEstablishmentId, NormalMode)(new UserAnswers(cacheMap)))
-          }
+          for {
+            _ <- dataCleardownService.cleardownOnAnswerChange(value, FixedEstablishmentId)
+            cacheMap <- sessionService.save[Boolean](FixedEstablishmentId.toString, value)
+            redirect = Redirect(navigator.nextPage(FixedEstablishmentId, NormalMode)(new UserAnswers(cacheMap)))
+          } yield redirect
       )
   }
 

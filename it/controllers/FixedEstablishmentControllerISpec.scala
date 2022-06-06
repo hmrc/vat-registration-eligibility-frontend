@@ -2,11 +2,14 @@ package controllers
 
 import featureswitch.core.config.NETPFlow
 import helpers.IntegrationSpecBase
-import identifiers.FixedEstablishmentId
+import identifiers._
+import models.{ConditionalDateFormElement, DateFormElement}
 import org.jsoup.Jsoup
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
+
+import java.time.LocalDate
 
 class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
 
@@ -81,6 +84,53 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
         res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout.url)
       }
     }
+
+    "the user answers 'Yes' but the question was answered previously" must {
+      "redirect to the Business Entity page if the old answer is 'Yes'" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+
+        cacheSessionData(sessionId, FixedEstablishmentId, true)
+
+        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+      }
+
+      "redirect to the Business Entity page and clear down all threshold data if the old answer is 'No'" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+
+        cacheSessionData(sessionId, FixedEstablishmentId, false)
+
+        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
+        cacheSessionData[DateFormElement](sessionId, DateOfBusinessTransferId, DateFormElement(LocalDate.now()))
+        cacheSessionData[String](sessionId, PreviousBusinessNameId, "test")
+        cacheSessionData[String](sessionId, VATNumberId, "test")
+        cacheSessionData[Boolean](sessionId, KeepOldVrnId, true)
+        cacheSessionData[Boolean](sessionId, TermsAndConditionsId, true)
+        cacheSessionData[Boolean](sessionId, TaxableSuppliesInUkId, true)
+        cacheSessionData[DateFormElement](sessionId, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
+
+        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
+
+        List(
+          ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId,
+          DateOfBusinessTransferId, PreviousBusinessNameId, VATNumberId, KeepOldVrnId, TermsAndConditionsId,
+          TaxableSuppliesInUkId, ThresholdTaxableSuppliesId
+        ).foreach(id =>
+          verifySessionCacheData[Boolean](sessionId, id, None)
+        )
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+      }
+    }
+
     "the user doesn't answer" must {
       "return BAS_REQUEST" in new Setup {
         stubSuccessfulLogin()

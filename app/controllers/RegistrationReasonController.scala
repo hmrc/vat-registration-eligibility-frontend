@@ -24,7 +24,7 @@ import identifiers._
 import models._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SessionService
+import services.{DataCleardownService, SessionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.RegistrationReasonView
@@ -40,7 +40,8 @@ class RegistrationReasonController @Inject()(mcc: MessagesControllerComponents,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: RegistrationReasonFormProvider,
-                                             view: RegistrationReasonView
+                                             view: RegistrationReasonView,
+                                             dataCleardownService: DataCleardownService
                                             )(implicit appConfig: FrontendAppConfig,
                                               executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
@@ -79,28 +80,10 @@ class RegistrationReasonController @Inject()(mcc: MessagesControllerComponents,
           ),
         value =>
           for {
-            _ <- request.userAnswers.registrationReason match {
-              case reason if !reason.contains(value) =>
-                for {
-                  _ <- sessionService.removeEntry(ThresholdInTwelveMonthsId.toString)
-                  _ <- sessionService.removeEntry(ThresholdPreviousThirtyDaysId.toString)
-                  _ <- sessionService.removeEntry(ThresholdNextThirtyDaysId.toString)
-                  _ <- sessionService.removeEntry(VoluntaryRegistrationId.toString)
-                  _ <- sessionService.removeEntry(DateOfBusinessTransferId.toString)
-                  _ <- sessionService.removeEntry(PreviousBusinessNameId.toString)
-                  _ <- sessionService.removeEntry(VATNumberId.toString)
-                  _ <- sessionService.removeEntry(KeepOldVrnId.toString)
-                  _ <- sessionService.removeEntry(TermsAndConditionsId.toString)
-                  _ <- sessionService.removeEntry(TaxableSuppliesInUkId.toString)
-                  _ <- sessionService.removeEntry(ThresholdTaxableSuppliesId.toString)
-                } yield Future.successful()
-              case _ => Future.successful()
-            }
+            _ <- dataCleardownService.cleardownOnAnswerChange(value, RegistrationReasonId)
             cacheMap <- sessionService.save[RegistrationReason](RegistrationReasonId.toString, value)
             redirect = Redirect(navigator.nextPage(RegistrationReasonId, NormalMode)(new UserAnswers(cacheMap)))
-          } yield {
-            redirect
-          }
+          } yield redirect
       )
   }
 }
