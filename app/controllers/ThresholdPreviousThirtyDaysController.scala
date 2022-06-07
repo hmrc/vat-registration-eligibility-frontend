@@ -19,9 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.ThresholdPreviousThirtyDaysFormProvider
-import identifiers.{ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
-
-import javax.inject.{Inject, Singleton}
+import identifiers.{CurrentlyTradingId, ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
 import models.{ConditionalDateFormElement, NormalMode}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -31,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.ThresholdPreviousThirtyDays
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -65,7 +64,9 @@ class ThresholdPreviousThirtyDaysController @Inject()(mcc: MessagesControllerCom
             cacheMap =>
               val userAnswers = new UserAnswers(cacheMap)
               if (userAnswers.thresholdInTwelveMonths.exists(_.value) | formValue.value | userAnswers.thresholdNextThirtyDays.exists(_.value)) {
-                sessionService.removeEntry(VoluntaryRegistrationId.toString)
+                sessionService.removeEntry(VoluntaryRegistrationId.toString).flatMap(_ =>
+                  sessionService.removeEntry(CurrentlyTradingId.toString)
+                )
               } else {
                 Future.successful(cacheMap)
               }

@@ -71,12 +71,12 @@ object PageIdBinding extends FeatureSwitching {
         e
       }
       case e@(VATRegistrationExceptionId, None) => if (twelveMonthsValue || nextThirtyDaysValue) elemMiss(e._1) else e
-      case e@(VoluntaryRegistrationId, Some(_)) => if (isMandatory) {
+      case e@(VoluntaryRegistrationId | CurrentlyTradingId, Some(_)) => if (isMandatory) {
         illegalState(e._1)
       } else {
         e
       }
-      case e@(VoluntaryRegistrationId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
+      case e@(VoluntaryRegistrationId | CurrentlyTradingId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
       case e@(VATExemptionId, Some(_)) =>
         if (userAnswers.zeroRatedSales.contains(false)) {
           illegalState(e._1)
@@ -113,6 +113,7 @@ object PageIdBinding extends FeatureSwitching {
           (ThresholdPreviousThirtyDaysId, userAnswers.thresholdPreviousThirtyDays),
           (VATRegistrationExceptionId, userAnswers.vatRegistrationException),
           (VoluntaryRegistrationId, userAnswers.voluntaryRegistration),
+          (CurrentlyTradingId, userAnswers.currentlyTrading),
           (TaxableSuppliesInUkId, userAnswers.taxableSuppliesInUk),
           (ThresholdTaxableSuppliesId, userAnswers.thresholdTaxableSupplies),
           (TurnoverEstimateId, userAnswers.turnoverEstimate),

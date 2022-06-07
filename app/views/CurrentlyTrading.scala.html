@@ -15,7 +15,6 @@
  *@
 
 @import config.FrontendAppConfig
-@import controllers.routes._
 @import models.Mode
 @import models.requests.DataRequest
 
@@ -23,7 +22,6 @@
         layout: views.html.layouts.layout,
         errorSummary: components.errorSummary,
         h1: components.h1,
-        p: components.p,
         panelIndent: components.panelIndent,
         formWithCsrf: FormWithCSRF,
         yesNoRadio: components.yesNoRadio,
@@ -40,15 +38,18 @@
     }
 }
 
-@layout(pageTitle = Some(title(form, messages(s"voluntaryRegistration.heading.$headingKeySuffix"))), backLink = true) {
+@layout(pageTitle = Some(title(form, messages(s"currentlyTrading.heading.$headingKeySuffix"))), backLink = true) {
 
     @errorSummary(form.errors)
 
-    @formWithCsrf(action = VoluntaryRegistrationController.onSubmit(), 'autoComplete -> "off") {
+    @formWithCsrf(action = controllers.routes.CurrentlyTradingController.onSubmit, 'autoComplete -> "off") {
         @yesNoRadio(
             form = form,
-            headingKey = s"voluntaryRegistration.heading.$headingKeySuffix",
-            isPageHeading = true
+            headingKey = s"currentlyTrading.heading.$headingKeySuffix",
+            isPageHeading = true,
+            inline = false,
+            yesText = Some(messages("currentlyTrading.yes")),
+            noText = Some(messages("currentlyTrading.no"))
         )
 
         @button(messages("site.continue"))

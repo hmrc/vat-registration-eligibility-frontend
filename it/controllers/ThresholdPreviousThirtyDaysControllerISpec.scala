@@ -1,7 +1,7 @@
 package controllers
 
 import helpers.IntegrationSpecBase
-import identifiers.{ThresholdInTwelveMonthsId, ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
+import identifiers.{CurrentlyTradingId, ThresholdInTwelveMonthsId, ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
 import models.ConditionalDateFormElement
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -54,6 +54,7 @@ class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase {
         stubAudits()
         cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(localDate)))
         cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
+        cacheSessionData[Boolean](sessionId, CurrentlyTradingId, true)
 
           val res = await(buildClient(pageUrl)
             .post(Map(
@@ -69,6 +70,7 @@ class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase {
         verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdPreviousThirtyDaysId, Some(ConditionalDateFormElement(true, Some(dateAfterIncorp))))
         verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, Some(ConditionalDateFormElement(true, Some(localDate))))
         verifySessionCacheData(sessionId, VoluntaryRegistrationId, Option.empty[Boolean])
+        verifySessionCacheData(sessionId, CurrentlyTradingId, Option.empty[Boolean])
       }
       "no is submitted" in new Setup {
         stubSuccessfulLogin()

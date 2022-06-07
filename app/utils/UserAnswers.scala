@@ -18,10 +18,7 @@ package utils
 
 import identifiers._
 import models._
-import models.requests.DataRequest
 import play.api.libs.json.{JsValue, Reads}
-import play.api.mvc.AnyContent
-import uk.gov.hmrc.http.InternalServerException
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import javax.inject.Singleton
@@ -76,6 +73,8 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def thresholdTaxableSupplies: Option[DateFormElement] = cacheMap.getEntry[DateFormElement](ThresholdTaxableSuppliesId.toString)
 
   def voluntaryRegistration: Option[Boolean] = cacheMap.getEntry[Boolean](VoluntaryRegistrationId.toString)
+
+  def currentlyTrading: Option[Boolean] = cacheMap.getEntry[Boolean](CurrentlyTradingId.toString)
 
   def thresholdPreviousThirtyDays: Option[ConditionalDateFormElement] = cacheMap.getEntry[ConditionalDateFormElement](ThresholdPreviousThirtyDaysId.toString)
 
