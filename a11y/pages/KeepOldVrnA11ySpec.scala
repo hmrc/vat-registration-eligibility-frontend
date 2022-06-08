@@ -3,7 +3,6 @@ package pages
 
 import forms.KeepOldVrnFormProvider
 import helpers.A11ySpec
-import models.NormalMode
 import views.html.KeepOldVrn
 
 class KeepOldVrnA11ySpec extends A11ySpec {

@@ -16,10 +16,11 @@
 
 package helpers
 
-import uk.gov.hmrc.mongo.MongoSpecSupport
+import uk.gov.hmrc.mongo.test.MongoSupport
+
 
 trait FakeConfig {
-  self: MongoSpecSupport =>
+  self: MongoSupport =>
 
   val mockHost: String
   val mockPort: Int
