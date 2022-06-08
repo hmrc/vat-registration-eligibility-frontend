@@ -64,6 +64,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
         s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
         s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
         s"$VoluntaryRegistrationId" -> JsBoolean(true),
+        s"$CurrentlyTradingId" -> JsBoolean(false),
         s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
         s"$InternationalActivitiesId" -> JsBoolean(false),
         s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
@@ -97,6 +98,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
           | {"questionId":"thresholdInTwelveMonths","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"thresholdNextThirtyDays","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"voluntaryRegistration","question":"mocked message","answer":"mocked message","answerValue":true},
+          | {"questionId":"currentlyTrading","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"turnoverEstimate","question":"mocked message","answer":"£50,000","answerValue":50000},
           | {"questionId":"zeroRatedSales","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"vatExemption","question":"mocked message","answer":"mocked message","answerValue":false}

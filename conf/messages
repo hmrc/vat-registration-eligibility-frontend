@@ -120,12 +120,15 @@ thresholdTaxableSupplies.error.date.required         = Enter the date the busine
 thresholdTaxableSupplies.error.date.inFuture         = The date must be between {0} and {1}
 thresholdTaxableSupplies.error.date.invalid          = Enter a real date
 
-voluntaryRegistration.heading.business      = Would you like to voluntarily register the business for VAT?
-voluntaryRegistration.heading.partnership   = Would you like to voluntarily register the partnership for VAT?
-voluntaryRegistration.error.required        = Select yes if you want to register voluntarily for VAT
-voluntaryRegistration.heading2.business     = Does the business want to register voluntarily?
-voluntaryRegistration.heading2.partnership  = Does the partnership want to register voluntarily?
-voluntaryRegistration.text                  = Only register voluntarily if the business intends to start reporting VAT in the next 3 months.
+voluntaryRegistration.heading.business      = Do you want to voluntarily register the business for VAT?
+voluntaryRegistration.heading.partnership   = Do you want to voluntarily register the partnership for VAT?
+voluntaryRegistration.error.required        = Select yes if you want to voluntarily register for VAT
+
+currentlyTrading.heading.business            = Is the business currently trading taxable goods?
+currentlyTrading.heading.partnership         = Is the partnership currently trading taxable goods?
+currentlyTrading.yes                         = Yes
+currentlyTrading.no                          = No, but it will do so in the next 3 months
+currentlyTrading.error.required              = Select yes if the business is currently trading taxable goods
 
 choseNotToRegister.title    = You have chosen not to register the business for VAT
 choseNotToRegister.heading  = You have chosen not to register the business for VAT
@@ -360,8 +363,10 @@ checkYourAnswers.thresholdPreviousThirtyDays.optional.business      = When did t
 checkYourAnswers.thresholdPreviousThirtyDays.optional.partnership   = When did the partnership expect to go over the threshold?
 checkYourAnswers.thresholdTaxableSupplies                           = When did the business make or intend to make taxable supplies in the UK?
 checkYourAnswers.vatRegistrationException                           = Would you like to apply for a VAT registration exception?
-checkYourAnswers.voluntaryRegistration.business                     = Would you like to voluntarily register the business for VAT?
-checkYourAnswers.voluntaryRegistration.partnership                  = Would you like to voluntarily register the partnership for VAT?
+checkYourAnswers.voluntaryRegistration.business                     = Do you want to voluntarily register the business for VAT?
+checkYourAnswers.voluntaryRegistration.partnership                  = Do you want to voluntarily register the partnership for VAT?
+checkYourAnswers.currentlyTrading.business                           = Is the business currently trading taxable goods?
+checkYourAnswers.currentlyTrading.partnership                        = Is the partnership currently trading taxable goods?
 checkYourAnswers.voluntaryInformation                               = Do you want to sign the business up to Making Tax Digital for VAT?
 checkYourAnswers.turnoverEstimate.business                          = What do you think the business’s VAT-taxable turnover will be for the next 12 months?
 checkYourAnswers.turnoverEstimate.partnership                       = What do you think the partnership’s VAT-taxable turnover will be for the next 12 months?

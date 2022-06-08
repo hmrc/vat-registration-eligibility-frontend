@@ -77,13 +77,13 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
         JsonSummaryRow(
           s"$key",
           messageFormatter(key),
-          answerFormatter(answer),
+          answerFormatter(answer, key),
           answerJsonFormatter(answer)
         ) ++ optDate.toList.flatMap(date =>
           JsonSummaryRow(
             s"$key-optionalData",
             messageFormatter(key, isOptData = true),
-            answerFormatter[LocalDate](date),
+            answerFormatter[LocalDate](date, key),
             answerJsonFormatter[LocalDate](date)
           )
         )
@@ -91,7 +91,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
         JsonSummaryRow(
           s"$key",
           messageFormatter(key),
-          answerFormatter(data),
+          answerFormatter(data, key),
           answerJsonFormatter(data)
         )
     }
@@ -118,7 +118,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
             case _ => throw new InternalServerException("Attempted to submit togc/cole data without a matching reg reason")
           }
         case InternationalActivitiesId | ZeroRatedSalesId | AgriculturalFlatRateSchemeId | RacehorsesId |
-             VoluntaryRegistrationId | ThresholdInTwelveMonthsId | ThresholdNextThirtyDaysId |
+             VoluntaryRegistrationId | CurrentlyTradingId | ThresholdInTwelveMonthsId | ThresholdNextThirtyDaysId |
              ThresholdPreviousThirtyDaysId | TurnoverEstimateId | RegistrationReasonId =>
           val businessOrPartnership = if (data.userAnswers.isPartnership) ".partnership" else ".business"
           s"checkYourAnswers.$key$optDataKey$businessOrPartnership"
@@ -130,8 +130,9 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-  private def answerFormatter[T](answer: T)(implicit r: DataRequest[_]): String =
+  private def answerFormatter[T](answer: T, key: Identifier)(implicit r: DataRequest[_]): String =
     answer match {
+      case data: Boolean if key.equals(CurrentlyTradingId) => messages(if (data) "currentlyTrading.yes" else "currentlyTrading.no")
       case data: Boolean => messages(s"site.${if (data) "yes" else "no"}")
       case data: String => data
       case data: DateFormElement => data.date.format(formatter)

@@ -16,23 +16,25 @@
 
 package views
 
-import forms.VoluntaryRegistrationFormProvider
+import forms.CurrentlyTradingFormProvider
 import models.NormalMode
-import views.html.VoluntaryRegistration
+import views.html.CurrentlyTrading
 
-class VoluntaryRegistrationViewSpec extends ViewSpecBase {
+class CurrentlyTradingViewSpec extends ViewSpecBase {
 
-  val messageKeyPrefix = "voluntaryRegistration"
-  val form = new VoluntaryRegistrationFormProvider()()
+  val messageKeyPrefix = "currentlyTrading"
+  val form = new CurrentlyTradingFormProvider()()
 
-  val h1Business = "Do you want to voluntarily register the business for VAT?"
-  val h1Partnership = "Do you want to voluntarily register the partnership for VAT?"
+  val h1Business = "Is the business currently trading taxable goods?"
+  val h1Partnership = "Is the partnership currently trading taxable goods?"
+  val yesText = "Yes"
+  val noText = "No, but it will do so in the next 3 months"
 
-  val view: VoluntaryRegistration = app.injector.instanceOf[VoluntaryRegistration]
+  val view: CurrentlyTrading = app.injector.instanceOf[CurrentlyTrading]
 
   object Selectors extends BaseSelectors
 
-  "VoluntaryRegistration view" when {
+  "CurrentlyTrading view" when {
     "Business entity is not partnership" must {
       lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequest, messages, frontendAppConfig))
 
@@ -54,6 +56,11 @@ class VoluntaryRegistrationViewSpec extends ViewSpecBase {
 
       "have the correct legend" in {
         doc.select(Selectors.legend(1)).text() mustBe h1Business
+      }
+
+      "have the correct radio text" in {
+        doc.select(Selectors.radioYes).text() mustBe yesText
+        doc.select(Selectors.radioNo).text() mustBe noText
       }
     }
 
@@ -78,6 +85,11 @@ class VoluntaryRegistrationViewSpec extends ViewSpecBase {
 
       "have the correct legend" in {
         doc.select(Selectors.legend(1)).text() mustBe h1Partnership
+      }
+
+      "have the correct radio text" in {
+        doc.select(Selectors.radioYes).text() mustBe yesText
+        doc.select(Selectors.radioNo).text() mustBe noText
       }
     }
   }

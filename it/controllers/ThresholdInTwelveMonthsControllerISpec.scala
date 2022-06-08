@@ -96,6 +96,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
 
         cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(value = false, None))
         cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
+        cacheSessionData[Boolean](sessionId, CurrentlyTradingId, true)
         cacheSessionData(sessionId, VATRegistrationExceptionId, true)
 
         val res = await(buildClient("/gone-over-threshold")
@@ -115,6 +116,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
         )
 
         verifySessionCacheData(sessionId, VoluntaryRegistrationId, Option.empty[Boolean])
+        verifySessionCacheData(sessionId, CurrentlyTradingId, Option.empty[Boolean])
         verifySessionCacheData(sessionId, ThresholdNextThirtyDaysId, Option.empty[ConditionalDateFormElement])
         verifySessionCacheData(sessionId, VATRegistrationExceptionId, Some(true))
       }
@@ -128,6 +130,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
         stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
 
         cacheSessionData(sessionId, VoluntaryRegistrationId, true)
+        cacheSessionData(sessionId, CurrentlyTradingId, true)
         cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdPreviousThirtyDaysId, ConditionalDateFormElement(value = false, None))
         cacheSessionData(sessionId, VATRegistrationExceptionId, true)
 
@@ -138,6 +141,7 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
 
         verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, Some(ConditionalDateFormElement(false, None)))
         verifySessionCacheData(sessionId, VoluntaryRegistrationId, Some(true))
+        verifySessionCacheData(sessionId, CurrentlyTradingId, Some(true))
         verifySessionCacheData(sessionId, ThresholdPreviousThirtyDaysId, Option.empty[ConditionalDateFormElement])
         verifySessionCacheData(sessionId, VATRegistrationExceptionId, Option.empty[Boolean])
       }

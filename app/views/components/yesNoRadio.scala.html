@@ -26,11 +26,12 @@
         hint: Option[Html] = None,
         headingMessageArgs: Seq[String] = Seq(),
         isPageHeading: Boolean = true,
+        inline: Boolean = true,
         classes: String = "govuk-fieldset__legend--xl"
 )(implicit messages: Messages)
 
 @radios(Radios(
-    classes = "govuk-radios--inline",
+    classes = if (inline) "govuk-radios--inline" else "",
     idPrefix = None,
     name = "value",
     fieldset = Some(Fieldset(

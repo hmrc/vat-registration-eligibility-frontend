@@ -1,25 +1,25 @@
 package controllers
 
 import helpers.IntegrationSpecBase
-import identifiers.VoluntaryRegistrationId
+import identifiers.CurrentlyTradingId
 import org.jsoup.Jsoup
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
-class VoluntaryRegistrationControllerISpec extends IntegrationSpecBase {
+class CurrentlyTradingControllerISpec extends IntegrationSpecBase {
 
-  val pageUrl = "/register-voluntarily"
+  val pageUrl: String = controllers.routes.CurrentlyTradingController.onPageLoad.url
   val yesRadio = "value"
   val noRadio = "value-no"
 
-  "GET /register-voluntarily" when {
+  s"GET $pageUrl" when {
     "an answer already exists for the page" must {
       "return OK with the answer pre-populated" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, VoluntaryRegistrationId, true)
+        cacheSessionData(sessionId, CurrentlyTradingId, true)
 
         val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
@@ -44,27 +44,27 @@ class VoluntaryRegistrationControllerISpec extends IntegrationSpecBase {
     }
   }
 
-  "POST /register-voluntarily" when {
+  s"POST $pageUrl" when {
     "the user answers 'Yes'" must {
-      "redirect to the Currently Trading page" in new Setup {
+      "redirect to the Turnover Estimates page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.CurrentlyTradingController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.TurnoverEstimateController.onPageLoad.url)
       }
     }
     "the user answers 'No'" must {
-      "redirect to the Chose Not To Register page" in new Setup {
+      "redirect to the Turnover Estimates page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.ChoseNotToRegisterController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.TurnoverEstimateController.onPageLoad.url)
       }
     }
     "the user doesn't answer" must {
