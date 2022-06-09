@@ -17,7 +17,7 @@ import services.SessionService
 import support.SessionCookieBaker
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
-import uk.gov.hmrc.mongo.MongoSpecSupport
+import uk.gov.hmrc.mongo.test.MongoSupport
 
 import scala.concurrent.duration._
 
@@ -31,7 +31,7 @@ trait IntegrationSpecBase extends PlaySpec
   with BeforeAndAfterAll
   with FutureAwaits
   with DefaultAwaitTimeout
-  with MongoSpecSupport
+  with MongoSupport
   with FeatureSwitching
   with FakeConfig
   with AuthHelper

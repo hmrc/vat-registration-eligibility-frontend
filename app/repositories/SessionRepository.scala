@@ -16,98 +16,82 @@
 
 package repositories
 
+import com.mongodb.client.model.Indexes.ascending
 import org.joda.time.{DateTime, DateTimeZone}
+import org.mongodb.scala.model
+import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.model.Updates.unset
+import org.mongodb.scala.model._
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
-import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.{BSONDocument, BSONInteger, BSONObjectID}
-import reactivemongo.play.json.ImplicitBSONHandlers._
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.mongo.ReactiveRepository
-import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
+import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
 import uk.gov.hmrc.play.http.logging.Mdc
 
+import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
-                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC))
+                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)) {
+  def as[T](implicit f: DatedCacheMap => T): T = f(this)
+}
 
 object DatedCacheMap {
-  implicit val dateFormat = ReactiveMongoFormats.dateTimeFormats
+  implicit val dateFormat = MongoJodaFormats.dateTimeFormat
   implicit val formats = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
+
+  implicit def asCacheMap: DatedCacheMap => CacheMap = (datedCacheMap: DatedCacheMap) => {
+    CacheMap(datedCacheMap.id, datedCacheMap.data)
+  }
 }
 
 @Singleton
 class SessionRepository @Inject()(config: Configuration,
-                                  mongo: ReactiveMongoComponent)
+                                  mongo: MongoComponent)
                                  (implicit ec: ExecutionContext)
-  extends ReactiveRepository[DatedCacheMap, BSONObjectID](
+  extends PlayMongoRepository[DatedCacheMap](
+    mongo,
     config.get[String]("appName"),
-    mongo.mongoConnector.db,
-    DatedCacheMap.formats) {
-
-  val fieldName = "lastUpdated"
-  val createdIndexName = "userAnswersExpiry"
-  val expireAfterSeconds = "expireAfterSeconds"
-  val timeToLiveInSeconds: Int = config.get[Int]("mongodb.timeToLiveInSeconds")
-
-  val lastModifiedIndex = Index(
-    name = Some(createdIndexName),
-    key = Seq(fieldName -> IndexType.Ascending),
-    options = BSONDocument(expireAfterSeconds -> BSONInteger(timeToLiveInSeconds))
-  )
-
-  override def indexes: Seq[Index] = Seq(lastModifiedIndex)
-
-  override def ensureIndexes(implicit ec: ExecutionContext): Future[Seq[Boolean]] = {
-    def deleteLastUpdatedIndex(indexes: List[Index])(implicit ec: ExecutionContext): Future[Int] = {
-      indexes.find(index => index.eventualName == "lastModified") match {
-        case Some(index) => collection.indexesManager.drop(index.eventualName)
-        case None => Future.successful(0)
-      }
-    }
-
-    for {
-      currentIndexes <- collection.indexesManager.list()
-      _<- deleteLastUpdatedIndex(currentIndexes)
-      indexes = currentIndexes :+ lastModifiedIndex
-      updated <- Future.sequence(indexes.map(collection.indexesManager.ensure))
-    } yield updated
-  }
+    DatedCacheMap.formats,
+    Seq(
+      model.IndexModel(
+        ascending("lastUpdated"),
+        IndexOptions()
+          .name("userAnswersExpiry")
+          .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
+      )
+    )
+  ) {
 
   def get(id: String): Future[Option[CacheMap]] = Mdc.preservingMdc {
-    collection.find(Json.obj("id" -> id)).one[CacheMap]
+    collection.find(equal("id", id)).map(_.as[CacheMap]).headOption()
   }
 
   def upsert(cm: CacheMap): Future[Boolean] = Mdc.preservingMdc {
-    val selector = BSONDocument("id" -> cm.id)
-    val cmDocument = Json.toJson(DatedCacheMap(cm))
-    val modifier = BSONDocument("$set" -> cmDocument)
-
-    collection.update(selector, modifier, upsert = true).map { lastError =>
-      lastError.ok
-    }
+    collection.replaceOne(
+      equal("id", cm.id),
+      DatedCacheMap(cm),
+      ReplaceOptions().upsert(true)
+    ).map(_.wasAcknowledged()).head()
   }
 
   def removeEntry(id: String, key: String): Future[CacheMap] = Mdc.preservingMdc {
-    val selector = BSONDocument("id" -> id)
-    val update = BSONDocument("$unset" -> BSONDocument(s"data.$key" -> 1))
-
-    collection.findAndModify(selector, collection.updateModifier(update, true, false)).map {
-      res => res.value.map(_.as[CacheMap]).getOrElse(throw new Exception(s"[removeEntry] Attempted to remove $key but document did not exist"))
-    }
+    collection.findOneAndUpdate(
+      equal("id", id),
+      unset(s"data.$key"),
+      FindOneAndUpdateOptions().returnDocument(ReturnDocument.AFTER).upsert(false)
+    ).headOption().map(_.getOrElse(
+      throw new Exception(s"[removeEntry] Attempted to remove $key but document did not exist")
+    )).map(_.as[CacheMap])
   }
 
   def delete(id: String): Future[Boolean] = Mdc.preservingMdc {
-    val selector = BSONDocument("id" -> id)
-
-    collection.delete.one(selector).map(_.ok)
+    collection.deleteOne(equal("id", id)).map(_.wasAcknowledged()).head()
   }
-
 }
-

@@ -5,19 +5,17 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.{DefaultReads, Format, Json}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.mongo.MongoSpecSupport
+import uk.gov.hmrc.mongo.test.MongoSupport
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-trait SessionStub extends MongoSpecSupport with BeforeAndAfterEach with DefaultReads {
+trait SessionStub extends MongoSupport with BeforeAndAfterEach with DefaultReads {
   self: IntegrationSpecBase =>
 
   lazy val repo = app.injector.instanceOf[SessionRepository]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    await(repo.drop)
-    await(repo.count) mustBe 0
+    await(repo.collection.drop().head())
+    await(repo.collection.countDocuments().head()) mustBe 0
     resetWiremock()
   }
 
@@ -27,7 +25,7 @@ trait SessionStub extends MongoSpecSupport with BeforeAndAfterEach with DefaultR
   }
 
   def cacheSessionData[T](id: String, key: Identifier, data: T)(implicit format: Format[T]): Unit ={
-    await(repo.count)
+    await(repo.collection.countDocuments().head())
     val cacheMap = await(repo.get(id))
     val updatedCacheMap =
       cacheMap.fold(CacheMap(id, Map(key.toString -> Json.toJson(data))))(map => map.copy(data = map.data + (key.toString -> Json.toJson(data))))
