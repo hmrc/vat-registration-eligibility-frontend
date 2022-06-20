@@ -1,6 +1,5 @@
 package pages
 
-import forms.VATExemptionFormProvider
 import helpers.A11ySpec
 import models.NormalMode
 import views.html.VatExemption

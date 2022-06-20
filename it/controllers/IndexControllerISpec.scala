@@ -40,10 +40,10 @@ class IndexControllerISpec extends IntegrationSpecBase {
       result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
     }
     "redirect to page specified" in {
-      val result = await(buildClient("/question?pageId=zeroRatedSales").get())
+      val result = await(buildClient("/question?pageId=mtdInformation").get())
 
       result.status mustBe SEE_OTHER
-      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ZeroRatedSalesController.onPageLoad.url)
+      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
     }
   }
 }

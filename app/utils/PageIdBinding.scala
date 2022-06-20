@@ -77,18 +77,10 @@ object PageIdBinding extends FeatureSwitching {
         e
       }
       case e@(VoluntaryRegistrationId | CurrentlyTradingId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
-      case e@(VATExemptionId, Some(_)) =>
-        if (userAnswers.zeroRatedSales.contains(false)) {
-          illegalState(e._1)
-        } else {
-          e
-        }
-      case e@(VATExemptionId, None) if (userAnswers.zeroRatedSales.contains(true) && userAnswers.vatRegistrationException.contains(false)) =>
-        elemMiss(e._1)
       case e@(TaxableSuppliesInUkId, None) if !isOverseas || isTogcCole => e
       case e@(NinoId, None) if isOverseas || isEnabled(IndividualFlow) => e
       case e@(InvolvedInOtherBusinessId, None) if isEnabled(TOGCFlow) && isEnabled(OBIFlow) && isEnabled(VATGroupFlow) => e
-      case e if (e._1 != VATExemptionId) => (e._1, e._2.orElse(elemMiss(e._1)))
+      case e => (e._1, e._2.orElse(elemMiss(e._1)))
     }
 
     Map(
@@ -115,10 +107,7 @@ object PageIdBinding extends FeatureSwitching {
           (VoluntaryRegistrationId, userAnswers.voluntaryRegistration),
           (CurrentlyTradingId, userAnswers.currentlyTrading),
           (TaxableSuppliesInUkId, userAnswers.taxableSuppliesInUk),
-          (ThresholdTaxableSuppliesId, userAnswers.thresholdTaxableSupplies),
-          (TurnoverEstimateId, userAnswers.turnoverEstimate),
-          (ZeroRatedSalesId, userAnswers.zeroRatedSales),
-          (VATExemptionId, userAnswers.vatExemption)
+          (ThresholdTaxableSuppliesId, userAnswers.thresholdTaxableSupplies)
         ).collect(ValidationAndConstruction)
     )
   }

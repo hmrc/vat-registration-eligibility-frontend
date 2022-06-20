@@ -46,25 +46,25 @@ class CurrentlyTradingControllerISpec extends IntegrationSpecBase {
 
   s"POST $pageUrl" when {
     "the user answers 'Yes'" must {
-      "redirect to the Turnover Estimates page" in new Setup {
+      "redirect to the Mtd Information page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.TurnoverEstimateController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
       }
     }
     "the user answers 'No'" must {
-      "redirect to the Turnover Estimates page" in new Setup {
+      "redirect to the Mtd Information page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.TurnoverEstimateController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
       }
     }
     "the user doesn't answer" must {
