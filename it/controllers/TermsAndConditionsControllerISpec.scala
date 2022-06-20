@@ -22,25 +22,25 @@ class TermsAndConditionsControllerISpec extends IntegrationSpecBase with S4LStub
 
   s"POST /terms-and-conditions" when {
     "the answer is 'Yes'" must {
-      "redirect to Turnover Estimate" in new Setup {
+      "redirect to Mtd information page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
 
         val res = await(buildClient(pageUrl).post(Map("termsAndConditions" -> Seq("true"))))
 
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
       }
     }
     "the answer is 'No'" must {
-      "redirect to Turnover Estimate" in new Setup {
+      "redirect to Mtd information page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
 
         val res = await(buildClient(pageUrl).post(Map("termsAndConditions" -> Seq("false"))))
 
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
       }
     }
   }

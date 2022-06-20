@@ -57,9 +57,6 @@ POST       /gone-over-threshold                         controllers.ThresholdInT
 GET        /date-of-taxable-supplies-in-uk              controllers.ThresholdTaxableSuppliesController.onPageLoad
 POST       /date-of-taxable-supplies-in-uk              controllers.ThresholdTaxableSuppliesController.onSubmit()
 
-GET        /vat-taxable-turnover                        controllers.TurnoverEstimateController.onPageLoad(mode : Mode = NormalMode)
-POST       /vat-taxable-turnover                        controllers.TurnoverEstimateController.onSubmit(mode : Mode = NormalMode)
-
 GET        /involved-more-business-changing-status      controllers.InvolvedInOtherBusinessController.onPageLoad
 POST       /involved-more-business-changing-status      controllers.InvolvedInOtherBusinessController.onSubmit()
 
@@ -69,12 +66,6 @@ POST       /cant-register                               controllers.EligibilityD
 
 GET        /business-activities-next-12-months          controllers.InternationalActivitiesController.onPageLoad
 POST       /business-activities-next-12-months          controllers.InternationalActivitiesController.onSubmit()
-
-GET        /zero-rated-sales                            controllers.ZeroRatedSalesController.onPageLoad
-POST       /zero-rated-sales                            controllers.ZeroRatedSalesController.onSubmit()
-
-GET        /vat-exemption                               controllers.VATExemptionController.onPageLoad
-POST       /vat-exemption                               controllers.VATExemptionController.onSubmit()
 
 GET        /vat-exception-registration                  controllers.VATExceptionKickoutController.onPageLoad
 POST       /vat-exception-registration                  controllers.VATExceptionKickoutController.onSubmit()

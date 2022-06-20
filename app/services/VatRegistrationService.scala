@@ -117,9 +117,9 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
             case Some(ChangingLegalEntityOfBusiness) => s"checkYourAnswers.$key$optDataKey.cole"
             case _ => throw new InternalServerException("Attempted to submit togc/cole data without a matching reg reason")
           }
-        case InternationalActivitiesId | ZeroRatedSalesId | AgriculturalFlatRateSchemeId | RacehorsesId |
+        case InternationalActivitiesId | AgriculturalFlatRateSchemeId | RacehorsesId |
              VoluntaryRegistrationId | CurrentlyTradingId | ThresholdInTwelveMonthsId | ThresholdNextThirtyDaysId |
-             ThresholdPreviousThirtyDaysId | TurnoverEstimateId | RegistrationReasonId =>
+             ThresholdPreviousThirtyDaysId | RegistrationReasonId =>
           val businessOrPartnership = if (data.userAnswers.isPartnership) ".partnership" else ".business"
           s"checkYourAnswers.$key$optDataKey$businessOrPartnership"
         case _ =>
@@ -140,7 +140,6 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
       case data: RegistrationReason => registrationReasonToString(data)(messages)
       case data: RegisteringBusiness => registeringBusinessToString(data)(messages)
       case data: BusinessEntity => businessEntityToString(data)(messages)
-      case data: TurnoverEstimateFormElement => s"£${"%,d".format(data.value.toLong)}"
     }
 
   private def answerJsonFormatter[T](answer: T): JsValue =
@@ -152,7 +151,6 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
       case data: RegistrationReason => Json.toJson(data)(RegistrationReason.writes)
       case data: RegisteringBusiness => Json.toJson(data)(RegisteringBusiness.writes)
       case data: BusinessEntity => Json.toJson(data)(BusinessEntity.writes)
-      case data: TurnoverEstimateFormElement => JsNumber(BigDecimal(data.value.toLong))
     }
 
 }

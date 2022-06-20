@@ -93,7 +93,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DateOfBusinessTransferController.onPageLoad.url)
       }
 
-      "redirect to the Turnover Estimate page if TrafficManagement returns Allocated for an Established UK Exporter reg reason" in new Setup {
+      "redirect to the mtd information page if TrafficManagement returns Allocated for an Established UK Exporter reg reason" in new Setup {
         enable(TrafficManagement)
         stubSuccessfulLogin()
         stubAudits()
@@ -112,7 +112,7 @@ class TrafficManagementResolverControllerISpec extends IntegrationSpecBase
         val res = await(buildClient(pageUrl).get())
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
       }
 
       "redirect to VAT Exception Page if TrafficManagement returns Quota Reached" in new Setup {

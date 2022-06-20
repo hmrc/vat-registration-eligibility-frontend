@@ -48,7 +48,7 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
 
   s"POST /keep-old-vrn" when {
     "the user answers" must {
-      "redirect to Turnover Estimate and clear down old T&C answer if the answer is no" in new Setup {
+      "redirect to Mtd information page and clear down old T&C answer if the answer is no" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
@@ -58,7 +58,7 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
         val res = await(buildClient(pageUrl).post(Map("value" -> Seq("false"))))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
         verifySessionCacheData[Boolean](sessionId, TermsAndConditionsId, None)
       }
 

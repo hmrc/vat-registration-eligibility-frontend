@@ -65,12 +65,9 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
         s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
         s"$VoluntaryRegistrationId" -> JsBoolean(true),
         s"$CurrentlyTradingId" -> JsBoolean(false),
-        s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
         s"$InternationalActivitiesId" -> JsBoolean(false),
         s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
         s"$VoluntaryRegistrationId" -> JsBoolean(true),
-        s"$VATExemptionId" -> JsBoolean(false),
-        s"$ZeroRatedSalesId" -> JsBoolean(true),
         s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
         s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
         s"$NinoId" -> JsBoolean(true),
@@ -98,10 +95,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
           | {"questionId":"thresholdInTwelveMonths","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"thresholdNextThirtyDays","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"voluntaryRegistration","question":"mocked message","answer":"mocked message","answerValue":true},
-          | {"questionId":"currentlyTrading","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"turnoverEstimate","question":"mocked message","answer":"£50,000","answerValue":50000},
-          | {"questionId":"zeroRatedSales","question":"mocked message","answer":"mocked message","answerValue":true},
-          | {"questionId":"vatExemption","question":"mocked message","answer":"mocked message","answerValue":false}
+          | {"questionId":"currentlyTrading","question":"mocked message","answer":"mocked message","answerValue":false}
           |]}]}
           |""".stripMargin)
     }
@@ -113,14 +107,11 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
       val togcColeData: ListMap[String, JsValue] = ListMap[String, JsValue](
         s"$FixedEstablishmentId" -> JsBoolean(true),
         s"$BusinessEntityId" -> Json.toJson(UKCompany),
-        s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
         s"$InternationalActivitiesId" -> JsBoolean(false),
         s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
         s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
         s"$RegistrationReasonId" -> Json.toJson(TakingOverBusiness),
         s"$NinoId" -> JsBoolean(true),
-        s"$ZeroRatedSalesId" -> JsBoolean(true),
-        s"$VATExemptionId" -> JsBoolean(false),
         s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
         s"$RacehorsesId" -> JsBoolean(false),
         s"$DateOfBusinessTransferId" -> Json.obj("date" -> LocalDate.now()),
@@ -155,10 +146,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
            |        {"questionId":"previousBusinessName","question":"mocked message","answer":"$testPreviousName","answerValue":"$testPreviousName"},
            |        {"questionId":"vatNumber","question":"mocked message","answer":"$testVrn","answerValue":"$testVrn"},
            |        {"questionId":"keepOldVrn","question":"mocked message","answer":"mocked message","answerValue":true},
-           |        {"questionId":"termsAndConditions","question":"mocked message","answer":"mocked message","answerValue":true},
-           |        {"questionId":"turnoverEstimate","question":"mocked message","answer":"£50,000","answerValue":50000},
-           |        {"questionId":"zeroRatedSales","question":"mocked message","answer":"mocked message","answerValue":true},
-           |        {"questionId":"vatExemption","question":"mocked message","answer":"mocked message","answerValue":false}
+           |        {"questionId":"termsAndConditions","question":"mocked message","answer":"mocked message","answerValue":true}
            |      ]
            |    }
            |  ]

@@ -33,15 +33,12 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
     s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
-    s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
     s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
     s"$NinoId" -> JsBoolean(true),
-    s"$ZeroRatedSalesId" -> JsBoolean(true),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
-    s"$VATExemptionId" -> JsBoolean(false),
     s"$VATRegistrationExceptionId" -> JsBoolean(false),
     s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
     s"$RacehorsesId" -> JsBoolean(false)
@@ -53,8 +50,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$BusinessEntityId" -> Json.toJson(NETP),
     s"$TaxableSuppliesInUkId" -> JsBoolean(true),
     s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),
-    s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
-    s"$ZeroRatedSalesId" -> JsBoolean(true),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
@@ -74,7 +69,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s._1 match {
       case x if x == ThresholdInTwelveMonthsId.toString || x == ThresholdNextThirtyDaysId.toString ||
         x == ThresholdPreviousThirtyDaysId.toString || x == VoluntaryRegistrationId.toString ||
-        x == VATExemptionId.toString || x == ZeroRatedSalesId.toString || x == VATRegistrationExceptionId.toString => true
+        x == VATRegistrationExceptionId.toString => true
       case _ => false
     }
   }
@@ -83,7 +78,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s._1 match {
       case x if x == ThresholdInTwelveMonthsId.toString || x == ThresholdNextThirtyDaysId.toString ||
         x == ThresholdPreviousThirtyDaysId.toString || x == VoluntaryRegistrationId.toString ||
-        x == VATExemptionId.toString || x == ZeroRatedSalesId.toString || x == VATRegistrationExceptionId.toString => true
+        x == VATRegistrationExceptionId.toString => true
       case _ => false
     }
   }
@@ -94,8 +89,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$BusinessEntityId" -> Json.toJson(UKCompany),
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(true)),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
@@ -109,41 +102,14 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(true)),
       s"$ThresholdNextThirtyDaysId" -> JsBoolean(true),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
     )
     intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
-  }
-  "exception should be thrown when a cacheMap containing zero rated sales == false, Vat exemption exists" in {
-    val mapOfValuesToBeTested = List(
-      s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(true)),
-      s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(false),
-      s"$VATRegistrationExceptionId" -> JsBoolean(false)
-    )
-    intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
-  }
-  "no exception should be thrown when a cacheMap containing zero rated sales == false, Vat exemption does not exist" in {
-    val mapOfValuesToBeTested = List(
-      s"$FixedEstablishmentId" -> JsBoolean(true),
-      s"$BusinessEntityId" -> Json.toJson(UKCompany),
-      s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(true)),
-      s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
-      s"$ZeroRatedSalesId" -> JsBoolean(false),
-      s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-      s"$NinoId" -> JsBoolean(true),
-      s"$VATRegistrationExceptionId" -> JsBoolean(false)
-    )
-    PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested)))
   }
   "throw new exception if voluntary flag does not exist when all 3 threshold q's are no" in {
     val mapOfValuesToBeTested = List(
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
       s"$ThresholdNextThirtyDaysId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true)
     )
     intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
   }
@@ -154,8 +120,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$CurrentlyTradingId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
     )
     intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
@@ -165,8 +129,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
     )
     intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
@@ -176,8 +138,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$CurrentlyTradingId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
     )
     intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
@@ -186,8 +146,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     val mapOfValuesToBeTested = List(
       s"$ThresholdPreviousThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
     )
     intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
@@ -198,8 +156,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdNextThirtyDaysId" -> JsBoolean(false),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$CurrentlyTradingId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$VATRegistrationExceptionId" -> JsBoolean(false)
     )
     intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
@@ -212,8 +168,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$CurrentlyTradingId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
     )
@@ -228,8 +182,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$CurrentlyTradingId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
     )
@@ -244,8 +196,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$CurrentlyTradingId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
     )
@@ -260,8 +210,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
       s"$CurrentlyTradingId" -> JsBoolean(false),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
     )
@@ -281,9 +229,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   }
 
   "no exception on Full Happy Path, when the user is a NETP" in {
-    val mapOfValuesToBeTested = List(
-      s"$ZeroRatedSalesId" -> JsBoolean(true)
-    )
+    val mapOfValuesToBeTested = List()
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested)))
   }
 
@@ -293,8 +239,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$BusinessEntityId" -> Json.toJson(NETP),
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$NinoId" -> JsBoolean(true)
     )
@@ -307,8 +251,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$BusinessEntityId" -> Json.toJson(NETP),
       s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness)
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdInTwelveMonthsId")))
@@ -319,8 +261,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$FixedEstablishmentId" -> JsBoolean(true),
       s"$BusinessEntityId" -> Json.toJson(NETP),
       s"$VoluntaryRegistrationId" -> JsBoolean(true),
-      s"$VATExemptionId" -> JsBoolean(false),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness)
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$ThresholdPreviousThirtyDaysId")))
@@ -331,8 +271,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$FixedEstablishmentId" -> JsBoolean(true),
       s"$BusinessEntityId" -> Json.toJson(NETP),
       s"$TaxableSuppliesInUkId" -> JsBoolean(true),
-      s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),
-      s"$ZeroRatedSalesId" -> JsBoolean(true)
+      s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12"))
     )
     PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTestedNETP.++:(mapOfValuesToBeTested).-(s"$NinoId")))
   }
@@ -344,14 +283,11 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     def fullListMap(partyType: BusinessEntity, regReason: RegistrationReason): ListMap[String, JsValue] = ListMap[String, JsValue](
       s"$FixedEstablishmentId" -> JsBoolean(true),
       s"$BusinessEntityId" -> Json.toJson(partyType),
-      s"$TurnoverEstimateId" -> Json.obj("amount" -> JsString("50000")),
       s"$InternationalActivitiesId" -> JsBoolean(false),
       s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$RegistrationReasonId" -> Json.toJson(regReason),
       s"$NinoId" -> JsBoolean(true),
-      s"$ZeroRatedSalesId" -> JsBoolean(true),
-      s"$VATExemptionId" -> JsBoolean(false),
       s"$VATRegistrationExceptionId" -> JsBoolean(false),
       s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
       s"$RacehorsesId" -> JsBoolean(false),

@@ -1,8 +1,8 @@
 package controllers
 
 import helpers.{IntegrationSpecBase, S4LStub, TrafficManagementStub, VatRegistrationStub}
-import identifiers.{AgriculturalFlatRateSchemeId, BusinessEntityId, FixedEstablishmentId, CurrentlyTradingId, InternationalActivitiesId, InvolvedInOtherBusinessId, NinoId, RacehorsesId, RegisteringBusinessId, RegistrationReasonId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, TurnoverEstimateId, VoluntaryRegistrationId, ZeroRatedSalesId}
-import models.{BusinessEntity, ConditionalDateFormElement, Draft, OwnBusiness, RegisteringBusiness, RegistrationInformation, RegistrationReason, SellingGoodsAndServices, TurnoverEstimateFormElement, UKCompany, VatReg}
+import identifiers._
+import models._
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
@@ -39,10 +39,8 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
       cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(value = false, None))
       cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
       cacheSessionData[Boolean](sessionId, CurrentlyTradingId, false)
-      cacheSessionData[TurnoverEstimateFormElement](sessionId, TurnoverEstimateId, TurnoverEstimateFormElement("50000"))
       cacheSessionData[Boolean](sessionId, InternationalActivitiesId, false)
       cacheSessionData[Boolean](sessionId, InvolvedInOtherBusinessId, false)
-      cacheSessionData[Boolean](sessionId, ZeroRatedSalesId, false)
       cacheSessionData[RegisteringBusiness](sessionId, RegisteringBusinessId, OwnBusiness)
       cacheSessionData[RegistrationReason](sessionId, RegistrationReasonId, SellingGoodsAndServices)
       cacheSessionData[Boolean](sessionId, AgriculturalFlatRateSchemeId, false)

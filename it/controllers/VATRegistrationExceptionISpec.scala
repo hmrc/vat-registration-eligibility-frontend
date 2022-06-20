@@ -63,18 +63,18 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficMana
           res.status mustBe SEE_OTHER
           res.header(HeaderNames.LOCATION) mustBe Some("/check-if-you-can-register-for-vat/cant-register/vatExceptionKickout")
         }
-        s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} if answer is no" in new Setup {
+        s"redirect to ${controllers.routes.MtdInformationController.onPageLoad} if answer is no" in new Setup {
           stubSuccessfulLogin()
           stubAudits()
 
           val res = await(buildClient("/registration-exception").post(Map("value" -> Seq("false"))))
 
           res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
         }
       }
       "ExceptionExemption flow feature switch is enabled" must {
-        s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} if answer is yes" in new Setup {
+        s"redirect to ${controllers.routes.MtdInformationController.onPageLoad} if answer is yes" in new Setup {
           enable(ExceptionExemptionFlow)
           stubSuccessfulLogin()
           stubAudits()
@@ -82,9 +82,9 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficMana
           val res = await(buildClient("/registration-exception").post(Map("value" -> Seq("true"))))
 
           res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
         }
-        s"redirect to ${controllers.routes.TurnoverEstimateController.onPageLoad} if answer is no" in new Setup {
+        s"redirect to ${controllers.routes.MtdInformationController.onPageLoad} if answer is no" in new Setup {
           enable(ExceptionExemptionFlow)
           stubSuccessfulLogin()
           stubAudits()
@@ -92,7 +92,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficMana
           val res = await(buildClient("/registration-exception").post(Map("value" -> Seq("false"))))
 
           res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
         }
       }
     }

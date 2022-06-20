@@ -58,15 +58,9 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
 
   def vatExceptionKickout: Option[Boolean] = cacheMap.getEntry[Boolean](VATExceptionKickoutId.toString)
 
-  def vatExemption: Option[Boolean] = cacheMap.getEntry[Boolean](VATExemptionId.toString)
-
-  def zeroRatedSales: Option[Boolean] = cacheMap.getEntry[Boolean](ZeroRatedSalesId.toString)
-
   def internationalActivities: Option[Boolean] = cacheMap.getEntry[Boolean](InternationalActivitiesId.toString)
 
   def involvedInOtherBusiness: Option[Boolean] = cacheMap.getEntry[Boolean](InvolvedInOtherBusinessId.toString)
-
-  def turnoverEstimate: Option[TurnoverEstimateFormElement] = cacheMap.getEntry[TurnoverEstimateFormElement](TurnoverEstimateId.toString)
 
   def thresholdInTwelveMonths: Option[ConditionalDateFormElement] = cacheMap.getEntry[ConditionalDateFormElement](ThresholdInTwelveMonthsId.toString)
 

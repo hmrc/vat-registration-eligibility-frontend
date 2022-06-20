@@ -61,7 +61,7 @@ class ThresholdTaxableSuppliesControllerISpec extends IntegrationSpecBase {
           )))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TurnoverEstimateController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
       }
     }
     "doesn't answer" must {
