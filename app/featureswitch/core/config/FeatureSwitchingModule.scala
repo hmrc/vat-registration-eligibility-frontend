@@ -39,7 +39,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     VATGroupFlow,
     LandAndProperty,
     TOGCFlow,
-    ExceptionExemptionFlow,
     OBIFlow
   )
 
@@ -118,11 +117,6 @@ case object LandAndProperty extends FeatureSwitch {
 case object TOGCFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.togc-cole-flow"
   override val displayName: String = "Enable Transfer of Going Concern (TOGC)"
-}
-
-case object ExceptionExemptionFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.exception-exemption-flow"
-  override val displayName: String = "Enable Exception Exemption flow"
 }
 
 case object OBIFlow extends FeatureSwitch {
