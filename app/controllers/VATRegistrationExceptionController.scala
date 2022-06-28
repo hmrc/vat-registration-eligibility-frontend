@@ -18,7 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import featureswitch.core.config.{ExceptionExemptionFlow, FeatureSwitching}
+import featureswitch.core.config.FeatureSwitching
 import forms.VATRegistrationExceptionFormProvider
 import identifiers.VATRegistrationExceptionId
 
@@ -42,7 +42,6 @@ class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerCompon
                                                    getData: DataRetrievalAction,
                                                    requireData: DataRequiredAction,
                                                    formProvider: VATRegistrationExceptionFormProvider,
-                                                   trafficManagementService: TrafficManagementService,
                                                    view: VatRegistrationException
                                                   )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
@@ -63,9 +62,6 @@ class VATRegistrationExceptionController @Inject()(mcc: MessagesControllerCompon
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value => {
           sessionService.save[Boolean](VATRegistrationExceptionId.toString, value).map { cacheMap =>
-            if (value && !isEnabled(ExceptionExemptionFlow)) {
-              trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = true)
-            }
             Redirect(navigator.nextPage(VATRegistrationExceptionId, NormalMode)(new UserAnswers(cacheMap)))
           }}
       )

@@ -1,6 +1,5 @@
 package controllers
 
-import featureswitch.core.config.ExceptionExemptionFlow
 import helpers.{IntegrationSpecBase, TrafficManagementStub}
 import identifiers.VATRegistrationExceptionId
 import models.{Draft, OTRS, RegistrationInformation}
@@ -51,49 +50,22 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficMana
 
   s"POST /registration-exception" when {
     "the user answers" must {
-      "ExceptionExemption flow feature switch is not enabled" must {
-        s"redirect to ${"/check-if-you-can-register-for-vat/cant-register/vatExceptionKickout"} if answer is yes" in new Setup {
-          disable(ExceptionExemptionFlow)
-          stubSuccessfulLogin()
-          stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), OTRS))
-          stubAudits()
+      def validateFlow(formValue: String) = {
+        stubSuccessfulLogin()
+        stubAudits()
 
-          val res = await(buildClient("/registration-exception").post(Map("value" -> Seq("true"))))
+        val res = await(buildClient("/registration-exception").post(Map("value" -> Seq(formValue))))
 
-          res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some("/check-if-you-can-register-for-vat/cant-register/vatExceptionKickout")
-        }
-        s"redirect to ${controllers.routes.MtdInformationController.onPageLoad} if answer is no" in new Setup {
-          stubSuccessfulLogin()
-          stubAudits()
-
-          val res = await(buildClient("/registration-exception").post(Map("value" -> Seq("false"))))
-
-          res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
-        }
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
       }
-      "ExceptionExemption flow feature switch is enabled" must {
-        s"redirect to ${controllers.routes.MtdInformationController.onPageLoad} if answer is yes" in new Setup {
-          enable(ExceptionExemptionFlow)
-          stubSuccessfulLogin()
-          stubAudits()
 
-          val res = await(buildClient("/registration-exception").post(Map("value" -> Seq("true"))))
+      s"redirect to ${controllers.routes.MtdInformationController.onPageLoad} if answer is yes" in new Setup {
+        validateFlow("true")
+      }
 
-          res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
-        }
-        s"redirect to ${controllers.routes.MtdInformationController.onPageLoad} if answer is no" in new Setup {
-          enable(ExceptionExemptionFlow)
-          stubSuccessfulLogin()
-          stubAudits()
-
-          val res = await(buildClient("/registration-exception").post(Map("value" -> Seq("false"))))
-
-          res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
-        }
+      s"redirect to ${controllers.routes.MtdInformationController.onPageLoad} if answer is no" in new Setup {
+        validateFlow("false")
       }
     }
     "the user doesn't answer" must {
