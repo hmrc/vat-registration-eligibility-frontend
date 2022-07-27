@@ -8,7 +8,7 @@ private object AppDependencies {
   private val scalaTestPlusPlayVersion = "5.1.0"
   private val mockitoVersion = "3.3.3"
   private val httpCachingClientVersion = "9.6.0-play-28"
-  private val mongoPlayVersion = "0.64.0"
+  private val mongoPlayVersion = "0.68.0"
   private val playConditionalFormMappingVersion = "1.11.0-play-28"
   private val bootstrapVersion = "5.20.0"
   private val jsoupVersion = "1.13.1"
