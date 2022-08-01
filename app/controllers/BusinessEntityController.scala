@@ -18,6 +18,7 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
+import featureswitch.core.config.{FeatureSwitching, SoleTraderFlow}
 import forms.BusinessEntityFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
 import models._
@@ -41,7 +42,7 @@ class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
                                          formProvider: BusinessEntityFormProvider,
                                          view: BusinessEntityView
                                         )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -70,10 +71,13 @@ class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
         Future.successful(
           BadRequest(view(formWithErrors, routes.BusinessEntityController.onSubmit()))
         ),
-      entityType => {
-        sessionService.save[BusinessEntity](BusinessEntityId.toString, entityType) map { cacheMap =>
-          Redirect(navigator.nextPage(BusinessEntityId, NormalMode)(new UserAnswers(cacheMap)))
-        }
+      {
+        case SoleTrader if !isEnabled(SoleTraderFlow) =>
+          Future.successful(Redirect(routes.IndividualKickoutController.onPageLoad))
+        case entityType =>
+          sessionService.save[BusinessEntity](BusinessEntityId.toString, entityType) map { cacheMap =>
+            Redirect(navigator.nextPage(BusinessEntityId, NormalMode)(new UserAnswers(cacheMap)))
+          }
       }
     )
   }
