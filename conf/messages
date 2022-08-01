@@ -257,6 +257,11 @@ applyInWriting.title = You must apply in writing
 applyInWriting.heading = You must apply in writing
 applyInWriting.text = Please use form VAT1 to apply for an exemption from VAT registration.
 
+individualKickout.title = Sorry, the service is unavailable
+individualKickout.heading = Sorry, the service is unavailable
+individualKickout.text = You cannot use this service to register for VAT.
+individualKickout.button = Sign out
+
 agriculturalFlatRateScheme.heading.business = Is the business applying for the Agricultural Flat Rate Scheme?
 agriculturalFlatRateScheme.heading.partnership = Is the partnership applying for the Agricultural Flat Rate Scheme?
 agriculturalFlatRateScheme.error.required = Select yes if the business is applying for the Agricultural Flat Rate Scheme
