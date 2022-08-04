@@ -16,12 +16,11 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{JsObject, JsValue}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException}
+import play.api.libs.json.JsValue
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpClient
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -30,18 +29,6 @@ class VatRegistrationConnector @Inject()(val http: HttpClient,
   lazy val vatRegistrationUrl: String = servicesConfig.baseUrl("vat-registration")
   lazy val vatRegistrationUri: String =
     servicesConfig.getConfString("vat-registration.uri", throw new RuntimeException("expected incorporation-information.uri in config but none found"))
-
-  def getRegistrationId()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
-    http.GET[JsObject](s"$vatRegistrationUrl$vatRegistrationUri/scheme").recover {
-      case e => throw logResponse(e, "createNewRegistration")
-    }.map {
-      json => (json \ "registrationId").as[String]
-    }
-  }
-
-  def getAllRegistrations(internalId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[List[String]] =
-    http.GET[List[JsObject]](s"$vatRegistrationUrl/registrations")
-      .map(registrations => registrations.map(json => (json \ "registrationId").as[String]))
 
   def saveEligibility(regId: String, eligibility: JsValue)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
     http.PATCH[JsValue, HttpResponse](s"$vatRegistrationUrl$vatRegistrationUri/$regId/eligibility-data", eligibility).map(_.json) recover {
