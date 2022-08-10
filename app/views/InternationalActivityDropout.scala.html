@@ -16,7 +16,6 @@
 
 @import config.FrontendAppConfig
 @import models.requests.CacheIdentifierRequest
-@import featureswitch.core.config._
 
 @this(
     layout: views.html.layouts.layout,
@@ -44,5 +43,5 @@
 
 @bullet2 = {
     @messages("eligibility.international.bullet2")
-    @link(appConfig.VAT1BFormURL, messages("eligibility.international.link2"))
+    @link(appConfig.VAT1AFormURL, messages("eligibility.international.link2"))
 }
