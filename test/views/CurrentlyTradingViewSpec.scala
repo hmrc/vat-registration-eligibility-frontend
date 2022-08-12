@@ -28,7 +28,7 @@ class CurrentlyTradingViewSpec extends ViewSpecBase {
   val h1Business = "Is the business currently trading taxable goods?"
   val h1Partnership = "Is the partnership currently trading taxable goods?"
   val yesText = "Yes"
-  val noText = "No, but it will do so in the next 3 months"
+  val noText = "No"
 
   val view: CurrentlyTrading = app.injector.instanceOf[CurrentlyTrading]
 

@@ -132,7 +132,6 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
 
   private def answerFormatter[T](answer: T, key: Identifier)(implicit r: DataRequest[_]): String =
     answer match {
-      case data: Boolean if key.equals(CurrentlyTradingId) => messages(if (data) "currentlyTrading.yes" else "currentlyTrading.no")
       case data: Boolean => messages(s"site.${if (data) "yes" else "no"}")
       case data: String => data
       case data: DateFormElement => data.date.format(formatter)
