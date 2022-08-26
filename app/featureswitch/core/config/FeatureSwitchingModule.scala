@@ -39,7 +39,8 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     VATGroupFlow,
     LandAndProperty,
     TOGCFlow,
-    OBIFlow
+    OBIFlow,
+    WelshLanguage
   )
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
@@ -122,4 +123,9 @@ case object TOGCFlow extends FeatureSwitch {
 case object OBIFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.other-business-involvement-flow"
   override val displayName: String = "Enable Other Business Involvement (OBI) flow"
+}
+
+case object WelshLanguage extends FeatureSwitch {
+  override val configName: String = "feature-switch.welsh"
+  override val displayName: String = "Enable Welsh Language"
 }
