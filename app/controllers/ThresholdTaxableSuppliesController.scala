@@ -21,7 +21,6 @@ import controllers.actions._
 import forms.ThresholdTaxableSuppliesFormProvider
 import identifiers._
 import models.{DateFormElement, NormalMode}
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -41,7 +40,7 @@ class ThresholdTaxableSuppliesController @Inject()(mcc: MessagesControllerCompon
                                                    formProvider: ThresholdTaxableSuppliesFormProvider,
                                                    view: ThresholdTaxableSupplies
                                                   )(implicit appConfig: FrontendAppConfig,
-                                                    executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+                                                    executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

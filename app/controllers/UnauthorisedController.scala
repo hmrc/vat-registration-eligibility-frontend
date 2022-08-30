@@ -17,16 +17,17 @@
 package controllers
 
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
-import play.api.i18n.I18nSupport
+import controllers.actions.VatRegLanguageSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.Unauthorised
 
+import javax.inject.{Inject, Singleton}
+
 @Singleton
 class UnauthorisedController @Inject()(mcc: MessagesControllerComponents,
                                        view: Unauthorised)
-                                      (implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with I18nSupport {
+                                      (implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(view())

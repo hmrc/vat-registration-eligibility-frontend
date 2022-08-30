@@ -17,12 +17,11 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
 import featureswitch.core.config.{FeatureSwitching, VATGroupFlow}
 import forms.RegistrationReasonFormProvider
 import identifiers._
 import models._
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{DataCleardownService, SessionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -44,7 +43,7 @@ class RegistrationReasonController @Inject()(mcc: MessagesControllerComponents,
                                              dataCleardownService: DataCleardownService
                                             )(implicit appConfig: FrontendAppConfig,
                                               executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
+  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
 
   def showVatGroup(isUkCompany: Boolean): Boolean = isUkCompany && isEnabled(VATGroupFlow)
 

@@ -17,17 +17,17 @@
 package controllers
 
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
-import play.api.i18n.I18nSupport
+import controllers.actions.VatRegLanguageSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class SignOutController @Inject()(mcc: MessagesControllerComponents)
                                  (implicit val appConfig: FrontendAppConfig,
-                                  val executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+                                  val executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def signOut: Action[AnyContent] = Action {
     _ => Redirect(appConfig.exitSurveyUrl).withNewSession

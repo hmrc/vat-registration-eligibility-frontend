@@ -18,11 +18,10 @@ package controllers
 
 import config.FrontendAppConfig
 import connectors.{Allocated, QuotaReached}
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
 import featureswitch.core.config.{FeatureSwitching, TrafficManagement}
 import identifiers.TrafficManagementResolverId
 import models.{Draft, NormalMode, RegistrationInformation, VatReg}
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.{S4LService, TrafficManagementService}
 import uk.gov.hmrc.http.InternalServerException
@@ -30,7 +29,6 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +42,7 @@ class TrafficManagementResolverController @Inject()(mcc: MessagesControllerCompo
                                                     trafficManagementService: TrafficManagementService
                                                    )(implicit appConfig: FrontendAppConfig,
                                                      executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
+  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
 
   def resolve: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>

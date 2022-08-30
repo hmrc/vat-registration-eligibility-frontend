@@ -20,7 +20,6 @@ import config.FrontendAppConfig
 import controllers.actions._
 import identifiers.TermsAndConditionsId
 import models.NormalMode
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -39,7 +38,7 @@ class TermsAndConditionsController @Inject()(mcc: MessagesControllerComponents,
                                              requireData: DataRequiredAction,
                                              view: TermsAndConditions
                                     )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

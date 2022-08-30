@@ -22,7 +22,6 @@ import forms.ThresholdPreviousThirtyDaysFormProvider
 import identifiers.{CurrentlyTradingId, ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
 import models.{ConditionalDateFormElement, NormalMode}
 import play.api.data.Form
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -42,7 +41,7 @@ class ThresholdPreviousThirtyDaysController @Inject()(mcc: MessagesControllerCom
                                                       formProvider: ThresholdPreviousThirtyDaysFormProvider,
                                                       view: ThresholdPreviousThirtyDays
                                                      )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
