@@ -21,7 +21,6 @@ import controllers.actions._
 import forms.PreviousBusinessNameFormProvider
 import identifiers.PreviousBusinessNameId
 import models.Mode
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -41,7 +40,7 @@ class PreviousBusinessNameController @Inject()(mcc: MessagesControllerComponents
                                                formProvider: PreviousBusinessNameFormProvider,
                                                view: PreviousBusinessName
                                     )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

@@ -19,10 +19,9 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
-import identifiers.{CurrentlyTradingId, TaxableSuppliesInUkId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
-import models.{ConditionalDateFormElement, NETP, NormalMode, Overseas, RegistrationInformation}
+import identifiers._
+import models._
 import play.api.data.Form
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -43,7 +42,7 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
                                                   trafficManagementService: TrafficManagementService,
                                                   view: ThresholdInTwelveMonths
                                                  )(implicit appConfig: FrontendAppConfig,
-                                                   executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+                                                   executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

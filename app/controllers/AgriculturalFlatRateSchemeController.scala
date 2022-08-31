@@ -22,7 +22,6 @@ import forms.AgriculturalFlatRateSchemeFormProvider
 import identifiers.AgriculturalFlatRateSchemeId
 import models.NormalMode
 import play.api.data.Form
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -42,7 +41,7 @@ class AgriculturalFlatRateSchemeController @Inject()(mcc: MessagesControllerComp
                                                      formProvider: AgriculturalFlatRateSchemeFormProvider,
                                                      view: AgriculturalFlatRateScheme
                                                     )(implicit appConfig: FrontendAppConfig,
-                                                      executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+                                                      executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

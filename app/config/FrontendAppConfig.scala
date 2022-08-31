@@ -87,7 +87,5 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy"))
 
-  def routeToSwitchLanguage = (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
-
   lazy val accessibilityStatementUrl = servicesConfig.getString("accessibility-statement.host") + "/accessibility-statement/vat-registration"
 }

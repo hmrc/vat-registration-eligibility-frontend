@@ -22,7 +22,6 @@ import featureswitch.core.config.FeatureSwitching
 import forms.KeepOldVrnFormProvider
 import identifiers.{KeepOldVrnId, TermsAndConditionsId}
 import models._
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -43,7 +42,7 @@ class KeepOldVrnController @Inject()(mcc: MessagesControllerComponents,
                                      view: KeepOldVrn
                                     )(implicit appConfig: FrontendAppConfig,
                                       executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
+  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

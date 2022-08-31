@@ -22,7 +22,6 @@ import featureswitch.core.config.FeatureSwitching
 import forms.TaxableSuppliesInUkFormProvider
 import identifiers.TaxableSuppliesInUkId
 import models.NormalMode
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{S4LService, SessionService, TrafficManagementService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -45,7 +44,7 @@ class TaxableSuppliesInUkController @Inject()(mcc: MessagesControllerComponents,
                                               view: TaxableSuppliesInUk
                                              )(implicit appConfig: FrontendAppConfig,
                                                executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
+  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
 
   val onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

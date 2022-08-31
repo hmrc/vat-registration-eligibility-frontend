@@ -17,11 +17,10 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
 import forms.FixedEstablishmentFormProvider
 import identifiers.FixedEstablishmentId
 import models.NormalMode
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{DataCleardownService, SessionService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -42,7 +41,7 @@ class FixedEstablishmentController @Inject()(mcc: MessagesControllerComponents,
                                              view: FixedEstablishment,
                                              dataCleardownService: DataCleardownService
                                             )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

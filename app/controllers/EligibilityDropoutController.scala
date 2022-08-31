@@ -20,11 +20,10 @@ import config.FrontendAppConfig
 import controllers.actions._
 import identifiers._
 import models.RegistrationInformation
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrafficManagementService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{VatDivisionDropout, _}
+import views.html._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -39,7 +38,7 @@ class EligibilityDropoutController @Inject()(mcc: MessagesControllerComponents,
                                              agriculturalDropoutView: AgriculturalDropout,
                                              vatDivisionDropoutView: VatDivisionDropout
                                             )(implicit appConfig: FrontendAppConfig,
-                                              executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport {
+                                              executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad(mode: String): Action[AnyContent] = identify {
     implicit request =>

@@ -16,9 +16,8 @@
 
 package controllers
 
-import controllers.actions.{CacheIdentifierAction, DataRetrievalAction}
+import controllers.actions.{CacheIdentifierAction, DataRetrievalAction, VatRegLanguageSupport}
 import identifiers.Identifier
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.JourneyService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -36,7 +35,7 @@ class IndexController @Inject()(val authConnector: AuthConnector,
                                 identify: CacheIdentifierAction,
                                 getData: DataRetrievalAction,
                                 journeyService: JourneyService
-                               )(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with I18nSupport with AuthorisedFunctions {
+                               )(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport with AuthorisedFunctions {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData) { implicit request =>
     Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)

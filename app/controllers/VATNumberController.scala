@@ -17,11 +17,10 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
 import forms.VATNumberFormProvider
 import identifiers.VATNumberId
 import models.NormalMode
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -41,7 +40,7 @@ class VATNumberController @Inject()(mcc: MessagesControllerComponents,
                                     formProvider: VATNumberFormProvider,
                                     view: VATNumber
                                    )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

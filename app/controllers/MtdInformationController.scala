@@ -17,7 +17,7 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
 import models.RegistrationInformation
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -40,7 +40,7 @@ class MtdInformationController @Inject()(mcc: MessagesControllerComponents,
                                          s4LService: S4LService)
                                         (implicit appConfig: FrontendAppConfig,
                                          executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = identify { implicit request =>
     Ok(view())

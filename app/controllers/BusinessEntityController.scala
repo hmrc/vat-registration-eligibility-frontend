@@ -22,7 +22,6 @@ import featureswitch.core.config.{FeatureSwitching, SoleTraderFlow}
 import forms.BusinessEntityFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
 import models._
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -42,7 +41,7 @@ class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
                                          formProvider: BusinessEntityFormProvider,
                                          view: BusinessEntityView
                                         )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport with FeatureSwitching {
+  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

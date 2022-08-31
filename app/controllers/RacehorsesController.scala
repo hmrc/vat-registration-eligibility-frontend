@@ -20,16 +20,14 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.RacehorsesFormProvider
 import identifiers.RacehorsesId
-
-import javax.inject.{Inject, Singleton}
 import models.NormalMode
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.Racehorses
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -42,7 +40,7 @@ class RacehorsesController @Inject()(mcc: MessagesControllerComponents,
                                      formProvider: RacehorsesFormProvider,
                                      view: Racehorses
                                     )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with I18nSupport {
+  extends FrontendController(mcc) with VatRegLanguageSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
