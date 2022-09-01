@@ -19,8 +19,8 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
-import identifiers._
-import models._
+import identifiers.{TaxableSuppliesInUkId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
+import models.{ConditionalDateFormElement, NETP, NormalMode, Overseas, RegistrationInformation}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{SessionService, TrafficManagementService}
@@ -68,9 +68,7 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
           sessionService.save[ConditionalDateFormElement](ThresholdInTwelveMonthsId.toString, formValue).flatMap { _ =>
             if (formValue.value) {
               sessionService.removeEntry(VoluntaryRegistrationId.toString).flatMap {
-                _ => sessionService.removeEntry(CurrentlyTradingId.toString).flatMap {
-                  _ => sessionService.removeEntry(ThresholdNextThirtyDaysId.toString)
-                }
+                _ => sessionService.removeEntry(ThresholdNextThirtyDaysId.toString)
               }
             } else {
               sessionService.removeEntry(VATRegistrationExceptionId.toString).flatMap {

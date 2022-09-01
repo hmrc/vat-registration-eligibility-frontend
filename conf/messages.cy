@@ -124,10 +124,6 @@ voluntaryRegistration.heading.business      = A hoffech gofrestru’r busnes yn 
 voluntaryRegistration.heading.partnership   = A hoffech gofrestru’r bartneriaeth yn wirfoddol ar gyfer TAW?
 voluntaryRegistration.error.required        = Dewiswch ‘Iawn’ os hoffech gofrestru’n wirfoddol ar gyfer TAW
 
-currentlyTrading.heading.business            = A yw’r busnes yn masnachu nwyddau trethadwy ar hyn o bryd?
-currentlyTrading.heading.partnership         = A yw’r bartneriaeth yn masnachu nwyddau trethadwy ar hyn o bryd?
-currentlyTrading.error.required              = Dewiswch ‘Iawn’ os yw’r busnes yn masnachu nwyddau trethadwy ar hyn o bryd
-
 choseNotToRegister.title    = Rydych wedi dewis peidio cofrestru’r busnes ar gyfer TAW
 choseNotToRegister.heading  = Rydych wedi dewis peidio cofrestru’r busnes ar gyfer TAW
 
@@ -370,8 +366,6 @@ checkYourAnswers.thresholdTaxableSupplies                           = Pryd gwnae
 checkYourAnswers.vatRegistrationException                           = A hoffech wneud cais am eithriad rhag cofrestru ar gyfer TAW?
 checkYourAnswers.voluntaryRegistration.business                     = A hoffech gofrestru’r busnes yn wirfoddol ar gyfer TAW?
 checkYourAnswers.voluntaryRegistration.partnership                  = A hoffech gofrestru’r bartneriaeth yn wirfoddol ar gyfer TAW?
-checkYourAnswers.currentlyTrading.business                          = A yw’r busnes yn masnachu nwyddau trethadwy ar hyn o bryd?
-checkYourAnswers.currentlyTrading.partnership                       = A yw’r bartneriaeth yn masnachu nwyddau trethadwy ar hyn o bryd?
 checkYourAnswers.voluntaryInformation                               = A hoffech gofrestru’r busnes ar gyfer Troi Treth yn Ddigidol ar gyfer TAW?
 checkYourAnswers.turnoverEstimate.business                          = Beth rydych yn meddwl fydd trosiant trethadwy TAW y busnes ar gyfer y 12 mis nesaf?
 checkYourAnswers.turnoverEstimate.partnership                       = Beth rydych yn meddwl fydd trosiant trethadwy TAW y bartneriaeth ar gyfer y 12 mis nesaf?

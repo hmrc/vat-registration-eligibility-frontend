@@ -46,14 +46,14 @@ class VoluntaryRegistrationControllerISpec extends IntegrationSpecBase {
 
   "POST /register-voluntarily" when {
     "the user answers 'Yes'" must {
-      "redirect to the Currently Trading page" in new Setup {
+      "redirect to the Mtd information page" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.CurrentlyTradingController.onPageLoad.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.MtdInformationController.onPageLoad.url)
       }
     }
     "the user answers 'No'" must {

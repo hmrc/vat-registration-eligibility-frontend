@@ -46,7 +46,6 @@ object RegistrationReason {
     case UkEstablishedOverseasExporter => JsString(ukEstablishedOverseasExporterKey)
     case unknownKey => throw new IllegalArgumentException(s"Unknown Registration Reason: $unknownKey")
   }
-
   def registrationReasonToString(registrationReason: RegistrationReason)(implicit messages: Messages): String = registrationReason match {
     case SellingGoodsAndServices => messages("registrationReason.sellingGoods.radio")
     case TakingOverBusiness => messages("registrationReason.takingOver.radio")

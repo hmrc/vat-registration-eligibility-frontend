@@ -124,10 +124,6 @@ voluntaryRegistration.heading.business      = Do you want to voluntarily registe
 voluntaryRegistration.heading.partnership   = Do you want to voluntarily register the partnership for VAT?
 voluntaryRegistration.error.required        = Select yes if you want to voluntarily register for VAT
 
-currentlyTrading.heading.business            = Is the business currently trading taxable goods?
-currentlyTrading.heading.partnership         = Is the partnership currently trading taxable goods?
-currentlyTrading.error.required              = Select yes if the business is currently trading taxable goods
-
 choseNotToRegister.title    = You have chosen not to register the business for VAT
 choseNotToRegister.heading  = You have chosen not to register the business for VAT
 
@@ -368,8 +364,6 @@ checkYourAnswers.thresholdTaxableSupplies                           = When did t
 checkYourAnswers.vatRegistrationException                           = Would you like to apply for a VAT registration exception?
 checkYourAnswers.voluntaryRegistration.business                     = Do you want to voluntarily register the business for VAT?
 checkYourAnswers.voluntaryRegistration.partnership                  = Do you want to voluntarily register the partnership for VAT?
-checkYourAnswers.currentlyTrading.business                          = Is the business currently trading taxable goods?
-checkYourAnswers.currentlyTrading.partnership                       = Is the partnership currently trading taxable goods?
 checkYourAnswers.voluntaryInformation                               = Do you want to sign the business up to Making Tax Digital for VAT?
 checkYourAnswers.turnoverEstimate.business                          = What do you think the business’s VAT-taxable turnover will be for the next 12 months?
 checkYourAnswers.turnoverEstimate.partnership                       = What do you think the partnership’s VAT-taxable turnover will be for the next 12 months?

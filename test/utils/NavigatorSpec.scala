@@ -62,14 +62,4 @@ class NavigatorSpec extends SpecBase {
       }
     }
   }
-
-  "next on" must {
-    "return and id and call" when {
-      "true is passed in" in {
-        val data = new UserAnswers(CacheMap("some-id", Map(CurrentlyTradingId.toString -> JsBoolean(true))))
-        val result = navigator.nextOn(true, CurrentlyTradingId, AgriculturalFlatRateSchemeId, EligibilityDropoutId("mode"))
-        result._2(data) mustBe controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad
-      }
-    }
-  }
 }
