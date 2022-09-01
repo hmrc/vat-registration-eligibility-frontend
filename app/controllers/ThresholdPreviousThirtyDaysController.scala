@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.ThresholdPreviousThirtyDaysFormProvider
-import identifiers.{CurrentlyTradingId, ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
+import identifiers.{ThresholdPreviousThirtyDaysId, VoluntaryRegistrationId}
 import models.{ConditionalDateFormElement, NormalMode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -63,9 +63,7 @@ class ThresholdPreviousThirtyDaysController @Inject()(mcc: MessagesControllerCom
             cacheMap =>
               val userAnswers = new UserAnswers(cacheMap)
               if (userAnswers.thresholdInTwelveMonths.exists(_.value) | formValue.value | userAnswers.thresholdNextThirtyDays.exists(_.value)) {
-                sessionService.removeEntry(VoluntaryRegistrationId.toString).flatMap(_ =>
-                  sessionService.removeEntry(CurrentlyTradingId.toString)
-                )
+                sessionService.removeEntry(VoluntaryRegistrationId.toString)
               } else {
                 Future.successful(cacheMap)
               }

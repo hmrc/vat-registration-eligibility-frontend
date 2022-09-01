@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.ThresholdNextThirtyDaysFormProvider
-import identifiers.{CurrentlyTradingId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId}
+import identifiers.{ThresholdNextThirtyDaysId, VoluntaryRegistrationId}
 import models.{ConditionalDateFormElement, NormalMode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
@@ -60,9 +60,7 @@ class ThresholdNextThirtyDaysController @Inject()(mcc: MessagesControllerCompone
           sessionService.save[ConditionalDateFormElement](ThresholdNextThirtyDaysId.toString, formValue).flatMap {
             cacheMap =>
               if (formValue.value) {
-                sessionService.removeEntry(VoluntaryRegistrationId.toString).flatMap(_ =>
-                  sessionService.removeEntry(CurrentlyTradingId.toString)
-                )
+                sessionService.removeEntry(VoluntaryRegistrationId.toString)
               } else {
                 Future.successful(cacheMap)
               }

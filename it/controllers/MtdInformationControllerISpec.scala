@@ -38,7 +38,6 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
       cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(value = false, None))
       cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(value = false, None))
       cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
-      cacheSessionData[Boolean](sessionId, CurrentlyTradingId, false)
       cacheSessionData[Boolean](sessionId, InternationalActivitiesId, false)
       cacheSessionData[Boolean](sessionId, InvolvedInOtherBusinessId, false)
       cacheSessionData[RegisteringBusiness](sessionId, RegisteringBusinessId, OwnBusiness)

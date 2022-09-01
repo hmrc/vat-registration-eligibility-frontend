@@ -42,9 +42,6 @@ POST       /mtd-mandatory-information                   controllers.MtdInformati
 GET        /register-voluntarily                        controllers.VoluntaryRegistrationController.onPageLoad
 POST       /register-voluntarily                        controllers.VoluntaryRegistrationController.onSubmit()
 
-GET        /currently-trading                           controllers.CurrentlyTradingController.onPageLoad
-POST       /currently-trading                           controllers.CurrentlyTradingController.onSubmit
-
 GET        /chosen-not-to-register                      controllers.ChoseNotToRegisterController.onPageLoad
 POST       /chosen-not-to-register                      controllers.ChoseNotToRegisterController.onSubmit()
 

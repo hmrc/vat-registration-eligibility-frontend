@@ -64,7 +64,6 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
         s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
         s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
         s"$VoluntaryRegistrationId" -> JsBoolean(true),
-        s"$CurrentlyTradingId" -> JsBoolean(false),
         s"$InternationalActivitiesId" -> JsBoolean(false),
         s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
         s"$VoluntaryRegistrationId" -> JsBoolean(true),
@@ -94,8 +93,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
           | {"questionId":"nino","question":"mocked message","answer":"mocked message","answerValue":true},
           | {"questionId":"thresholdInTwelveMonths","question":"mocked message","answer":"mocked message","answerValue":false},
           | {"questionId":"thresholdNextThirtyDays","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"voluntaryRegistration","question":"mocked message","answer":"mocked message","answerValue":true},
-          | {"questionId":"currentlyTrading","question":"mocked message","answer":"mocked message","answerValue":false}
+          | {"questionId":"voluntaryRegistration","question":"mocked message","answer":"mocked message","answerValue":true}
           |]}]}
           |""".stripMargin)
     }

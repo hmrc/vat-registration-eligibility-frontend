@@ -39,7 +39,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case ThresholdNextThirtyDaysId => routes.ThresholdNextThirtyDaysController.onPageLoad
     case ThresholdPreviousThirtyDaysId => routes.ThresholdPreviousThirtyDaysController.onPageLoad
     case VoluntaryRegistrationId => routes.VoluntaryRegistrationController.onPageLoad
-    case CurrentlyTradingId => routes.CurrentlyTradingController.onPageLoad
     case ChoseNotToRegisterId => routes.ChoseNotToRegisterController.onPageLoad
     case ThresholdInTwelveMonthsId => routes.ThresholdInTwelveMonthsController.onPageLoad
     case InvolvedInOtherBusinessId => routes.InvolvedInOtherBusinessController.onPageLoad
@@ -252,12 +251,8 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     nextOn(true,
       fromPage = VoluntaryRegistrationId,
-      onSuccessPage = CurrentlyTradingId,
+      onSuccessPage = MtdInformationId,
       onFailPage = ChoseNotToRegisterId
-    ),
-    toNextPage(
-      fromPage = CurrentlyTradingId,
-      toPage = MtdInformationId
     ),
     nextOn(true,
       fromPage = TaxableSuppliesInUkId,
