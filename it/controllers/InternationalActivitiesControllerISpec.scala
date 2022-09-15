@@ -48,6 +48,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         doc.radioIsSelected(noRadio) mustBe false
       }
     }
+
     "an answer doesn't exist for the page" must {
       "return OK with an empty form" in new Setup {
         stubSuccessfulLogin()
@@ -163,7 +164,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
-        enable(NonIncorpTrustFlow)
 
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NonIncorporatedTrust)
 
@@ -248,7 +248,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         disable(PartnershipFlow)
         disable(SoleTraderFlow)
         disable(RegisteredSocietyFlow)
-        disable(NonIncorpTrustFlow)
         disable(CharityFlow)
         disable(UnincorporatedAssociationFlow)
 
@@ -257,7 +256,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
           GeneralPartnership,
           ScottishPartnership,
           CharitableIncorporatedOrganisation,
-          NonIncorporatedTrust,
           RegisteredSociety,
           UnincorporatedAssociation,
           Division
@@ -279,6 +277,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         }
       }
     }
+
     "the user doesn't answer" must {
       "return BAD_REQUEST" in new Setup {
         stubSuccessfulLogin()
