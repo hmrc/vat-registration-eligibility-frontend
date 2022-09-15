@@ -251,12 +251,10 @@ applyInWriting.title = Mae’n rhaid i chi mewn cais ysgrifenedig
 applyInWriting.heading = Mae’n rhaid i chi mewn cais ysgrifenedig
 applyInWriting.text = Defnyddiwch ffurflen VAT1 i wneud cais am eithriad rhag cofrestru ar gyfer TAW.
 
-## NO WELSH CONTENT - CHECK
-individualKickout.title = Sorry, the service is unavailable
-individualKickout.heading = Sorry, the service is unavailable
-individualKickout.text = You cannot use this service to register for VAT.
-individualKickout.button = Sign out
-## NO WELSH CONTENT - CHECK
+individualKickout.title = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
+individualKickout.heading = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
+individualKickout.text = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru ar gyfer TAW.
+individualKickout.button = Allgofnodi
 
 agriculturalFlatRateScheme.heading.business = A yw’r busnes yn gwneud cais am y Cynllun Cyfradd Unffurf Amaethyddol?
 agriculturalFlatRateScheme.heading.partnership = A yw’r bartneriaeth yn gwneud cais am y Cynllun Cyfradd Unffurf Amaethyddol?
