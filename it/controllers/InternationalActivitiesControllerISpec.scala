@@ -48,7 +48,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         doc.radioIsSelected(noRadio) mustBe false
       }
     }
-
     "an answer doesn't exist for the page" must {
       "return OK with an empty form" in new Setup {
         stubSuccessfulLogin()
@@ -175,11 +174,10 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
       }
 
-      "navigate to Involved In Other Business when false and Charitable Incorporated Organisation (ICO) when FS is on" in new Setup {
+      "navigate to Involved In Other Business when false and Charitable Incorporated Organisation (ICO)" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
-        enable(CharityFlow)
 
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, CharitableIncorporatedOrganisation)
 
@@ -248,14 +246,12 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         disable(PartnershipFlow)
         disable(SoleTraderFlow)
         disable(RegisteredSocietyFlow)
-        disable(CharityFlow)
         disable(UnincorporatedAssociationFlow)
 
         val entityList = Seq(
           SoleTrader,
           GeneralPartnership,
           ScottishPartnership,
-          CharitableIncorporatedOrganisation,
           RegisteredSociety,
           UnincorporatedAssociation,
           Division
@@ -277,7 +273,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         }
       }
     }
-
     "the user doesn't answer" must {
       "return BAD_REQUEST" in new Setup {
         stubSuccessfulLogin()
