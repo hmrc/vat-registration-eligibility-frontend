@@ -29,7 +29,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     SoleTraderFlow,
     PartnershipFlow,
     RegisteredSocietyFlow,
-    NonIncorpTrustFlow,
     CharityFlow,
     UnincorporatedAssociationFlow,
     NETPFlow,
@@ -68,11 +67,6 @@ case object PartnershipFlow extends FeatureSwitch {
 case object RegisteredSocietyFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.registered-society-flow"
   override val displayName: String = "Enable Registered Society flow"
-}
-
-case object NonIncorpTrustFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.non-incorp-trust-flow"
-  override val displayName: String = "Enable Non-Incorporated Trust flow"
 }
 
 case object CharityFlow extends FeatureSwitch {
