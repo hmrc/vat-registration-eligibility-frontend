@@ -177,7 +177,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
         case Some(GeneralPartnership | ScottishPartnership | LimitedLiabilityPartnership) if isEnabled(PartnershipFlow) => nextPage
         case Some(RegisteredSociety) if isEnabled(RegisteredSocietyFlow) => nextPage
         case Some(CharitableIncorporatedOrganisation) => nextPage
-        case Some(UnincorporatedAssociation) if isEnabled(UnincorporatedAssociationFlow) => nextPage
+        case Some(UnincorporatedAssociation) => nextPage
         case Some(NETP) if isEnabled(NETPFlow) => nextPage
         case Some(Overseas) if isEnabled(NonUkCompanyFlow) => nextPage
         case _ => pageIdToPageLoad(VATExceptionKickoutId)
