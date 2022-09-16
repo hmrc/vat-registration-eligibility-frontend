@@ -193,7 +193,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
-        enable(UnincorporatedAssociationFlow)
 
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UnincorporatedAssociation)
 
@@ -246,14 +245,12 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         disable(PartnershipFlow)
         disable(SoleTraderFlow)
         disable(RegisteredSocietyFlow)
-        disable(UnincorporatedAssociationFlow)
 
         val entityList = Seq(
           SoleTrader,
           GeneralPartnership,
           ScottishPartnership,
           RegisteredSociety,
-          UnincorporatedAssociation,
           Division
         )
 
