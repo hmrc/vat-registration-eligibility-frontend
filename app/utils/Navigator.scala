@@ -147,15 +147,15 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     FixedEstablishmentId -> { userAnswers =>
       userAnswers.fixedEstablishment match {
         case Some(true) => pageIdToPageLoad(BusinessEntityId)
-        case Some(false) if isEnabled(NETPFlow) || isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(BusinessEntityOverseasId)
+        case Some(false) if !isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
+        case Some(false) => pageIdToPageLoad(BusinessEntityOverseasId)
         case _ => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
       }
     },
     BusinessEntityOverseasId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
-        case Some(NETP) if isEnabled(NETPFlow) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(NETP) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
         case Some(Overseas) if isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
-        case Some(NETP) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
         case Some(Overseas) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
         case _ => pageIdToPageLoad(FixedEstablishmentId)
       }
@@ -178,7 +178,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
         case Some(RegisteredSociety) => nextPage
         case Some(CharitableIncorporatedOrganisation) => nextPage
         case Some(UnincorporatedAssociation) => nextPage
-        case Some(NETP) if isEnabled(NETPFlow) => nextPage
+        case Some(NETP) => nextPage
         case Some(Overseas) if isEnabled(NonUkCompanyFlow) => nextPage
         case _ => pageIdToPageLoad(VATExceptionKickoutId)
       }

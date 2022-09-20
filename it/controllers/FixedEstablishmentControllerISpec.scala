@@ -1,6 +1,6 @@
 package controllers
 
-import featureswitch.core.config.NETPFlow
+import featureswitch.core.config.NonUkCompanyFlow
 import helpers.IntegrationSpecBase
 import identifiers._
 import models.{ConditionalDateFormElement, DateFormElement}
@@ -61,27 +61,15 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
       }
     }
     "the user answers 'No'" when {
-      "if the NETPFlow FS is enabled" must {
-        "redirect to the Business Entity Overseas page" in new Setup {
-          enable(NETPFlow)
-          stubSuccessfulLogin()
-          stubAudits()
-
-          val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
-
-          res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
-        }
-      }
-      "redirect to the Eligibility Dropout page" in new Setup {
-        disable(NETPFlow)
+      "redirect to the Business Entity Overseas page" in new Setup {
+        enable(NonUkCompanyFlow)
         stubSuccessfulLogin()
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
       }
     }
 
