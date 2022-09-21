@@ -16,7 +16,6 @@
 
 package controllers
 
-import featureswitch.core.config.NonUkCompanyFlow
 import helpers.IntegrationSpecBase
 import identifiers.BusinessEntityId
 import models.BusinessEntity.{netpKey, overseasKey}
@@ -76,8 +75,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(NETP))
       }
 
-      "return a redirect to Agricultural Flat Rate Scheme when NonUkCompany is selected with FS Enabled" in new Setup {
-        enable(NonUkCompanyFlow)
+      "return a redirect to Agricultural Flat Rate Scheme when NonUkCompany is selected" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
@@ -86,20 +84,6 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
-
-        verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(Overseas))
-      }
-
-      "return a redirect to International Activities Dropout when Overseas is selected with FS Disabled" in new Setup {
-        disable(NonUkCompanyFlow)
-        stubSuccessfulLogin()
-        stubAudits()
-
-        val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
-          .post(Map("value" -> Seq(overseasKey))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
 
         verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(Overseas))
       }
