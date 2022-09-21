@@ -16,7 +16,7 @@
 
 package controllers
 
-import featureswitch.core.config.{NETPFlow, NonUkCompanyFlow}
+import featureswitch.core.config.NonUkCompanyFlow
 import helpers.IntegrationSpecBase
 import identifiers.BusinessEntityId
 import models.BusinessEntity.{netpKey, overseasKey}
@@ -63,8 +63,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
 
   s"POST /business-entity-overseas" when {
     "the user answers" must {
-      "return a redirect to Agricultural Flat Rate Scheme when NETP is selected with FS Enabled" in new Setup {
-        enable(NETPFlow)
+      "return a redirect to Agricultural Flat Rate Scheme when NETP is selected" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
@@ -73,20 +72,6 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
-
-        verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(NETP))
-      }
-
-      "return a redirect to International Activities Dropout when NETP is selected with FS Disabled" in new Setup {
-        disable(NETPFlow)
-        stubSuccessfulLogin()
-        stubAudits()
-
-        val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
-          .post(Map("value" -> Seq(netpKey))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.internationalActivitiesDropout().url)
 
         verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(NETP))
       }
@@ -121,7 +106,6 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
     }
     "the user doesn't answer" must {
       "return BAD_REQUEST" in new Setup {
-        enable(NETPFlow)
         stubSuccessfulLogin()
         stubAudits()
 

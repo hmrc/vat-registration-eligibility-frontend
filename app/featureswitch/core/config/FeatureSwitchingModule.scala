@@ -28,7 +28,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     TrafficManagement,
     SoleTraderFlow,
     PartnershipFlow,
-    NETPFlow,
     NonUkCompanyFlow,
     ThirdPartyTransactorFlow,
     IndividualFlow,
