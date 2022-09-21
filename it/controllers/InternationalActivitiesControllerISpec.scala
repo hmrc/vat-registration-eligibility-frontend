@@ -147,7 +147,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
-        enable(RegisteredSocietyFlow)
 
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, RegisteredSociety)
 
@@ -244,13 +243,11 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
       "navigate to Vat Exception Kickout when false but business entity is not allowed" in new Setup {
         disable(PartnershipFlow)
         disable(SoleTraderFlow)
-        disable(RegisteredSocietyFlow)
 
         val entityList = Seq(
           SoleTrader,
           GeneralPartnership,
           ScottishPartnership,
-          RegisteredSociety,
           Division
         )
 
