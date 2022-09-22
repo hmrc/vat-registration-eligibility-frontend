@@ -1,6 +1,5 @@
 package controllers
 
-import featureswitch.core.config.NonUkCompanyFlow
 import helpers.IntegrationSpecBase
 import identifiers._
 import models.{ConditionalDateFormElement, DateFormElement}
@@ -62,7 +61,6 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
     }
     "the user answers 'No'" when {
       "redirect to the Business Entity Overseas page" in new Setup {
-        enable(NonUkCompanyFlow)
         stubSuccessfulLogin()
         stubAudits()
 

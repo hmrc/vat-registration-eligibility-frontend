@@ -28,7 +28,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     TrafficManagement,
     SoleTraderFlow,
     PartnershipFlow,
-    NonUkCompanyFlow,
     ThirdPartyTransactorFlow,
     IndividualFlow,
     VATGroupFlow,
@@ -63,11 +62,6 @@ case object PartnershipFlow extends FeatureSwitch {
 case object NETPFlow extends FeatureSwitch {
   override val configName: String = "feature-switch.enable-netp"
   override val displayName: String = "Enable non-established taxable person (NETP) flow"
-}
-
-case object NonUkCompanyFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.enable-non-uk-company"
-  override val displayName: String = "Enable non-uk company (Overseas) flow"
 }
 
 case object ThirdPartyTransactorFlow extends FeatureSwitch {

@@ -147,7 +147,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     FixedEstablishmentId -> { userAnswers =>
       userAnswers.fixedEstablishment match {
         case Some(true) => pageIdToPageLoad(BusinessEntityId)
-        case Some(false) if !isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
         case Some(false) => pageIdToPageLoad(BusinessEntityOverseasId)
         case _ => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
       }
@@ -155,8 +154,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     BusinessEntityOverseasId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
         case Some(NETP) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
-        case Some(Overseas) if isEnabled(NonUkCompanyFlow) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
-        case Some(Overseas) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
+        case Some(Overseas) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
         case _ => pageIdToPageLoad(FixedEstablishmentId)
       }
     },
@@ -179,7 +177,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
         case Some(CharitableIncorporatedOrganisation) => nextPage
         case Some(UnincorporatedAssociation) => nextPage
         case Some(NETP) => nextPage
-        case Some(Overseas) if isEnabled(NonUkCompanyFlow) => nextPage
+        case Some(Overseas) => nextPage
         case _ => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
