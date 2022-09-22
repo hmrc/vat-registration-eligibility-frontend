@@ -61,6 +61,10 @@ class ThresholdTaxableSuppliesViewSpec extends ViewSpecBase {
       doc.select(Selectors.h1).text() mustBe h1
     }
 
+    "have the correct legend" in {
+      doc.select(Selectors.legend(1)).text() mustBe h1
+    }
+
     "have the correct text" in {
       doc.select(Selectors.p(1)).text() mustBe testText
     }

@@ -68,6 +68,10 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
         doc.select(Selectors.h1).text() mustBe h1Togc
       }
 
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Togc
+      }
+
       "have the correct paragraph" in {
         doc.select(Selectors.p(1)).text() mustBe paraTogc
       }
@@ -98,6 +102,10 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
 
       "have the correct heading" in {
         doc.select(Selectors.h1).text() mustBe h1Cole
+      }
+
+      "have the correct legend" in {
+        doc.select(Selectors.legend(1)).text() mustBe h1Cole
       }
 
       "have the correct paragraph" in {
