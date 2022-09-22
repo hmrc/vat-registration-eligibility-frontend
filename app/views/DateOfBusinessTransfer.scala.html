@@ -41,9 +41,9 @@
     @formWithCsrf(action = routes.DateOfBusinessTransferController.onSubmit()) {
         @inputDate(
             form = form,
-            legendContent = "",
+            legendContent = s"dateOfBusinessTransfer.heading.$togcColeKey",
             hintText = Some(s"dateOfBusinessTransfer.dateHint"),
-            legendClasses = "govuk-fieldset__legend--m",
+            legendClasses = "govuk-fieldset__legend--m govuk-visually-hidden",
             id = "relevantDate",
             legendAsPageHeading = false
         )

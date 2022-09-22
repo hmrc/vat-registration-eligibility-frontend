@@ -44,9 +44,9 @@
     @formWithCsrf(action = routes.ThresholdTaxableSuppliesController.onSubmit()) {
         @inputDate(
             form = form,
-            legendContent = "",
+            legendContent = "thresholdTaxableSupplies.heading",
             hintText = Some("thresholdTaxableSupplies.dateHint"),
-            legendClasses = "govuk-fieldset__legend--m",
+            legendClasses = "govuk-fieldset__legend--m govuk-visually-hidden",
             id = "thresholdTaxableSuppliesDate",
             legendAsPageHeading = false
         )
