@@ -35,9 +35,9 @@ object RegisteringBusiness {
     case unknownKey => throw new IllegalArgumentException(s"Unknown Registering Business Reason: $unknownKey")
   }
 
-  def registeringBusinessToString(registeringBusiness: RegisteringBusiness)(implicit messages: Messages) = registeringBusiness match {
-    case OwnBusiness => messages("registeringBusiness.radioOwn")
-    case SomeoneElse => messages("registeringBusiness.radioElse")
+  def registeringBusinessToString(registeringBusiness: RegisteringBusiness) = registeringBusiness match {
+    case OwnBusiness => "registeringBusiness.radioOwn"
+    case SomeoneElse => "registeringBusiness.radioElse"
   }
 
   implicit val jsonReads: Reads[RegisteringBusiness] = Reads[RegisteringBusiness] {

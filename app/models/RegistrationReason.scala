@@ -46,12 +46,12 @@ object RegistrationReason {
     case UkEstablishedOverseasExporter => JsString(ukEstablishedOverseasExporterKey)
     case unknownKey => throw new IllegalArgumentException(s"Unknown Registration Reason: $unknownKey")
   }
-  def registrationReasonToString(registrationReason: RegistrationReason)(implicit messages: Messages): String = registrationReason match {
-    case SellingGoodsAndServices => messages("registrationReason.sellingGoods.radio")
-    case TakingOverBusiness => messages("registrationReason.takingOver.radio")
-    case ChangingLegalEntityOfBusiness => messages("registrationReason.changingEntity.radio")
-    case SettingUpVatGroup => messages("registrationReason.settingUp.radio")
-    case UkEstablishedOverseasExporter => messages("registrationReason.ukExporter.radio")
+  def registrationReasonToString(registrationReason: RegistrationReason): String = registrationReason match {
+    case SellingGoodsAndServices => "registrationReason.sellingGoods.radio"
+    case TakingOverBusiness => "registrationReason.takingOver.radio"
+    case ChangingLegalEntityOfBusiness => "registrationReason.changingEntity.radio"
+    case SettingUpVatGroup => "registrationReason.settingUp.radio"
+    case UkEstablishedOverseasExporter => "registrationReason.ukExporter.radio"
   }
 
   implicit val jsonReads: Reads[RegistrationReason] = Reads[RegistrationReason] {
