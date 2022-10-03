@@ -84,23 +84,23 @@ object BusinessEntity {
     case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 
-  def businessEntityToString(businessEntity: BusinessEntity)(implicit messages: Messages): String = businessEntity match {
-    case UKCompany => messages("businessEntity.limited-company")
-    case SoleTrader => messages("businessEntity.soletrader")
-    case Partnership => messages("businessEntity.partnership")
-    case GeneralPartnership => messages("businessEntity.general-partnership")
-    case LimitedPartnership => messages("businessEntity.limited-partnership")
-    case ScottishPartnership => messages("businessEntity.scottish-partnership")
-    case ScottishLimitedPartnership => messages("businessEntity.scottish-limited-partnership")
-    case LimitedLiabilityPartnership => messages("businessEntity.limited-liability-partnership")
-    case Other => messages("businessEntity.other")
-    case CharitableIncorporatedOrganisation => messages("businessEntity.charitable-incorporated-organisation")
-    case NonIncorporatedTrust => messages("businessEntity.non-incorporated-trust")
-    case RegisteredSociety => messages("businessEntity.registered-society")
-    case UnincorporatedAssociation => messages("businessEntity.unincorporated-association")
-    case Division => messages("businessEntity.division")
-    case NETP => messages("businessEntityOverseas.netp")
-    case Overseas => messages("businessEntityOverseas.overseas")
+  def businessEntityToString(businessEntity: BusinessEntity): String = businessEntity match {
+    case UKCompany => "businessEntity.limited-company"
+    case SoleTrader => "businessEntity.soletrader"
+    case Partnership => "businessEntity.partnership"
+    case GeneralPartnership => "businessEntity.general-partnership"
+    case LimitedPartnership => "businessEntity.limited-partnership"
+    case ScottishPartnership => "businessEntity.scottish-partnership"
+    case ScottishLimitedPartnership => "businessEntity.scottish-limited-partnership"
+    case LimitedLiabilityPartnership => "businessEntity.limited-liability-partnership"
+    case Other => "businessEntity.other"
+    case CharitableIncorporatedOrganisation => "businessEntity.charitable-incorporated-organisation"
+    case NonIncorporatedTrust => "businessEntity.non-incorporated-trust"
+    case RegisteredSociety => "businessEntity.registered-society"
+    case UnincorporatedAssociation => "businessEntity.unincorporated-association"
+    case Division => "businessEntity.division"
+    case NETP => "businessEntityOverseas.netp"
+    case Overseas => "businessEntityOverseas.overseas"
   }
 
   implicit val jsonReads: Reads[BusinessEntity] = Reads[BusinessEntity] {

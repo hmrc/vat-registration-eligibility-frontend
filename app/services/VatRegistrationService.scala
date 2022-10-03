@@ -77,13 +77,13 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
         JsonSummaryRow(
           s"$key",
           messageFormatter(key),
-          answerFormatter(answer, key),
+          answerFormatter(answer),
           answerJsonFormatter(answer)
         ) ++ optDate.toList.flatMap(date =>
           JsonSummaryRow(
             s"$key-optionalData",
             messageFormatter(key, isOptData = true),
-            answerFormatter[LocalDate](date, key),
+            answerFormatter[LocalDate](date),
             answerJsonFormatter[LocalDate](date)
           )
         )
@@ -91,54 +91,54 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
         JsonSummaryRow(
           s"$key",
           messageFormatter(key),
-          answerFormatter(data, key),
+          answerFormatter(data),
           answerJsonFormatter(data)
         )
     }
   }
 
+  // scalastyle:off
   private def messageFormatter(key: Identifier, isOptData: Boolean = false)(implicit data: DataRequest[_]): String = {
     val optDataKey = if (isOptData) ".optional" else ""
-    messages(
-      key match {
-        case InvolvedInOtherBusinessId =>
-          if (isEnabled(TOGCFlow) && isEnabled(OBIFlow)) {
-            s"checkYourAnswers.$key.headingVatGroup"
-          } else if (isEnabled(TOGCFlow)) {
-            s"checkYourAnswers.$key.headingObi"
-          } else if (isEnabled(OBIFlow)) {
-            s"checkYourAnswers.$key.headingTakingOver"
-          } else {
-            s"checkYourAnswers.$key"
-          }
-        case DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId | TermsAndConditionsId =>
-          data.userAnswers.registrationReason match {
-            case Some(TakingOverBusiness) => s"checkYourAnswers.$key$optDataKey.togc"
-            case Some(ChangingLegalEntityOfBusiness) => s"checkYourAnswers.$key$optDataKey.cole"
-            case _ => throw new InternalServerException("Attempted to submit togc/cole data without a matching reg reason")
-          }
-        case InternationalActivitiesId | AgriculturalFlatRateSchemeId | RacehorsesId |
-             VoluntaryRegistrationId | ThresholdInTwelveMonthsId | ThresholdNextThirtyDaysId |
-             ThresholdPreviousThirtyDaysId | RegistrationReasonId =>
-          val businessOrPartnership = if (data.userAnswers.isPartnership) ".partnership" else ".business"
-          s"checkYourAnswers.$key$optDataKey$businessOrPartnership"
-        case _ =>
-          s"checkYourAnswers.$key$optDataKey"
-      }
-    )
+    val formattedKey = key match {
+      case InvolvedInOtherBusinessId =>
+        if (isEnabled(TOGCFlow) && isEnabled(OBIFlow)) {
+          s"cya.$key.headingVatGroup"
+        } else if (isEnabled(TOGCFlow)) {
+          s"cya.$key.headingObi"
+        } else if (isEnabled(OBIFlow)) {
+          s"cya.$key.headingTakingOver"
+        } else {
+          s"cya.$key"
+        }
+      case DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId | TermsAndConditionsId =>
+        data.userAnswers.registrationReason match {
+          case Some(TakingOverBusiness) => s"cya.$key$optDataKey.togc"
+          case Some(ChangingLegalEntityOfBusiness) => s"cya.$key$optDataKey.cole"
+          case _ => throw new InternalServerException("Attempted to submit togc/cole data without a matching reg reason")
+        }
+      case InternationalActivitiesId | AgriculturalFlatRateSchemeId | RacehorsesId |
+           VoluntaryRegistrationId | ThresholdInTwelveMonthsId | ThresholdNextThirtyDaysId |
+           ThresholdPreviousThirtyDaysId | RegistrationReasonId =>
+        val businessOrPartnership = if (data.userAnswers.isPartnership) ".partnership" else ".business"
+        s"cya.$key$optDataKey$businessOrPartnership"
+      case _ =>
+        s"cya.$key$optDataKey"
+    }
+    s"eligibility.$formattedKey"
   }
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-  private def answerFormatter[T](answer: T, key: Identifier)(implicit r: DataRequest[_]): String =
+  private def answerFormatter[T](answer: T)(implicit r: DataRequest[_]): String =
     answer match {
-      case data: Boolean => messages(s"site.${if (data) "yes" else "no"}")
+      case data: Boolean => s"eligibility.site.${if (data) "yes" else "no"}"
       case data: String => data
       case data: DateFormElement => data.date.format(formatter)
       case data: LocalDate => data.format(formatter)
-      case data: RegistrationReason => registrationReasonToString(data)(messages)
-      case data: RegisteringBusiness => registeringBusinessToString(data)(messages)
-      case data: BusinessEntity => businessEntityToString(data)(messages)
+      case data: RegistrationReason => s"eligibility.${registrationReasonToString(data)}"
+      case data: RegisteringBusiness => s"eligibility.${registeringBusinessToString(data)}"
+      case data: BusinessEntity => s"eligibility.${businessEntityToString(data)}"
     }
 
   private def answerJsonFormatter[T](answer: T): JsValue =

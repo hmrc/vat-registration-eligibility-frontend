@@ -82,18 +82,18 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
           |{"sections":[
           |{"title":"Registration Reason",
           | "data":[
-          | {"questionId":"fixedEstablishment","question":"mocked message","answer":"mocked message","answerValue":true},
-          | {"questionId":"businessEntity","question":"mocked message","answer":"mocked message","answerValue":"50"},
-          | {"questionId":"agriculturalFlatRateScheme","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"internationalActivities","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"involvedInOtherBusiness","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"racehorses","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"registeringBusiness","question":"mocked message","answer":"mocked message","answerValue":"own"},
-          | {"questionId":"registrationReason","question":"mocked message","answer":"mocked message","answerValue":"selling-goods-and-services"},
-          | {"questionId":"nino","question":"mocked message","answer":"mocked message","answerValue":true},
-          | {"questionId":"thresholdInTwelveMonths","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"thresholdNextThirtyDays","question":"mocked message","answer":"mocked message","answerValue":false},
-          | {"questionId":"voluntaryRegistration","question":"mocked message","answer":"mocked message","answerValue":true}
+          | {"questionId":"fixedEstablishment","question":"eligibility.cya.fixedEstablishment","answer":"eligibility.site.yes","answerValue":true},
+          | {"questionId":"businessEntity","question":"eligibility.cya.businessEntity","answer":"eligibility.businessEntity.limited-company","answerValue":"50"},
+          | {"questionId":"agriculturalFlatRateScheme","question":"eligibility.cya.agriculturalFlatRateScheme.business","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities.business","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"involvedInOtherBusiness","question":"eligibility.cya.involvedInOtherBusiness","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"racehorses","question":"eligibility.cya.racehorses.business","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
+          | {"questionId":"registrationReason","question":"eligibility.cya.registrationReason.business","answer":"eligibility.registrationReason.sellingGoods.radio","answerValue":"selling-goods-and-services"},
+          | {"questionId":"nino","question":"eligibility.cya.nino","answer":"eligibility.site.yes","answerValue":true},
+          | {"questionId":"thresholdInTwelveMonths","question":"eligibility.cya.thresholdInTwelveMonths.business","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"thresholdNextThirtyDays","question":"eligibility.cya.thresholdNextThirtyDays.business","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"voluntaryRegistration","question":"eligibility.cya.voluntaryRegistration.business","answer":"eligibility.site.yes","answerValue":true}
           |]}]}
           |""".stripMargin)
     }
@@ -131,20 +131,20 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
            |    {
            |      "title":"Registration Reason",
            |      "data":[
-           |        {"questionId":"fixedEstablishment","question":"mocked message","answer":"mocked message","answerValue":true},
-           |        {"questionId":"businessEntity","question":"mocked message","answer":"mocked message","answerValue":"50"},
-           |        {"questionId":"agriculturalFlatRateScheme","question":"mocked message","answer":"mocked message","answerValue":false},
-           |        {"questionId":"internationalActivities","question":"mocked message","answer":"mocked message","answerValue":false},
-           |        {"questionId":"involvedInOtherBusiness","question":"mocked message","answer":"mocked message","answerValue":false},
-           |        {"questionId":"racehorses","question":"mocked message","answer":"mocked message","answerValue":false},
-           |        {"questionId":"registeringBusiness","question":"mocked message","answer":"mocked message","answerValue":"own"},
-           |        {"questionId":"registrationReason","question":"mocked message","answer":"mocked message","answerValue":"taking-over-business"},
-           |        {"questionId":"nino","question":"mocked message","answer":"mocked message","answerValue":true},
-           |        {"questionId":"dateOfBusinessTransfer","question":"mocked message","answer":"${LocalDate.now().format(service.formatter)}","answerValue":"${LocalDate.now()}"},
-           |        {"questionId":"previousBusinessName","question":"mocked message","answer":"$testPreviousName","answerValue":"$testPreviousName"},
-           |        {"questionId":"vatNumber","question":"mocked message","answer":"$testVrn","answerValue":"$testVrn"},
-           |        {"questionId":"keepOldVrn","question":"mocked message","answer":"mocked message","answerValue":true},
-           |        {"questionId":"termsAndConditions","question":"mocked message","answer":"mocked message","answerValue":true}
+           |        {"questionId":"fixedEstablishment","question":"eligibility.cya.fixedEstablishment","answer":"eligibility.site.yes","answerValue":true},
+           |        {"questionId":"businessEntity","question":"eligibility.cya.businessEntity","answer":"eligibility.businessEntity.limited-company","answerValue":"50"},
+           |        {"questionId":"agriculturalFlatRateScheme","question":"eligibility.cya.agriculturalFlatRateScheme.business","answer":"eligibility.site.no","answerValue":false},
+           |        {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities.business","answer":"eligibility.site.no","answerValue":false},
+           |        {"questionId":"involvedInOtherBusiness","question":"eligibility.cya.involvedInOtherBusiness","answer":"eligibility.site.no","answerValue":false},
+           |        {"questionId":"racehorses","question":"eligibility.cya.racehorses.business","answer":"eligibility.site.no","answerValue":false},
+           |        {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
+           |        {"questionId":"registrationReason","question":"eligibility.cya.registrationReason.business","answer":"eligibility.registrationReason.takingOver.radio","answerValue":"taking-over-business"},
+           |        {"questionId":"nino","question":"eligibility.cya.nino","answer":"eligibility.site.yes","answerValue":true},
+           |        {"questionId":"dateOfBusinessTransfer","question":"eligibility.cya.dateOfBusinessTransfer.togc","answer":"${LocalDate.now().format(service.formatter)}","answerValue":"${LocalDate.now()}"},
+           |        {"questionId":"previousBusinessName","question":"eligibility.cya.previousBusinessName.togc","answer":"$testPreviousName","answerValue":"$testPreviousName"},
+           |        {"questionId":"vatNumber","question":"eligibility.cya.vatNumber.togc","answer":"$testVrn","answerValue":"$testVrn"},
+           |        {"questionId":"keepOldVrn","question":"eligibility.cya.keepOldVrn.togc","answer":"eligibility.site.yes","answerValue":true},
+           |        {"questionId":"termsAndConditions","question":"eligibility.cya.termsAndConditions.togc","answer":"eligibility.site.yes","answerValue":true}
            |      ]
            |    }
            |  ]
