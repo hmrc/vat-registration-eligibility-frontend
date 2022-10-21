@@ -18,10 +18,8 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
-import models.RegistrationInformation
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{S4LService, TrafficManagementService, VatRegistrationService}
+import services.{S4LService, VatRegistrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.MtdInformation
@@ -36,7 +34,6 @@ class MtdInformationController @Inject()(mcc: MessagesControllerComponents,
                                          requireData: DataRequiredAction,
                                          view: MtdInformation,
                                          vatRegistrationService: VatRegistrationService,
-                                         trafficManagementService: TrafficManagementService,
                                          s4LService: S4LService)
                                         (implicit appConfig: FrontendAppConfig,
                                          executionContext: ExecutionContext)
@@ -48,11 +45,8 @@ class MtdInformationController @Inject()(mcc: MessagesControllerComponents,
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async  { implicit request =>
     vatRegistrationService.submitEligibility(hc, implicitly[ExecutionContext], request).flatMap { _ =>
-      trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = false).flatMap {
-        case RegistrationInformation(_, _, _, _, _) =>
-          s4LService.save[CacheMap](request.regId, "eligibility-data", request.userAnswers.cacheMap).map { _ =>
-            Redirect(s"${appConfig.vatRegFEURL}${appConfig.vatRegFEURI}/journey/${request.regId}")
-          }
+      s4LService.save[CacheMap](request.regId, "eligibility-data", request.userAnswers.cacheMap).map { _ =>
+        Redirect(s"${appConfig.vatRegFEURL}${appConfig.vatRegFEURI}/journey/${request.regId}")
       }
     }
 

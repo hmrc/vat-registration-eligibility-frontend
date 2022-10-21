@@ -1,16 +1,13 @@
 package controllers
 
-import helpers.{IntegrationSpecBase, TrafficManagementStub}
+import helpers.IntegrationSpecBase
 import identifiers.VATRegistrationExceptionId
-import models.{Draft, OTRS, RegistrationInformation}
-import play.mvc.Http.HeaderNames
 import org.jsoup.Jsoup
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.mvc.Http.HeaderNames
 
-import java.time.LocalDate
-
-class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficManagementStub {
+class VATRegistrationExceptionISpec extends IntegrationSpecBase {
 
   val pageUrl = "/registration-exception"
   val yesRadio = "value"
@@ -36,7 +33,6 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase with TrafficMana
       "return OK with an empty form " in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)

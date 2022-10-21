@@ -20,10 +20,10 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.VATExceptionKickoutFormProvider
 import identifiers.VATExceptionKickoutId
-import models.{NormalMode, RegistrationInformation}
+import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{SessionService, TrafficManagementService}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.VatExceptionKickout
@@ -39,7 +39,6 @@ class VATExceptionKickoutController @Inject()(mcc: MessagesControllerComponents,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: VATExceptionKickoutFormProvider,
-                                              trafficManagementService: TrafficManagementService,
                                               view: VatExceptionKickout
                                              )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
   extends FrontendController(mcc) with VatRegLanguageSupport {
@@ -59,12 +58,9 @@ class VATExceptionKickoutController @Inject()(mcc: MessagesControllerComponents,
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
-          sessionService.save[Boolean](VATExceptionKickoutId.toString, value).flatMap(cacheMap =>
-            trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = true).map {
-              case RegistrationInformation(_, _, _, _, _) =>
-                Redirect(navigator.nextPage(VATExceptionKickoutId, NormalMode)(new UserAnswers(cacheMap)))
-            }
-          )
+          sessionService.save[Boolean](VATExceptionKickoutId.toString, value).map { cacheMap =>
+            Redirect(navigator.nextPage(VATExceptionKickoutId, NormalMode)(new UserAnswers(cacheMap)))
+          }
       )
   }
 }

@@ -84,7 +84,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
   }
 
   "POST /registration-reason" when {
-    "the user answer" must {
+    "the user answer" when {
       s"redirect to Nino when sellingGoodsAndServices value is selected" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
@@ -118,7 +118,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.NinoController.onPageLoad.url)
       }
 
-      s"redirect to Traffic management resolver when sellingGoodsAndServices value is selected and individual flow enabled" in new Setup {
+      s"redirect to Reg Reason Resolver when sellingGoodsAndServices value is selected and individual flow enabled" in new Setup {
         enable(IndividualFlow)
         stubSuccessfulLogin()
         stubAudits()
@@ -127,10 +127,10 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         val res = await(buildClient(pageUrl).post(Map("value" -> sellingGoodsAndServicesKey)))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
 
-      s"redirect to Traffic management resolver when ukEstablishedOverseasExporter value is selected and individual flow enabled" in new Setup {
+      s"redirect to Reg Reason Resolver when ukEstablishedOverseasExporter value is selected and individual flow enabled" in new Setup {
         enable(IndividualFlow)
         stubSuccessfulLogin()
         stubAudits()
@@ -139,10 +139,10 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         val res = await(buildClient(pageUrl).post(Map("value" -> ukEstablishedOverseasExporterKey)))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
 
-      s"redirect to Traffic management resolver when settingUpVatGroup value is selected and individual flow enabled" in new Setup {
+      s"redirect to Reg Reason Resolver when settingUpVatGroup value is selected and individual flow enabled" in new Setup {
         enable(IndividualFlow)
         stubSuccessfulLogin()
         stubAudits()
@@ -151,10 +151,10 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         val res = await(buildClient(pageUrl).post(Map("value" -> settingUpVatGroupKey)))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
 
-      s"redirect to Traffic management resolver for an overseas user selecting takingOverBusiness" in new Setup {
+      s"redirect to Reg Reason Resolver for an overseas user selecting takingOverBusiness" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
@@ -163,10 +163,10 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         val res = await(buildClient(pageUrl).post(Map("value" -> takingOverBusinessKey)))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
 
-      s"redirect to Traffic management resolver for an overseas user selecting changingLegalEntityOfBusiness" in new Setup {
+      s"redirect to Reg Reason Resolver for an overseas user selecting changingLegalEntityOfBusiness" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
@@ -175,7 +175,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         val res = await(buildClient(pageUrl).post(Map("value" -> changingLegalEntityOfBusinessKey)))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
 
       s"redirect to Taxable Supplies Page for an overseas user selecting sellingGoodsAndServices" in new Setup {

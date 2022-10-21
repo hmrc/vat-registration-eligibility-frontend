@@ -1,16 +1,12 @@
 package controllers
 
-import helpers.{IntegrationSpecBase, TrafficManagementStub}
+import helpers.IntegrationSpecBase
 import identifiers.{AgriculturalFlatRateSchemeId, BusinessEntityId, VATExceptionKickoutId}
-import models.{Draft, RegistrationInformation, VatReg}
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 import views.html.{AgriculturalDropout, InternationalActivityDropout, VatDivisionDropout}
 
-import java.time.LocalDate
-
-class EligibilityDropoutControllerISpec extends IntegrationSpecBase with TrafficManagementStub {
+class EligibilityDropoutControllerISpec extends IntegrationSpecBase {
 
   val pageUrl = "/cant-register"
   val internationalActivitiesUrl = "/errors/business-activities-next-12-months"
@@ -55,18 +51,6 @@ class EligibilityDropoutControllerISpec extends IntegrationSpecBase with Traffic
     }
   }
 
-  "GET /cant-register/???" must {
-    "return OK" in new Setup {
-      stubSuccessfulLogin()
-      stubAudits()
-
-      val res = await(buildClient(cantRegisterUrl("something-else")).get)
-
-      res.status mustBe SEE_OTHER
-      res.header(HeaderNames.LOCATION) mustBe Some(appConfig.otrsUrl)
-    }
-  }
-
   "GET /errors/business-activities-next-12-month" must {
     "return OK" in new Setup {
       stubSuccessfulLogin()
@@ -77,19 +61,6 @@ class EligibilityDropoutControllerISpec extends IntegrationSpecBase with Traffic
 
       res.status mustBe OK
       res.body mustBe view()(request(internationalActivitiesUrl), messages, appConfig).toString()
-    }
-  }
-
-  "POST /cant-register" must {
-    "redirect to the legacy OTRS journey" in new Setup {
-      stubSuccessfulLogin()
-      stubAudits()
-      stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
-
-      val res = await(buildClient(pageUrl).post(Json.obj()))
-
-      res.status mustBe SEE_OTHER
-      res.header(HeaderNames.LOCATION) mustBe Some(appConfig.otrsUrl)
     }
   }
 

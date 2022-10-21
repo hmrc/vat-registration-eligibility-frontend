@@ -23,7 +23,7 @@ import forms.TaxableSuppliesInUkFormProvider
 import identifiers.TaxableSuppliesInUkId
 import models.NormalMode
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{S4LService, SessionService, TrafficManagementService}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.TaxableSuppliesInUk
@@ -34,13 +34,11 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TaxableSuppliesInUkController @Inject()(mcc: MessagesControllerComponents,
                                               sessionService: SessionService,
-                                              s4LService: S4LService,
                                               navigator: Navigator,
                                               identify: CacheIdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: TaxableSuppliesInUkFormProvider,
-                                              trafficManagementService: TrafficManagementService,
                                               view: TaxableSuppliesInUk
                                              )(implicit appConfig: FrontendAppConfig,
                                                executionContext: ExecutionContext)

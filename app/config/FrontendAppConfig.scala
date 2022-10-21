@@ -16,7 +16,6 @@
 
 package config
 
-import controllers.routes
 import featureswitch.core.config.FeatureSwitching
 import play.api.Configuration
 import play.api.i18n.Lang
@@ -54,7 +53,6 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
   lazy val feedbackUrl = loadConfig(s"$configRoot.vat-registration-frontend.feedbackUrl")
   lazy val feedbackFrontendUrl = loadConfig(s"$configRoot.feedback-frontend.url")
   lazy val exitSurveyUrl = s"$feedbackFrontendUrl/feedback/vat-registration"
-  lazy val otrsUrl = servicesConfig.getConfString("otrs.url", throw new Exception("Couldn't get otrs URL"))
   lazy val VATNotice700_1supplementURL = servicesConfig.getConfString("gov-uk.VATNotice700_1supplementURL",
     throw new Exception("Couldn't get VATNotice700_1supplementURL URL"))
   lazy val VAT1FormURL = servicesConfig.getConfString("gov-uk.VAT1FormURL", throw new Exception("Couldn't get VAT1FormURL URL"))
@@ -75,13 +73,6 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
   lazy val VATFileChanges = servicesConfig.getConfString("gov-uk.VATFileChanges", throw new Exception("Couldn't get VATFileChanges URL"))
   lazy val languageTranslationEnabled = runModeConfiguration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
   lazy val calculateTurnoverUrl = "https://www.gov.uk/vat-registration/calculate-turnover"
-
-  def trafficAllocationUrl(regId: String): String =
-    servicesConfig.baseUrl("vat-registration") + s"/vatreg/traffic-management/$regId/allocate"
-
-  def upsertRegistrationInformationUrl(regId: String): String = servicesConfig.baseUrl("vat-registration") + s"/vatreg/traffic-management/$regId/reg-info"
-
-  def getRegistrationInformationUrl(regId: String): String = servicesConfig.baseUrl("vat-registration") + s"/vatreg/traffic-management/$regId/reg-info"
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

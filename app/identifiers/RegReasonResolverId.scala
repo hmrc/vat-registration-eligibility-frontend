@@ -16,6 +16,6 @@
 
 package identifiers
 
-object TrafficManagementResolverId extends Identifier {
-  override def toString: String = "trafficManagementResolver"
+object RegReasonResolverId extends Identifier {
+  override def toString: String = "regReasonResolver"
 }

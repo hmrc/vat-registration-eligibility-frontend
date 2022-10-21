@@ -25,7 +25,6 @@ import featureswitch.core.models.FeatureSwitch
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
   val switches = Seq(
-    TrafficManagement,
     SoleTraderFlow,
     PartnershipFlow,
     ThirdPartyTransactorFlow,
@@ -42,11 +41,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
       bind[FeatureSwitchRegistry].to(this).eagerly()
     )
   }
-}
-
-case object TrafficManagement extends FeatureSwitch {
-  override val configName: String = "feature-switch.traffic-management"
-  override val displayName: String = "Use traffic management"
 }
 
 case object SoleTraderFlow extends FeatureSwitch {

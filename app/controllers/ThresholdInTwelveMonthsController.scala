@@ -19,11 +19,11 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import forms.ThresholdInTwelveMonthsFormProvider
-import identifiers.{TaxableSuppliesInUkId, ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdPreviousThirtyDaysId, VATRegistrationExceptionId, VoluntaryRegistrationId}
-import models.{ConditionalDateFormElement, NETP, NormalMode, Overseas, RegistrationInformation}
+import identifiers._
+import models.{ConditionalDateFormElement, NETP, NormalMode, Overseas}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{SessionService, TrafficManagementService}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.ThresholdInTwelveMonths
@@ -39,7 +39,6 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
                                                   getData: DataRetrievalAction,
                                                   requireData: DataRequiredAction,
                                                   formProvider: ThresholdInTwelveMonthsFormProvider,
-                                                  trafficManagementService: TrafficManagementService,
                                                   view: ThresholdInTwelveMonths
                                                  )(implicit appConfig: FrontendAppConfig,
                                                    executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport {
@@ -75,11 +74,8 @@ class ThresholdInTwelveMonthsController @Inject()(mcc: MessagesControllerCompone
                 _ => sessionService.removeEntry(ThresholdPreviousThirtyDaysId.toString)
               }
             }
-          }.flatMap(cacheMap =>
-            trafficManagementService.upsertRegistrationInformation(request.internalId, request.regId, isOtrs = false).map {
-              case RegistrationInformation(_, _, _, _, _) =>
-                Redirect(navigator.nextPage(ThresholdInTwelveMonthsId, NormalMode)(new UserAnswers(cacheMap)))
-            }
+          }.map(cacheMap =>
+            Redirect(navigator.nextPage(ThresholdInTwelveMonthsId, NormalMode)(new UserAnswers(cacheMap)))
           ))
   }
 }
