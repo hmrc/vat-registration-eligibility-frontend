@@ -6,7 +6,6 @@ import org.jsoup.Jsoup
 import play.api.http.Status._
 import play.api.libs.json.{JsArray, Json}
 import play.mvc.Http.HeaderNames
-import services.TrafficManagementService
 
 import java.time.LocalDate
 
@@ -15,7 +14,7 @@ class NinoControllerControllerISpec extends IntegrationSpecBase with S4LStub {
   val testDate: LocalDate = LocalDate.now
 
   val testEnrolments: JsArray = Json.arr(Json.obj(
-    "key" -> TrafficManagementService.companyEnrolment,
+    "key" -> "IR-CT",
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> "testKey",
@@ -71,7 +70,7 @@ class NinoControllerControllerISpec extends IntegrationSpecBase with S4LStub {
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
       }
-      "redirect to Traffic management resolver if the answer is yes" in new Setup {
+      "redirect to Reg Reason resolver if the answer is yes" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
@@ -79,7 +78,7 @@ class NinoControllerControllerISpec extends IntegrationSpecBase with S4LStub {
         val res = await(buildClient("/have-nino").post(Map("value" -> Seq("true"))))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
     }
     "the user doesn't answer" must {

@@ -7,7 +7,6 @@ import org.jsoup.Jsoup
 import play.api.http.Status._
 import play.api.libs.json.{JsArray, Json}
 import play.mvc.Http.HeaderNames
-import services.TrafficManagementService
 
 import java.time.LocalDate
 
@@ -18,7 +17,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
   val testDate: LocalDate = LocalDate.now
 
   val testEnrolments: JsArray = Json.arr(Json.obj(
-    "key" -> TrafficManagementService.selfAssesmentEnrolment,
+    "key" -> "IR-SA",
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> "testKey",
@@ -75,7 +74,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.DoNotNeedToRegisterController.onPageLoad.url)
       }
 
-      "redirect to the Traffic Management Resolver if the answer is yes" in new Setup {
+      "redirect to the Reg Reason Resolver if the answer is yes" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
@@ -83,7 +82,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
         val res = await(buildClient(pageUrl).post(Map("value" -> Seq("true"))))
 
         res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TrafficManagementResolverController.resolve.url)
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
     }
     "the user doesn't answer" must {

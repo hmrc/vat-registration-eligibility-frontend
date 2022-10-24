@@ -24,7 +24,7 @@ import identifiers.NinoId
 import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{S4LService, SessionService, TrafficManagementService}
+import services.SessionService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.Nino
@@ -35,13 +35,11 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class NinoController @Inject()(mcc: MessagesControllerComponents,
                                sessionService: SessionService,
-                               s4LService: S4LService,
                                navigator: Navigator,
                                identify: CacheIdentifierAction,
                                getData: DataRetrievalAction,
                                requireData: DataRequiredAction,
                                formProvider: NinoFormProvider,
-                               trafficManagementService: TrafficManagementService,
                                view: Nino
                               )(implicit appConfig: FrontendAppConfig,
                                 executionContext: ExecutionContext)

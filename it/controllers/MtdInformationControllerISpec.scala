@@ -1,6 +1,6 @@
 package controllers
 
-import helpers.{IntegrationSpecBase, S4LStub, TrafficManagementStub, VatRegistrationStub}
+import helpers.{IntegrationSpecBase, S4LStub, VatRegistrationStub}
 import identifiers._
 import models._
 import play.api.libs.json.Json
@@ -12,8 +12,7 @@ import java.time.LocalDate
 
 class MtdInformationControllerISpec extends IntegrationSpecBase
   with S4LStub
-  with VatRegistrationStub
-  with TrafficManagementStub {
+  with VatRegistrationStub {
 
   val pageUrl = "/mtd-mandatory-information"
 
@@ -47,7 +46,6 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
       cacheSessionData[Boolean](sessionId, RacehorsesId, false)
 
       stubSaveEligibilityData(testRegId)
-      stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
       stubS4LSave(testRegId, "eligibility-data")(CacheMap(testRegId, Map()))
 
       val res = await(buildClient(pageUrl).post(Json.obj()))

@@ -10,7 +10,7 @@ import play.mvc.Http.HeaderNames
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with TrafficManagementStub with S4LStub {
+class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with S4LStub {
 
   val selectionFieldName = "value"
   val dateFieldName = "valueDate"
@@ -91,7 +91,6 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
       "yes and a valid date is given and should drop ThresholdNextThirtyDaysId data if present but not exception" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
         stubS4LGetNothing(testRegId)
 
         cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(value = false, None))
@@ -124,8 +123,6 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with Tr
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
-
-        stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
 
         cacheSessionData(sessionId, VoluntaryRegistrationId, true)
         cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdPreviousThirtyDaysId, ConditionalDateFormElement(value = false, None))

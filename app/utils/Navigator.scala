@@ -60,11 +60,11 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case ThresholdTaxableSuppliesId => routes.ThresholdTaxableSuppliesController.onPageLoad
     case DoNotNeedToRegisterId => routes.DoNotNeedToRegisterController.onPageLoad
     case RegistrationReasonId => routes.RegistrationReasonController.onPageLoad
+    case RegReasonResolverId => routes.RegReasonResolverController.resolve
     case PreviousBusinessNameId => routes.PreviousBusinessNameController.onPageLoad
     case VATNumberId => routes.VATNumberController.onPageLoad
     case KeepOldVrnId => routes.KeepOldVrnController.onPageLoad
     case TermsAndConditionsId => routes.TermsAndConditionsController.onPageLoad
-    case TrafficManagementResolverId => routes.TrafficManagementResolverController.resolve
     case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
       controllers.routes.FixedEstablishmentController.onPageLoad
   }
@@ -159,7 +159,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       }
     },
     InternationalActivitiesId -> { userAnswers =>
-
       def nextPage = if (isEnabled(OBIFlow) && isEnabled(VATGroupFlow) && isEnabled(TOGCFlow) && isEnabled(LandAndProperty)) {
         pageIdToPageLoad(RegisteringBusinessId)
       } else if (isEnabled(OBIFlow) && isEnabled(VATGroupFlow) && isEnabled(TOGCFlow)) {
@@ -212,18 +211,30 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     RegistrationReasonId -> { userAnswers =>
       userAnswers.isOverseas match {
         case true if userAnswers.registrationReason.exists(answer => List(TakingOverBusiness, ChangingLegalEntityOfBusiness).contains(answer)) =>
-          pageIdToPageLoad(TrafficManagementResolverId)
+          pageIdToPageLoad(RegReasonResolverId)
         case true =>
           pageIdToPageLoad(TaxableSuppliesInUkId)
         case false if isEnabled(IndividualFlow) =>
-          pageIdToPageLoad(TrafficManagementResolverId)
+          pageIdToPageLoad(RegReasonResolverId)
         case false =>
           pageIdToPageLoad(NinoId)
       }
     },
+    RegReasonResolverId -> { userAnswers =>
+      userAnswers.fixedEstablishment match {
+        case Some(_) if Seq(TakingOverBusiness, ChangingLegalEntityOfBusiness).exists(userAnswers.registrationReason.contains(_)) =>
+          pageIdToPageLoad(DateOfBusinessTransferId)
+        case Some(true) if Seq(UkEstablishedOverseasExporter, SettingUpVatGroup).exists(userAnswers.registrationReason.contains(_)) =>
+          pageIdToPageLoad(MtdInformationId)
+        case Some(true) =>
+          pageIdToPageLoad(ThresholdInTwelveMonthsId)
+        case Some(false) =>
+          pageIdToPageLoad(ThresholdTaxableSuppliesId)
+      }
+    },
     NinoId -> { userAnswers =>
       userAnswers.nino match {
-        case Some(true) => pageIdToPageLoad(TrafficManagementResolverId)
+        case Some(true) => pageIdToPageLoad(RegReasonResolverId)
         case Some(false) => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
@@ -251,11 +262,13 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       onSuccessPage = MtdInformationId,
       onFailPage = ChoseNotToRegisterId
     ),
-    nextOn(true,
-      fromPage = TaxableSuppliesInUkId,
-      onSuccessPage = TrafficManagementResolverId,
-      onFailPage = DoNotNeedToRegisterId
-    ),
+    TaxableSuppliesInUkId -> { userAnswers =>
+      if (userAnswers.taxableSuppliesInUk.contains(true)) {
+        pageIdToPageLoad(RegReasonResolverId)
+      } else {
+        pageIdToPageLoad(DoNotNeedToRegisterId)
+      }
+    },
     toNextPage(
       fromPage = ThresholdTaxableSuppliesId,
       toPage = MtdInformationId
@@ -280,19 +293,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     toNextPage(
       fromPage = TermsAndConditionsId,
       toPage = MtdInformationId
-    ),
-    TrafficManagementResolverId -> { userAnswers =>
-      userAnswers.fixedEstablishment match {
-        case Some(_) if Seq(TakingOverBusiness, ChangingLegalEntityOfBusiness).exists(userAnswers.registrationReason.contains(_)) =>
-          pageIdToPageLoad(DateOfBusinessTransferId)
-        case Some(true) if Seq(UkEstablishedOverseasExporter, SettingUpVatGroup).exists(userAnswers.registrationReason.contains(_)) =>
-          pageIdToPageLoad(MtdInformationId)
-        case Some(true) =>
-          pageIdToPageLoad(ThresholdInTwelveMonthsId)
-        case Some(false) =>
-          pageIdToPageLoad(ThresholdTaxableSuppliesId)
-      }
-    }
+    )
   )
 
   def nextPage(id: Identifier, mode: Mode): UserAnswers => Call =

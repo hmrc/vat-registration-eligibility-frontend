@@ -1,6 +1,6 @@
 package controllers
 
-import helpers.{IntegrationSpecBase, TrafficManagementStub}
+import helpers.IntegrationSpecBase
 import identifiers.{VATExceptionKickoutId, VATRegistrationExceptionId}
 import models.{Draft, RegistrationInformation, VatReg}
 import org.jsoup.Jsoup
@@ -11,7 +11,7 @@ import play.mvc.Http.HeaderNames
 import java.time.LocalDate
 
 
-class VatExceptionKickoutControllerISpec extends IntegrationSpecBase with TrafficManagementStub {
+class VatExceptionKickoutControllerISpec extends IntegrationSpecBase {
 
   val pageUrl = "/vat-exception-registration"
   val yesRadio = "value"
@@ -52,7 +52,6 @@ class VatExceptionKickoutControllerISpec extends IntegrationSpecBase with Traffi
     "the user answers 'Yes'" must {
       "redirect to the Eligibility Dropout (VATExceptionKickoutId) page" in new Setup {
         stubSuccessfulLogin()
-        stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
@@ -64,7 +63,6 @@ class VatExceptionKickoutControllerISpec extends IntegrationSpecBase with Traffi
     "the user answers 'No'" must {
       "redirect to the Eligibility Dropout (VATExceptionKickoutId) page" in new Setup {
         stubSuccessfulLogin()
-        stubUpsertRegistrationInformation(testRegId)(RegistrationInformation(testInternalId, testRegId, Draft, Some(LocalDate.now), VatReg))
         stubAudits()
 
         val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))

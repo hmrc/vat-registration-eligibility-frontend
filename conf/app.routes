@@ -57,7 +57,6 @@ POST       /involved-more-business-changing-status      controllers.InvolvedInOt
 
 GET        /cant-register/:inelligibleType              controllers.EligibilityDropoutController.onPageLoad(inelligibleType: String)
 GET        /errors/business-activities-next-12-months   controllers.EligibilityDropoutController.internationalActivitiesDropout()
-POST       /cant-register                               controllers.EligibilityDropoutController.onSubmit()
 
 GET        /business-activities-next-12-months          controllers.InternationalActivitiesController.onPageLoad
 POST       /business-activities-next-12-months          controllers.InternationalActivitiesController.onSubmit()
@@ -94,13 +93,13 @@ POST       /do-not-need-to-register                     controllers.DoNotNeedToR
 GET        /registration-reason                         controllers.RegistrationReasonController.onPageLoad
 POST       /registration-reason                         controllers.RegistrationReasonController.onSubmit
 
-GET        /resolve-traffic-management                  controllers.TrafficManagementResolverController.resolve
+GET        /resolve-reg-reason                          controllers.RegReasonResolverController.resolve
 
 GET        /date-of-transfer                            controllers.DateOfBusinessTransferController.onPageLoad
 POST       /date-of-transfer                            controllers.DateOfBusinessTransferController.onSubmit()
 
-GET        /previous-business-name                      controllers.PreviousBusinessNameController.onPageLoad(mode : Mode = NormalMode)
-POST       /previous-business-name                      controllers.PreviousBusinessNameController.onSubmit(mode : Mode = NormalMode)
+GET        /previous-business-name                      controllers.PreviousBusinessNameController.onPageLoad(mode: Mode = NormalMode)
+POST       /previous-business-name                      controllers.PreviousBusinessNameController.onSubmit(mode: Mode = NormalMode)
 
 GET        /keep-old-vrn                                controllers.KeepOldVrnController.onPageLoad
 POST       /keep-old-vrn                                controllers.KeepOldVrnController.onSubmit
