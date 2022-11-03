@@ -16,12 +16,11 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-import java.time.format.{DateTimeFormatter, ResolverStyle}
-
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import utils.RadioOption
 
+import java.time.LocalDate
+import java.time.format.{DateTimeFormatter, ResolverStyle}
 import scala.util.{Success, Try}
 
 trait Constraints {

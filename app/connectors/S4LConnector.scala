@@ -16,11 +16,11 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
 import play.api.libs.json.Format
 import uk.gov.hmrc.http.cache.client.{CacheMap, ShortLivedCache}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

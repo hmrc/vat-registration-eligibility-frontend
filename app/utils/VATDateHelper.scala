@@ -18,8 +18,6 @@ package utils
 
 import java.time.LocalDate
 
-import org.joda.time.{LocalDate => JodaLocalDate}
-
 object VATDateHelper {
 
   // TODO make these checks part of threshold service if they're still required at all

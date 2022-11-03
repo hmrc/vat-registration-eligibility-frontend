@@ -18,13 +18,11 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import featureswitch.core.config.FeatureSwitching
 import forms.KeepOldVrnFormProvider
 import identifiers.{KeepOldVrnId, TermsAndConditionsId}
 import models._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.KeepOldVrn
 
@@ -32,17 +30,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class KeepOldVrnController @Inject()(mcc: MessagesControllerComponents,
-                                     sessionService: SessionService,
+class KeepOldVrnController @Inject()(sessionService: SessionService,
                                      navigator: Navigator,
                                      identify: CacheIdentifierAction,
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
                                      formProvider: KeepOldVrnFormProvider,
-                                     view: KeepOldVrn
-                                    )(implicit appConfig: FrontendAppConfig,
-                                      executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
+                                     view: KeepOldVrn)
+                                    (implicit appConfig: FrontendAppConfig,
+                                     mcc: MessagesControllerComponents,
+                                     executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

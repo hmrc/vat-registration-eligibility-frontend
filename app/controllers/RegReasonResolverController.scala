@@ -16,23 +16,20 @@
 
 package controllers
 
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
-import featureswitch.core.config.FeatureSwitching
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.RegReasonResolverId
 import models.NormalMode
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RegReasonResolverController @Inject()(mcc: MessagesControllerComponents,
-                                            navigator: Navigator,
+class RegReasonResolverController @Inject()(navigator: Navigator,
                                             identify: CacheIdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction)
-  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
+                                           (implicit mcc: MessagesControllerComponents) extends BaseController {
 
   def resolve: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

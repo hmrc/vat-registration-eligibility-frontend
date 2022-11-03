@@ -20,13 +20,12 @@ import base.SpecBase
 import connectors.mocks.{MockS4lConnector, MockSessionService}
 import models.CurrentProfile
 import models.requests.{CacheIdentifierRequest, OptionalDataRequest}
-import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.Json
-import services.{FakeSessionService, SessionService}
-import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
+import services.SessionService
 import uk.gov.hmrc.http.cache.client.CacheMap
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 import scala.concurrent.Future
 

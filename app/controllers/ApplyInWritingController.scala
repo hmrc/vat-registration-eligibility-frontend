@@ -19,16 +19,15 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ApplyInWriting
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ApplyInWritingController @Inject()(mcc: MessagesControllerComponents,
-                                         identify: CacheIdentifierAction,
-                                         view: ApplyInWriting
-                                        )(implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with VatRegLanguageSupport {
+class ApplyInWritingController @Inject()(identify: CacheIdentifierAction,
+                                         view: ApplyInWriting)
+                                        (implicit appConfig: FrontendAppConfig,
+                                         mcc: MessagesControllerComponents) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = identify {
     implicit request =>

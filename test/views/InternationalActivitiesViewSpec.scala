@@ -16,7 +16,6 @@
 
 package views
 
-import featureswitch.core.config._
 import forms.InternationalActivitiesFormProvider
 import models.NormalMode
 import views.html.InternationalActivities

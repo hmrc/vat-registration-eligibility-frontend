@@ -23,7 +23,6 @@ import play.api.i18n.MessagesApi
 import services._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.http.HttpClient
 
 trait VATEligibilityMocks {
   self: MockitoSugar =>
@@ -39,7 +38,6 @@ trait VATEligibilityMocks {
   lazy val mockJourneyService = mock[JourneyService]
 
   //Other
-  lazy val mockHttpClient = mock[HttpClient]
   lazy val mockDataRequiredAction = mock[DataRequiredAction]
   lazy val mockMessagesAPI = mock[MessagesApi]
 }

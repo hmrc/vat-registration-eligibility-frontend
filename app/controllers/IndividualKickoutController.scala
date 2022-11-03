@@ -19,16 +19,15 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.IndividualKickout
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class IndividualKickoutController @Inject()(mcc: MessagesControllerComponents,
-                                            identify: CacheIdentifierAction,
-                                            view: IndividualKickout
-                                           )(implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with VatRegLanguageSupport {
+class IndividualKickoutController @Inject()(identify: CacheIdentifierAction,
+                                            view: IndividualKickout)
+                                           (implicit appConfig: FrontendAppConfig,
+                                            mcc: MessagesControllerComponents) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = identify {
     implicit request =>

@@ -16,18 +16,16 @@
 
 package controllers
 
-import java.net.URLEncoder
-
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import java.net.URLEncoder
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class FeedbackController @Inject()(val appConfig: FrontendAppConfig,
-                                   val mcc: MessagesControllerComponents) extends FrontendController(mcc) {
+class FeedbackController @Inject()(implicit val appConfig: FrontendAppConfig,
+                                   mcc: MessagesControllerComponents) extends BaseController {
 
   lazy val betaFeedbackUrl: String = appConfig.betaFeedbackUrl
 

@@ -26,7 +26,7 @@ trait AuthHelper {
           ),
           "internalId" -> testInternalId,
           "allEnrolments" -> enrolments
-        ).toString())))
+        ).toString()).withHeader(HeaderNames.SET_COOKIE, self.getSessionCookie())))
   }
 
 

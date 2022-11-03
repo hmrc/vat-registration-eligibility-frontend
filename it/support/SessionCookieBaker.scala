@@ -22,7 +22,7 @@ import play.api.libs.crypto.CookieSigner
 import play.api.libs.ws.WSCookie
 import play.api.mvc.AnyContentAsFormUrlEncoded
 import play.api.test.FakeRequest
-import uk.gov.hmrc.crypto.{CompositeSymmetricCrypto, Crypted, PlainText}
+import uk.gov.hmrc.crypto.{Crypted, PlainText, SymmetricCryptoFactory}
 import uk.gov.hmrc.http.SessionKeys
 import utils.ExtraSessionKeys
 
@@ -48,7 +48,7 @@ trait SessionCookieBaker {
     }
 
     val encodedCookie = encode(sessionData)
-    val encrypted = CompositeSymmetricCrypto.aesGCM(cookieKey, Seq()).encrypt(encodedCookie).value
+    val encrypted = SymmetricCryptoFactory.aesGcmCrypto(cookieKey).encrypt(encodedCookie).value
 
     s"""mdtp="$encrypted"; Path=/; HTTPOnly"; Path=/; HTTPOnly"""
   }
@@ -59,7 +59,7 @@ trait SessionCookieBaker {
 
   def getCookieData(cookieData: String): Map[String, String] = {
 
-    val decrypted = CompositeSymmetricCrypto.aesGCM(cookieKey, Seq()).decrypt(Crypted(cookieData)).value
+    val decrypted = SymmetricCryptoFactory.aesGcmCrypto(cookieKey).decrypt(Crypted(cookieData)).value
     val result = decrypted.split("&")
       .map(_.split("="))
       .map { case Array(k, v) => (k, URLDecoder.decode(v, "UTF-8")) }
@@ -71,6 +71,7 @@ trait SessionCookieBaker {
   def cookieData(userId: String = "anyUserId"): Map[String, String] = {
     Map(
       SessionKeys.sessionId -> sessionId,
+      SessionKeys.authToken -> "testAuthToken",
       ExtraSessionKeys.token -> "RANDOMTOKEN",
       ExtraSessionKeys.userId -> userId)
   }
@@ -78,6 +79,7 @@ trait SessionCookieBaker {
   def requestWithSession(req: FakeRequest[AnyContentAsFormUrlEncoded], userId: String): FakeRequest[AnyContentAsFormUrlEncoded] =
     req.withSession(
       SessionKeys.sessionId -> sessionId,
+      SessionKeys.authToken -> "testAuthToken",
       ExtraSessionKeys.token -> "RANDOMTOKEN",
       ExtraSessionKeys.userId -> userId)
 

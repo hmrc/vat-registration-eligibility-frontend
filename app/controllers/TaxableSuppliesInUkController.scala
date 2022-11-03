@@ -18,13 +18,11 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import featureswitch.core.config.FeatureSwitching
 import forms.TaxableSuppliesInUkFormProvider
 import identifiers.TaxableSuppliesInUkId
 import models.NormalMode
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.TaxableSuppliesInUk
 
@@ -32,17 +30,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxableSuppliesInUkController @Inject()(mcc: MessagesControllerComponents,
-                                              sessionService: SessionService,
+class TaxableSuppliesInUkController @Inject()(sessionService: SessionService,
                                               navigator: Navigator,
                                               identify: CacheIdentifierAction,
                                               getData: DataRetrievalAction,
                                               requireData: DataRequiredAction,
                                               formProvider: TaxableSuppliesInUkFormProvider,
-                                              view: TaxableSuppliesInUk
-                                             )(implicit appConfig: FrontendAppConfig,
-                                               executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
+                                              view: TaxableSuppliesInUk)
+                                             (implicit appConfig: FrontendAppConfig,
+                                              mcc: MessagesControllerComponents,
+                                              executionContext: ExecutionContext) extends BaseController {
 
   val onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

@@ -2,13 +2,10 @@ package controllers
 
 import helpers.IntegrationSpecBase
 import identifiers.{VATExceptionKickoutId, VATRegistrationExceptionId}
-import models.{Draft, RegistrationInformation, VatReg}
 import org.jsoup.Jsoup
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
-
-import java.time.LocalDate
 
 
 class VatExceptionKickoutControllerISpec extends IntegrationSpecBase {

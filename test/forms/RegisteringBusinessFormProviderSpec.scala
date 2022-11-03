@@ -17,8 +17,8 @@
 package forms
 
 import forms.behaviours.BooleanFieldBehaviours
-import models.{OwnBusiness, SomeoneElse}
 import models.RegisteringBusiness.{ownBusinessKey, someoneElseKey}
+import models.{OwnBusiness, SomeoneElse}
 import play.api.data.FormError
 
 class RegisteringBusinessFormProviderSpec extends BooleanFieldBehaviours {

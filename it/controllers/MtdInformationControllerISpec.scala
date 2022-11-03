@@ -8,8 +8,6 @@ import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-import java.time.LocalDate
-
 class MtdInformationControllerISpec extends IntegrationSpecBase
   with S4LStub
   with VatRegistrationStub {

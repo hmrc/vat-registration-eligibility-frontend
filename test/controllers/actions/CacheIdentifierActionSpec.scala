@@ -18,7 +18,6 @@ package controllers.actions
 
 import base.SpecBase
 import controllers.routes
-import models.CurrentProfile
 import models.requests.CacheIdentifierRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.when
@@ -28,7 +27,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, SessionId}
+import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,7 +43,7 @@ class CacheIdentifierActionSpec extends SpecBase {
 
     def onPageLoad = authAction { request => Ok }
 
-    override protected def controllerComponents: ControllerComponents = controllerComponents
+    override protected def controllerComponents: ControllerComponents = stubControllerComponents()
 
     override def invokeBlock[A](request: Request[A], block: CacheIdentifierRequest[A] => Future[Result]): Future[Result] =
       block(CacheIdentifierRequest(request, testRegId, testInternalId))

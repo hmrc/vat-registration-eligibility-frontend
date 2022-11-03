@@ -23,7 +23,6 @@ import identifiers.PreviousBusinessNameId
 import models.Mode
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.PreviousBusinessName
 
@@ -31,16 +30,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PreviousBusinessNameController @Inject()(mcc: MessagesControllerComponents,
-                                               sessionService: SessionService,
+class PreviousBusinessNameController @Inject()(sessionService: SessionService,
                                                navigator: Navigator,
                                                identify: CacheIdentifierAction,
                                                getData: DataRetrievalAction,
                                                requireData: DataRequiredAction,
                                                formProvider: PreviousBusinessNameFormProvider,
-                                               view: PreviousBusinessName
-                                    )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport {
+                                               view: PreviousBusinessName)
+                                              (implicit appConfig: FrontendAppConfig,
+                                               mcc: MessagesControllerComponents,
+                                               executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
