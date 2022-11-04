@@ -17,14 +17,11 @@
 package utils
 
 import base.SpecBase
-import controllers.routes
 import identifiers._
 import models._
-import play.api.libs.json.{JsBoolean, JsValue, Json}
+import play.api.libs.json.JsValue
 import play.api.mvc.Call
 import uk.gov.hmrc.http.cache.client.CacheMap
-
-import java.time.LocalDate
 
 class NavigatorSpec extends SpecBase {
 

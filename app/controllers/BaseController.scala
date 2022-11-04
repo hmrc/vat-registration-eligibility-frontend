@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.FrontendAppConfig
+package controllers
 
-@this(
-        layout: views.html.layouts.layout,
-        h1: components.h1,
-        p: components.p
-)
+import controllers.actions.VatRegLanguageSupport
+import featureswitch.core.config.FeatureSwitching
+import play.api.mvc.MessagesControllerComponents
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-@()(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
+import javax.inject.Inject
 
-@layout(pageTitle = Some(titleNoForm(messages("index.title")))) {
-
-    @h1("index.heading")
-    @p{ @messages("index.guidance") }
+abstract class BaseController @Inject()(implicit val mcc: MessagesControllerComponents) extends FrontendController(mcc)
+  with VatRegLanguageSupport
+  with FeatureSwitching
+  with WithUnsafeDefaultFormBinding {
 
 }

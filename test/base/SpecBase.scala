@@ -18,7 +18,6 @@ package base
 
 import config.FrontendAppConfig
 import controllers.actions.FakeDataRetrievalAction
-import models.CurrentProfile
 import models.requests.{CacheIdentifierRequest, DataRequest}
 import org.scalatestplus.play.guice._
 import play.api.Application

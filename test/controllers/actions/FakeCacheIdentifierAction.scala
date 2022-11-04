@@ -16,7 +16,6 @@
 
 package controllers.actions
 
-import models.CurrentProfile
 import models.requests.CacheIdentifierRequest
 import play.api.mvc.{AnyContent, BodyParser, Request, Result}
 import play.api.test.Helpers.stubControllerComponents

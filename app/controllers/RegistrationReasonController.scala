@@ -17,14 +17,13 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
-import featureswitch.core.config.{FeatureSwitching, VATGroupFlow}
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
+import featureswitch.core.config.VATGroupFlow
 import forms.RegistrationReasonFormProvider
 import identifiers._
 import models._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{DataCleardownService, SessionService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.RegistrationReasonView
 
@@ -32,18 +31,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RegistrationReasonController @Inject()(mcc: MessagesControllerComponents,
-                                             sessionService: SessionService,
+class RegistrationReasonController @Inject()(sessionService: SessionService,
                                              navigator: Navigator,
                                              identify: CacheIdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: RegistrationReasonFormProvider,
                                              view: RegistrationReasonView,
-                                             dataCleardownService: DataCleardownService
-                                            )(implicit appConfig: FrontendAppConfig,
-                                              executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
+                                             dataCleardownService: DataCleardownService)
+                                            (implicit appConfig: FrontendAppConfig,
+                                             mcc: MessagesControllerComponents,
+                                             executionContext: ExecutionContext) extends BaseController {
 
   def showVatGroup(isUkCompany: Boolean): Boolean = isUkCompany && isEnabled(VATGroupFlow)
 

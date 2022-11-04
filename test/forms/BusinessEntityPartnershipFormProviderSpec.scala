@@ -18,7 +18,7 @@ package forms
 
 import base.SpecBase
 import models.BusinessEntity._
-import models.{LimitedLiabilityPartnership, _}
+import models._
 import play.api.data.FormError
 
 class BusinessEntityPartnershipFormProviderSpec extends SpecBase {

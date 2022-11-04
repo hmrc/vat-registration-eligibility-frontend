@@ -16,16 +16,16 @@
 
 package forms
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import forms.mappings.Mappings
-import javax.inject.{Inject, Singleton}
 import models.ConditionalDateFormElement
 import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
 import utils.TimeMachine
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ThresholdInTwelveMonthsFormProvider @Inject()(timeMachine: TimeMachine) extends FormErrorHelper with Mappings {

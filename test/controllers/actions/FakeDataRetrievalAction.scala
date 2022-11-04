@@ -16,7 +16,6 @@
 
 package controllers.actions
 
-import models.CurrentProfile
 import models.requests.{CacheIdentifierRequest, OptionalDataRequest}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.UserAnswers

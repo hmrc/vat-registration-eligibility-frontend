@@ -48,41 +48,12 @@ trait WiremockHelper {
   def resetWiremock() = WireMock.reset()
 
   def buildClient(path: String) =
-    ws.url(s"http://localhost:$port/check-if-you-can-register-for-vat${path.replace("/check-if-you-can-register-for-vat", "")}")
+    ws.url(s"http://localhost:${port.toString}/check-if-you-can-register-for-vat${path.replace("/check-if-you-can-register-for-vat", "")}")
       .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
       .withFollowRedirects(false)
 
-  def listAllStubs = listAllStubMappings
-
-  def stubGet(url: String, status: Integer, body: String) =
-    stubFor(get(urlMatching(url))
-      .willReturn(
-        aResponse().
-          withStatus(status).
-          withBody(body)
-      )
-    )
-
-  def stubPost(url: String, status: Integer, responseBody: String, inputBody: String) =
-    stubFor(post(urlMatching(url)).withRequestBody(equalToJson(inputBody))
-      .willReturn(
-        aResponse().
-          withStatus(status).
-          withBody(responseBody)
-      )
-    )
-
   def stubPatch(url: String, status: Integer, responseBody: String, inputBody: String) =
     stubFor(patch(urlMatching(url)).withRequestBody(equalToJson(inputBody))
-      .willReturn(
-        aResponse().
-          withStatus(status).
-          withBody(responseBody)
-      )
-    )
-
-  def stubPut(url: String, status: Integer, responseBody: String) =
-    stubFor(put(urlMatching(url))
       .willReturn(
         aResponse().
           withStatus(status).

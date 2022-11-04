@@ -17,27 +17,25 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{S4LService, VatRegistrationService}
 import uk.gov.hmrc.http.cache.client.CacheMap
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.MtdInformation
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class MtdInformationController @Inject()(mcc: MessagesControllerComponents,
-                                         identify: CacheIdentifierAction,
+class MtdInformationController @Inject()(identify: CacheIdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          view: MtdInformation,
                                          vatRegistrationService: VatRegistrationService,
                                          s4LService: S4LService)
                                         (implicit appConfig: FrontendAppConfig,
-                                         executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport {
+                                         mcc: MessagesControllerComponents,
+                                         executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = identify { implicit request =>
     Ok(view())

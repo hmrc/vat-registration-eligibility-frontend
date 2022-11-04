@@ -20,12 +20,12 @@ import featureswitch.core.config.{FeatureSwitching, TOGCFlow, ThirdPartyTransact
 import helpers.IntegrationSpecBase
 import identifiers.{BusinessEntityId, RegisteringBusinessId}
 import models._
+import org.jsoup.Jsoup
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.Format._
-import play.mvc.Http.HeaderNames
-import org.jsoup.Jsoup
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import play.mvc.Http.HeaderNames
 
 class RegisteringBusinessControllerISpec extends IntegrationSpecBase with FeatureSwitching {
 

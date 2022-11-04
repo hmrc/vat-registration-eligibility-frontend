@@ -23,7 +23,6 @@ import identifiers._
 import models.{DateFormElement, NormalMode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.DateOfBusinessTransfer
 
@@ -31,16 +30,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class DateOfBusinessTransferController @Inject()(mcc: MessagesControllerComponents,
-                                                 sessionService: SessionService,
+class DateOfBusinessTransferController @Inject()(sessionService: SessionService,
                                                  navigator: Navigator,
                                                  identify: CacheIdentifierAction,
                                                  getData: DataRetrievalAction,
                                                  requireData: DataRequiredAction,
                                                  formProvider: DateOfBusinessTransferFormProvider,
-                                                 view: DateOfBusinessTransfer
-                                                  )(implicit appConfig: FrontendAppConfig,
-                                                    executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport {
+                                                 view: DateOfBusinessTransfer)
+                                                (implicit appConfig: FrontendAppConfig,
+                                                 mcc: MessagesControllerComponents,
+                                                 executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request => {

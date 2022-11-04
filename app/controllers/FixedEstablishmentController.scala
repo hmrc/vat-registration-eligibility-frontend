@@ -17,13 +17,12 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction, VatRegLanguageSupport}
+import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import forms.FixedEstablishmentFormProvider
 import identifiers.FixedEstablishmentId
 import models.NormalMode
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{DataCleardownService, SessionService}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.FixedEstablishment
 
@@ -31,17 +30,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class FixedEstablishmentController @Inject()(mcc: MessagesControllerComponents,
-                                             sessionService: SessionService,
+class FixedEstablishmentController @Inject()(sessionService: SessionService,
                                              navigator: Navigator,
                                              identify: CacheIdentifierAction,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: FixedEstablishmentFormProvider,
                                              view: FixedEstablishment,
-                                             dataCleardownService: DataCleardownService
-                                            )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport {
+                                             dataCleardownService: DataCleardownService)
+                                            (implicit appConfig: FrontendAppConfig,
+                                             mcc: MessagesControllerComponents,
+                                             executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

@@ -20,18 +20,17 @@ import config.FrontendAppConfig
 import controllers.actions._
 import identifiers._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html._
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class EligibilityDropoutController @Inject()(mcc: MessagesControllerComponents,
-                                             identify: CacheIdentifierAction,
+class EligibilityDropoutController @Inject()(identify: CacheIdentifierAction,
                                              internationalActivityDropoutView: InternationalActivityDropout,
                                              agriculturalDropoutView: AgriculturalDropout,
-                                             vatDivisionDropoutView: VatDivisionDropout
-                                            )(implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with VatRegLanguageSupport {
+                                             vatDivisionDropoutView: VatDivisionDropout)
+                                            (implicit appConfig: FrontendAppConfig,
+                                             mcc: MessagesControllerComponents) extends BaseController {
 
   def onPageLoad(mode: String): Action[AnyContent] = identify {
     implicit request =>

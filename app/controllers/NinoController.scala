@@ -18,14 +18,12 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import featureswitch.core.config.FeatureSwitching
 import forms.NinoFormProvider
 import identifiers.NinoId
 import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.Nino
 
@@ -33,17 +31,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NinoController @Inject()(mcc: MessagesControllerComponents,
-                               sessionService: SessionService,
+class NinoController @Inject()(sessionService: SessionService,
                                navigator: Navigator,
                                identify: CacheIdentifierAction,
                                getData: DataRetrievalAction,
                                requireData: DataRequiredAction,
                                formProvider: NinoFormProvider,
-                               view: Nino
-                              )(implicit appConfig: FrontendAppConfig,
-                                executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
+                               view: Nino)
+                              (implicit appConfig: FrontendAppConfig,
+                               mcc: MessagesControllerComponents,
+                               executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

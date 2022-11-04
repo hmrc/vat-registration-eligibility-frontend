@@ -17,17 +17,15 @@
 package controllers
 
 import config.FrontendAppConfig
-import controllers.actions.VatRegLanguageSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.SessionExpired
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class SessionExpiredController @Inject()(mcc: MessagesControllerComponents,
-                                         view: SessionExpired)
-                                        (implicit appConfig: FrontendAppConfig) extends FrontendController(mcc) with VatRegLanguageSupport {
+class SessionExpiredController @Inject()(view: SessionExpired)
+                                        (implicit appConfig: FrontendAppConfig,
+                                         mcc: MessagesControllerComponents) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(view())

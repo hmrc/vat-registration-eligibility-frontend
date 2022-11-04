@@ -18,13 +18,12 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import featureswitch.core.config.{FeatureSwitching, SoleTraderFlow}
+import featureswitch.core.config.SoleTraderFlow
 import forms.BusinessEntityFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
 import models._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.BusinessEntityView
 
@@ -32,16 +31,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class BusinessEntityController @Inject()(mcc: MessagesControllerComponents,
-                                         sessionService: SessionService,
+class BusinessEntityController @Inject()(sessionService: SessionService,
                                          navigator: Navigator,
                                          identify: CacheIdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
                                          formProvider: BusinessEntityFormProvider,
-                                         view: BusinessEntityView
-                                        )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport with FeatureSwitching {
+                                         view: BusinessEntityView)
+                                        (implicit appConfig: FrontendAppConfig,
+                                         executionContext: ExecutionContext,
+                                         mcc: MessagesControllerComponents) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

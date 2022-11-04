@@ -24,7 +24,6 @@ import models.{ConditionalDateFormElement, NormalMode}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.{Navigator, UserAnswers}
 import views.html.ThresholdPreviousThirtyDays
 
@@ -32,16 +31,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ThresholdPreviousThirtyDaysController @Inject()(mcc: MessagesControllerComponents,
-                                                      sessionService: SessionService,
+class ThresholdPreviousThirtyDaysController @Inject()(sessionService: SessionService,
                                                       navigator: Navigator,
                                                       identify: CacheIdentifierAction,
                                                       getData: DataRetrievalAction,
                                                       requireData: DataRequiredAction,
                                                       formProvider: ThresholdPreviousThirtyDaysFormProvider,
-                                                      view: ThresholdPreviousThirtyDays
-                                                     )(implicit appConfig: FrontendAppConfig, executionContext: ExecutionContext)
-  extends FrontendController(mcc) with VatRegLanguageSupport {
+                                                      view: ThresholdPreviousThirtyDays)
+                                                     (implicit appConfig: FrontendAppConfig,
+                                                      mcc: MessagesControllerComponents,
+                                                      executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

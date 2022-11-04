@@ -16,9 +16,9 @@
 
 package models
 
-import java.time.LocalDate
-
 import play.api.libs.json.Json
+
+import java.time.LocalDate
 
 case class ConditionalDateFormElement(value: Boolean, optionalData: Option[LocalDate])
 

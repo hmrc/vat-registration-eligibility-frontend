@@ -16,13 +16,12 @@
 
 package controllers
 
-import controllers.actions.{CacheIdentifierAction, DataRetrievalAction, VatRegLanguageSupport}
+import controllers.actions.{CacheIdentifierAction, DataRetrievalAction}
 import identifiers.Identifier
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.JourneyService
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Navigator
 
 import javax.inject.{Inject, Singleton}
@@ -30,12 +29,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class IndexController @Inject()(val authConnector: AuthConnector,
-                                mcc: MessagesControllerComponents,
                                 navigator: Navigator,
                                 identify: CacheIdentifierAction,
                                 getData: DataRetrievalAction,
-                                journeyService: JourneyService
-                               )(implicit executionContext: ExecutionContext) extends FrontendController(mcc) with VatRegLanguageSupport with AuthorisedFunctions {
+                                journeyService: JourneyService)
+                               (implicit executionContext: ExecutionContext,
+                                mcc: MessagesControllerComponents) extends BaseController with AuthorisedFunctions {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData) { implicit request =>
     Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
