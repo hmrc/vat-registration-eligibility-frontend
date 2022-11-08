@@ -4,7 +4,6 @@ import helpers.IntegrationSpecBase
 import identifiers.BusinessEntityId
 import models.BusinessEntity._
 import org.jsoup.Jsoup
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -66,7 +65,7 @@ class BusinessEntityPartnershipControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> generalPartnershipKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> generalPartnershipKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -77,7 +76,7 @@ class BusinessEntityPartnershipControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> limitedPartnershipKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> limitedPartnershipKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -88,7 +87,7 @@ class BusinessEntityPartnershipControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> scottishPartnershipKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> scottishPartnershipKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -99,7 +98,7 @@ class BusinessEntityPartnershipControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> scottishLimitedPartnershipKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> scottishLimitedPartnershipKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -110,7 +109,7 @@ class BusinessEntityPartnershipControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> limitedLiabilityPartnershipKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> limitedLiabilityPartnershipKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -121,7 +120,7 @@ class BusinessEntityPartnershipControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

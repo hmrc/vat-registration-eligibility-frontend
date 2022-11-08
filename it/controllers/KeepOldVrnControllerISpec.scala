@@ -5,7 +5,6 @@ import helpers.{IntegrationSpecBase, S4LStub}
 import identifiers.{KeepOldVrnId, TermsAndConditionsId}
 import org.jsoup.Jsoup
 import play.api.http.Status._
-import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames
 
 class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
@@ -78,7 +77,7 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

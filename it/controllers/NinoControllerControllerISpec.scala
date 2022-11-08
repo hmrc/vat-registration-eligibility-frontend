@@ -86,7 +86,7 @@ class NinoControllerControllerISpec extends IntegrationSpecBase with S4LStub {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient("/have-nino").post(Json.obj()))
+        val res = await(buildClient("/have-nino").post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

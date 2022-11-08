@@ -7,7 +7,6 @@ import identifiers.ThresholdTaxableSuppliesId
 import models.DateFormElement
 import org.jsoup.Jsoup
 import play.api.http.Status.SEE_OTHER
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -69,7 +68,7 @@ class ThresholdTaxableSuppliesControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient("/date-of-taxable-supplies-in-uk").post(Json.obj()))
+        val res = await(buildClient("/date-of-taxable-supplies-in-uk").post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

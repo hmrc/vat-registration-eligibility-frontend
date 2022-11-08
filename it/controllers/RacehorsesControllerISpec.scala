@@ -22,7 +22,6 @@ import identifiers.RacehorsesId
 import org.jsoup.Jsoup
 import play.api.http.Status._
 import play.api.libs.json.Format._
-import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames
 
 class RacehorsesControllerISpec extends IntegrationSpecBase with FeatureSwitching {
@@ -90,7 +89,7 @@ class RacehorsesControllerISpec extends IntegrationSpecBase with FeatureSwitchin
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

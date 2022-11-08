@@ -23,7 +23,6 @@ import models._
 import org.jsoup.Jsoup
 import play.api.http.Status.SEE_OTHER
 import play.api.libs.json.Format._
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -199,7 +198,7 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

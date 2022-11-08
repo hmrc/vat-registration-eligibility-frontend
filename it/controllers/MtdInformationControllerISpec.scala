@@ -3,7 +3,6 @@ package controllers
 import helpers.{IntegrationSpecBase, S4LStub, VatRegistrationStub}
 import identifiers._
 import models._
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 import uk.gov.hmrc.http.cache.client.CacheMap
@@ -46,7 +45,7 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
       stubSaveEligibilityData(testRegId)
       stubS4LSave(testRegId, "eligibility-data")(CacheMap(testRegId, Map()))
 
-      val res = await(buildClient(pageUrl).post(Json.obj()))
+      val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
       res.status mustBe SEE_OTHER
       res.header(HeaderNames.LOCATION) mustBe Some(s"/register-for-vat/journey/$testRegId")
@@ -59,7 +58,7 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
       stubAudits()
       stubSaveEligibilityData(testRegId)
 
-      val res = await(buildClient(pageUrl).post(Json.obj()))
+      val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
       res.status mustBe INTERNAL_SERVER_ERROR
     }

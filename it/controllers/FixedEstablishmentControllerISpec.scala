@@ -4,7 +4,6 @@ import helpers.IntegrationSpecBase
 import identifiers._
 import models.{ConditionalDateFormElement, DateFormElement}
 import org.jsoup.Jsoup
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -53,7 +52,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
+        val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
@@ -64,7 +63,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
+        val res = await(buildClient(pageUrl).post(Map("value" -> "false")))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
@@ -78,7 +77,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
 
         cacheSessionData(sessionId, FixedEstablishmentId, true)
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
+        val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
@@ -102,7 +101,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
         cacheSessionData[Boolean](sessionId, TaxableSuppliesInUkId, true)
         cacheSessionData[DateFormElement](sessionId, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
+        val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
 
         List(
           ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId,
@@ -122,7 +121,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

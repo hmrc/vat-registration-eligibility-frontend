@@ -1,7 +1,6 @@
 package controllers
 
 import helpers.IntegrationSpecBase
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -25,7 +24,7 @@ class ChooseNotToRegisterControllerISpec extends IntegrationSpecBase {
       stubSuccessfulLogin()
       stubAudits()
 
-      val res = await(buildClient(pageUrl).post(Json.obj()))
+      val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
       res.status mustBe SEE_OTHER
       res.header(HeaderNames.LOCATION) mustBe Some(appConfig.exitSurveyUrl)
