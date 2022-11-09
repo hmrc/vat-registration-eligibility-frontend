@@ -21,7 +21,6 @@ import identifiers.BusinessEntityId
 import models.BusinessEntity.{netpKey, overseasKey}
 import models.{BusinessEntity, NETP, Overseas}
 import org.jsoup.Jsoup
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -94,7 +93,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         stubAudits()
 
         val res = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
-          .post(Json.obj()))
+          .post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

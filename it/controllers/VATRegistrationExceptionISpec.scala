@@ -3,7 +3,6 @@ package controllers
 import helpers.IntegrationSpecBase
 import identifiers.VATRegistrationExceptionId
 import org.jsoup.Jsoup
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -69,7 +68,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

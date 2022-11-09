@@ -3,7 +3,6 @@ package controllers
 import helpers.IntegrationSpecBase
 import identifiers.{VATExceptionKickoutId, VATRegistrationExceptionId}
 import org.jsoup.Jsoup
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -51,7 +50,7 @@ class VatExceptionKickoutControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "true")))
+        val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.onPageLoad(VATExceptionKickoutId.toString).url)
@@ -62,7 +61,7 @@ class VatExceptionKickoutControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> "false")))
+        val res = await(buildClient(pageUrl).post(Map("value" -> "false")))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.EligibilityDropoutController.onPageLoad(VATRegistrationExceptionId.toString).url)
@@ -73,7 +72,7 @@ class VatExceptionKickoutControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

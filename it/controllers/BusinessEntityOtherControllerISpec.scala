@@ -4,7 +4,6 @@ import helpers.IntegrationSpecBase
 import identifiers.BusinessEntityId
 import models.BusinessEntity._
 import org.jsoup.Jsoup
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -59,7 +58,7 @@ class BusinessEntityOtherControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> charitableIncorporatedOrganisationKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> charitableIncorporatedOrganisationKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -70,7 +69,7 @@ class BusinessEntityOtherControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> nonIncorporatedTrustKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> nonIncorporatedTrustKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -81,7 +80,7 @@ class BusinessEntityOtherControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> registeredSocietyKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> registeredSocietyKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -92,7 +91,7 @@ class BusinessEntityOtherControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> unincorporatedAssociationKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> unincorporatedAssociationKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -103,7 +102,7 @@ class BusinessEntityOtherControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> divisionKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> divisionKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.EligibilityDropoutController.onPageLoad(BusinessEntityId.toString).url)
@@ -114,7 +113,7 @@ class BusinessEntityOtherControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

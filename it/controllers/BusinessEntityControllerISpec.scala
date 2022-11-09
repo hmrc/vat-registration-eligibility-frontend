@@ -6,7 +6,6 @@ import identifiers.{BusinessEntityId, FixedEstablishmentId}
 import models.BusinessEntity.{otherKey, partnershipKey, soleTraderKey, ukCompanyKey}
 import models.{BusinessEntity, GeneralPartnership, NETP, RegisteredSociety}
 import org.jsoup.Jsoup
-import play.api.libs.json.Json
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 
@@ -103,7 +102,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> ukCompanyKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> ukCompanyKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -115,7 +114,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
         stubAudits()
 
         enable(SoleTraderFlow)
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> soleTraderKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> soleTraderKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
@@ -127,7 +126,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> partnershipKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> partnershipKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.BusinessEntityPartnershipController.onPageLoad.url)
@@ -138,7 +137,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj("value" -> otherKey)))
+        val res = await(buildClient(pageUrl).post(Map("value" -> otherKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.BusinessEntityOtherController.onPageLoad.url)
@@ -149,7 +148,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

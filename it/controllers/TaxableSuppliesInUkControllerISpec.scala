@@ -90,7 +90,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }

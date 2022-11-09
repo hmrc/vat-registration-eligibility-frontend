@@ -19,14 +19,12 @@ package controllers
 import controllers.actions.VatRegLanguageSupport
 import featureswitch.core.config.FeatureSwitching
 import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
 
 abstract class BaseController @Inject()(implicit val mcc: MessagesControllerComponents) extends FrontendController(mcc)
   with VatRegLanguageSupport
-  with FeatureSwitching
-  with WithUnsafeDefaultFormBinding {
+  with FeatureSwitching {
 
 }

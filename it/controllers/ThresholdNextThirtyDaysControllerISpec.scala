@@ -7,7 +7,6 @@ import identifiers.ThresholdNextThirtyDaysId
 import models.ConditionalDateFormElement
 import org.jsoup.Jsoup
 import play.api.http.Status._
-import play.api.libs.json.Json
 import play.mvc.Http.HeaderNames
 
 import java.time.LocalDate
@@ -79,7 +78,7 @@ class ThresholdNextThirtyDaysControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Json.obj()))
+        val res = await(buildClient(pageUrl).post(Map[String, String]()))
 
         res.status mustBe BAD_REQUEST
       }
