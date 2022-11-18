@@ -6,18 +6,18 @@ private object AppDependencies {
   import play.sbt.PlayImport._
 
   private val scalaTestPlusPlayVersion = "5.1.0"
-  private val mockitoVersion = "3.3.3"
+  private val mockitoVersion = "4.8.1"
   private val httpCachingClientVersion = "10.0.0-play-28"
-  private val mongoPlayVersion = "0.68.0"
-  private val playConditionalFormMappingVersion = "1.11.0-play-28"
+  private val mongoPlayVersion = "0.73.0"
+  private val playConditionalFormMappingVersion = "1.12.0-play-28"
   private val bootstrapVersion = "7.8.0"
-  private val jsoupVersion = "1.13.1"
-  private val scoverageVersion = "1.3.1"
+  private val jsoupVersion = "1.15.3"
+  private val scoverageVersion = "1.4.1"
   private val wireMockVersion = "2.27.2"
 
 
-  private val playHmrcFrontendVersion = "3.15.0-play-28"
-  private val playUiVersion = "9.8.0-play-28"
+  private val playHmrcFrontendVersion = "3.32.0-play-28"
+  private val playUiVersion = "9.11.0-play-28"
 
   val compile = Seq(
     ws,
