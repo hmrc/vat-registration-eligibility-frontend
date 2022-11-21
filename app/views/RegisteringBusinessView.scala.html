@@ -39,16 +39,17 @@
         @inputRadio(
             form = form,
             legend = Messages("registeringBusiness.heading"),
-            inline = true,
-            items = Seq (
+            items = Seq(
                 RadioItem(id = Some(ownBusinessKey),
                     value = Some(ownBusinessKey),
                     content = Text(Messages("registeringBusiness.radioOwn")),
+                    hint = Some(Hint(content = Text(messages("registeringBusiness.radioOwn.hint")))),
                     checked = form("value").value.contains(ownBusinessKey)
                 ),
                 RadioItem(id = Some(someoneElseKey),
                     value = Some(someoneElseKey),
                     content = Text(Messages("registeringBusiness.radioElse")),
+                    hint = Some(Hint(content = Text(messages("registeringBusiness.radioElse.hint")))),
                     checked = form("value").value.contains(someoneElseKey)
                 )
             )

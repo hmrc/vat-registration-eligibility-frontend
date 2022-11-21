@@ -65,6 +65,7 @@
             RadioItem(id = Some(settingUpVatGroupKey),
                 value = Some(settingUpVatGroupKey),
                 content = Text(Messages("registrationReason.settingUp.radio")),
+                hint = Some(Hint(content = Text(messages("registrationReason.settingUp.hint")))),
                 checked = regReasonForm("value").value.contains(settingUpVatGroupKey)
             )
         )

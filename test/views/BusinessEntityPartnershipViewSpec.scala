@@ -46,15 +46,15 @@ class BusinessEntityPartnershipViewSpec extends ViewSpecBase {
 
   val detailsSummary = "Partnership type descriptions"
   val provider1 = "General partnership"
-  val detailsPara1 = "Made up of 2 or more people, usually sole traders. One of the partners will be ‘nominated’ to deal with HMRC. Has no legal existence distinct from the partners themselves. Most partnerships are of this type."
+  val detailsPara1 = "These are made up of 2 or more people. One of the partners will be ‘nominated’ to deal with HMRC. General partnerships have no legal existence separate to the partners themselves."
   val provider2 = "Limited partnership"
-  val detailsPara2 = "Made up of general and limited partners. Must register with Companies House but does not have to file an annual return. The limited partners will have limited liability for debts."
+  val detailsPara2 = "These are made up of general and limited partners. They must register with Companies House but they do not have to file an annual return. The limited partners will have limited liability for debts."
   val provider3 = "Scottish partnership"
-  val detailsPara3 = "Same as a general partnership but is a separate legal entity distinct from the partners themselves. The business address must be registered in Scotland."
+  val detailsPara3 = "These are the same as general partnerships but they are a legal entity, separate to the partners themselves. The business address must be registered in Scotland."
   val provider4 = "Scottish limited partnership"
-  val detailsPara4 = "Similar to a limited partnership. Made up of general and limited partners. It has a separate legal entity and the limited partners have limited liability for debts. The business address must be registered in Scotland. "
+  val detailsPara4 = "These are similar to limited partnerships. They are made up of general and limited partners. It has a separate legal entity and the limited partners have limited liability for debts. The business address must be registered in Scotland."
   val provider5 = "Limited liability partnership"
-  val detailsPara5 = "Must be registered at Companies House. Taxed as partnerships but have the benefits of being a corporate entity. All the partners have limited liability for debts."
+  val detailsPara5 = "These must be registered at Companies House. They are taxed as partnerships but they have the benefits of being a corporate entity. All the partners have limited liability for debts."
 
   "BusinessEntityPartnership view" must {
     lazy val doc = Jsoup.parse(page.body)

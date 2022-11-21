@@ -18,9 +18,10 @@ package views
 
 import forms.RegisteringBusinessFormProvider
 import models.NormalMode
+import utils.JsoupElementExtractor
 import views.html.RegisteringBusinessView
 
-class RegisteringBusinessViewSpec extends ViewSpecBase {
+class RegisteringBusinessViewSpec extends ViewSpecBase with JsoupElementExtractor {
 
   val messageKeyPrefix = "registeringBusiness"
   val form = new RegisteringBusinessFormProvider()()
@@ -31,7 +32,9 @@ class RegisteringBusinessViewSpec extends ViewSpecBase {
   object ExpectedContent {
     val h1 = "Whose business do you want to register?"
     val ownOption = "Your own"
+    val ownOptionHint = "Select this option if you are the owner or proprietor of the business you wish to register."
     val someoneElseOption = "Someone else’s"
+    val someoneElseOptionHint = "Select this option if you are an employee of the business you are registering or were otherwise asked to complete this registration on behalf of someone else."
   }
 
   "RegisteringBusiness view" must {
@@ -60,6 +63,14 @@ class RegisteringBusinessViewSpec extends ViewSpecBase {
     "have the correct radio options" in {
       doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.ownOption
       doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.someoneElseOption
+    }
+
+    "have the correct hint text for Your own option" in {
+      doc.select(Selectors.hint).getTextContent(1) mustBe Some(ExpectedContent.ownOptionHint)
+    }
+
+    "have the correct hint text for Someone else option" in {
+      doc.select(Selectors.hint).getTextContent(2) mustBe Some(ExpectedContent.someoneElseOptionHint)
     }
   }
 }

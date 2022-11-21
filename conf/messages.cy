@@ -62,11 +62,11 @@ businessEntityOther.error.required = Dewiswch y math o fusnes yr hoffech ei gofr
 
 businessEntityPartnership.heading = Pa fath o bartneriaeth rydych yn ei chofrestru?
 businessEntityPartnership.details = Disgrifiadau o’r mathau o bartneriaeth
-businessEntityPartnership.general-partnership = Yn cynnwys dau neu fwy o bobl, fel arfer unig fasnachwyr. Bydd un o’r partneriaid yn cael ei enwebu i ddelio â CThEM. Heb fodolaeth gyfreithiol ar wahân i’r partneriaid eu hunain. Mae’r rhan fwyaf o bartneriaethau o’r math hwn.
-businessEntityPartnership.limited-partnership = Yn cynnwys partneriaid cyffredinol a chyfyngedig. Rhaid cofrestru â Thŷ’r Cwmnïau, ond nid oes rhaid cyflwyno datganiad blynyddol. Bydd gan y partneriaid cyfyngedig atebolrwydd cyfyngedig am ddyledion.
-businessEntityPartnership.scottish-partnership = Yr un peth â phartneriaeth gyffredinol, ond mae’n endid cyfreithiol ar wahân, sy’n wahanol i’r partneriaid eu hunain. Rhaid i gyfeiriad y busnes fod wedi ei gofrestru yn yr Alban.
-businessEntityPartnership.scottish-limited-partnership = Yn debyg i bartneriaeth gyfyngedig. Yn cynnwys partneriaid cyffredinol a chyfyngedig. Mae ganddo endid cyfreithiol ar wahân ac mae gan y partneriaid cyfyngedig atebolrwydd cyfyngedig am ddyledion. Rhaid i gyfeiriad y busnes fod wedi ei gofrestru yn yr Alban.
-businessEntityPartnership.limited-liability-partnership = Rhaid iddo fod wedi ei gofrestru yn Nhŷ’r Cwmnïau. Fe’i trethir fel partneriaethau ond mae ganddo’r buddion o fod yn endid corfforaethol. Mae gan bob partner atebolrwydd cyfyngedig am ddyledion.
+businessEntityPartnership.general-partnership = Mae’r rhain wedi’u ffurfio o ddau neu fwy o bobl. Bydd un o’r partneriaid yn cael ei enwebu i ddelio â CThEM. Nid oes gan bartneriaethau cyffredinol fodolaeth gyfreithiol sydd ar wahân i’r partneriaid eu hunain. Mae’r rhan fwyaf o bartneriaethau o’r math hwn.
+businessEntityPartnership.limited-partnership = Mae’r rhain wedi’u ffurfio o bartneriaid cyffredinol a chyfyngedig. Mae’n rhaid iddynt gofrestru â Thŷ’r Cwmnïau, ond nid oes rhaid iddynt gyflwyno datganiad blynyddol. Bydd gan y partneriaid cyfyngedig atebolrwydd cyfyngedig am ddyledion.
+businessEntityPartnership.scottish-partnership = Mae’r rhain yr un peth â phartneriaethau cyffredinol, ond maent yn endid cyfreithiol sydd ar wahân i’r partneriaid eu hunain. Rhaid i gyfeiriad y busnes fod wedi ei gofrestru yn yr Alban.
+businessEntityPartnership.scottish-limited-partnership = Mae’r rhain yn debyg i bartneriaethau cyfyngedig. Maent wedi’u ffurfio o bartneriaid cyffredinol a chyfyngedig. Mae ganddo endid cyfreithiol ar wahân ac mae gan y partneriaid cyfyngedig atebolrwydd cyfyngedig am ddyledion. Rhaid i gyfeiriad y busnes fod wedi ei gofrestru yn yr Alban.
+businessEntityPartnership.limited-liability-partnership = Mae’n rhaid cofrestru’r rhain yn Nhŷ’r Cwmnïau. Fe’u trethir fel partneriaethau, ond mae ganddynt y manteision o fod yn endid corfforaethol. Mae gan bob partner atebolrwydd cyfyngedig am ddyledion.
 businessEntityPartnership.error.required = Dewiswch y math o bartneriaeth yr hoffech ei chofrestru ar gyfer TAW
 
 businessEntity.limited-company = Cwmni cyfyngedig (mae hyn yn cynnwys cwmnïau anghyfyngedig)
@@ -207,6 +207,8 @@ internationalActivities.linkParagraph = i gael gwybod a fydd ymadael â’r UE y
 internationalActivities.bulletText = Rhowch wybod i ni os bydd y busnes:
 internationalActivities.bullet1 = yn gwerthu asedion a brynwyd o’r tu allan i’r DU ac yn hawlio ad-daliad TAW o dan Gyfarwyddeb 2008/9EC neu’r drydedd Gyfarwyddeb TAW ar ddeg
 internationalActivities.bullet2 = yn gwerthu nwyddau i mewn i Ogledd Iwerddon o un o aelod-wladwriaethau’r UE
+internationalActivities.details.heading = What is Directive 2008/9EC or Thirteenth VAT directive?
+internationalActivities.details.para = This Directive is used to reclaim VAT paid in EU member states.
 
 zeroRatedSales.heading.business = A yw’r busnes yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf?
 zeroRatedSales.heading.partnership = A yw’r bartneriaeth yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf?
@@ -223,7 +225,9 @@ zeroRatedSales.linkText = Dysgu am gyfraddau TAW ar wahanol nwyddau a gwasanaeth
 
 registeringBusiness.heading = Busnes pwy hoffech ei gofrestru?
 registeringBusiness.radioOwn = Eich un chi
+registeringBusiness.radioOwn.hint = Select this option if you are the owner or proprietor of the business you wish to register.
 registeringBusiness.radioElse = Un rhywun arall
+registeringBusiness.radioElse.hint = Select this option if you are an employee of the business you are registering or were otherwise asked to complete this registration on behalf of someone else.
 registeringBusiness.error.required = Dewiswch fusnes pwy yr hoffech ei gofrestru
 
 nino.heading = A oes gennych rif Yswiriant Gwladol yn y DU?
@@ -299,6 +303,7 @@ registrationReason.sellingGoods.radio     = Mae’n gwerthu nwyddau neu wasanaet
 registrationReason.takingOver.radio       = Mae’n cymryd drosodd fusnes sydd wedi’i gofrestru ar gyfer TAW fel trosglwyddiad o fusnes byw
 registrationReason.changingEntity.radio   = Rydych yn newid endid cyfreithiol y busnes (er enghraifft o fod yn unig fasnachwr i fod yn gwmni cyfyngedig)
 registrationReason.settingUp.radio        = Rydych yn sefydlu grŵp TAW
+registrationReason.settingUp.hint         = Grŵp o fusnesau sy’n cael eu trin fel un endid at ddibenion TAW.
 registrationReason.ukExporter.radio       = Mae’n allforiwr tramor sydd wedi’i sefydlu yn y DU
 registrationReason.ukExporter.hint        = Mae’r busnes wedi’i sefydlu yn y DU a bydd ond yn gwneud cyflenwadau trethadwy y tu allan i’r DU.
 registrationReason.error                  = Dewiswch pam yr hoffech gofrestru’r busnes ar gyfer TAW
@@ -332,7 +337,7 @@ keepOldVrn.bullet2.cole                             = mae’n rhaid i chi wneud 
 
 vatNumber.heading.togc                              = Beth yw rhif cofrestru TAW y busnes sy’n cael ei gymryd drosodd?
 vatNumber.heading.cole                              = Beth yw rhif cofrestru TAW presennol y busnes?
-vatNumber.text                                      = Rhif 9 digid yw hwn, er enghraifft 123456789. Mae hwn i’w weld ar dystysgrif cofrestru TAW y busnes.
+vatNumber.hintText                                  = Rhif 9 digid yw hwn, er enghraifft 123456789. Mae hwn i’w weld ar dystysgrif cofrestru TAW y busnes.
 vatNumber.error.togc.required                       = Nodwch rif cofrestru TAW y busnes sy’n cael ei gymryd drosodd
 vatNumber.error.cole.required                       = Nodwch rif cofrestru TAW presennol y busnes.
 vatNumber.error.length                              = Mae’n rhaid i’r rhif TAW fod yn 9 rhif
@@ -346,6 +351,7 @@ termsAndConditions.bullet2                          = i gyflwyno unrhyw un o Ffu
 termsAndConditions.bullet3                          = i dalu unrhyw TAW sy’n ddyledus i CThEM ar stociau ac asedion y perchennog blaenorol, ac unrhyw gyflenwadau a wnaed ganddo
 termsAndConditions.bullet4                          = y bydd unrhyw Ffurflen TAW a wnaed gan y perchennog blaenorol ar ôl y dyddiad trosglwyddo yn cael ei thrin fel pe bai wedi’i gwneud gan y busnes presennol
 termsAndConditions.bullet5                          = na fydd yn cael hawlio arian a dalwyd gan CThEM i’r perchennog blaenorol cyn trosglwyddo’r busnes
+termsAndConditions.togcBullet6                      = to obtain and keep the business trading records
 termsAndConditions.button                           = Derbyn ac yn eich blaen
 
 checkYourAnswers.thresholdInTwelveMonths.business                   = A yw trosiant trethadwy’r busnes wedi mynd dros £85,000 yn ystod unrhyw gyfnod o 12 mis?

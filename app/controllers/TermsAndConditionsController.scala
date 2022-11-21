@@ -18,8 +18,8 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import identifiers.TermsAndConditionsId
-import models.NormalMode
+import identifiers.{RegistrationReasonId, TermsAndConditionsId}
+import models.{NormalMode, RegistrationReason}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import utils.{Navigator, UserAnswers}
@@ -41,7 +41,7 @@ class TermsAndConditionsController @Inject()(sessionService: SessionService,
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      Ok(view(request.userAnswers.getAnswer[RegistrationReason](RegistrationReasonId)))
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
