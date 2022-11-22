@@ -19,9 +19,10 @@ package views
 import featureswitch.core.config.TOGCFlow
 import forms.RegistrationReasonFormProvider
 import models.NormalMode
+import utils.JsoupElementExtractor
 import views.html.RegistrationReasonView
 
-class RegistrationReasonViewSpec extends ViewSpecBase {
+class RegistrationReasonViewSpec extends ViewSpecBase with JsoupElementExtractor {
   object Selectors extends BaseSelectors
   val form = new RegistrationReasonFormProvider()()
   val view = app.injector.instanceOf[RegistrationReasonView]
@@ -35,14 +36,15 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
     val radio2  = "It’s taking over a VAT registered business as a Transfer of a Going Concern"
     val radio3  = "You’re changing the legal entity of the business (for example, from sole trader to limited company)"
     val radio4  = "You’re setting up a VAT group"
+    val hint1   = "A group of businesses treated as one entity for VAT purposes."
     val radio5  = "It’s a UK established overseas exporter"
-    val hint    = "The business is established within the UK and will only make taxable supplies outside of the UK."
+    val hint2    = "The business is established within the UK and will only make taxable supplies outside of the UK."
     val error   = "Select the reason you want to register the business for VAT"
   }
 
   "RegistrationReason view" when {
     "Business entity is not partnership" must {
-      val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = false)(fakeDataRequestIncorped, messages, frontendAppConfig))
+      val doc = asDocument(view(form, NormalMode, showVatGroup = true, isOverseas = false)(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the correct back link" in {
         doc.select(Selectors.backLink).text mustBe backLink
@@ -58,11 +60,16 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
 
       "have the right radio options" in {
         doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio4
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio5
       }
 
-      "have the right hint" in {
-        doc.select(Selectors.hint).text() mustBe ExpectedContent.hint
+      "have the correct hint text for Setting up VAT Group option" in {
+        doc.select(Selectors.hint).getTextContent(1) mustBe Some(ExpectedContent.hint1)
+      }
+
+      "have the correct hint text for UK established overseas exporter option" in {
+        doc.select(Selectors.hint).getTextContent(2) mustBe Some(ExpectedContent.hint2)
       }
 
       "have the correct continue button" in {
@@ -89,8 +96,8 @@ class RegistrationReasonViewSpec extends ViewSpecBase {
         doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
       }
 
-      "have the right hint" in {
-        doc.select(Selectors.hint).text() mustBe ExpectedContent.hint
+      "have the correct hint text for UK established overseas exporter option" in {
+        doc.select(Selectors.hint).getTextContent(1) mustBe Some(ExpectedContent.hint2)
       }
 
       "have the correct continue button" in {

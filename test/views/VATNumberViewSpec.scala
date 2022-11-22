@@ -49,8 +49,8 @@ class VATNumberViewSpec extends ViewSpecBase {
         doc.select(Selectors.h1).text() mustBe ExpectedContent.h1Togc
       }
 
-      "have the correct text" in {
-        doc.select(Selectors.p(1)).text() mustBe ExpectedContent.text
+      "have the correct hint text" in {
+        doc.select(Selectors.hint).text() mustBe ExpectedContent.text
       }
     }
     s"registration reason is $cole" must {
@@ -69,8 +69,8 @@ class VATNumberViewSpec extends ViewSpecBase {
         doc.select(Selectors.h1).text() mustBe ExpectedContent.h1Cole
       }
 
-      "have the correct text" in {
-        doc.select(Selectors.p(1)).text() mustBe ExpectedContent.text
+      "have the correct hint text" in {
+        doc.select(Selectors.hint).text() mustBe ExpectedContent.text
       }
     }
   }

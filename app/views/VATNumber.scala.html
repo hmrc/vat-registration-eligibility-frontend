@@ -32,10 +32,6 @@
 
     @errorSummary(form.errors)
 
-    @h1(s"vatNumber.heading.$togcColeKey")
-
-    @p{ @messages("vatNumber.text") }
-
     @formWithCsrf(action = routes.VATNumberController.onSubmit, 'autoComplete -> "off") {
         @inputText(
             form = form,
@@ -43,7 +39,8 @@
             name = "vatNumber",
             classes = Some("govuk-input--width-10"),
             label = s"vatNumber.heading.$togcColeKey",
-            isPageHeading = false,
+            isPageHeading = true,
+            hint = Some(Html(messages("vatNumber.hintText")))
         )
 
         @button(messages("site.continue"))

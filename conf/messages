@@ -62,11 +62,11 @@ businessEntityOther.error.required = Select the type of business you want to reg
 
 businessEntityPartnership.heading = What type of partnership are you registering?
 businessEntityPartnership.details = Partnership type descriptions
-businessEntityPartnership.general-partnership = Made up of 2 or more people, usually sole traders. One of the partners will be ‘nominated’ to deal with HMRC. Has no legal existence distinct from the partners themselves. Most partnerships are of this type.
-businessEntityPartnership.limited-partnership = Made up of general and limited partners. Must register with Companies House but does not have to file an annual return. The limited partners will have limited liability for debts.
-businessEntityPartnership.scottish-partnership = Same as a general partnership but is a separate legal entity distinct from the partners themselves. The business address must be registered in Scotland.
-businessEntityPartnership.scottish-limited-partnership = Similar to a limited partnership. Made up of general and limited partners. It has a separate legal entity and the limited partners have limited liability for debts. The business address must be registered in Scotland.
-businessEntityPartnership.limited-liability-partnership = Must be registered at Companies House. Taxed as partnerships but have the benefits of being a corporate entity. All the partners have limited liability for debts.
+businessEntityPartnership.general-partnership = These are made up of 2 or more people. One of the partners will be ‘nominated’ to deal with HMRC. General partnerships have no legal existence separate to the partners themselves.
+businessEntityPartnership.limited-partnership = These are made up of general and limited partners. They must register with Companies House but they do not have to file an annual return. The limited partners will have limited liability for debts.
+businessEntityPartnership.scottish-partnership = These are the same as general partnerships but they are a legal entity, separate to the partners themselves. The business address must be registered in Scotland.
+businessEntityPartnership.scottish-limited-partnership = These are similar to limited partnerships. They are made up of general and limited partners. It has a separate legal entity and the limited partners have limited liability for debts. The business address must be registered in Scotland.
+businessEntityPartnership.limited-liability-partnership = These must be registered at Companies House. They are taxed as partnerships but they have the benefits of being a corporate entity. All the partners have limited liability for debts.
 businessEntityPartnership.error.required = Select the type of partnership you want to register for VAT
 
 businessEntity.limited-company = Limited company (includes Unlimited companies)
@@ -85,9 +85,9 @@ businessEntity.unincorporated-association = Unincorporated Association
 businessEntity.division = Division
 
 businessEntityOverseas.heading = What type of business do you want to register for VAT?
-businessEntityOverseas.hint = An NETP is any person who is not normally resident in the UK or does not have a UK establishment.
+businessEntityOverseas.hint = A NETP is any person who is not normally resident in the UK or does not have a UK establishment.
 businessEntityOverseas.netp = Non-established taxable person (NETP)
-businessEntityOverseas.overseas = Non UK Company
+businessEntityOverseas.overseas = Non-UK Company
 businessEntityOverseas.error.required = Select the type of business you want to register for VAT
 
 thresholdNextThirtyDays.heading.business            = Does the business expect to make more than £85,000 in a single month or a 30-day period?
@@ -207,6 +207,8 @@ internationalActivities.linkParagraph = to find out if the EU exit will impact y
 internationalActivities.bulletText = Tell us if the business will:
 internationalActivities.bullet1 = sell assets bought from outside the UK and claim a repayment of VAT under Directive 2008/9EC or Thirteenth VAT Directive
 internationalActivities.bullet2 = sell goods into Northern Ireland from an EU member state
+internationalActivities.details.heading = What is Directive 2008/9EC or Thirteenth VAT directive?
+internationalActivities.details.para = This Directive is used to reclaim VAT paid in EU member states.
 
 zeroRatedSales.heading.business = Does the business sell mainly zero-rated goods or services?
 zeroRatedSales.heading.partnership = Does the partnership sell mainly zero-rated goods or services?
@@ -223,7 +225,9 @@ zeroRatedSales.linkText = Find out about VAT rates on different goods and servic
 
 registeringBusiness.heading = Whose business do you want to register?
 registeringBusiness.radioOwn = Your own
+registeringBusiness.radioOwn.hint = Select this option if you are the owner or proprietor of the business you wish to register.
 registeringBusiness.radioElse = Someone else’s
+registeringBusiness.radioElse.hint = Select this option if you are an employee of the business you are registering or were otherwise asked to complete this registration on behalf of someone else.
 registeringBusiness.error.required = Select whose business you want to register
 
 nino.heading = Do you have a UK National Insurance number?
@@ -299,6 +303,7 @@ registrationReason.sellingGoods.radio     = It’s selling goods or services and
 registrationReason.takingOver.radio       = It’s taking over a VAT registered business as a Transfer of a Going Concern
 registrationReason.changingEntity.radio   = You’re changing the legal entity of the business (for example, from sole trader to limited company)
 registrationReason.settingUp.radio        = You’re setting up a VAT group
+registrationReason.settingUp.hint         = A group of businesses treated as one entity for VAT purposes.
 registrationReason.ukExporter.radio       = It’s a UK established overseas exporter
 registrationReason.ukExporter.hint        = The business is established within the UK and will only make taxable supplies outside of the UK.
 registrationReason.error                  = Select the reason you want to register the business for VAT
@@ -332,7 +337,7 @@ keepOldVrn.bullet2.cole                             = you must apply for VAT no 
 
 vatNumber.heading.togc                              = What is the VAT registration number of the business being taken over?
 vatNumber.heading.cole                              = What is the business’s current VAT registration number?
-vatNumber.text                                      = This is 9 numbers, for example 123456789. You can find it on the business VAT registration certificate.
+vatNumber.hintText                                  = This is 9 numbers, for example 123456789. You can find it on the business VAT registration certificate.
 vatNumber.error.togc.required                       = Enter the VAT registration number of the business being taken over
 vatNumber.error.cole.required                       = Enter the business’s current VAT registration number.
 vatNumber.error.length                              = VAT number must be 9 numbers
@@ -346,6 +351,7 @@ termsAndConditions.bullet2                          = to submit any of the previ
 termsAndConditions.bullet3                          = to pay HMRC any VAT due on the previous owner’s stocks, assets and any supplies they made
 termsAndConditions.bullet4                          = that any VAT return the previous owner made after the transfer date, will be treated as though made by the current business
 termsAndConditions.bullet5                          = it will have no right to claim money HMRC paid the previous owner before the transfer of the business
+termsAndConditions.bullet6.togc                     = to obtain and keep the business trading records
 termsAndConditions.button                           = Accept and continue
 
 checkYourAnswers.thresholdInTwelveMonths.business                   = Has the business’s taxable turnover gone over £85,000 in any 12 month period?

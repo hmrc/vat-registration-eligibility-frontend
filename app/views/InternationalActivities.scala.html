@@ -29,7 +29,8 @@
     formWithCsrf: FormWithCSRF,
     yesNoRadio: components.yesNoRadio,
     button: components.button,
-    link: components.link
+    link: components.link,
+    details: components.details
 )
 
 @(form: Form[_], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
@@ -60,6 +61,10 @@
         messages("internationalActivities.bullet2")
     )
 
+    @details(
+        summary = messages("internationalActivities.details.heading"),
+        content = detailsContent
+    )
 
     @formWithCsrf(action = InternationalActivitiesController.onSubmit(), 'autoComplete -> "off") {
         @yesNoRadio(
@@ -72,4 +77,8 @@
         @button(messages("site.continue"))
     }
 
+}
+
+@detailsContent = {
+    @messages("internationalActivities.details.para")
 }

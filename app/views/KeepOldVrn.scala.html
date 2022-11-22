@@ -22,7 +22,7 @@
     layout: views.html.layouts.layout,
     errorSummary: components.errorSummary,
     formWithCsrf: FormWithCSRF,
-    conditionalYesNoRadio: components.conditionalYesNoRadio,
+    yesNoRadio: components.yesNoRadio,
     button: components.button,
     p: components.p,
     bullets: components.bullets,
@@ -45,10 +45,11 @@
     )
 
     @formWithCsrf(action = KeepOldVrnController.onSubmit, 'autoComplete -> "off") {
-        @conditionalYesNoRadio(
+        @yesNoRadio(
             form = form,
             headingKey = "keepOldVrn.heading",
             isPageHeading = false,
+            inline = true,
             classes = "govuk-visually-hidden"
         )
 

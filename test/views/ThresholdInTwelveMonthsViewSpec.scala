@@ -40,6 +40,8 @@ class ThresholdInTwelveMonthsViewSpec extends ViewSpecBase {
     val para2 = "Find out more about how to calculate VAT taxable turnover (opens in new tab)"
     val paragraph = "The business must monitor its turnover every month and add up the total amount to cover the last 12 months. This is called a ‘rolling 12 month period’. If one month’s turnover takes the business over £85,000 in any rolling 12 month period, it must register for VAT. " + para1 + para2
     val detailsHeading = "What is taxable turnover?"
+    val detailsPara = "VAT taxable turnover is the total value of everything sold that is not exempt from VAT."
+    val detailsLinkPara = "Find out more about how to calculate VAT taxable turnover"
     val bullet1 = "Yes"
     val bullet2 = "No"
     val h2Business = "Has the business’s taxable turnover gone over £85,000 in any 12 month period? When did the business go over the threshold?"
@@ -68,8 +70,16 @@ class ThresholdInTwelveMonthsViewSpec extends ViewSpecBase {
         doc.select(Selectors.p(1)).text() mustBe ExpectedContent.paragraph
       }
 
-      "have a dropdown heading" in {
+      "have the correct progressive disclosure heading" in {
         doc.select(Selectors.detailsSummary).text() mustBe ExpectedContent.detailsHeading
+      }
+
+      "have the correct content in the progressive disclosure" in {
+        doc.select(Selectors.detailsContent).text() must
+          (
+            include(ExpectedContent.detailsPara) and
+              include(ExpectedContent.detailsLinkPara)
+            )
       }
 
       "have a continue button" in {

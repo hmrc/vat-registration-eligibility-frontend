@@ -16,11 +16,14 @@
 
 package views
 
+import models.{ChangingLegalEntityOfBusiness, TakingOverBusiness}
 import views.html.TermsAndConditions
 
 class TermsAndConditionsViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix = "termsAndConditions"
+  val togc = "togc"
+  val cole = "cole"
 
   val h1 = "Terms and conditions"
   val para = "By choosing to keep its current VAT registration number, the business agrees:"
@@ -29,6 +32,7 @@ class TermsAndConditionsViewSpec extends ViewSpecBase {
   val bullet3 = "to pay HMRC any VAT due on the previous owner’s stocks, assets and any supplies they made"
   val bullet4 = "that any VAT return the previous owner made after the transfer date, will be treated as though made by the current business"
   val bullet5 = "it will have no right to claim money HMRC paid the previous owner before the transfer of the business"
+  val bullet6 = "to obtain and keep the business trading records"
   val button = "Accept and continue"
 
   val view = app.injector.instanceOf[TermsAndConditions]
@@ -36,7 +40,7 @@ class TermsAndConditionsViewSpec extends ViewSpecBase {
   object Selectors extends BaseSelectors
 
   "TermsAndConditions view" must {
-    lazy val doc = asDocument(view()(fakeRequest, messages, frontendAppConfig))
+    lazy val doc = asDocument(view(Some(ChangingLegalEntityOfBusiness))(fakeRequest, messages, frontendAppConfig))
 
     "have the correct browser title" in {
       doc.select(Selectors.title).text() mustBe title(h1)
@@ -54,12 +58,22 @@ class TermsAndConditionsViewSpec extends ViewSpecBase {
       doc.select(Selectors.p(1)).text() mustBe para
     }
 
-    "have bullets with the correct text" in {
+    s"have bullets with the correct text when registration reason is $cole" in {
       doc.select(Selectors.bullet(1)).get(0).text() mustBe bullet1
       doc.select(Selectors.bullet(2)).get(0).text() mustBe bullet2
       doc.select(Selectors.bullet(3)).get(0).text() mustBe bullet3
       doc.select(Selectors.bullet(4)).get(0).text() mustBe bullet4
       doc.select(Selectors.bullet(5)).get(0).text() mustBe bullet5
+    }
+
+    s"have bullets with the correct text when registration reason is $togc" in {
+      lazy val doc = asDocument(view(Some(TakingOverBusiness))(fakeRequest, messages, frontendAppConfig))
+      doc.select(Selectors.bullet(1)).get(0).text() mustBe bullet1
+      doc.select(Selectors.bullet(2)).get(0).text() mustBe bullet2
+      doc.select(Selectors.bullet(3)).get(0).text() mustBe bullet3
+      doc.select(Selectors.bullet(4)).get(0).text() mustBe bullet4
+      doc.select(Selectors.bullet(5)).get(0).text() mustBe bullet5
+      doc.select(Selectors.bullet(6)).get(0).text() mustBe bullet6
     }
   }
 }

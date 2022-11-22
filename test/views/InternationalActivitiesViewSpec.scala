@@ -18,21 +18,25 @@ package views
 
 import forms.InternationalActivitiesFormProvider
 import models.NormalMode
+import utils.JsoupElementExtractor
 import views.html.InternationalActivities
 
-class InternationalActivitiesViewSpec extends ViewSpecBase {
+class InternationalActivitiesViewSpec extends ViewSpecBase with JsoupElementExtractor {
 
   val messageKeyPrefix = "internationalActivities"
   val form = new InternationalActivitiesFormProvider()()
 
   val h1Business = "Will the business do any of the following activities over the next 12 months?"
   val h1Partnership = "Will the partnership do any of the following activities over the next 12 months?"
-  val linkParagraph ="Use the GOV.UK Brexit checker (opens in new tab) to find out if the EU exit will impact your business."
+  val linkParagraph = "Use the GOV.UK Brexit checker (opens in new tab) to find out if the EU exit will impact your business."
   val paragraph = "Tell us if the business will:"
   val bullet1 = "sell assets bought from outside the UK and claim a repayment of VAT under Directive 2008/9EC or Thirteenth VAT Directive"
   val bullet2 = "sell goods into Northern Ireland from an EU member state"
+  val detailsHeading = "What is Directive 2008/9EC or Thirteenth VAT directive?"
+  val detailsContent = "This Directive is used to reclaim VAT paid in EU member states."
 
-  val view = app.injector.instanceOf[InternationalActivities]
+  val view: InternationalActivities = app.injector.instanceOf[InternationalActivities]
+
   object Selectors extends BaseSelectors
 
   "InternationalActivities view" when {
@@ -61,7 +65,7 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
       }
 
       "have the correct link paragraph text" in {
-        doc.select(Selectors.p(1)).text() mustBe linkParagraph
+        doc.select(Selectors.p(1)).getTextContent(1) mustBe Some(linkParagraph)
       }
 
       "have the correct paragraph" in {
@@ -72,7 +76,16 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
         doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
         doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
       }
+
+      "have the correct progressive disclosure heading" in {
+        doc.select(Selectors.detailsSummary).text() mustBe detailsHeading
+      }
+
+      "have the correct content in the progressive disclosure" in {
+        doc.select(Selectors.detailsContent).text() mustBe detailsContent
+      }
     }
+
     "Business entity is partnership" must {
 
       val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequest, messages, frontendAppConfig))
@@ -109,8 +122,15 @@ class InternationalActivitiesViewSpec extends ViewSpecBase {
         doc.select(Selectors.bullet(1)).first().text() mustBe bullet1
         doc.select(Selectors.bullet(2)).first().text() mustBe bullet2
       }
+
+      "have the correct progressive disclosure heading" in {
+        doc.select(Selectors.detailsSummary).text() mustBe detailsHeading
+      }
+
+      "have the correct content in the progressive disclosure" in {
+        doc.select(Selectors.detailsContent).text() mustBe detailsContent
+      }
     }
   }
-  
 
 }
