@@ -35,6 +35,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
   def pageIdToPageLoad(pageId: Identifier): Call = pageId match {
     case FixedEstablishmentId => routes.FixedEstablishmentController.onPageLoad
     case BusinessEntityId => routes.BusinessEntityController.onPageLoad
+    case BusinessEntityPartnershipId => routes.BusinessEntityPartnershipController.onPageLoad
     case BusinessEntityOverseasId => routes.BusinessEntityOverseasController.onPageLoad
     case ThresholdNextThirtyDaysId => routes.ThresholdNextThirtyDaysController.onPageLoad
     case ThresholdPreviousThirtyDaysId => routes.ThresholdPreviousThirtyDaysController.onPageLoad
