@@ -84,16 +84,16 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
           | "data":[
           | {"questionId":"fixedEstablishment","question":"eligibility.cya.fixedEstablishment","answer":"eligibility.site.yes","answerValue":true},
           | {"questionId":"businessEntity","question":"eligibility.cya.businessEntity","answer":"eligibility.businessEntity.limited-company","answerValue":"50"},
-          | {"questionId":"agriculturalFlatRateScheme","question":"eligibility.cya.agriculturalFlatRateScheme.business","answer":"eligibility.site.no","answerValue":false},
-          | {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities.business","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"agriculturalFlatRateScheme","question":"eligibility.cya.agriculturalFlatRateScheme","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities","answer":"eligibility.site.no","answerValue":false},
           | {"questionId":"involvedInOtherBusiness","question":"eligibility.cya.involvedInOtherBusiness","answer":"eligibility.site.no","answerValue":false},
-          | {"questionId":"racehorses","question":"eligibility.cya.racehorses.business","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"racehorses","question":"eligibility.cya.racehorses","answer":"eligibility.site.no","answerValue":false},
           | {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
-          | {"questionId":"registrationReason","question":"eligibility.cya.registrationReason.business","answer":"eligibility.registrationReason.sellingGoods.radio","answerValue":"selling-goods-and-services"},
+          | {"questionId":"registrationReason","question":"eligibility.cya.registrationReason","answer":"eligibility.registrationReason.sellingGoods.radio","answerValue":"selling-goods-and-services"},
           | {"questionId":"nino","question":"eligibility.cya.nino","answer":"eligibility.site.yes","answerValue":true},
-          | {"questionId":"thresholdInTwelveMonths","question":"eligibility.cya.thresholdInTwelveMonths.business","answer":"eligibility.site.no","answerValue":false},
-          | {"questionId":"thresholdNextThirtyDays","question":"eligibility.cya.thresholdNextThirtyDays.business","answer":"eligibility.site.no","answerValue":false},
-          | {"questionId":"voluntaryRegistration","question":"eligibility.cya.voluntaryRegistration.business","answer":"eligibility.site.yes","answerValue":true}
+          | {"questionId":"thresholdInTwelveMonths","question":"eligibility.cya.thresholdInTwelveMonths","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"thresholdNextThirtyDays","question":"eligibility.cya.thresholdNextThirtyDays","answer":"eligibility.site.no","answerValue":false},
+          | {"questionId":"voluntaryRegistration","question":"eligibility.cya.voluntaryRegistration","answer":"eligibility.site.yes","answerValue":true}
           |]}]}
           |""".stripMargin)
     }
@@ -133,12 +133,12 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
            |      "data":[
            |        {"questionId":"fixedEstablishment","question":"eligibility.cya.fixedEstablishment","answer":"eligibility.site.yes","answerValue":true},
            |        {"questionId":"businessEntity","question":"eligibility.cya.businessEntity","answer":"eligibility.businessEntity.limited-company","answerValue":"50"},
-           |        {"questionId":"agriculturalFlatRateScheme","question":"eligibility.cya.agriculturalFlatRateScheme.business","answer":"eligibility.site.no","answerValue":false},
-           |        {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities.business","answer":"eligibility.site.no","answerValue":false},
+           |        {"questionId":"agriculturalFlatRateScheme","question":"eligibility.cya.agriculturalFlatRateScheme","answer":"eligibility.site.no","answerValue":false},
+           |        {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities","answer":"eligibility.site.no","answerValue":false},
            |        {"questionId":"involvedInOtherBusiness","question":"eligibility.cya.involvedInOtherBusiness","answer":"eligibility.site.no","answerValue":false},
-           |        {"questionId":"racehorses","question":"eligibility.cya.racehorses.business","answer":"eligibility.site.no","answerValue":false},
+           |        {"questionId":"racehorses","question":"eligibility.cya.racehorses","answer":"eligibility.site.no","answerValue":false},
            |        {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
-           |        {"questionId":"registrationReason","question":"eligibility.cya.registrationReason.business","answer":"eligibility.registrationReason.takingOver.radio","answerValue":"taking-over-business"},
+           |        {"questionId":"registrationReason","question":"eligibility.cya.registrationReason","answer":"eligibility.registrationReason.takingOver.radio","answerValue":"taking-over-business"},
            |        {"questionId":"nino","question":"eligibility.cya.nino","answer":"eligibility.site.yes","answerValue":true},
            |        {"questionId":"dateOfBusinessTransfer","question":"eligibility.cya.dateOfBusinessTransfer.togc","answer":"${LocalDate.now().format(service.formatter)}","answerValue":"${LocalDate.now()}"},
            |        {"questionId":"previousBusinessName","question":"eligibility.cya.previousBusinessName.togc","answer":"$testPreviousName","answerValue":"$testPreviousName"},

@@ -117,11 +117,6 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
           case Some(ChangingLegalEntityOfBusiness) => s"cya.$key$optDataKey.cole"
           case _ => throw new InternalServerException("Attempted to submit togc/cole data without a matching reg reason")
         }
-      case InternationalActivitiesId | AgriculturalFlatRateSchemeId | RacehorsesId |
-           VoluntaryRegistrationId | ThresholdInTwelveMonthsId | ThresholdNextThirtyDaysId |
-           ThresholdPreviousThirtyDaysId | RegistrationReasonId =>
-        val businessOrPartnership = if (data.userAnswers.isPartnership) ".partnership" else ".business"
-        s"cya.$key$optDataKey$businessOrPartnership"
       case _ =>
         s"cya.$key$optDataKey"
     }
