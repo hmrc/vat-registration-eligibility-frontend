@@ -26,7 +26,7 @@ import play.api.data.{Form, FormError}
 import javax.inject.Singleton
 
 @Singleton
-class BusinessEntityOverseasFormProvider extends FormErrorHelper with Mappings {
+class BusinessEntityOverseasFormProvider extends Mappings {
 
   val businessEntity: String = "value"
   val businessEntityError: String = "businessEntityOverseas.error.required"

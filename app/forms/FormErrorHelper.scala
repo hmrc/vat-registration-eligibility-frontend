@@ -16,8 +16,14 @@
 
 package forms
 
-import play.api.data.FormError
+import play.api.data.validation.{Constraint, Valid}
 
 trait FormErrorHelper {
-  def produceError(key: String, error: String) = Left(Seq(FormError(key, error)))
+  def stopOnFail[T](constraints: Constraint[T]*): Constraint[T] = Constraint { field: T =>
+    constraints.toList.dropWhile(constraint => constraint(field) == Valid) match {
+      case Nil => Valid
+      case constraint :: _ => constraint(field)
+    }
+  }
+
 }

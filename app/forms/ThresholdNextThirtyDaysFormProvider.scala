@@ -29,7 +29,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ThresholdNextThirtyDaysFormProvider @Inject()(timeMachine: TimeMachine) extends FormErrorHelper with Mappings {
+class ThresholdNextThirtyDaysFormProvider @Inject()(timeMachine: TimeMachine) extends Mappings {
 
   val thresholdNextThirtyDaysSelection = "value"
   val thresholdNextThirtyDaysDate = s"${ThresholdNextThirtyDaysId}Date"

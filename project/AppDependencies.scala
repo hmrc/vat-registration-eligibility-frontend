@@ -8,16 +8,13 @@ private object AppDependencies {
   private val scalaTestPlusPlayVersion = "5.1.0"
   private val mockitoVersion = "4.8.1"
   private val httpCachingClientVersion = "10.0.0-play-28"
-  private val mongoPlayVersion = "0.73.0"
+  private val mongoPlayVersion = "0.74.0"
   private val playConditionalFormMappingVersion = "1.12.0-play-28"
-  private val bootstrapVersion = "7.8.0"
+  private val bootstrapVersion = "7.12.0"
   private val jsoupVersion = "1.15.3"
   private val scoverageVersion = "1.4.1"
   private val wireMockVersion = "2.27.2"
-
-
-  private val playHmrcFrontendVersion = "3.32.0-play-28"
-  private val playUiVersion = "9.11.0-play-28"
+  private val playHmrcFrontendVersion = "3.34.0-play-28"
 
   val compile = Seq(
     ws,
@@ -25,8 +22,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % playConditionalFormMappingVersion,
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapVersion,
-    "uk.gov.hmrc" %% "play-frontend-hmrc" % playHmrcFrontendVersion,
-    "uk.gov.hmrc" %% "play-ui" % playUiVersion
+    "uk.gov.hmrc" %% "play-frontend-hmrc" % playHmrcFrontendVersion
   )
 
   trait TestDependencies {

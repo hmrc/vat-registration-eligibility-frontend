@@ -19,10 +19,10 @@ package forms
 import forms.mappings.Mappings
 import play.api.data.Form
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class VoluntaryRegistrationFormProvider @Inject() extends FormErrorHelper with Mappings {
+class VoluntaryRegistrationFormProvider extends Mappings {
 
   def apply(): Form[Boolean] =
     Form(

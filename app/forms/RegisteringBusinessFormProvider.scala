@@ -23,10 +23,10 @@ import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError}
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class RegisteringBusinessFormProvider @Inject() extends FormErrorHelper with Mappings {
+class RegisteringBusinessFormProvider extends Mappings {
 
   val registeringBusiness: String = "value"
   val registeringBusinessError: String = "registeringBusiness.error.required"

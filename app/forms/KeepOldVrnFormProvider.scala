@@ -19,10 +19,10 @@ package forms
 import forms.mappings.Mappings
 import play.api.data.Form
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class KeepOldVrnFormProvider @Inject() extends FormErrorHelper with Mappings {
+class KeepOldVrnFormProvider extends Mappings {
 
   def apply(togcColeKey: String): Form[Boolean] = {
     Form(

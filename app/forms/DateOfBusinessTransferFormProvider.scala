@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DateOfBusinessTransferFormProvider @Inject()(timeMachine: TimeMachine) extends FormErrorHelper with Mappings {
+class DateOfBusinessTransferFormProvider @Inject()(timeMachine: TimeMachine) extends Mappings {
 
   val relevantDate = "relevantDate"
 

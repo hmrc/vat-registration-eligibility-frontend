@@ -19,12 +19,11 @@ package forms
 import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms.single
-import uk.gov.hmrc.play.mappers.StopOnFirstFail
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class VATNumberFormProvider  @Inject() extends FormErrorHelper with Mappings {
+class VATNumberFormProvider extends FormErrorHelper with Mappings {
 
   val vatNumberKey = "vatNumber"
   val errorKeyRoot = s"vatNumber.error"
@@ -39,7 +38,7 @@ class VATNumberFormProvider  @Inject() extends FormErrorHelper with Mappings {
     Form[String](
       single(
         vatNumberKey -> text(vatNumberRequired).verifying(
-          StopOnFirstFail(
+          stopOnFail(
             minLength(length, vatNumberLength),
             maxLength(length, vatNumberLength),
             regexp(regex, nonNumeric),

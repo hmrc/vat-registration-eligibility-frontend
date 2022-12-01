@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ThresholdTaxableSuppliesFormProvider @Inject()(timeMachine: TimeMachine) extends FormErrorHelper with Mappings {
+class ThresholdTaxableSuppliesFormProvider @Inject()(timeMachine: TimeMachine) extends Mappings {
 
   val thresholdTaxableSuppliesDate = s"${ThresholdTaxableSuppliesId}Date"
   val errorKeyRoot = "thresholdTaxableSupplies.error"
