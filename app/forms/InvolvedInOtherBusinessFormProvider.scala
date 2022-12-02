@@ -20,10 +20,10 @@ import featureswitch.core.config.{FeatureSwitching, OBIFlow, TOGCFlow}
 import forms.mappings.Mappings
 import play.api.data.Form
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class InvolvedInOtherBusinessFormProvider @Inject() extends FormErrorHelper with Mappings with FeatureSwitching {
+class InvolvedInOtherBusinessFormProvider extends Mappings with FeatureSwitching {
 
   def form: Form[Boolean] = {
     val key = if (isEnabled(TOGCFlow) && isEnabled(OBIFlow)) {

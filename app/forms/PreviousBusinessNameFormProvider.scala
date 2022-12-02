@@ -20,10 +20,10 @@ import forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms.single
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class PreviousBusinessNameFormProvider @Inject() extends FormErrorHelper with Mappings {
+class PreviousBusinessNameFormProvider extends Mappings {
 
   val previousBusinessNameKey = "previousBusinessName"
   val errorKeyRoot = s"previousBusinessName.error"

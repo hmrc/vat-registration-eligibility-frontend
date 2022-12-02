@@ -23,10 +23,10 @@ import play.api.data.Forms._
 import play.api.data.format.Formatter
 import play.api.data.{Form, FormError}
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 @Singleton
-class RegistrationReasonFormProvider @Inject() extends FormErrorHelper with Mappings {
+class RegistrationReasonFormProvider extends Mappings {
 
   val registrationReason: String = "value"
   val registrationReasonError: String = "registrationReason.error"
