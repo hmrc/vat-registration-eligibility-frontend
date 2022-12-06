@@ -251,8 +251,8 @@ vatExceptionKickout.p1 = Mae eithriad yn golygu na fydd yn rhaid i chi gofrestru
 vatExceptionKickout.yesText = Hoffwn ofyn am eithriad
 vatExceptionKickout.noText = Ni hoffwn ofyn am eithriad
 
-applyInWriting.title = Mae’n rhaid i chi mewn cais ysgrifenedig
-applyInWriting.heading = Mae’n rhaid i chi mewn cais ysgrifenedig
+applyInWriting.title = Mae’n rhaid i chi wneud cais ysgrifenedig
+applyInWriting.heading = Mae’n rhaid i chi wneud cais ysgrifenedig
 applyInWriting.text = Defnyddiwch ffurflen VAT1 i wneud cais am eithriad rhag cofrestru ar gyfer TAW.
 
 individualKickout.title = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
