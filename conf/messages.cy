@@ -207,8 +207,8 @@ internationalActivities.linkParagraph = i gael gwybod a fydd ymadael â’r UE y
 internationalActivities.bulletText = Rhowch wybod i ni os bydd y busnes:
 internationalActivities.bullet1 = yn gwerthu asedion a brynwyd o’r tu allan i’r DU ac yn hawlio ad-daliad TAW o dan Gyfarwyddeb 2008/9EC neu’r drydedd Gyfarwyddeb TAW ar ddeg
 internationalActivities.bullet2 = yn gwerthu nwyddau i mewn i Ogledd Iwerddon o un o aelod-wladwriaethau’r UE
-internationalActivities.details.heading = What is Directive 2008/9EC or Thirteenth VAT directive?
-internationalActivities.details.para = This Directive is used to reclaim VAT paid in EU member states.
+internationalActivities.details.heading = Beth yw Cyfarwyddeb 2008/9EC neu’r drydedd Gyfarwyddeb TAW ar ddeg?
+internationalActivities.details.para = Defnyddir y Gyfarwyddeb hon i adennill TAW a dalwyd mewn Aelod-wladwriaethau’r UE.
 
 zeroRatedSales.heading.business = A yw’r busnes yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf?
 zeroRatedSales.heading.partnership = A yw’r bartneriaeth yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf?
@@ -225,9 +225,9 @@ zeroRatedSales.linkText = Dysgu am gyfraddau TAW ar wahanol nwyddau a gwasanaeth
 
 registeringBusiness.heading = Busnes pwy hoffech ei gofrestru?
 registeringBusiness.radioOwn = Eich un chi
-registeringBusiness.radioOwn.hint = Select this option if you are the owner or proprietor of the business you wish to register.
+registeringBusiness.radioOwn.hint = Dewiswch yr opsiwn hwn os mai chi yw perchennog y busnes yr ydych yn dymuno ei gofrestru.
 registeringBusiness.radioElse = Un rhywun arall
-registeringBusiness.radioElse.hint = Select this option if you are an employee of the business you are registering or were otherwise asked to complete this registration on behalf of someone else.
+registeringBusiness.radioElse.hint = Dewiswch yr opsiwn hwn os ydych yn gyflogai i’r cwmni rydych yn ei gofrestru neu fel arall, y gofynnwyd i chi gwblhau’r cofrestriad hwn ar ran rhywun arall.
 registeringBusiness.error.required = Dewiswch fusnes pwy yr hoffech ei gofrestru
 
 nino.heading = A oes gennych rif Yswiriant Gwladol yn y DU?
@@ -351,7 +351,7 @@ termsAndConditions.bullet2                          = i gyflwyno unrhyw un o Ffu
 termsAndConditions.bullet3                          = i dalu unrhyw TAW sy’n ddyledus i CThEM ar stociau ac asedion y perchennog blaenorol, ac unrhyw gyflenwadau a wnaed ganddo
 termsAndConditions.bullet4                          = y bydd unrhyw Ffurflen TAW a wnaed gan y perchennog blaenorol ar ôl y dyddiad trosglwyddo yn cael ei thrin fel pe bai wedi’i gwneud gan y busnes presennol
 termsAndConditions.bullet5                          = na fydd yn cael hawlio arian a dalwyd gan CThEM i’r perchennog blaenorol cyn trosglwyddo’r busnes
-termsAndConditions.togcBullet6                      = to obtain and keep the business trading records
+termsAndConditions.togcBullet6                      = i gael gafael ar gofnodion masnachu’r busnes a’u cadw
 termsAndConditions.button                           = Derbyn ac yn eich blaen
 
 checkYourAnswers.thresholdInTwelveMonths.business                   = A yw trosiant trethadwy’r busnes wedi mynd dros £85,000 yn ystod unrhyw gyfnod o 12 mis?
