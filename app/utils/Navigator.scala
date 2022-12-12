@@ -42,7 +42,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case VoluntaryRegistrationId => routes.VoluntaryRegistrationController.onPageLoad
     case ChoseNotToRegisterId => routes.ChoseNotToRegisterController.onPageLoad
     case ThresholdInTwelveMonthsId => routes.ThresholdInTwelveMonthsController.onPageLoad
-    case InvolvedInOtherBusinessId => routes.InvolvedInOtherBusinessController.onPageLoad
     case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad
     case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad
     case NinoId => routes.NinoController.onPageLoad
@@ -160,12 +159,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       }
     },
     InternationalActivitiesId -> { userAnswers =>
-      def nextPage = if (isEnabled(OBIFlow) && isEnabled(VATGroupFlow) && isEnabled(TOGCFlow) && isEnabled(LandAndProperty)) {
+      def nextPage = if (isEnabled(LandAndProperty)) {
         pageIdToPageLoad(RegisteringBusinessId)
-      } else if (isEnabled(OBIFlow) && isEnabled(VATGroupFlow) && isEnabled(TOGCFlow)) {
-        pageIdToPageLoad(RacehorsesId)
       } else {
-        pageIdToPageLoad(InvolvedInOtherBusinessId)
+        pageIdToPageLoad(RacehorsesId)
       }
 
       userAnswers.businessEntity match {
@@ -186,13 +183,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       onSuccessPage = EligibilityDropoutId(VATExceptionKickoutId.toString),
       onFailPage = EligibilityDropoutId(VATRegistrationExceptionId.toString)
     ),
-    InvolvedInOtherBusinessId -> { userAnswers =>
-      userAnswers.involvedInOtherBusiness match {
-        case Some(true) => pageIdToPageLoad(VATExceptionKickoutId)
-        case Some(false) if isEnabled(LandAndProperty) => pageIdToPageLoad(RegisteringBusinessId)
-        case Some(false) => pageIdToPageLoad(RacehorsesId)
-      }
-    },
     nextOn(false,
       fromPage = RacehorsesId,
       onSuccessPage = RegisteringBusinessId,
@@ -200,11 +190,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     ),
     RegisteringBusinessId -> { userAnswers =>
       userAnswers.registeringBusiness match {
-        case Some(OwnBusiness) if !isEnabled(TOGCFlow) && userAnswers.isOverseas =>
-          pageIdToPageLoad(TaxableSuppliesInUkId)
         case Some(OwnBusiness) => pageIdToPageLoad(RegistrationReasonId)
-        case Some(SomeoneElse) if !isEnabled(TOGCFlow) && isEnabled(ThirdPartyTransactorFlow) && userAnswers.isOverseas =>
-          pageIdToPageLoad(TaxableSuppliesInUkId)
         case Some(SomeoneElse) if isEnabled(ThirdPartyTransactorFlow) => pageIdToPageLoad(RegistrationReasonId)
         case Some(SomeoneElse) => pageIdToPageLoad(VATExceptionKickoutId)
       }

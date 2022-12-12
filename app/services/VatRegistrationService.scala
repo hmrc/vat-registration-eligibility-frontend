@@ -17,7 +17,7 @@
 package services
 
 import connectors.VatRegistrationConnector
-import featureswitch.core.config.{FeatureSwitching, OBIFlow, TOGCFlow}
+import featureswitch.core.config.FeatureSwitching
 import identifiers._
 import models.BusinessEntity.businessEntityToString
 import models.RegisteringBusiness.registeringBusinessToString
@@ -101,16 +101,6 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
   private def messageFormatter(key: Identifier, isOptData: Boolean = false)(implicit data: DataRequest[_]): String = {
     val optDataKey = if (isOptData) ".optional" else ""
     val formattedKey = key match {
-      case InvolvedInOtherBusinessId =>
-        if (isEnabled(TOGCFlow) && isEnabled(OBIFlow)) {
-          s"cya.$key.headingVatGroup"
-        } else if (isEnabled(TOGCFlow)) {
-          s"cya.$key.headingObi"
-        } else if (isEnabled(OBIFlow)) {
-          s"cya.$key.headingTakingOver"
-        } else {
-          s"cya.$key"
-        }
       case DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId | TermsAndConditionsId =>
         data.userAnswers.registrationReason match {
           case Some(TakingOverBusiness) => s"cya.$key$optDataKey.togc"
@@ -125,7 +115,7 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
 
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
-  private def answerFormatter[T](answer: T)(implicit r: DataRequest[_]): String =
+  private def answerFormatter[T](answer: T): String =
     answer match {
       case data: Boolean => s"eligibility.site.${if (data) "yes" else "no"}"
       case data: String => data

@@ -36,7 +36,7 @@ class IndexController @Inject()(val authConnector: AuthConnector,
                                (implicit executionContext: ExecutionContext,
                                 mcc: MessagesControllerComponents) extends BaseController with AuthorisedFunctions {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) { implicit request =>
+  def onPageLoad: Action[AnyContent] = (identify andThen getData) { _ =>
     Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
   }
 

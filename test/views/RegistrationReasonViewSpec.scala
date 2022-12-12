@@ -16,7 +16,6 @@
 
 package views
 
-import featureswitch.core.config.TOGCFlow
 import forms.RegistrationReasonFormProvider
 import models.NormalMode
 import utils.JsoupElementExtractor
@@ -24,22 +23,23 @@ import views.html.RegistrationReasonView
 
 class RegistrationReasonViewSpec extends ViewSpecBase with JsoupElementExtractor {
   object Selectors extends BaseSelectors
+
   val form = new RegistrationReasonFormProvider()()
   val view = app.injector.instanceOf[RegistrationReasonView]
 
   object ExpectedContent {
     val headingBusiness = "Why do you want to register the business for VAT?"
-    val titleBusiness   = s"$headingBusiness - Register for VAT - GOV.UK"
+    val titleBusiness = s"$headingBusiness - Register for VAT - GOV.UK"
     val headingPartnership = "Why do you want to register the partnership for VAT?"
-    val titlePartnership   = s"$headingPartnership - Register for VAT - GOV.UK"
-    val radio1  = "It’s selling goods or services and needs or wants to charge VAT to customers"
-    val radio2  = "It’s taking over a VAT registered business as a Transfer of a Going Concern"
-    val radio3  = "You’re changing the legal entity of the business (for example, from sole trader to limited company)"
-    val radio4  = "You’re setting up a VAT group"
-    val hint1   = "A group of businesses treated as one entity for VAT purposes."
-    val radio5  = "It’s a UK established overseas exporter"
-    val hint2    = "The business is established within the UK and will only make taxable supplies outside of the UK."
-    val error   = "Select the reason you want to register the business for VAT"
+    val titlePartnership = s"$headingPartnership - Register for VAT - GOV.UK"
+    val radio1 = "It’s selling goods or services and needs or wants to charge VAT to customers"
+    val radio2 = "It’s taking over a VAT registered business as a Transfer of a Going Concern"
+    val radio3 = "You’re changing the legal entity of the business (for example, from sole trader to limited company)"
+    val radio4 = "You’re setting up a VAT group"
+    val hint1 = "A group of businesses treated as one entity for VAT purposes."
+    val radio5 = "It’s a UK established overseas exporter"
+    val hint2 = "The business is established within the UK and will only make taxable supplies outside of the UK."
+    val error = "Select the reason you want to register the business for VAT"
   }
 
   "RegistrationReason view" when {
@@ -60,8 +60,18 @@ class RegistrationReasonViewSpec extends ViewSpecBase with JsoupElementExtractor
 
       "have the right radio options" in {
         doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio4
-        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio5
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
+        doc.select(Selectors.radio(4)).text() mustBe ExpectedContent.radio4
+        doc.select(Selectors.radio(5)).text() mustBe ExpectedContent.radio5
+      }
+
+      "have the right radio options for an overseas user" in {
+        val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
+
+        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
       }
 
       "have the correct hint text for Setting up VAT Group option" in {
@@ -93,7 +103,17 @@ class RegistrationReasonViewSpec extends ViewSpecBase with JsoupElementExtractor
 
       "have the right radio options" in {
         doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio5
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
+        doc.select(Selectors.radio(4)).text() mustBe ExpectedContent.radio5
+      }
+
+      "have the right radio options for an overseas user" in {
+        val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = true, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
+
+        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
+        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
+        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
       }
 
       "have the correct hint text for UK established overseas exporter option" in {
@@ -104,37 +124,6 @@ class RegistrationReasonViewSpec extends ViewSpecBase with JsoupElementExtractor
         doc.select(Selectors.button).text() mustBe continueButton
       }
     }
-    "VAT group flow is enabled" must {
-      val doc = asDocument(view(form, NormalMode, showVatGroup = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
-
-      "have the right radio options" in {
-        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio4
-        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio5
-      }
-    }
-    "TOGC and COLE is enabled" must {
-      "have the right radio options" in {
-        enable(TOGCFlow)
-        val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = false)(fakeDataRequestIncorped, messages, frontendAppConfig))
-
-        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
-        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
-        doc.select(Selectors.radio(4)).text() mustBe ExpectedContent.radio5
-        disable(TOGCFlow)
-      }
-
-      "have the right radio options for an overseas user" in {
-        enable(TOGCFlow)
-        val doc = asDocument(view(form, NormalMode, showVatGroup = false, isOverseas = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
-
-        doc.select(Selectors.radio(1)).text() mustBe ExpectedContent.radio1
-        doc.select(Selectors.radio(2)).text() mustBe ExpectedContent.radio2
-        doc.select(Selectors.radio(3)).text() mustBe ExpectedContent.radio3
-        disable(TOGCFlow)
-      }
-    }
   }
-  
+
 }

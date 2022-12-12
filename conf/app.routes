@@ -52,9 +52,6 @@ POST       /gone-over-threshold                         controllers.ThresholdInT
 GET        /date-of-taxable-supplies-in-uk              controllers.ThresholdTaxableSuppliesController.onPageLoad
 POST       /date-of-taxable-supplies-in-uk              controllers.ThresholdTaxableSuppliesController.onSubmit()
 
-GET        /involved-more-business-changing-status      controllers.InvolvedInOtherBusinessController.onPageLoad
-POST       /involved-more-business-changing-status      controllers.InvolvedInOtherBusinessController.onSubmit()
-
 GET        /cant-register/:inelligibleType              controllers.EligibilityDropoutController.onPageLoad(inelligibleType: String)
 GET        /errors/business-activities-next-12-months   controllers.EligibilityDropoutController.internationalActivitiesDropout()
 

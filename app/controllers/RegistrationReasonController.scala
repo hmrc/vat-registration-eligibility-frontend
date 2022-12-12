@@ -18,7 +18,6 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
-import featureswitch.core.config.VATGroupFlow
 import forms.RegistrationReasonFormProvider
 import identifiers._
 import models._
@@ -43,8 +42,6 @@ class RegistrationReasonController @Inject()(sessionService: SessionService,
                                              mcc: MessagesControllerComponents,
                                              executionContext: ExecutionContext) extends BaseController {
 
-  def showVatGroup(isUkCompany: Boolean): Boolean = isUkCompany && isEnabled(VATGroupFlow)
-
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.registrationReason match {
@@ -55,7 +52,7 @@ class RegistrationReasonController @Inject()(sessionService: SessionService,
         preparedForm,
         NormalMode,
         request.userAnswers.isPartnership,
-        showVatGroup(request.userAnswers.isUkCompany),
+        request.userAnswers.isUkCompany,
         request.userAnswers.isOverseas
       ))
   }
@@ -70,7 +67,7 @@ class RegistrationReasonController @Inject()(sessionService: SessionService,
                 formWithErrors,
                 NormalMode,
                 request.userAnswers.isPartnership,
-                showVatGroup(request.userAnswers.isUkCompany),
+                request.userAnswers.isUkCompany,
                 request.userAnswers.isOverseas
               )
             )

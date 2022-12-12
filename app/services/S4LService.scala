@@ -22,16 +22,15 @@ import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 @Singleton
-class S4LService @Inject()(val s4LConnector: S4LConnector)
-                          (implicit executionContext: ExecutionContext) {
+class S4LService @Inject()(val s4LConnector: S4LConnector) {
 
   def fetchAndGet[T](id: String, key: String)(implicit hc: HeaderCarrier, format: Format[T]): Future[Option[T]] =
     s4LConnector.fetchAndGet[T](id, key)
 
-  def save[T](id: String,  key: String, data: T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap] =
+  def save[T](id: String, key: String, data: T)(implicit hc: HeaderCarrier, format: Format[T]): Future[CacheMap] =
     s4LConnector.save[T](id, key, data)
 
   def clear(id: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =

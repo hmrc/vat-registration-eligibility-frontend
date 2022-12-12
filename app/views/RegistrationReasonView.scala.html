@@ -15,7 +15,6 @@
  *@
 
 @import config.FrontendAppConfig
-@import featureswitch.core.config._
 @import models.RegistrationReason._
 @import models.requests.DataRequest
 
@@ -51,8 +50,18 @@
                     value = Some(sellingGoodsAndServicesKey),
                     content = Text(Messages("registrationReason.sellingGoods.radio")),
                     checked = regReasonForm("value").value.contains(sellingGoodsAndServicesKey)
+                ),
+                RadioItem(id = Some(takingOverBusinessKey),
+                    value = Some(takingOverBusinessKey),
+                    content = Text(Messages("registrationReason.takingOver.radio")),
+                    checked = regReasonForm("value").value.contains(takingOverBusinessKey)
+                ),
+                RadioItem(id = Some(changingLegalEntityOfBusinessKey),
+                    value = Some(changingLegalEntityOfBusinessKey),
+                    content = Text(Messages("registrationReason.changingEntity.radio")),
+                    checked = regReasonForm("value").value.contains(changingLegalEntityOfBusinessKey)
                 )
-            ) ++ togcAndCole ++ settingUpVatGroup ++ overseasExporter
+            ) ++ settingUpVatGroup ++ overseasExporter
         )
 
         @button(messages("site.continue"))
@@ -86,24 +95,5 @@
                 checked = regReasonForm("value").value.contains(ukEstablishedOverseasExporterKey)
             )
         )
-    }
-}
-
-@togcAndCole = @{
-    if(appConfig.isEnabled(TOGCFlow)) {
-        Seq(
-            RadioItem(id = Some(takingOverBusinessKey),
-                value = Some(takingOverBusinessKey),
-                content = Text(Messages("registrationReason.takingOver.radio")),
-                checked = regReasonForm("value").value.contains(takingOverBusinessKey)
-            ),
-            RadioItem(id = Some(changingLegalEntityOfBusinessKey),
-                value = Some(changingLegalEntityOfBusinessKey),
-                content = Text(Messages("registrationReason.changingEntity.radio")),
-                checked = regReasonForm("value").value.contains(changingLegalEntityOfBusinessKey)
-            )
-        )
-    } else {
-        Nil
     }
 }
