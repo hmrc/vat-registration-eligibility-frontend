@@ -34,7 +34,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$ThresholdNextThirtyDaysId" -> Json.obj("value" -> JsBoolean(false)),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
     s"$InternationalActivitiesId" -> JsBoolean(false),
-    s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
     s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
     s"$NinoId" -> JsBoolean(true),
@@ -52,7 +51,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
     s"$InternationalActivitiesId" -> JsBoolean(false),
-    s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
     s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
     s"$RacehorsesId" -> JsBoolean(false)
@@ -109,7 +107,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
   "throw new exception if voluntary flag does not exist when all 3 threshold q's are no" in {
     val mapOfValuesToBeTested = List(
       s"$ThresholdInTwelveMonthsId" -> Json.obj("value" -> JsBoolean(false)),
-      s"$ThresholdNextThirtyDaysId" -> JsBoolean(false),
+      s"$ThresholdNextThirtyDaysId" -> JsBoolean(false)
     )
     intercept[Exception](PageIdBinding.sectionBindings(new CacheMap("test", listMapWithoutFieldsToBeTested.++:(mapOfValuesToBeTested))))
   }
@@ -277,7 +275,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$FixedEstablishmentId" -> JsBoolean(true),
       s"$BusinessEntityId" -> Json.toJson(partyType),
       s"$InternationalActivitiesId" -> JsBoolean(false),
-      s"$InvolvedInOtherBusinessId" -> JsBoolean(false),
       s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
       s"$RegistrationReasonId" -> Json.toJson(regReason),
       s"$NinoId" -> JsBoolean(true),

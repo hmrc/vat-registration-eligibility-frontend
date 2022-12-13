@@ -30,10 +30,7 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
     PartnershipFlow,
     ThirdPartyTransactorFlow,
     IndividualFlow,
-    VATGroupFlow,
     LandAndProperty,
-    TOGCFlow,
-    OBIFlow,
     WelshLanguage
   )
 
@@ -69,24 +66,9 @@ case object IndividualFlow extends FeatureSwitch {
   override val displayName: String = "Use Individual flow"
 }
 
-case object VATGroupFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.vat-group-flow"
-  override val displayName: String = "Enable VAT Group flow"
-}
-
 case object LandAndProperty extends FeatureSwitch {
   override val configName: String = "feature-switch.land-and-property"
   override val displayName: String = "Enable land and property (hide racehorses page)"
-}
-
-case object TOGCFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.togc-cole-flow"
-  override val displayName: String = "Enable Transfer of Going Concern (TOGC)"
-}
-
-case object OBIFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.other-business-involvement-flow"
-  override val displayName: String = "Enable Other Business Involvement (OBI) flow"
 }
 
 case object WelshLanguage extends FeatureSwitch {

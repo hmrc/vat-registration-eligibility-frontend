@@ -12,7 +12,6 @@ trait VatRegistrationStub {
     ThresholdPreviousThirtyDaysId.toString -> Json.obj("value" -> JsBoolean(false)),
     VoluntaryRegistrationId.toString -> JsBoolean(true),
     InternationalActivitiesId.toString -> JsBoolean(false),
-    InvolvedInOtherBusinessId.toString -> JsBoolean(false),
     VoluntaryRegistrationId.toString -> JsBoolean(true),
     RegisteringBusinessId.toString -> JsBoolean(true),
     NinoId.toString -> JsBoolean(true),

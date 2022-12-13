@@ -1,6 +1,6 @@
 package controllers
 
-import featureswitch.core.config.{FeatureSwitching, IndividualFlow, TOGCFlow, VATGroupFlow}
+import featureswitch.core.config.{FeatureSwitching, IndividualFlow}
 import helpers.{IntegrationSpecBase, S4LStub}
 import identifiers._
 import models.RegistrationReason._
@@ -27,7 +27,6 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
       options.foreach { case (answer, radioKey) =>
         s"when the option is ${answer.toString()}" must {
           "return OK with the answer pre-populated" in new Setup {
-            enable(TOGCFlow)
             stubSuccessfulLogin()
             stubAudits()
             stubS4LGetNothing(testRegId)
@@ -48,7 +47,6 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
       }
       "when the answer is SettingUpVatGroup" must {
         "return OK with the answer pre-populated" in new Setup {
-          enable(VATGroupFlow)
           stubSuccessfulLogin()
           stubAudits()
           stubS4LGetNothing(testRegId)
