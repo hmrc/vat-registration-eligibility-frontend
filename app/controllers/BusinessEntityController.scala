@@ -18,7 +18,6 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions._
-import featureswitch.core.config.SoleTraderFlow
 import forms.BusinessEntityFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
 import models._
@@ -70,8 +69,6 @@ class BusinessEntityController @Inject()(sessionService: SessionService,
           BadRequest(view(formWithErrors, routes.BusinessEntityController.onSubmit()))
         ),
       {
-        case SoleTrader if !isEnabled(SoleTraderFlow) =>
-          Future.successful(Redirect(routes.IndividualKickoutController.onPageLoad))
         case entityType =>
           sessionService.save[BusinessEntity](BusinessEntityId.toString, entityType) map { cacheMap =>
             Redirect(navigator.nextPage(BusinessEntityId, NormalMode)(new UserAnswers(cacheMap)))
