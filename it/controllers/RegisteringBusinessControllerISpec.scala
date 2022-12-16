@@ -16,7 +16,7 @@
 
 package controllers
 
-import featureswitch.core.config.{FeatureSwitching, ThirdPartyTransactorFlow}
+import featureswitch.core.config.FeatureSwitching
 import helpers.IntegrationSpecBase
 import identifiers.{BusinessEntityId, RegisteringBusinessId}
 import models._
@@ -69,7 +69,6 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
       "navigate to Registration Reason Page when own business" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        disable(ThirdPartyTransactorFlow)
 
         val res = await(buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
           .post(Map("value" -> Seq("own"))))
@@ -79,23 +78,9 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
         verifySessionCacheData(sessionId, RegisteringBusinessId, Option.apply[RegisteringBusiness](OwnBusiness))
       }
 
-      "navigate to Vat Exception Kickout when someone else's business" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        disable(ThirdPartyTransactorFlow)
-
-        val res = await(buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
-          .post(Map("value" -> Seq("someone-else"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
-        verifySessionCacheData(sessionId, RegisteringBusinessId, Option.apply[RegisteringBusiness](SomeoneElse))
-      }
-
       "navigate to Registration Reason Page when someone else's business if Third Party Transactor flow" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        enable(ThirdPartyTransactorFlow)
 
         val res = await(buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
           .post(Map("value" -> Seq("someone-else"))))
@@ -108,7 +93,6 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
       "navigate to Registration Reason for own business when flow is NETP" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        disable(ThirdPartyTransactorFlow)
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NETP)
 
         val res = await(buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
@@ -122,7 +106,6 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
       "navigate to Registration Reason for someone else's business when flow is Overseas and ThirdParty flows are enabled" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        enable(ThirdPartyTransactorFlow)
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
 
         val res = await(buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)

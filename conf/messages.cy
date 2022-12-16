@@ -41,9 +41,9 @@ site.continue = Yn eich blaen
 service.name = Cofrestru ar gyfer TAW
 site.opensInNewTab = (yn agor tab newydd)
 
-common.feedbackFirst                                                = Gwasanaeth newydd yw hwn – bydd eich
-common.feedbackSecond                                               = adborth
-common.feedbackThird                                                = yn ein helpu i’w wella.
+common.feedbackFirst = Gwasanaeth newydd yw hwn – bydd eich
+common.feedbackSecond = adborth
+common.feedbackThird = yn ein helpu i’w wella.
 
 unauthorised.title = Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 unauthorised.heading = Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
