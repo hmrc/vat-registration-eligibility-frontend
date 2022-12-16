@@ -26,7 +26,6 @@ import javax.inject.Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
   val switches = Seq(
-    PartnershipFlow,
     ThirdPartyTransactorFlow,
     IndividualFlow,
     LandAndProperty,
@@ -38,16 +37,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
       bind[FeatureSwitchRegistry].to(this).eagerly()
     )
   }
-}
-
-case object PartnershipFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.partnership-flow"
-  override val displayName: String = "Enable Partnership flow"
-}
-
-case object NETPFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.enable-netp"
-  override val displayName: String = "Enable non-established taxable person (NETP) flow"
 }
 
 case object ThirdPartyTransactorFlow extends FeatureSwitch {
