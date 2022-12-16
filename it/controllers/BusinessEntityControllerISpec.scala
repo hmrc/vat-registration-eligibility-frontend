@@ -1,6 +1,5 @@
 package controllers
 
-import featureswitch.core.config.SoleTraderFlow
 import helpers.IntegrationSpecBase
 import identifiers.{BusinessEntityId, FixedEstablishmentId}
 import models.BusinessEntity.{otherKey, partnershipKey, soleTraderKey, ukCompanyKey}
@@ -113,12 +112,10 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        enable(SoleTraderFlow)
         val res = await(buildClient(pageUrl).post(Map("value" -> soleTraderKey)))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
-        disable(SoleTraderFlow)
       }
     }
     "the option is Partnership" must {

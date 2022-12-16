@@ -162,7 +162,7 @@ turnoverEstimate.error.required         = Nodwch beth rydych yn meddwl fydd tros
 turnoverEstimate.error.amount.numbers   = Rhowch werth gan ddefnyddio rhifau yn unig
 turnoverEstimate.error.amount.giveMoreThan  = Rhowch amcangyfrif sy’n fwy na £{0}
 turnoverEstimate.error.amount.giveLessThan  = Rhowch amcangyfrif sy’n llai na neu’n hafal i £{0}
-completionCapacity.noneOfThese = None of these
+
 
 involvedInOtherBusiness.heading                     = A ydych wedi bod yn gysylltiedig â busnes arall neu wedi cymryd drosodd fusnes sydd wedi’i gofrestru ar gyfer TAW?
 involvedInOtherBusiness.headingObi                  = A ydych wedi bod yn gysylltiedig â busnes arall?

@@ -162,7 +162,7 @@ turnoverEstimate.error.required         = Enter what you think the business’s 
 turnoverEstimate.error.amount.numbers   = Give a value using only numbers
 turnoverEstimate.error.amount.giveMoreThan  = Give an estimate that is more than £{0}
 turnoverEstimate.error.amount.giveLessThan  = Give an estimate that’s less than or equal to £{0}
-completionCapacity.noneOfThese = None of these
+
 
 involvedInOtherBusiness.heading                     = Have you been involved with another business or taken over a VAT-registered business?
 involvedInOtherBusiness.headingObi                  = Have you been involved with another business?
