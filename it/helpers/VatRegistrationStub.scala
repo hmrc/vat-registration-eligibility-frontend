@@ -14,7 +14,6 @@ trait VatRegistrationStub {
     InternationalActivitiesId.toString -> JsBoolean(false),
     VoluntaryRegistrationId.toString -> JsBoolean(true),
     RegisteringBusinessId.toString -> JsBoolean(true),
-    NinoId.toString -> JsBoolean(true),
     AgriculturalFlatRateSchemeId.toString -> JsBoolean(false),
     RacehorsesId.toString -> JsBoolean(false)
   )

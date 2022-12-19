@@ -44,7 +44,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case ThresholdInTwelveMonthsId => routes.ThresholdInTwelveMonthsController.onPageLoad
     case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad
     case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad
-    case NinoId => routes.NinoController.onPageLoad
     case VATExceptionKickoutId => routes.VATExceptionKickoutController.onPageLoad
     case VATRegistrationExceptionId => routes.VATRegistrationExceptionController.onPageLoad
     case ApplyInWritingId => routes.ApplyInWritingController.onPageLoad
@@ -198,10 +197,8 @@ class Navigator @Inject extends Logging with FeatureSwitching {
           pageIdToPageLoad(RegReasonResolverId)
         case true =>
           pageIdToPageLoad(TaxableSuppliesInUkId)
-        case false if isEnabled(IndividualFlow) =>
-          pageIdToPageLoad(RegReasonResolverId)
         case false =>
-          pageIdToPageLoad(NinoId)
+          pageIdToPageLoad(RegReasonResolverId)
       }
     },
     RegReasonResolverId -> { userAnswers =>
@@ -214,12 +211,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
           pageIdToPageLoad(ThresholdInTwelveMonthsId)
         case Some(false) =>
           pageIdToPageLoad(ThresholdTaxableSuppliesId)
-      }
-    },
-    NinoId -> { userAnswers =>
-      userAnswers.nino match {
-        case Some(true) => pageIdToPageLoad(RegReasonResolverId)
-        case Some(false) => pageIdToPageLoad(VATExceptionKickoutId)
       }
     },
     nextOn12MonthThresholdConditionalFormElement(true,

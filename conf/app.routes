@@ -76,9 +76,6 @@ POST       /own-racehorses-buy-sell-property            controllers.RacehorsesCo
 GET        /whos-the-application-for                    controllers.RegisteringBusinessController.onPageLoad
 POST       /whos-the-application-for                    controllers.RegisteringBusinessController.onSubmit
 
-GET        /have-nino                                   controllers.NinoController.onPageLoad
-POST       /have-nino                                   controllers.NinoController.onSubmit
-
 GET        /sign-out                                    controllers.SignOutController.signOut
 
 GET        /made-or-intend-to-make-taxable-supplies     controllers.TaxableSuppliesInUkController.onPageLoad

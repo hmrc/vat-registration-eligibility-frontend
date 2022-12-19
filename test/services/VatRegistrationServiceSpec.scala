@@ -68,7 +68,6 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
         s"$VoluntaryRegistrationId" -> JsBoolean(true),
         s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
         s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
-        s"$NinoId" -> JsBoolean(true),
         s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
         s"$RacehorsesId" -> JsBoolean(false)
       )
@@ -88,7 +87,6 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
           | {"questionId":"racehorses","question":"eligibility.cya.racehorses","answer":"eligibility.site.no","answerValue":false},
           | {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
           | {"questionId":"registrationReason","question":"eligibility.cya.registrationReason","answer":"eligibility.registrationReason.sellingGoods.radio","answerValue":"selling-goods-and-services"},
-          | {"questionId":"nino","question":"eligibility.cya.nino","answer":"eligibility.site.yes","answerValue":true},
           | {"questionId":"thresholdInTwelveMonths","question":"eligibility.cya.thresholdInTwelveMonths","answer":"eligibility.site.no","answerValue":false},
           | {"questionId":"thresholdNextThirtyDays","question":"eligibility.cya.thresholdNextThirtyDays","answer":"eligibility.site.no","answerValue":false},
           | {"questionId":"voluntaryRegistration","question":"eligibility.cya.voluntaryRegistration","answer":"eligibility.site.yes","answerValue":true}
@@ -106,7 +104,6 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
         s"$InternationalActivitiesId" -> JsBoolean(false),
         s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
         s"$RegistrationReasonId" -> Json.toJson(TakingOverBusiness),
-        s"$NinoId" -> JsBoolean(true),
         s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
         s"$RacehorsesId" -> JsBoolean(false),
         s"$DateOfBusinessTransferId" -> Json.obj("date" -> LocalDate.now()),
@@ -135,7 +132,6 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
            |        {"questionId":"racehorses","question":"eligibility.cya.racehorses","answer":"eligibility.site.no","answerValue":false},
            |        {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
            |        {"questionId":"registrationReason","question":"eligibility.cya.registrationReason","answer":"eligibility.registrationReason.takingOver.radio","answerValue":"taking-over-business"},
-           |        {"questionId":"nino","question":"eligibility.cya.nino","answer":"eligibility.site.yes","answerValue":true},
            |        {"questionId":"dateOfBusinessTransfer","question":"eligibility.cya.dateOfBusinessTransfer.togc","answer":"${LocalDate.now().format(service.formatter)}","answerValue":"${LocalDate.now()}"},
            |        {"questionId":"previousBusinessName","question":"eligibility.cya.previousBusinessName.togc","answer":"$testPreviousName","answerValue":"$testPreviousName"},
            |        {"questionId":"vatNumber","question":"eligibility.cya.vatNumber.togc","answer":"$testVrn","answerValue":"$testVrn"},

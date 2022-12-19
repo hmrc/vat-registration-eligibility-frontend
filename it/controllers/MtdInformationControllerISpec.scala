@@ -38,7 +38,6 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
       cacheSessionData[RegisteringBusiness](sessionId, RegisteringBusinessId, OwnBusiness)
       cacheSessionData[RegistrationReason](sessionId, RegistrationReasonId, SellingGoodsAndServices)
       cacheSessionData[Boolean](sessionId, AgriculturalFlatRateSchemeId, false)
-      cacheSessionData[Boolean](sessionId, NinoId, true)
       cacheSessionData[Boolean](sessionId, RacehorsesId, false)
 
       stubSaveEligibilityData(testRegId)
