@@ -169,7 +169,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
         case Some(_) if userAnswers.internationalActivities.contains(true) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
         case Some(UKCompany | ScottishLimitedPartnership | LimitedPartnership | NonIncorporatedTrust) => nextPage
         case Some(SoleTrader) => nextPage
-        case Some(GeneralPartnership | ScottishPartnership | LimitedLiabilityPartnership) if isEnabled(PartnershipFlow) => nextPage
+        case Some(GeneralPartnership | ScottishPartnership | LimitedLiabilityPartnership) => nextPage
         case Some(RegisteredSociety) => nextPage
         case Some(CharitableIncorporatedOrganisation) => nextPage
         case Some(UnincorporatedAssociation) => nextPage
