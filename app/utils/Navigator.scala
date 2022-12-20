@@ -188,13 +188,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       onSuccessPage = RegisteringBusinessId,
       onFailPage = VATExceptionKickoutId
     ),
-    RegisteringBusinessId -> { userAnswers =>
-      userAnswers.registeringBusiness match {
-        case Some(OwnBusiness) => pageIdToPageLoad(RegistrationReasonId)
-        case Some(SomeoneElse) if isEnabled(ThirdPartyTransactorFlow) => pageIdToPageLoad(RegistrationReasonId)
-        case Some(SomeoneElse) => pageIdToPageLoad(VATExceptionKickoutId)
-      }
-    },
+    toNextPage(
+      fromPage = RegisteringBusinessId,
+      toPage = RegistrationReasonId
+    ),
     RegistrationReasonId -> { userAnswers =>
       userAnswers.isOverseas match {
         case true if userAnswers.registrationReason.exists(answer => List(TakingOverBusiness, ChangingLegalEntityOfBusiness).contains(answer)) =>
