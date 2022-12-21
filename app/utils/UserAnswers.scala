@@ -50,13 +50,9 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
     case _ => "togc"
   }
 
-  def racehorses: Option[Boolean] = cacheMap.getEntry[Boolean](RacehorsesId.toString)
-
   def agriculturalFlatRateScheme: Option[Boolean] = cacheMap.getEntry[Boolean](AgriculturalFlatRateSchemeId.toString)
 
   def vatRegistrationException: Option[Boolean] = cacheMap.getEntry[Boolean](VATRegistrationExceptionId.toString)
-
-  def vatExceptionKickout: Option[Boolean] = cacheMap.getEntry[Boolean](VATExceptionKickoutId.toString)
 
   def internationalActivities: Option[Boolean] = cacheMap.getEntry[Boolean](InternationalActivitiesId.toString)
 
@@ -75,10 +71,6 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   def taxableSuppliesInUk: Option[Boolean] = cacheMap.getEntry[Boolean](TaxableSuppliesInUkId.toString)
 
   def getAnswer[T](id: Identifier)(implicit reads: Reads[T]): Option[T] = cacheMap.getEntry[T](id.toString)
-
-  def getAnswerFromIdString[T](id: String)(implicit reads: Reads[T]): Option[JsValue] = cacheMap.getEntry[JsValue](id)
-
-  def getAnswerBoolean(id: Identifier): Option[Boolean] = cacheMap.getEntry[Boolean](id.toString)
 
   def registrationReason: Option[RegistrationReason] = cacheMap.getEntry[RegistrationReason](RegistrationReasonId.toString)
 

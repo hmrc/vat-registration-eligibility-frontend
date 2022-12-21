@@ -229,9 +229,6 @@ registeringBusiness.radioElse = Un rhywun arall
 registeringBusiness.radioElse.hint = Dewiswch yr opsiwn hwn os ydych yn gyflogai i’r cwmni rydych yn ei gofrestru neu fel arall, y gofynnwyd i chi gwblhau’r cofrestriad hwn ar ran rhywun arall.
 registeringBusiness.error.required = Dewiswch fusnes pwy yr hoffech ei gofrestru
 
-nino.heading = A oes gennych rif Yswiriant Gwladol yn y DU?
-nino.error.required = Dewiswch ‘Iawn’ os oes gennych rif Yswiriant Gwladol yn y DU
-
 vatExemption.title = A hoffai’r busnes wneud cais am eithriad rhag TAW?
 vatExemption.heading = A hoffai’r busnes wneud cais am eithriad rhag TAW?
 vatExemption.error.required = Dewiswch ‘Iawn’ os hoffai’r busnes wneud cais am eithriad rhag TAW
@@ -243,35 +240,15 @@ vatRegistrationException.error.required = Dewiswch ‘Iawn’ os yw’r busnes y
 vatRegistrationException.p1 = Gallwch wneud cais am eithriad rhag cofrestru os bydd y busnes yn mynd dros y trothwy TAW dros dro.
 vatRegistrationException.p2 = Os byddwch yn gwneud cais am eithriad a’ch bod yn llwyddiannus, byddwn yn cysylltu â chi i roi gwybod bod eich cais wedi’i dderbyn.
 
-vatExceptionKickout.title = Gallwch ofyn am eithriad os mai dim ond dros dro yr ydych wedi mynd dros y trothwy TAW
-vatExceptionKickout.heading = Gallwch ofyn am eithriad os mai dim ond dros dro yr ydych wedi mynd dros y trothwy TAW
-vatExceptionKickout.error.required = Dewiswch a hoffech ofyn am eithriad neu beidio
-vatExceptionKickout.p1 = Mae eithriad yn golygu na fydd yn rhaid i chi gofrestru ar gyfer TAW os gallwch roi tystiolaeth na fydd eich trosiant trethadwy TAW yn mynd dros y trothwy datgofrestru sef £83,000 yn ystod y 12 mis nesaf. I ofyn am eithriad, bydd angen i chi ysgrifennu at CThEM.
-vatExceptionKickout.yesText = Hoffwn ofyn am eithriad
-vatExceptionKickout.noText = Ni hoffwn ofyn am eithriad
-
 applyInWriting.title = Mae’n rhaid i chi wneud cais ysgrifenedig
 applyInWriting.heading = Mae’n rhaid i chi wneud cais ysgrifenedig
 applyInWriting.text = Defnyddiwch ffurflen VAT1 i wneud cais am eithriad rhag cofrestru ar gyfer TAW.
-
-individualKickout.title = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
-individualKickout.heading = Mae’n ddrwg gennym, nid yw’r gwasanaeth ar gael
-individualKickout.text = Ni allwch ddefnyddio’r gwasanaeth hwn i gofrestru ar gyfer TAW.
-individualKickout.button = Allgofnodi
 
 agriculturalFlatRateScheme.heading.business = A yw’r busnes yn gwneud cais am y Cynllun Cyfradd Unffurf Amaethyddol?
 agriculturalFlatRateScheme.heading.partnership = A yw’r bartneriaeth yn gwneud cais am y Cynllun Cyfradd Unffurf Amaethyddol?
 agriculturalFlatRateScheme.error.required = Dewiswch ‘Iawn’ os yw’r busnes yn gwneud cais am y Cynllun Cyfradd Unffurf Amaethyddol
 agriculturalFlatRateScheme.text = Mae’r cynllun yn fath gwahanol o gofrestriad TAW ar gyfer ffermwyr.
 agriculturalFlatRateScheme.linkText = Dysgu rhagor am y Cynllun Cyfradd Unffurf Amaethyddol
-
-racehorses.heading.business = A fydd y busnes yn gwneud unrhyw un o’r canlynol?
-racehorses.heading.partnership = A fydd y bartneriaeth yn gwneud unrhyw un o’r canlynol?
-racehorses.error.required = Dewiswch ‘Iawn’ os bydd y cwmni yn gwneud y naill neu’r llall o’r rhain
-racehorses.bulletText.business = Rhowch wybod i ni os bydd y busnes:
-racehorses.bulletText.partnership = Rhowch wybod i ni os bydd y bartneriaeth:
-racehorses.bullet1 = yn prynu, yn gwerthu neu’n rhentu tir neu eiddo fel gweithgaredd busnes (nid dim ond i gael ei safle ei hun)
-racehorses.bullet2 = yn berchen ar un neu fwy o geffylau rasio
 
 eligible.heading = Gallwch gofrestru ar gyfer TAW ar-lein
 eligible.p1 = Ar sail eich atebion, gallwch gofrestru ar gyfer TAW gan ddefnyddio’r gwasanaeth ar-lein.
@@ -392,12 +369,9 @@ checkYourAnswers.involvedInOtherBusiness                            = A ydych we
 checkYourAnswers.involvedInOtherBusiness.headingObi                 = A ydych wedi bod yn gysylltiedig â busnes arall?
 checkYourAnswers.involvedInOtherBusiness.headingTakingOver          = A ydych wedi cymryd drosodd fusnes sydd wedi’i gofrestru ar gyfer TAW?
 checkYourAnswers.involvedInOtherBusiness.headingVatGroup            = A hoffech sefydlu grŵp TAW?
-checkYourAnswers.racehorses.business                                = A fydd y busnes yn gwneud unrhyw un o’r canlynol?
-checkYourAnswers.racehorses.partnership                             = A fydd y bartneriaeth yn gwneud unrhyw un o’r canlynol?
 checkYourAnswers.registeringBusiness                                = Busnes pwy hoffech ei gofrestru?
 checkYourAnswers.registrationReason.business                        = Pam yr hoffech gofrestru’r busnes ar gyfer TAW?
 checkYourAnswers.registrationReason.partnership                     = Pam yr hoffech gofrestru’r bartneriaeth ar gyfer TAW?
-checkYourAnswers.nino                                               = A oes gennych rif Yswiriant Gwladol yn y DU?
 checkYourAnswers.taxableSuppliesInUk                                = A yw’r busnes wedi gwneud cyflenwadau trethadwy yn y DU?
 checkYourAnswers.zeroRatedSales.business                            = A yw’r busnes yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf?
 checkYourAnswers.zeroRatedSales.partnership                         = A yw’r bartneriaeth yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf?

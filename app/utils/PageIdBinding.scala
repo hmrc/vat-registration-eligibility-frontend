@@ -46,7 +46,6 @@ object PageIdBinding extends FeatureSwitching {
     val isTogcCole = userAnswers.registrationReason.exists(List(TakingOverBusiness, ChangingLegalEntityOfBusiness).contains(_))
 
     def ValidationAndConstruction: PartialFunction[(Identifier, Option[Any]), (Identifier, Option[Any])] = {
-      case e@(RacehorsesId, None) if isEnabled(LandAndProperty) => e
       case e@(RegistrationReasonId, None) => e
       case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, None) if !isTogcCole => e
       case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, Some(_)) if !isTogcCole => illegalState(e._1)
@@ -88,7 +87,6 @@ object PageIdBinding extends FeatureSwitching {
           (BusinessEntityId, userAnswers.businessEntity),
           (AgriculturalFlatRateSchemeId, userAnswers.agriculturalFlatRateScheme),
           (InternationalActivitiesId, userAnswers.internationalActivities),
-          (RacehorsesId, userAnswers.racehorses),
           (RegisteringBusinessId, userAnswers.registeringBusiness),
           (RegistrationReasonId, userAnswers.registrationReason),
           (DateOfBusinessTransferId, userAnswers.dateOfBusinessTransfer),

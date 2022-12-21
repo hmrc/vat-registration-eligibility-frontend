@@ -26,7 +26,6 @@ import javax.inject.Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
   val switches = Seq(
-    LandAndProperty,
     WelshLanguage
   )
 
@@ -35,11 +34,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
       bind[FeatureSwitchRegistry].to(this).eagerly()
     )
   }
-}
-
-case object LandAndProperty extends FeatureSwitch {
-  override val configName: String = "feature-switch.land-and-property"
-  override val displayName: String = "Enable land and property (hide racehorses page)"
 }
 
 case object WelshLanguage extends FeatureSwitch {

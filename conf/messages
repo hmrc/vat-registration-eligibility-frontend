@@ -229,9 +229,6 @@ registeringBusiness.radioElse = Someone else’s
 registeringBusiness.radioElse.hint = Select this option if you are an employee of the business you are registering or were otherwise asked to complete this registration on behalf of someone else.
 registeringBusiness.error.required = Select whose business you want to register
 
-nino.heading = Do you have a UK National Insurance number?
-nino.error.required = Select yes if you have a UK National Insurance number
-
 vatExemption.title = Does the business want to apply for a VAT exemption?
 vatExemption.heading = Does the business want to apply for a VAT exemption?
 vatExemption.error.required = Select yes if the business wants to apply for a VAT exemption
@@ -243,35 +240,15 @@ vatRegistrationException.error.required = Select yes if the business is applying
 vatRegistrationException.p1 = You can apply for a registration exception if the business goes over the VAT threshold temporarily.
 vatRegistrationException.p2 = If you apply for an exception and are successful, we will contact you to tell you your request has been accepted.
 
-vatExceptionKickout.title = You can ask for an exception if you have only temporarily gone over the VAT threshold
-vatExceptionKickout.heading = You can ask for an exception if you have only temporarily gone over the VAT threshold
-vatExceptionKickout.error.required = Select if you want to ask for an exception or not
-vatExceptionKickout.p1 = An exception means you will not have to register for VAT if you can provide evidence that your VAT taxable turnover will not go over the deregistration threshold of £83,000 in the next 12 months. To ask for an exception, you will need to write to HMRC.
-vatExceptionKickout.yesText = I want to ask for an exception
-vatExceptionKickout.noText = I do not want to ask for an exception
-
 applyInWriting.title = You must apply in writing
 applyInWriting.heading = You must apply in writing
 applyInWriting.text = Please use form VAT1 to apply for an exemption from VAT registration.
-
-individualKickout.title = Sorry, the service is unavailable
-individualKickout.heading = Sorry, the service is unavailable
-individualKickout.text = You cannot use this service to register for VAT.
-individualKickout.button = Sign out
 
 agriculturalFlatRateScheme.heading.business = Is the business applying for the Agricultural Flat Rate Scheme?
 agriculturalFlatRateScheme.heading.partnership = Is the partnership applying for the Agricultural Flat Rate Scheme?
 agriculturalFlatRateScheme.error.required = Select yes if the business is applying for the Agricultural Flat Rate Scheme
 agriculturalFlatRateScheme.text = The scheme is a different type of VAT registration for farmers.
 agriculturalFlatRateScheme.linkText = Find out more about the Agricultural Flat Rate Scheme
-
-racehorses.heading.business = Will the business be doing any of the following?
-racehorses.heading.partnership = Will the partnership be doing any of the following?
-racehorses.error.required = Select yes if the company will doing doing either of these things
-racehorses.bulletText.business = Tell us if the business will:
-racehorses.bulletText.partnership = Tell us if the partnership will:
-racehorses.bullet1 = buy, sell or rent out land or property as a business activity (not just to have its own premises)
-racehorses.bullet2 = own one or more racehorses
 
 eligible.heading = You can register for VAT online
 eligible.p1 = Based on your answers, you can register for VAT using the online service.
@@ -392,12 +369,9 @@ checkYourAnswers.involvedInOtherBusiness                            = Have you b
 checkYourAnswers.involvedInOtherBusiness.headingObi                 = Have you been involved with another business?
 checkYourAnswers.involvedInOtherBusiness.headingTakingOver          = Have you taken over a VAT-registered business?
 checkYourAnswers.involvedInOtherBusiness.headingVatGroup            = Do you want to set up a VAT group?
-checkYourAnswers.racehorses.business                                = Will the business be doing any of the following?
-checkYourAnswers.racehorses.partnership                             = Will the partnership be doing any of the following?
 checkYourAnswers.registeringBusiness                                = Whose business do you want to register?
 checkYourAnswers.registrationReason.business                        = Why do you want to register the business for VAT?
 checkYourAnswers.registrationReason.partnership                     = Why do you want to register the partnership for VAT?
-checkYourAnswers.nino                                               = Do you have a UK National Insurance number?
 checkYourAnswers.taxableSuppliesInUk                                = Has the business made taxable supplies in the UK?
 checkYourAnswers.zeroRatedSales.business                            = Does the business sell mainly zero-rated goods or services?
 checkYourAnswers.zeroRatedSales.partnership                         = Does the partnership sell mainly zero-rated goods or services?

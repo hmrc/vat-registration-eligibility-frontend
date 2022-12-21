@@ -44,7 +44,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case ThresholdInTwelveMonthsId => routes.ThresholdInTwelveMonthsController.onPageLoad
     case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad
     case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad
-    case VATExceptionKickoutId => routes.VATExceptionKickoutController.onPageLoad
     case VATRegistrationExceptionId => routes.VATRegistrationExceptionController.onPageLoad
     case ApplyInWritingId => routes.ApplyInWritingController.onPageLoad
     case EligibilityDropoutId(mode) => mode match {
@@ -52,7 +51,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       case mode => routes.EligibilityDropoutController.onPageLoad(mode)
     }
     case AgriculturalFlatRateSchemeId => routes.AgriculturalFlatRateSchemeController.onPageLoad
-    case RacehorsesId => routes.RacehorsesController.onPageLoad
     case MtdInformationId => routes.MtdInformationController.onPageLoad
     case TaxableSuppliesInUkId => routes.TaxableSuppliesInUkController.onPageLoad
     case DateOfBusinessTransferId => routes.DateOfBusinessTransferController.onPageLoad
@@ -157,35 +155,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
         case _ => pageIdToPageLoad(FixedEstablishmentId)
       }
     },
-    InternationalActivitiesId -> { userAnswers =>
-      def nextPage = if (isEnabled(LandAndProperty)) {
-        pageIdToPageLoad(RegisteringBusinessId)
-      } else {
-        pageIdToPageLoad(RacehorsesId)
-      }
-
-      userAnswers.businessEntity match {
-        case Some(_) if userAnswers.internationalActivities.contains(true) => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
-        case Some(UKCompany | ScottishLimitedPartnership | LimitedPartnership | NonIncorporatedTrust) => nextPage
-        case Some(SoleTrader) => nextPage
-        case Some(GeneralPartnership | ScottishPartnership | LimitedLiabilityPartnership) => nextPage
-        case Some(RegisteredSociety) => nextPage
-        case Some(CharitableIncorporatedOrganisation) => nextPage
-        case Some(UnincorporatedAssociation) => nextPage
-        case Some(NETP) => nextPage
-        case Some(Overseas) => nextPage
-        case _ => pageIdToPageLoad(VATExceptionKickoutId)
-      }
-    },
-    nextOn(true,
-      fromPage = VATExceptionKickoutId,
-      onSuccessPage = EligibilityDropoutId(VATExceptionKickoutId.toString),
-      onFailPage = EligibilityDropoutId(VATRegistrationExceptionId.toString)
-    ),
     nextOn(false,
-      fromPage = RacehorsesId,
+      fromPage = InternationalActivitiesId,
       onSuccessPage = RegisteringBusinessId,
-      onFailPage = VATExceptionKickoutId
+      onFailPage = EligibilityDropoutId(InternationalActivitiesId.toString)
     ),
     toNextPage(
       fromPage = RegisteringBusinessId,

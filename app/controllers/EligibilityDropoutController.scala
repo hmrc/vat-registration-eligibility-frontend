@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import identifiers._
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -36,7 +36,6 @@ class EligibilityDropoutController @Inject()(identify: CacheIdentifierAction,
     implicit request =>
       mode match {
         case AgriculturalFlatRateSchemeId.toString => Ok(agriculturalDropoutView())
-        case VATExceptionKickoutId.toString => SeeOther(appConfig.VATWriteInURL)
         case BusinessEntityId.toString => Ok(vatDivisionDropoutView())
       }
   }

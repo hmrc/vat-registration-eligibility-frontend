@@ -79,131 +79,10 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](true))
       }
 
-      "navigate to Racehorses when false and UKCompany" in new Setup {
+      "navigate to Registering Business when false" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
-
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
-
-        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Racehorses when false and SoleTrader when FS is on" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, SoleTrader)
-
-        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Racehorses when false and Partnership when FS is on" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, GeneralPartnership)
-
-        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Racehorses when false and Limited Liability Partnership" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, LimitedLiabilityPartnership)
-
-        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Racehorses when false and Registered Society when FS is on" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, RegisteredSociety)
-
-        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Racehorses when false and Non-Incorporated Trust when FS is on" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NonIncorporatedTrust)
-
-        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Racehorses when false and Charitable Incorporated Organisation (ICO)" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, CharitableIncorporatedOrganisation)
-
-        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Racehorses when an Unincorporated Association and Unincorporated Association FS is turned on" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UnincorporatedAssociation)
-
-        val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-          .post(Map("value" -> Seq("false"))))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RacehorsesController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Registering Business when Land and Property FS is turned on" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-        enable(LandAndProperty)
 
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
 
@@ -213,28 +92,6 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegisteringBusinessController.onPageLoad.url)
         verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-      }
-
-      "navigate to Vat Exception Kickout when false but business entity is not allowed" in new Setup {
-
-        val entityList = Seq(
-          Division
-        )
-
-        entityList.map { entity =>
-          stubSuccessfulLogin()
-          stubAudits()
-          stubS4LGetNothing(testRegId)
-
-          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, entity)
-
-          val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
-            .post(Map("value" -> Seq("false"))))
-
-          res.status mustBe SEE_OTHER
-          res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATExceptionKickoutController.onPageLoad.url)
-          verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
-        }
       }
     }
     "the user doesn't answer" must {
