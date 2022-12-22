@@ -1,7 +1,7 @@
 package controllers
 
 import helpers.IntegrationSpecBase
-import identifiers.{AgriculturalFlatRateSchemeId, BusinessEntityId, VATExceptionKickoutId}
+import identifiers.{AgriculturalFlatRateSchemeId, BusinessEntityId}
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
 import views.html.{AgriculturalDropout, InternationalActivityDropout, VatDivisionDropout}
@@ -23,18 +23,6 @@ class EligibilityDropoutControllerISpec extends IntegrationSpecBase {
 
       res.status mustBe OK
       res.body mustBe view()(request(cantRegisterUrl(AgriculturalFlatRateSchemeId.toString)), messages, appConfig).toString()
-    }
-  }
-
-  "GET /cant-register/vatExceptionKickout" must {
-    "redirect to the apply in writing page" in new Setup {
-      stubSuccessfulLogin()
-      stubAudits()
-
-      val res = await(buildClient(cantRegisterUrl(VATExceptionKickoutId.toString)).get)
-
-      res.status mustBe SEE_OTHER
-      res.header(HeaderNames.LOCATION) mustBe Some(appConfig.VATWriteInURL)
     }
   }
 

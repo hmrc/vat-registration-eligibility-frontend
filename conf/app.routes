@@ -58,20 +58,13 @@ GET        /errors/business-activities-next-12-months   controllers.EligibilityD
 GET        /business-activities-next-12-months          controllers.InternationalActivitiesController.onPageLoad
 POST       /business-activities-next-12-months          controllers.InternationalActivitiesController.onSubmit()
 
-GET        /vat-exception-registration                  controllers.VATExceptionKickoutController.onPageLoad
-POST       /vat-exception-registration                  controllers.VATExceptionKickoutController.onSubmit()
-
 GET        /registration-exception                      controllers.VATRegistrationExceptionController.onPageLoad
 POST       /registration-exception                      controllers.VATRegistrationExceptionController.onSubmit()
 
 GET        /apply-writing                               controllers.ApplyInWritingController.onPageLoad
-GET        /cannot-use-service                          controllers.IndividualKickoutController.onPageLoad
 
 GET        /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onPageLoad
 POST       /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onSubmit()
-
-GET        /own-racehorses-buy-sell-property            controllers.RacehorsesController.onPageLoad
-POST       /own-racehorses-buy-sell-property            controllers.RacehorsesController.onSubmit()
 
 GET        /whos-the-application-for                    controllers.RegisteringBusinessController.onPageLoad
 POST       /whos-the-application-for                    controllers.RegisteringBusinessController.onSubmit

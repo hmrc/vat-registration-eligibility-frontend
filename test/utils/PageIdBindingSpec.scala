@@ -38,8 +38,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$RegistrationReasonId" -> Json.toJson(SellingGoodsAndServices),
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
     s"$VATRegistrationExceptionId" -> JsBoolean(false),
-    s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
-    s"$RacehorsesId" -> JsBoolean(false)
+    s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false)
   )
 
   val fullListMapHappyPathNETP: ListMap[String, JsValue] = ListMap[String, JsValue](
@@ -51,8 +50,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
     s"$VoluntaryRegistrationId" -> JsBoolean(true),
     s"$InternationalActivitiesId" -> JsBoolean(false),
     s"$RegisteringBusinessId" -> Json.toJson(OwnBusiness),
-    s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
-    s"$RacehorsesId" -> JsBoolean(false)
+    s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false)
   )
 
   fullListMapHappyPathTwelveMonthsFalse.foldLeft(Map[String, JsValue]()) {
@@ -262,7 +260,6 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
       s"$RegistrationReasonId" -> Json.toJson(regReason),
       s"$VATRegistrationExceptionId" -> JsBoolean(false),
       s"$AgriculturalFlatRateSchemeId" -> JsBoolean(false),
-      s"$RacehorsesId" -> JsBoolean(false),
       s"$DateOfBusinessTransferId" -> Json.obj("date" -> JsString("2020-12-12")),
       s"$PreviousBusinessNameId" -> JsString(testPreviousName),
       s"$VATNumberId" -> JsString(testVrn),

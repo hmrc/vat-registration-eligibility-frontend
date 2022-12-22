@@ -22,7 +22,6 @@ import views.html.TaxableSuppliesInUk
 
 class TaxableSuppliesInUkViewSpec extends ViewSpecBase {
 
-  val messageKeyPrefix = "nino"
   val form = new TaxableSuppliesInUkFormProvider()()
 
   val h1 = "Has the business made taxable supplies in the UK?"
