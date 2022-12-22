@@ -25,10 +25,10 @@ class TaxableSuppliesInUkViewSpec extends ViewSpecBase {
   val form = new TaxableSuppliesInUkFormProvider()()
 
   val h1 = "Has the business made taxable supplies in the UK?"
-  val para = "Tell us if any of the following apply:"
-  val bullet1 = "the business has made taxable supplies in the UK within the last 4 years"
-  val bullet2 = "the business previously intended to make taxable supplies in the UK within the last 4 years"
-  val bullet3 = "the business intends to make taxable supplies in the UK within the next 3 months"
+  val para = "Tell us if the business:"
+  val bullet1 = "has made taxable supplies in the UK"
+  val bullet2 = "previously intended to make taxable supplies in the UK"
+  val bullet3 = "intends to make taxable supplies in the UK within the next 3 months"
 
   val view: TaxableSuppliesInUk = app.injector.instanceOf[TaxableSuppliesInUk]
 

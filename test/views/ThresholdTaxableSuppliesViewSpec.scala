@@ -18,6 +18,7 @@ package views
 
 import forms.ThresholdTaxableSuppliesFormProvider
 import models.NormalMode
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import utils.TimeMachine
 import views.html.ThresholdTaxableSupplies
 
@@ -32,8 +33,7 @@ class ThresholdTaxableSuppliesViewSpec extends ViewSpecBase {
   }
 
   object Selectors extends BaseSelectors
-
-  val form = new ThresholdTaxableSuppliesFormProvider(TestTimeMachine)()
+  val form = new ThresholdTaxableSuppliesFormProvider(TestTimeMachine)()(messages)
 
   val h1 = "When did the business make or intend to make taxable supplies in the UK?"
   val testText = "You should enter the earliest date the business either made or intended to make taxable supplies in the UK."

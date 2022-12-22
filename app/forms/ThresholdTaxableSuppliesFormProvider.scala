@@ -16,52 +16,34 @@
 
 package forms
 
-import forms.mappings.Mappings
-import identifiers.ThresholdTaxableSuppliesId
+import forms.mappings.{LocalDateFormatter, Mappings}
 import models.DateFormElement
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 import utils.TimeMachine
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ThresholdTaxableSuppliesFormProvider @Inject()(timeMachine: TimeMachine) extends Mappings {
 
-  val thresholdTaxableSuppliesDate = s"${ThresholdTaxableSuppliesId}Date"
+  val key = "thresholdTaxableSuppliesDate"
   val errorKeyRoot = "thresholdTaxableSupplies.error"
 
-  val dateRequiredKey = s"$errorKeyRoot.date.required"
-  val dateOutsideRangeKey = s"$errorKeyRoot.date.inFuture"
-  val dateInvalidKey = s"$errorKeyRoot.date.invalid"
+  val minDateAllowed: LocalDate = LocalDate.of(1973, 4, 1)
+  val maxDateAllowed: LocalDate = timeMachine.today.plusMonths(3)
 
-  val minDateAllowed = timeMachine.today.minusYears(4)
-  val maxDateAllowed = timeMachine.today.plusMonths(3)
-
-  val dateFormat: DateTimeFormatter = DateTimeFormatter
-    .ofLocalizedDate(java.time.format.FormatStyle.LONG)
-    .withLocale(java.util.Locale.UK)
-
-  def now: LocalDate = LocalDate.now()
-
-  def apply(): Form[DateFormElement] = Form(
+  def apply()(implicit messages: Messages): Form[DateFormElement] = Form(
     mapping(
-      thresholdTaxableSuppliesDate ->
-        tuple(
-          "day" -> default(text(), ""),
-          "month" -> default(text(), ""),
-          "year" -> default(text(), "")
-        ).verifying(firstError(
-          nonEmptyDate(dateRequiredKey),
-          validDate(dateInvalidKey))
-        ).transform[LocalDate](
-          { case (day, month, year) => LocalDate.of(year.toInt, month.toInt, day.toInt) },
-          date => (date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
-        ).verifying(
-          withinDateRange(minDateAllowed, maxDateAllowed, dateOutsideRangeKey, List(minDateAllowed.format(dateFormat), maxDateAllowed.format(dateFormat)))
+      key -> of(
+        LocalDateFormatter(
+          errorKeyRoot,
+          Some(minDateAllowed),
+          Some(maxDateAllowed)
         )
+      )
     )(DateFormElement.apply)(DateFormElement.unapply)
   )
 }

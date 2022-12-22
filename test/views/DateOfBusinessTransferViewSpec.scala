@@ -48,7 +48,7 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
     s"registration reason is $togc" must {
       val doc =
         asDocument(view
-          (new DateOfBusinessTransferFormProvider(TestTimeMachine)(togc), NormalMode, togc)
+          (new DateOfBusinessTransferFormProvider(TestTimeMachine)(togc)(messages), NormalMode, togc)
           (fakeDataRequestIncorped, messages, frontendAppConfig)
         )
 
@@ -84,7 +84,7 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
     s"registration reason is $cole" must {
       val doc =
         asDocument(view
-        (new DateOfBusinessTransferFormProvider(TestTimeMachine)(cole), NormalMode, cole)
+        (new DateOfBusinessTransferFormProvider(TestTimeMachine)(cole)(messages), NormalMode, cole)
         (fakeDataRequestIncorped, messages, frontendAppConfig)
         )
 

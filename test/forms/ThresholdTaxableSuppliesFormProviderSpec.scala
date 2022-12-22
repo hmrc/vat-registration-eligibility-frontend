@@ -16,6 +16,7 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import models.DateFormElement
 import play.api.data.FormError
@@ -24,36 +25,39 @@ import utils.TimeMachine
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
+class ThresholdTaxableSuppliesFormProviderSpec extends SpecBase with BooleanFieldBehaviours {
 
   val testMaxDate: LocalDate = LocalDate.parse("2020-01-01")
-  val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
+  val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
 
-  val minDate = testMaxDate.minusYears(4).format(dateFormat)
+  val minDate = LocalDate.of(1973, 4, 1).format(dateFormat)
   val maxDate = testMaxDate.plusMonths(3).format(dateFormat)
 
   object TestTimeMachine extends TimeMachine {
     override def today: LocalDate = testMaxDate
   }
 
-  val form = new ThresholdTaxableSuppliesFormProvider(TestTimeMachine)()
+  val form = new ThresholdTaxableSuppliesFormProvider(TestTimeMachine)()(messages)
 
   val thresholdTaxableSuppliesDate = s"thresholdTaxableSuppliesDate"
   val errorKeyRoot = "thresholdTaxableSupplies.error"
 
   val dateRequiredKey = "thresholdTaxableSupplies.error.date.required"
-  val dateOutsideRangeKey = "thresholdTaxableSupplies.error.date.inFuture"
+  val dateTooFarInFutureKey = "thresholdTaxableSupplies.error.date.range.max"
+  val dateTooFarInPastKey = "thresholdTaxableSupplies.error.date.range.min"
   val dateInvalidKey = "thresholdTaxableSupplies.error.date.invalid"
 
-  val selectionFieldName = s"thresholdTaxableSuppliesDate"
-  val dateFieldName = s"thresholdTaxableSuppliesDate"
+  val dateFieldName = "thresholdTaxableSuppliesDate"
+  val dayFieldName = s"$dateFieldName.day"
+  val monthFieldName = s"$dateFieldName.month"
+  val yearFieldName = s"$dateFieldName.year"
   val requiredKey = "thresholdTaxableSupplies.error.date.required"
 
 
   "bind" must {
     "return errors" when {
       "nothing is selected" in {
-        form.bind(Map("" -> "")).errors mustBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
+        form.bind(Map("" -> "")).errors mustBe Seq(FormError(dateFieldName, requiredKey, Seq()))
       }
 
       "an invalid date is provided" in {
@@ -64,7 +68,7 @@ class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"sdsdf",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors mustBe Seq(FormError(dateFieldName, dateInvalidKey))
+        ).errors mustBe Seq(FormError(monthFieldName, dateInvalidKey))
       }
 
       "a date in the future is provided" in {
@@ -75,18 +79,18 @@ class ThresholdTaxableSuppliesFormProviderSpec extends BooleanFieldBehaviours {
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors mustBe Seq(FormError(dateFieldName, dateOutsideRangeKey, Seq(minDate, maxDate)))
+        ).errors mustBe Seq(FormError(dateFieldName, dateTooFarInFutureKey, Seq(maxDate)))
       }
 
       "a date in the past is provided" in {
-        val date = testMaxDate.minusYears(10)
+        val date = LocalDate.of(1972, 1, 1)
         form.bind(
           Map(
             s"$dateFieldName.day" -> s"${date.getDayOfMonth}",
             s"$dateFieldName.month" -> s"${date.getMonthValue}",
             s"$dateFieldName.year" -> s"${date.getYear}"
           )
-        ).errors mustBe Seq(FormError(dateFieldName, dateOutsideRangeKey, Seq(minDate, maxDate)))
+        ).errors mustBe Seq(FormError(dateFieldName, dateTooFarInPastKey, Seq(minDate)))
       }
     }
 

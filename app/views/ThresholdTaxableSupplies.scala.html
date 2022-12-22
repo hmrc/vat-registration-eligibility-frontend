@@ -26,7 +26,6 @@
         bullets: components.bullets,
         link: components.link,
         formWithCsrf: FormWithCSRF,
-        conditionalYesNoRadio: components.conditionalYesNoRadio,
         inputDate: components.inputDate,
         button: components.button
 )
@@ -35,11 +34,13 @@
 
 @layout(pageTitle = Some(title(form, messages("thresholdTaxableSupplies.heading"))), backLink = true) {
 
-    @errorSummary(form.errors, Some(Map("thresholdTaxableSuppliesDate" -> "day")))
+    @errorSummary(form.errors.headOption.toList, Some(Map("thresholdTaxableSuppliesDate" -> "day")))
 
     @h1(messages("thresholdTaxableSupplies.heading"))
 
-    @p{ @messages("thresholdTaxableSupplies.text") }
+    @p {
+        @messages("thresholdTaxableSupplies.text")
+    }
 
     @formWithCsrf(action = routes.ThresholdTaxableSuppliesController.onSubmit()) {
         @inputDate(

@@ -37,7 +37,6 @@ class ThresholdNextThirtyDaysFormProvider @Inject()(timeMachine: TimeMachine) ex
   val dateRequiredKey = s"$ThresholdNextThirtyDaysId.error.date.required"
   val dateInFutureKey = s"$ThresholdNextThirtyDaysId.error.date.inFuture"
   val dateInvalidKey = s"$ThresholdNextThirtyDaysId.error.date.invalid"
-  val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
   def now: LocalDate = LocalDate.now()
 

@@ -20,10 +20,10 @@ import forms.mappings.Mappings
 import models.DateFormElement
 import play.api.data.Form
 import play.api.data.Forms._
-import utils.TimeMachine
+import play.api.i18n.Messages
+import utils.{MessageDateFormat, TimeMachine}
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 
 @Singleton
@@ -34,13 +34,9 @@ class DateOfBusinessTransferFormProvider @Inject()(timeMachine: TimeMachine) ext
   val minDateAllowed = LocalDate.parse("1973-04-01")
   val maxDateAllowed = timeMachine.today.plusMonths(3)
 
-  val dateFormat: DateTimeFormatter = DateTimeFormatter
-    .ofLocalizedDate(java.time.format.FormatStyle.LONG)
-    .withLocale(java.util.Locale.UK)
-
   def now: LocalDate = LocalDate.now()
 
-  def apply(togcColeKey: String): Form[DateFormElement] = {
+  def apply(togcColeKey: String)(implicit messages: Messages): Form[DateFormElement] = {
 
     val errorKeyRoot = s"dateOfBusinessTransfer.error"
 
@@ -62,8 +58,8 @@ class DateOfBusinessTransferFormProvider @Inject()(timeMachine: TimeMachine) ext
             { case (day, month, year) => LocalDate.of(year.toInt, month.toInt, day.toInt) },
             date => (date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
           ).verifying(
-            minDate(minDateAllowed, minDateAllowedKey, minDateAllowed.format(dateFormat)),
-            maxDate(maxDateAllowed, maxDateAllowedKey, maxDateAllowed.format(dateFormat))
+            minDate(minDateAllowed, minDateAllowedKey, MessageDateFormat.format(minDateAllowed)),
+            maxDate(maxDateAllowed, maxDateAllowedKey, MessageDateFormat.format(maxDateAllowed))
           )
       )(DateFormElement.apply)(DateFormElement.unapply)
     )

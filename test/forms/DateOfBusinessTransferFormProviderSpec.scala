@@ -16,6 +16,7 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import models.DateFormElement
 import play.api.data.FormError
@@ -23,7 +24,7 @@ import utils.TimeMachine
 
 import java.time.LocalDate
 
-class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
+class  DateOfBusinessTransferFormProviderSpec extends SpecBase with BooleanFieldBehaviours {
 
   val testDate: LocalDate = LocalDate.now()
   val testMaxDate: LocalDate = testDate.plusMonths(3)
@@ -47,7 +48,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
   val dateFieldName = "relevantDate"
 
   s"bind in $togc form" must {
-    val form = new DateOfBusinessTransferFormProvider(TestTimeMachine)(togc)
+    val form = new DateOfBusinessTransferFormProvider(TestTimeMachine)(togc)(messages)
     "return errors" when {
       "nothing is selected" in {
         form.bind(Map("" -> "")).errors mustBe Seq(FormError(dateFieldName, dateRequiredKey(togc), Seq()))
@@ -119,7 +120,7 @@ class  DateOfBusinessTransferFormProviderSpec extends BooleanFieldBehaviours {
   }
 
   s"bind in $cole form" must {
-    val form = new DateOfBusinessTransferFormProvider(TestTimeMachine)(cole)
+    val form = new DateOfBusinessTransferFormProvider(TestTimeMachine)(cole)(messages)
     "return errors" when {
       "nothing is selected" in {
         form.bind(Map("" -> "")).errors mustBe Seq(FormError(dateFieldName, dateRequiredKey(cole), Seq()))

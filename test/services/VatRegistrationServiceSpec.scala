@@ -24,13 +24,14 @@ import models.requests.DataRequest
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import play.api.i18n.Messages
+import play.api.i18n.{Lang, Messages}
 import play.api.libs.json._
 import play.api.mvc.AnyContentAsEmpty
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.UserAnswers
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
@@ -47,6 +48,8 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
 
     when(mockMessagesAPI.preferred(ArgumentMatchers.any[DataRequest[_]]()))
       .thenReturn(mockMessages)
+    when(mockMessages.lang)
+      .thenReturn(Lang("en"))
 
     when(mockMessages.apply(ArgumentMatchers.anyString(), ArgumentMatchers.any()))
       .thenReturn("mocked message")
@@ -128,7 +131,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
            |        {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities","answer":"eligibility.site.no","answerValue":false},
            |        {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
            |        {"questionId":"registrationReason","question":"eligibility.cya.registrationReason","answer":"eligibility.registrationReason.takingOver.radio","answerValue":"taking-over-business"},
-           |        {"questionId":"dateOfBusinessTransfer","question":"eligibility.cya.dateOfBusinessTransfer.togc","answer":"${LocalDate.now().format(service.formatter)}","answerValue":"${LocalDate.now()}"},
+           |        {"questionId":"dateOfBusinessTransfer","question":"eligibility.cya.dateOfBusinessTransfer.togc","answer":"${LocalDate.now().format(DateTimeFormatter.ofPattern("d MMMM yyyy"))}","answerValue":"${LocalDate.now()}"},
            |        {"questionId":"previousBusinessName","question":"eligibility.cya.previousBusinessName.togc","answer":"$testPreviousName","answerValue":"$testPreviousName"},
            |        {"questionId":"vatNumber","question":"eligibility.cya.vatNumber.togc","answer":"$testVrn","answerValue":"$testVrn"},
            |        {"questionId":"keepOldVrn","question":"eligibility.cya.keepOldVrn.togc","answer":"eligibility.site.yes","answerValue":true},
