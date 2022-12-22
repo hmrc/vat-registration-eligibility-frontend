@@ -26,7 +26,6 @@ import javax.inject.Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
   val switches = Seq(
-    IndividualFlow,
     LandAndProperty,
     WelshLanguage
   )
@@ -36,11 +35,6 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
       bind[FeatureSwitchRegistry].to(this).eagerly()
     )
   }
-}
-
-case object IndividualFlow extends FeatureSwitch {
-  override val configName: String = "feature-switch.use-individual-flow"
-  override val displayName: String = "Use Individual flow"
 }
 
 case object LandAndProperty extends FeatureSwitch {

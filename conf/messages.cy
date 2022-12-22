@@ -183,7 +183,6 @@ involvedInOtherBusiness.beforeText                  = hoffech
 involvedInOtherBusiness.linkText                    = sefydlu grŵp TAW
 
 eligibilityDropout.heading                      = Mae’n rhaid i’r busnes gofrestru ar gyfer TAW gan ddefnyddio gwasanaeth gwahanol
-eligibilityDropout.ApplicantUKNinoId.variant    = Y rheswm dros hyn yw bod yn rhaid i’r person y mae ei enw ar y cais TAW fod â rhif Yswiriant Gwladol yn y DU.
 
 eligibility.agriculture.text = I ymuno â’r Cynllun Cyfradd Unffurf Amaethyddol, bydd angen i’r busnes
 eligibility.agriculture.link = gofrestru gan ddefnyddio ffurflen VAT98

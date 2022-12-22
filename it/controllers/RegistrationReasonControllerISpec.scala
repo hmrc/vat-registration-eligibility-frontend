@@ -1,6 +1,5 @@
 package controllers
 
-import featureswitch.core.config.{FeatureSwitching, IndividualFlow}
 import helpers.{IntegrationSpecBase, S4LStub}
 import identifiers._
 import models.RegistrationReason._
@@ -11,7 +10,7 @@ import play.mvc.Http.HeaderNames
 
 import java.time.LocalDate
 
-class RegistrationReasonControllerISpec extends IntegrationSpecBase with FeatureSwitching with S4LStub {
+class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub {
 
   val pageUrl = "/registration-reason"
 
@@ -82,41 +81,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
 
   "POST /registration-reason" when {
     "the user answer" when {
-      s"redirect to Nino when sellingGoodsAndServices value is selected" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        val res = await(buildClient(pageUrl).post(Map("value" -> sellingGoodsAndServicesKey)))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.NinoController.onPageLoad.url)
-      }
-
-      s"redirect to Nino when ukEstablishedOverseasExporter value is selected" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        val res = await(buildClient(pageUrl).post(Map("value" -> ukEstablishedOverseasExporterKey)))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.NinoController.onPageLoad.url)
-      }
-
-      s"redirect to Nino when settingUpVatGroup value is selected" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
-        stubS4LGetNothing(testRegId)
-
-        val res = await(buildClient(pageUrl).post(Map("value" -> settingUpVatGroupKey)))
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.NinoController.onPageLoad.url)
-      }
-
-      s"redirect to Reg Reason Resolver when sellingGoodsAndServices value is selected and individual flow enabled" in new Setup {
-        enable(IndividualFlow)
+      s"redirect to Reg Reason Resolver when sellingGoodsAndServices value is selected" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
@@ -127,8 +92,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
 
-      s"redirect to Reg Reason Resolver when ukEstablishedOverseasExporter value is selected and individual flow enabled" in new Setup {
-        enable(IndividualFlow)
+      s"redirect to Reg Reason Resolver when ukEstablishedOverseasExporter value is selected" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
@@ -139,8 +103,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with Feature
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
       }
 
-      s"redirect to Reg Reason Resolver when settingUpVatGroup value is selected and individual flow enabled" in new Setup {
-        enable(IndividualFlow)
+      s"redirect to Reg Reason Resolver when settingUpVatGroup value is selected" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)

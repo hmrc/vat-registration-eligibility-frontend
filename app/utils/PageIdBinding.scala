@@ -78,7 +78,6 @@ object PageIdBinding extends FeatureSwitching {
       }
       case e@(VoluntaryRegistrationId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
       case e@(TaxableSuppliesInUkId, None) if !isOverseas || isTogcCole => e
-      case e@(NinoId, None) if isOverseas || isEnabled(IndividualFlow) => e
       case e => (e._1, e._2.orElse(elemMiss(e._1)))
     }
 
@@ -92,7 +91,6 @@ object PageIdBinding extends FeatureSwitching {
           (RacehorsesId, userAnswers.racehorses),
           (RegisteringBusinessId, userAnswers.registeringBusiness),
           (RegistrationReasonId, userAnswers.registrationReason),
-          (NinoId, userAnswers.nino),
           (DateOfBusinessTransferId, userAnswers.dateOfBusinessTransfer),
           (PreviousBusinessNameId, userAnswers.previousBusinessName),
           (VATNumberId, userAnswers.vatNumber),

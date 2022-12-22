@@ -165,13 +165,6 @@ trait Constraints {
       }
     }
 
-  protected def validNino(errorKey: String): Constraint[String] =
-    Constraint { str =>
-      val regex = "[[A-Z]&&[^DFIQUV]][[A-Z]&&[^DFIQUVO]] ?\\d{2} ?\\d{2} ?\\d{2} ?[A-D]{1}".r
-
-      regex.unapplySeq(str).map(_ => Valid).getOrElse(Invalid(errorKey))
-    }
-
   protected def bigIntRange(errorKeyLess: String, errorKeyMore: String, low: BigInt, high: BigInt): Constraint[String] =
     Constraint { bigIntStr =>
       BigInt(bigIntStr) match {

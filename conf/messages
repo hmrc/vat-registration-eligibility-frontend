@@ -183,7 +183,6 @@ involvedInOtherBusiness.beforeText                  = you want to
 involvedInOtherBusiness.linkText                    = set up a VAT group
 
 eligibilityDropout.heading                      = The business must register for VAT using a different service
-eligibilityDropout.ApplicantUKNinoId.variant    = This is because the person whose name is on the VAT application must have a UK National Insurance number.
 
 eligibility.agriculture.text = To join the Agricultural Flat Rate Scheme, the business will need to
 eligibility.agriculture.link = register using form VAT98
