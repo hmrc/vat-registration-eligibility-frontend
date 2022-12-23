@@ -38,7 +38,6 @@ class ThresholdInTwelveMonthsFormProvider @Inject()(timeMachine: TimeMachine) ex
   val dateInFutureKey = s"$errorKeyRoot.date.inFuture"
   val dateBeforeIncorpKey = s"$errorKeyRoot.date.beforeIncorp"
   val dateInvalidKey = s"$errorKeyRoot.date.invalid"
-  val dateFormat = DateTimeFormatter.ofPattern("dd MMMM yyyy")
 
   def now = LocalDate.now()
 

@@ -38,7 +38,6 @@ class ThresholdPreviousThirtyDaysFormProvider @Inject()(timeMachine: TimeMachine
   val dateRequiredKey = s"$errorKeyRoot.date.required"
   val dateInFutureKey = s"$errorKeyRoot.date.inFuture"
   val dateInvalidKey = s"$errorKeyRoot.date.invalid"
-  val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
   def now = LocalDate.now()
 
   def apply(): Form[ConditionalDateFormElement] = Form(

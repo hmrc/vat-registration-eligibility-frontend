@@ -116,9 +116,16 @@ thresholdTaxableSupplies.heading                     = Pryd gwnaeth y busnes gyf
 thresholdTaxableSupplies.text                        = Dylech nodi’r dyddiad cynharaf y gwnaeth y busnes gyflenwadau trethadwy yn y DU, neu y bwriadodd y busnes wneud hynny.
 thresholdTaxableSupplies.dateHint                    = Er enghraifft, 18 10 2020
 
-thresholdTaxableSupplies.error.date.required         = Nodwch y dyddiad y gwnaeth y busnes gyflenwadau trethadwy yn y DU, neu y bwriadodd y busnes wneud hynny
-thresholdTaxableSupplies.error.date.inFuture         = Mae’n rhaid i’r dyddiad fod rhwng {0} a {1}
-thresholdTaxableSupplies.error.date.invalid          = Nodwch ddyddiad go iawn
+thresholdTaxableSupplies.error.date.required              = Nodwch y dyddiad y gwnaeth y busnes gyflenwadau trethadwy yn y DU, neu y bwriadodd y busnes wneud hynny
+thresholdTaxableSupplies.error.date.required.day          = The date the business made or intended to make taxable supplies must include a day
+thresholdTaxableSupplies.error.date.required.dayMonth     = The date the business made or intended to make taxable supplies must include a day and a month
+thresholdTaxableSupplies.error.date.required.dayYear      = The date the business made or intended to make taxable supplies must include a day and a year
+thresholdTaxableSupplies.error.date.required.month        = The date the business made or intended to make taxable supplies must include a month
+thresholdTaxableSupplies.error.date.required.monthYear    = The date the business made or intended to make taxable supplies must include a month and a year
+thresholdTaxableSupplies.error.date.required.year         = The date the business made or intended to make taxable supplies must include a year
+thresholdTaxableSupplies.error.date.range.max             = The date the business made or intended to make taxable supplies must be before {0}
+thresholdTaxableSupplies.error.date.range.min             = The date the business made or intended to make taxable supplies must be after {0}
+thresholdTaxableSupplies.error.date.invalid               = Nodwch ddyddiad go iawn
 
 voluntaryRegistration.heading.business      = A hoffech gofrestru’r busnes yn wirfoddol ar gyfer TAW?
 voluntaryRegistration.heading.partnership   = A hoffech gofrestru’r bartneriaeth yn wirfoddol ar gyfer TAW?
@@ -261,12 +268,12 @@ fixedEstablishment.para = Mae sefydliad yn y DU yn bodoli os yw’r naill neu’
 fixedEstablishment.bullet1 = mae’r man lle caiff penderfyniadau rheoli hanfodol eu gwneud a lle caiff gweinyddiaeth ganolog y busnes ei chynnal yn y DU
 fixedEstablishment.bullet2 = mae gan y busnes bresenoldeb corfforol parhaol gyda’r adnoddau dynol a thechnegol i wneud neu dderbyn cyflenwadau trethadwy yn y DU
 
-taxableSuppliesInUk.heading = A yw’r busnes wedi gwneud cyflenwadau trethadwy yn y DU?
-taxableSuppliesInUk.para = Rhowch wybod i ni os yw unrhyw un o’r canlynol yn berthnasol:
-taxableSuppliesInUk.bullet1 = mae’r busnes wedi gwneud cyflenwadau trethadwy yn y DU o fewn y pedair blynedd diwethaf
-taxableSuppliesInUk.bullet2 = roedd y busnes ynghynt yn bwriadu gwneud cyflenwadau trethadwy yn y DU o fewn y pedair blynedd diwethaf
-taxableSuppliesInUk.bullet3 = mae’r busnes yn bwriadu gwneud cyflenwadau trethadwy yn y DU o fewn y tri mis nesaf
-taxableSuppliesInUk.error.required = Dewiswch ‘Iawn’ os yw’r busnes wedi gwneud cyflenwadau trethadwy yn y DU
+taxableSuppliesInUk.heading         = A yw’r busnes wedi gwneud cyflenwadau trethadwy yn y DU?
+taxableSuppliesInUk.para            = Tell us if the business:
+taxableSuppliesInUk.bullet1         = has made taxable supplies in the UK
+taxableSuppliesInUk.bullet2         = previously intended to make taxable supplies in the UK
+taxableSuppliesInUk.bullet3         = intends to make taxable supplies in the UK within the next 3 months
+taxableSuppliesInUk.error.required  = Dewiswch ‘Iawn’ os yw’r busnes wedi gwneud cyflenwadau trethadwy yn y DU
 
 doNotNeedToRegister.title    = Ar hyn o bryd, nid oes angen i chi gofrestru ar gyfer TAW
 doNotNeedToRegister.heading  = Ar hyn o bryd, nid oes angen i chi gofrestru ar gyfer TAW

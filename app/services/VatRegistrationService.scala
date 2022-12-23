@@ -24,11 +24,11 @@ import models.RegisteringBusiness.registeringBusinessToString
 import models.RegistrationReason.registrationReasonToString
 import models._
 import models.requests.DataRequest
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json._
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.http.{HeaderCarrier, InternalServerException}
-import utils.{JsonSummaryRow, MessagesUtils, PageIdBinding}
+import utils.{JsonSummaryRow, MessageDateFormat, MessagesUtils, PageIdBinding}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -113,14 +113,12 @@ class VatRegistrationService @Inject()(val vrConnector: VatRegistrationConnector
     s"eligibility.$formattedKey"
   }
 
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-
-  private def answerFormatter[T](answer: T): String =
+  private def answerFormatter[T](answer: T)(implicit messages: Messages): String =
     answer match {
       case data: Boolean => s"eligibility.site.${if (data) "yes" else "no"}"
       case data: String => data
-      case data: DateFormElement => data.date.format(formatter)
-      case data: LocalDate => data.format(formatter)
+      case data: DateFormElement => MessageDateFormat.format(data.date)
+      case data: LocalDate => MessageDateFormat.format(data)
       case data: RegistrationReason => s"eligibility.${registrationReasonToString(data)}"
       case data: RegisteringBusiness => s"eligibility.${registeringBusinessToString(data)}"
       case data: BusinessEntity => s"eligibility.${businessEntityToString(data)}"
