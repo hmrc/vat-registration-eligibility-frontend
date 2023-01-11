@@ -69,7 +69,7 @@ businessEntityPartnership.scottish-limited-partnership          = These are simi
 businessEntityPartnership.limited-liability-partnership         = These must be registered at Companies House. They are taxed as partnerships but they have the benefits of being a corporate entity. All the partners have limited liability for debts.
 businessEntityPartnership.error.required                        = Select the type of partnership you want to register for VAT
 
-businessEntity.limited-company                                  = Limited company (includes Unlimited companies)
+businessEntity.limited-company                                  = UK company (includes Limited and Unlimited companies)
 businessEntity.soletrader                                       = Sole trader
 businessEntity.partnership                                      = Partnership
 businessEntity.general-partnership                              = General partnership
@@ -83,6 +83,7 @@ businessEntity.non-incorporated-trust                           = Trust (non-inc
 businessEntity.registered-society                               = Registered Society
 businessEntity.unincorporated-association                       = Unincorporated Association
 businessEntity.division                                         = Division
+businessEntity.overseas                                         = Non-UK Company
 
 businessEntityOverseas.heading                          = What type of business do you want to register for VAT?
 businessEntityOverseas.hint                             = A NETP is any person who is not normally resident in the UK or does not have a UK establishment.
@@ -261,12 +262,12 @@ eligible.heading                        = You can register for VAT online
 eligible.p1                             = Based on your answers, you can register for VAT using the online service.
 eligible.button                         = Continue to VAT registration
 
-fixedEstablishment.title                = Does the business have a fixed establishment in the UK?
-fixedEstablishment.heading              = Does the business have a fixed establishment in the UK?
-fixedEstablishment.error.required       = Select yes if the business has a fixed establishment in the UK
-fixedEstablishment.para                 = A UK establishment exists if either the:
-fixedEstablishment.bullet1              = place where essential management decisions are made and the business’s central administration is carried out is in the UK
-fixedEstablishment.bullet2              = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK
+fixedEstablishment.title                = Does the business have a fixed establishment in the UK or Isle of Man?
+fixedEstablishment.heading              = Does the business have a fixed establishment in the UK or Isle of Man?
+fixedEstablishment.error.required       = Select yes if the business has a fixed establishment in the UK or Isle of Man
+fixedEstablishment.para                 = A UK or Isle of Man establishment exists if either the:
+fixedEstablishment.bullet1              = place where essential management decisions are made and the business’s central administration is carried out is in the UK or Isle of Man
+fixedEstablishment.bullet2              = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK or Isle of Man
 
 taxableSuppliesInUk.heading             = Has the business made taxable supplies in the UK?
 taxableSuppliesInUk.para                = Tell us if the business:

@@ -17,7 +17,6 @@
 package forms.mappings
 
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
-import utils.RadioOption
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, ResolverStyle}
@@ -173,19 +172,6 @@ trait Constraints {
         case _ => Valid
       }
     }
-
-  protected def matchesRadioSeq(radioSeq: Set[RadioOption], errKey: String): Constraint[String] = {
-    Constraint {
-      input: String =>
-        if (radioSeq.exists {
-          option => option.value == input
-        }) {
-          Valid
-        } else {
-          Invalid(errKey)
-        }
-    }
-  }
 
   private def calcWeightedSum(value: String): Int = {
     // not efficient but saves writing out a hardcoded calculation or a recursive function

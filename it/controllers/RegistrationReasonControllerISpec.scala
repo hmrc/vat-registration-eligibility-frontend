@@ -86,6 +86,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
+        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
+
         val res = await(buildClient(pageUrl).post(Map("value" -> sellingGoodsAndServicesKey)))
 
         res.status mustBe SEE_OTHER
@@ -96,6 +98,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
+
+        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> ukEstablishedOverseasExporterKey)))
 
@@ -108,6 +112,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
+        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
+
         val res = await(buildClient(pageUrl).post(Map("value" -> settingUpVatGroupKey)))
 
         res.status mustBe SEE_OTHER
@@ -118,6 +124,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
+
+        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, false)
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> takingOverBusinessKey)))
@@ -130,6 +138,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
+
+        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, false)
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> changingLegalEntityOfBusinessKey)))
@@ -142,6 +152,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
+
+        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, false)
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> sellingGoodsAndServicesKey)))
@@ -150,11 +162,26 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.TaxableSuppliesInUkController.onPageLoad.url)
       }
 
+      s"redirect to Reg Reason Resolver for an established overseas user selecting sellingGoodsAndServices" in new Setup {
+        stubSuccessfulLogin()
+        stubAudits()
+        stubS4LGetNothing(testRegId)
+
+        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
+        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
+
+        val res = await(buildClient(pageUrl).post(Map("value" -> sellingGoodsAndServicesKey)))
+
+        res.status mustBe SEE_OTHER
+        res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegReasonResolverController.resolve.url)
+      }
+
       "clear down threshold/togc data if reg reason is changed" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
         stubS4LGetNothing(testRegId)
 
+        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
         cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
         cacheSessionData[RegistrationReason](sessionId, RegistrationReasonId, SellingGoodsAndServices)
         cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(LocalDate.now())))

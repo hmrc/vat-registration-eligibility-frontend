@@ -69,7 +69,7 @@ businessEntityPartnership.scottish-limited-partnership          = Mae’r rhain 
 businessEntityPartnership.limited-liability-partnership         = Mae’n rhaid cofrestru’r rhain yn Nhŷ’r Cwmnïau. Fe’u trethir fel partneriaethau, ond mae ganddynt y manteision o fod yn endid corfforaethol. Mae gan bob partner atebolrwydd cyfyngedig am ddyledion.
 businessEntityPartnership.error.required                        = Dewiswch y math o bartneriaeth yr hoffech ei chofrestru ar gyfer TAW
 
-businessEntity.limited-company                                  = Cwmni cyfyngedig (mae hyn yn cynnwys cwmnïau anghyfyngedig)
+businessEntity.limited-company                                  = Cwmni yn y DU (gan gynnwys cwmnïau Cyfyngedig ac Anghyfyngedig)
 businessEntity.soletrader                                       = Unig fasnachwr
 businessEntity.partnership                                      = Partneriaeth
 businessEntity.general-partnership                              = Partneriaeth gyffredinol
@@ -83,6 +83,7 @@ businessEntity.non-incorporated-trust                           = Ymddiriedolaet
 businessEntity.registered-society                               = Cymdeithas Gofrestredig
 businessEntity.unincorporated-association                       = Cymdeithas Anghorfforedig
 businessEntity.division                                         = Is-adran
+businessEntity.overseas                                         = Cwmni y tu allan i’r DU
 
 businessEntityOverseas.heading                          = Pa fath o fusnes yr hoffech ei gofrestru ar gyfer TAW?
 businessEntityOverseas.hint                             = Mae NETP yn unrhyw berson nad yw fel arfer yn preswylio yn y DU neu nad oes ganddo sefydliad yn y DU.
@@ -261,12 +262,12 @@ eligible.heading                            = Gallwch gofrestru ar gyfer TAW ar-
 eligible.p1                                 = Ar sail eich atebion, gallwch gofrestru ar gyfer TAW gan ddefnyddio’r gwasanaeth ar-lein.
 eligible.button                             = Yn eich blaen i gofrestru ar gyfer TAW
 
-fixedEstablishment.title                    = A oes gan y busnes sefydliad sefydlog yn y DU?
-fixedEstablishment.heading                  = A oes gan y busnes sefydliad sefydlog yn y DU?
-fixedEstablishment.error.required           = Dewiswch ‘Iawn’ os oes gan y busnes sefydliad sefydlog yn y DU
-fixedEstablishment.para                     = Mae sefydliad yn y DU yn bodoli os yw’r naill neu’r llall o’r canlynol yn berthnasol:
-fixedEstablishment.bullet1                  = mae’r man lle caiff penderfyniadau rheoli hanfodol eu gwneud a lle caiff gweinyddiaeth ganolog y busnes ei chynnal yn y DU
-fixedEstablishment.bullet2                  = mae gan y busnes bresenoldeb corfforol parhaol gyda’r adnoddau dynol a thechnegol i wneud neu dderbyn cyflenwadau trethadwy yn y DU
+fixedEstablishment.title                    = A oes gan y busnes sefydliad sefydlog yn y DU neu Ynys Manaw?
+fixedEstablishment.heading                  = A oes gan y busnes sefydliad sefydlog yn y DU neu Ynys Manaw?
+fixedEstablishment.error.required           = Dewiswch ‘Iawn’ os oes gan y busnes sefydliad sefydlog yn y DU neu Ynys Manaw
+fixedEstablishment.para                     = Mae sefydliad yn bodoli yn y DU neu Ynys Manaw os yw’r naill neu’r llall yn berthnasol:
+fixedEstablishment.bullet1                  = mae’r man lle caiff penderfyniadau rheoli hanfodol eu gwneud, a lle caiff gweinyddiaeth ganolog y busnes ei chynnal, yn y DU neu Ynys Manaw
+fixedEstablishment.bullet2                  = mae gan y busnes bresenoldeb corfforol parhaol gyda’r adnoddau dynol a thechnegol i wneud neu dderbyn cyflenwadau trethadwy yn y DU neu Ynys Manaw
 
 taxableSuppliesInUk.heading                 = A yw’r busnes wedi gwneud cyflenwadau trethadwy yn y DU?
 taxableSuppliesInUk.para                    = Rhowch wybod i ni os yw’r busnes:

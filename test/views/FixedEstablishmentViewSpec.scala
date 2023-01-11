@@ -27,10 +27,10 @@ class FixedEstablishmentViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
-  val h1 = "Does the business have a fixed establishment in the UK?"
-  val paragraph = "A UK establishment exists if either the:"
-  val bullet1 = "place where essential management decisions are made and the business’s central administration is carried out is in the UK"
-  val bullet2 = "business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK"
+  val h1 = "Does the business have a fixed establishment in the UK or Isle of Man?"
+  val paragraph = "A UK or Isle of Man establishment exists if either the:"
+  val bullet1 = "place where essential management decisions are made and the business’s central administration is carried out is in the UK or Isle of Man"
+  val bullet2 = "business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK or Isle of Man"
 
   "FixedEstablishment view" must {
     lazy val doc = asDocument(view(form)(fakeDataRequestIncorped, messages, frontendAppConfig))

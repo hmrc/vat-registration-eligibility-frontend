@@ -43,7 +43,7 @@ class PageIdBindingSpec extends PlaySpec with FeatureSwitching {
 
   val fullListMapHappyPathNETP: ListMap[String, JsValue] = ListMap[String, JsValue](
     "" -> JsString(""),
-    s"$FixedEstablishmentId" -> JsBoolean(true),
+    s"$FixedEstablishmentId" -> JsBoolean(false),
     s"$BusinessEntityId" -> Json.toJson(NETP),
     s"$TaxableSuppliesInUkId" -> JsBoolean(true),
     s"$ThresholdTaxableSuppliesId" -> Json.obj("date" -> JsString("2020-12-12")),

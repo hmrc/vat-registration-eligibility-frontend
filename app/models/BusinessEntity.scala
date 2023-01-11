@@ -41,7 +41,7 @@ case object Division extends OtherType
 case object VatGroup extends OtherType
 
 sealed trait OverseasType extends BusinessEntity
-case object Overseas extends OverseasType
+case object Overseas extends OverseasType with OtherType
 case object NETP extends OverseasType
 
 object BusinessEntity {

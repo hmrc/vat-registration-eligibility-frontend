@@ -17,7 +17,6 @@
 package connectors.mocks
 
 import connectors.S4LConnector
-import models.S4LKey
 import org.mockito.Mockito.when
 import org.mockito.stubbing.OngoingStubbing
 import org.mockito.{ArgumentMatchers => Matchers}
@@ -47,13 +46,6 @@ trait MockS4lConnector {
     when(mockS4LConnector.clear(Matchers.anyString())(Matchers.any[HeaderCarrier]()))
       .thenReturn(Future.successful(HttpResponse(200, "")))
   }
-
-  def mockS4LSaveForm[T: S4LKey](cacheMap: CacheMap, mockS4LConnector: S4LConnector = mockS4LConnector): OngoingStubbing[Future[CacheMap]] = {
-    when(mockS4LConnector.save[T](Matchers.anyString(), Matchers.contains(S4LKey[T].key),
-      Matchers.any[T]())(Matchers.any[HeaderCarrier](), Matchers.any[Format[T]]()))
-      .thenReturn(Future.successful(cacheMap))
-  }
-
 
   def mockS4LSave[T](formId: String, cacheMap: CacheMap = CacheMap("", Map("" -> Json.toJson(""))), mockS4LConnector: S4LConnector = mockS4LConnector): OngoingStubbing[Future[CacheMap]] = {
     when(mockS4LConnector.save[T](Matchers.anyString(), Matchers.contains(formId), Matchers.any[T]())(Matchers.any[HeaderCarrier](), Matchers.any[Format[T]]()))

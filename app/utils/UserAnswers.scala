@@ -18,7 +18,7 @@ package utils
 
 import identifiers._
 import models._
-import play.api.libs.json.{JsValue, Reads}
+import play.api.libs.json.Reads
 import uk.gov.hmrc.http.cache.client.CacheMap
 
 import javax.inject.Singleton
@@ -41,7 +41,7 @@ class UserAnswers(val cacheMap: CacheMap) extends Enumerable.Implicits {
   }
 
   def isOverseas: Boolean = businessEntity match {
-    case Some(_: OverseasType) => true
+    case Some(_: OverseasType) if fixedEstablishment.contains(false) => true
     case _ => false
   }
 
