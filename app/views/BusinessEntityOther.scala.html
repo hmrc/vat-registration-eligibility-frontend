@@ -73,6 +73,11 @@
                     value = Some(divisionKey),
                     content = Text(Messages("businessEntity.division")),
                     checked = businessEntityForm("value").value.contains(divisionKey)
+                ),
+                RadioItem(id = Some(overseasKey),
+                    value = Some(overseasKey),
+                    content = Text(Messages("businessEntity.overseas")),
+                    checked = businessEntityForm("value").value.contains(overseasKey)
                 )
             )
         )

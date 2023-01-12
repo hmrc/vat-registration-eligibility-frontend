@@ -45,6 +45,7 @@ class BusinessEntityOtherFormProvider extends Mappings {
         case Some(`registeredSocietyKey`) => Right(RegisteredSociety)
         case Some(`unincorporatedAssociationKey`) => Right(UnincorporatedAssociation)
         case Some(`divisionKey`) => Right(Division)
+        case Some(`overseasKey`) => Right(Overseas)
         case _ => Left(Seq(FormError(key, businessEntityError)))
       }
     }
@@ -56,6 +57,7 @@ class BusinessEntityOtherFormProvider extends Mappings {
         case RegisteredSociety => registeredSocietyKey
         case UnincorporatedAssociation => unincorporatedAssociationKey
         case Division => divisionKey
+        case Overseas => overseasKey
       }
       Map(key -> stringValue)
     }

@@ -16,6 +16,7 @@
 
 package connectors
 
+import play.api.Logging
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps}
@@ -26,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VatRegistrationConnector @Inject()(val http: HttpClientV2,
-                                         val servicesConfig: ServicesConfig) {
+                                         val servicesConfig: ServicesConfig) extends Logging {
   lazy val vatRegistrationUrl: String = servicesConfig.baseUrl("vat-registration")
   lazy val vatRegistrationUri: String =
     servicesConfig.getConfString("vat-registration.uri", throw new RuntimeException("expected incorporation-information.uri in config but none found"))

@@ -165,12 +165,12 @@ class Navigator @Inject extends Logging with FeatureSwitching {
       toPage = RegistrationReasonId
     ),
     RegistrationReasonId -> { userAnswers =>
-      userAnswers.isOverseas match {
-        case true if userAnswers.registrationReason.exists(answer => List(TakingOverBusiness, ChangingLegalEntityOfBusiness).contains(answer)) =>
+      userAnswers.fixedEstablishment match {
+        case Some(false) if userAnswers.registrationReason.exists(answer => List(TakingOverBusiness, ChangingLegalEntityOfBusiness).contains(answer)) =>
           pageIdToPageLoad(RegReasonResolverId)
-        case true =>
+        case Some(false) =>
           pageIdToPageLoad(TaxableSuppliesInUkId)
-        case false =>
+        case Some(true) =>
           pageIdToPageLoad(RegReasonResolverId)
       }
     },

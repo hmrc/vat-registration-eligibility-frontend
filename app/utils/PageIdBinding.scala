@@ -38,7 +38,7 @@ object PageIdBinding extends FeatureSwitching {
         case _ => false
       }
 
-    val isOverseas = userAnswers.businessEntity.contains(NETP) || userAnswers.businessEntity.contains(Overseas)
+    val noFixedEstablishment = userAnswers.fixedEstablishment.contains(false)
 
     val isUkEstablishedOverseasExporter = userAnswers.registrationReason.contains(UkEstablishedOverseasExporter)
 
@@ -50,20 +50,20 @@ object PageIdBinding extends FeatureSwitching {
       case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, None) if !isTogcCole => e
       case e@(DateOfBusinessTransferId | PreviousBusinessNameId | VATNumberId | KeepOldVrnId, Some(_)) if !isTogcCole => illegalState(e._1)
       case e@(TermsAndConditionsId, None) if !isTogcCole || userAnswers.keepOldVrn.contains(false) => e
-      case e@(ThresholdInTwelveMonthsId, None) if isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
+      case e@(ThresholdInTwelveMonthsId, None) if noFixedEstablishment || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
       case e@(ThresholdNextThirtyDaysId, Some(_)) => if (twelveMonthsValue) {
         illegalState(e._1)
       } else {
         e
       }
-      case e@(ThresholdNextThirtyDaysId, None) if twelveMonthsValue || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
+      case e@(ThresholdNextThirtyDaysId, None) if twelveMonthsValue || noFixedEstablishment || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
       case e@(ThresholdPreviousThirtyDaysId, Some(_)) => if (!twelveMonthsValue) {
         illegalState(e._1)
       } else {
         e
       }
-      case e@(ThresholdPreviousThirtyDaysId, None) if !twelveMonthsValue || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
-      case e@(ThresholdTaxableSuppliesId, None) if !isOverseas || isTogcCole => e
+      case e@(ThresholdPreviousThirtyDaysId, None) if !twelveMonthsValue || noFixedEstablishment || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
+      case e@(ThresholdTaxableSuppliesId, None) if !noFixedEstablishment || isTogcCole => e
       case e@(VATRegistrationExceptionId, Some(_)) => if (twelveMonthsValue && nextThirtyDaysValue) {
         illegalState(e._1)
       } else {
@@ -75,8 +75,8 @@ object PageIdBinding extends FeatureSwitching {
       } else {
         e
       }
-      case e@(VoluntaryRegistrationId, None) if isMandatory || isOverseas || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
-      case e@(TaxableSuppliesInUkId, None) if !isOverseas || isTogcCole => e
+      case e@(VoluntaryRegistrationId, None) if isMandatory || noFixedEstablishment || isUkEstablishedOverseasExporter || isVatGroup || isTogcCole => e
+      case e@(TaxableSuppliesInUkId, None) if !noFixedEstablishment || isTogcCole => e
       case e => (e._1, e._2.orElse(elemMiss(e._1)))
     }
 
