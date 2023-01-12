@@ -3,7 +3,7 @@ package controllers
 import helpers.IntegrationSpecBase
 import identifiers.{BusinessEntityId, FixedEstablishmentId}
 import models.BusinessEntity.{otherKey, partnershipKey, soleTraderKey, ukCompanyKey}
-import models.{BusinessEntity, GeneralPartnership, NETP, RegisteredSociety}
+import models._
 import org.jsoup.Jsoup
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
@@ -15,7 +15,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
 
   "GET /business-entity" when {
     "an answer exists for the page" when {
-      "the user's business entity is an overseas entity" when {
+      "the user's business entity is NETP and they have no fixed establishment" when {
         "redirect to the Business Entity Overseas page" in new Setup {
           stubSuccessfulLogin()
           stubAudits()
@@ -29,8 +29,55 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
           res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
         }
       }
-      "the user's business entity is a Partnership entity" must {
+      "the user's business entity is NETP and they have a fixed establishment" when {
+        "show the page with no prepop" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
+
+          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NETP)
+          cacheSessionData(sessionId, FixedEstablishmentId, true)
+
+          val res = await(buildClient(pageUrl).get)
+          val doc = Jsoup.parse(res.body)
+
+          res.status mustBe OK
+          doc.radioIsSelected(otherKey) mustBe false
+          doc.radioIsSelected(partnershipKey) mustBe false
+          doc.radioIsSelected(ukCompanyKey) mustBe false
+          doc.radioIsSelected(soleTraderKey) mustBe false
+        }
+      }
+      "the user's business entity is Non UK and they have no fixed establishment" when {
         "redirect to the Business Entity Overseas page" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
+
+          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
+          cacheSessionData(sessionId, FixedEstablishmentId, false)
+
+          val res = await(buildClient(pageUrl).get)
+
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
+        }
+      }
+      "the user's business entity is Non UK and they have a fixed establishment in UK/Man" when {
+        "show the page with Other preselected" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
+
+          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
+          cacheSessionData(sessionId, FixedEstablishmentId, true)
+
+          val res = await(buildClient(pageUrl).get)
+          val doc = Jsoup.parse(res.body)
+
+          res.status mustBe OK
+          doc.radioIsSelected(otherKey) mustBe true
+        }
+      }
+      "the user's business entity is a Partnership entity" must {
+        "show the page with partnership preselected" in new Setup {
           stubSuccessfulLogin()
           stubAudits()
 
@@ -44,7 +91,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
         }
       }
       "the user's business entity is an 'Other' entity" must {
-        "redirect to the Business Entity Overseas page" in new Setup {
+        "show the page with other preselected" in new Setup {
           stubSuccessfulLogin()
           stubAudits()
 
@@ -59,7 +106,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
       }
       options.foreach { option =>
         s"the answer is $option" must {
-          "return OK with the UKCompany option selected" in new Setup {
+          "return OK with the correct option selected" in new Setup {
             stubSuccessfulLogin()
             stubAudits()
 

@@ -51,9 +51,9 @@ class BusinessEntityController @Inject()(sessionService: SessionService,
         // CYA page to create the change link, doing it any other way would require a lot of extra work.
         case otherTypes =>
           val preparedForm = otherTypes match {
-            case None => formProvider()
             case Some(_: OtherType) => formProvider().fill(Other)
             case Some(_: PartnershipType) => formProvider().fill(Partnership)
+            case None | Some(_: OverseasType) => formProvider()
             case Some(businessEntity) => formProvider().fill(businessEntity)
           }
 
