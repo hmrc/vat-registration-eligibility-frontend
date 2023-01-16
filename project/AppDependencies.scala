@@ -14,7 +14,7 @@ private object AppDependencies {
   private val jsoupVersion = "1.15.3"
   private val scoverageVersion = "1.4.1"
   private val wireMockVersion = "2.27.2"
-  private val playHmrcFrontendVersion = "3.34.0-play-28"
+  private val playHmrcFrontendVersion = "6.2.0-play-28"
 
   val compile = Seq(
     ws,
