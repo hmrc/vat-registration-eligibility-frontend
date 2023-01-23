@@ -46,8 +46,6 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
 
       res.status mustBe SEE_OTHER
       res.header(HeaderNames.LOCATION) mustBe Some(s"/register-for-vat/journey/$testRegId")
-      stubSuccessfulLogin()
-      stubAudits()
     }
     "Return Internal Server Error if data is missing" in new Setup {
       stubS4LGetNothing(testRegId)

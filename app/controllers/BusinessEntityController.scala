@@ -69,7 +69,7 @@ class BusinessEntityController @Inject()(sessionService: SessionService,
           BadRequest(view(formWithErrors, routes.BusinessEntityController.onSubmit()))
         ),
       {
-        case entityType =>
+        entityType =>
           sessionService.save[BusinessEntity](BusinessEntityId.toString, entityType) map { cacheMap =>
             Redirect(navigator.nextPage(BusinessEntityId, NormalMode)(new UserAnswers(cacheMap)))
           }

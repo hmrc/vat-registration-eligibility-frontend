@@ -45,4 +45,10 @@ class VatRegistrationConnector @Inject()(val http: HttpClientV2,
           throw e
       }
   }
+
+  def getEligibilityAnswers(regId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Map[String, JsValue]]] = {
+    val url = s"$vatRegistrationUrl$vatRegistrationUri/registrations/$regId/sections/eligibilityJson"
+    http.get(url"$url")
+      .execute[Option[Map[String, JsValue]]]
+  }
 }

@@ -32,18 +32,26 @@ class IndexControllerISpec extends IntegrationSpecBase {
     }
   }
 
-  s"GET ${controllers.routes.IndexController.navigateToPageId("foo").url}" must {
-    "redirect to the start of eligibility because question id is invalid" in {
-      val result = await(buildClient("/question?pageId=foo").get())
+  s"GET ${controllers.routes.IndexController.navigateToPageId("foo", testRegId).url}" must {
+    "the user is authorised" must {
+      "redirect to the start of eligibility because question id is invalid" in {
+        stubSuccessfulLogin()
+        stubAudits()
 
-      result.status mustBe SEE_OTHER
-      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
-    }
-    "redirect to page specified" in {
-      val result = await(buildClient("/question?pageId=mtdInformation").get())
+        val result = await(buildClient(s"/question?pageId=foo&regId=$testRegId").get())
 
-      result.status mustBe SEE_OTHER
-      result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
+        result.status mustBe SEE_OTHER
+        result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
+      }
+      "redirect to page specified" in {
+        stubSuccessfulLogin()
+        stubAudits()
+
+        val result = await(buildClient(s"/question?pageId=mtdInformation&regId=$testRegId").get())
+
+        result.status mustBe SEE_OTHER
+        result.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
+      }
     }
   }
 }

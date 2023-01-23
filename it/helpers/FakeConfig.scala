@@ -43,8 +43,6 @@ trait FakeConfig {
     "microservice.services.vat-registration-frontend.port" -> s"$mockPort",
     "microservice.services.vat-registration-frontend.host" -> s"$mockHost",
     "microservice.services.vat-registration-frontend.url" -> "",
-    "microservice.services.cachable.short-lived-cache.port" -> s"$mockPort",
-    "microservice.services.cachable.short-lived-cache.host" -> s"$mockHost",
     "auditing.consumer.baseUri.host" -> mockHost,
     "auditing.consumer.baseUri.port" -> s"$mockPort",
     "mongodb.uri" -> s"$mongoUri",

@@ -16,7 +16,7 @@
 
 package services
 
-import com.google.inject.{ImplementedBy, Inject}
+import com.google.inject.Inject
 import play.api.libs.json.{Format, Json}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,9 +27,9 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SessionServiceImpl @Inject()(val sessionRepository: SessionRepository,
-                                   val cascadeUpsert: CascadeUpsert)
-                                  (implicit ec: ExecutionContext) extends SessionService {
+class SessionService @Inject()(val sessionRepository: SessionRepository,
+                               val cascadeUpsert: CascadeUpsert)
+                              (implicit ec: ExecutionContext) {
 
   def sessionId(implicit hc: HeaderCarrier): String =
     hc.sessionId.getOrElse(throw new RuntimeException("No session ID for current user")).value
@@ -41,8 +41,8 @@ class SessionServiceImpl @Inject()(val sessionRepository: SessionRepository,
     }
   }
 
-  def save(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[CacheMap] =
-    sessionRepository.upsert(cacheMap).map (_ => cacheMap)
+  def save(cacheMap: CacheMap): Future[CacheMap] =
+    sessionRepository.upsert(cacheMap).map(_ => cacheMap)
 
   def removeEntry(key: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
     sessionRepository.removeEntry(sessionId, key)
@@ -55,7 +55,7 @@ class SessionServiceImpl @Inject()(val sessionRepository: SessionRepository,
   def fetch(implicit hc: HeaderCarrier): Future[Option[CacheMap]] =
     sessionRepository.get(sessionId)
 
-  def fetch(cacheId: String)(implicit hc: HeaderCarrier): Future[Option[CacheMap]] =
+  def fetch(cacheId: String): Future[Option[CacheMap]] =
     sessionRepository.get(cacheId)
 
   def getEntry[A](key: String)(implicit fmt: Format[A], hc: HeaderCarrier): Future[Option[A]] = {
@@ -95,29 +95,4 @@ class SessionServiceImpl @Inject()(val sessionRepository: SessionRepository,
       }
     }
   }
-}
-
-@ImplementedBy(classOf[SessionServiceImpl])
-trait SessionService {
-  def sessionId(implicit hc: HeaderCarrier): String
-
-  def save[A](key: String, value: A)(implicit fmt: Format[A], hc: HeaderCarrier): Future[CacheMap]
-
-  def save(cacheMap: CacheMap)(implicit hc: HeaderCarrier): Future[CacheMap]
-
-  def removeEntry(key: String)(implicit hc: HeaderCarrier): Future[CacheMap]
-
-  def delete(implicit hc: HeaderCarrier): Future[Boolean]
-
-  def fetch(implicit hc: HeaderCarrier): Future[Option[CacheMap]]
-
-  def fetch(id: String)(implicit hc: HeaderCarrier): Future[Option[CacheMap]]
-
-  def getEntry[A](key: String)(implicit fmt: Format[A], hc: HeaderCarrier): Future[Option[A]]
-
-  def addToCollection[A](collectionKey: String, value: A)(implicit fmt: Format[A], hc: HeaderCarrier): Future[CacheMap]
-
-  def removeFromCollection[A](collectionKey: String, item: A)(implicit fmt: Format[A], hc: HeaderCarrier): Future[CacheMap]
-
-  def replaceInCollection[A](collectionKey: String, index: Int, item: A)(implicit fmt: Format[A], hc: HeaderCarrier): Future[CacheMap]
 }
