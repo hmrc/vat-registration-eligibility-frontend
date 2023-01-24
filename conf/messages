@@ -6,37 +6,28 @@ date.year                                   = Year
 
 error.browser.title.prefix                  = Error:
 error.boolean                               = Please give an answer
-error.invalid_date                          = Give a correct date
-error.date.day_blank                        = Enter a day
-error.date.day_invalid                      = Give a correct day using numbers 1 to 31
-error.date.month_blank                      = Enter a month
-error.date.month_invalid                    = Give a correct month using numbers 1 to 12
-error.date.year_blank                       = Enter a year
-error.date.year_invalid                     = Give a correct year
+error.invalidDate                           = Give a correct date
+error.date.dayBlank                         = Enter a day
+error.date.dayInvalid                       = Give a correct day using numbers 1 to 31
+error.date.monthBlank                       = Enter a month
+error.date.monthInvalid                     = Give a correct month using numbers 1 to 12
+error.date.yearBlank                        = Enter a year
+error.date.yearInvalid                      = Give a correct year
 error.integer                               = Give an answer in whole numbers
 error.number                                = Please enter a valid number
 error.required                              = Please enter a value
 error.summary.title                         = There is a problem
 
-index.title                                 = vat-registration-eligibility-frontend
 index.heading                               = vat-registration-eligibility-frontend
 index.guidance                              = Welcome to your new frontend. Please see the README file for a guide to getting started.
 
-session_expired.title                       = For your security, this service has been reset
-session_expired.heading                     = For your security, this service has been reset
-session_expired.guidance                    = The details you have given have been deleted because you did not continue the service for 1 hour.
+sessionExpired.heading                     = For your security, this service has been reset
+sessionExpired.guidance                    = The details you have given have been deleted because you did not continue the service for 1 hour.
 
-site.back                                   = Back
-site.delete                                 = Remove
-site.edit                                   = Change
-site.useFormVAT1                            = Use form VAT1
 site.finish                                 = Finish
 site.finishAndSignOut                       = Finish and sign out
-site.hidden-delete                          = Delete {0}
-site.hidden-edit                            = Change {0}
 site.no                                     = No
 site.yes                                    = Yes
-site.save_and_continue                      = Save and continue
 site.continue                               = Continue
 service.name                                = Register for VAT
 site.opensInNewTab                          = (opens in new tab)
@@ -45,7 +36,6 @@ common.feedbackFirst                        = This is a new service - your
 common.feedbackSecond                       = feedback
 common.feedbackThird                        = will help us to improve it.
 
-unauthorised.title                          = You can’t access this service with this account
 unauthorised.heading                        = You can’t access this service with this account
 
 businessEntity.heading                      = What type of business do you want to register for VAT?
@@ -113,10 +103,9 @@ thresholdPreviousThirtyDays.error.date.required         = Enter a date for when 
 thresholdPreviousThirtyDays.error.date.inFuture         = Enter a date that is in the past
 thresholdPreviousThirtyDays.error.date.invalid          = Enter a date in the correct format
 
-thresholdTaxableSupplies.heading                        = When did the business make or intend to make taxable supplies in the UK?
-thresholdTaxableSupplies.text                           = You should enter the earliest date the business either made or intended to make taxable supplies in the UK.
-thresholdTaxableSupplies.dateHint                       = For example, 18 10 2020
-
+thresholdTaxableSupplies.heading                            = When did the business make or intend to make taxable supplies in the UK?
+thresholdTaxableSupplies.text                               = You should enter the earliest date the business either made or intended to make taxable supplies in the UK.
+thresholdTaxableSupplies.dateHint                           = For example, 18 10 2020
 thresholdTaxableSupplies.error.date.required                = Enter the date the business made or intended to make taxable supplies
 thresholdTaxableSupplies.error.date.required.day            = The date the business made or intended to make taxable supplies must include a day
 thresholdTaxableSupplies.error.date.required.dayMonth       = The date the business made or intended to make taxable supplies must include a day and a month
@@ -132,7 +121,6 @@ voluntaryRegistration.heading.business                      = Do you want to vol
 voluntaryRegistration.heading.partnership                   = Do you want to voluntarily register the partnership for VAT?
 voluntaryRegistration.error.required                        = Select yes if you want to voluntarily register for VAT
 
-choseNotToRegister.title             = You have chosen not to register the business for VAT
 choseNotToRegister.heading           = You have chosen not to register the business for VAT
 
 mtdInformation.heading               = The business will be signed up for Making Tax Digital for VAT
@@ -142,8 +130,6 @@ mtdInformation.bullet2               = submit VAT Returns directly to HMRC
 mtdInformation.linkText              = Find out more about Making Tax Digital for VAT
 mtdInformation.button                = Continue to register for VAT
 
-thresholdInTwelveMonths.title.business                      = Has the business’s taxable turnover gone over £85,000 in any 12 month period?
-thresholdInTwelveMonths.title.partnership                   = Has the partnership’s taxable turnover gone over £85,000 in any 12 month period?
 thresholdInTwelveMonths.heading.business                    = Has the business’s taxable turnover gone over £85,000 in any 12 month period?
 thresholdInTwelveMonths.heading.partnership                 = Has the partnership’s taxable turnover gone over £85,000 in any 12 month period?
 thresholdInTwelveMonths.error.required                      = Select yes if the business has gone over the VAT-registration threshold in any 12-month period
@@ -158,38 +144,6 @@ thresholdInTwelveMonths.heading2.business                   = When did the busin
 thresholdInTwelveMonths.heading2.partnership                = When did the partnership go over the threshold?
 thresholdInTwelveMonths.dateHint                            = For example, 02 2020
 
-turnoverEstimate.title.business                         = What do you think the business’s VAT-taxable turnover will be for the next 12 months?
-turnoverEstimate.title.partnership                      = What do you think the partnership’s VAT-taxable turnover will be for the next 12 months?
-turnoverEstimate.heading.business                       = What do you think the business’s VAT-taxable turnover will be for the next 12 months?
-turnoverEstimate.heading.partnership                    = What do you think the partnership’s VAT-taxable turnover will be for the next 12 months?
-turnoverEstimate.text                                   = Include the sale of all goods and services that are not exempt from VAT. You must include goods and services that have a 0% VAT rate.
-turnoverEstimate.linkText                               = Find out more about which goods and services are exempt from VAT
-turnoverEstimate.giveAnEstimate                         = For example, £90000
-turnoverEstimate.pound                                  = £
-turnoverEstimate.error.required                         = Enter what you think the business’s VAT-taxable turnover will be for the next 12 months
-turnoverEstimate.error.amount.numbers                   = Give a value using only numbers
-turnoverEstimate.error.amount.giveMoreThan              = Give an estimate that is more than £{0}
-turnoverEstimate.error.amount.giveLessThan              = Give an estimate that’s less than or equal to £{0}
-
-
-involvedInOtherBusiness.heading                         = Have you been involved with another business or taken over a VAT-registered business?
-involvedInOtherBusiness.headingObi                      = Have you been involved with another business?
-involvedInOtherBusiness.headingTakingOver               = Have you taken over a VAT-registered business?
-involvedInOtherBusiness.headingVatGroup                 = Do you want to set up a VAT group?
-involvedInOtherBusiness.error.required                  = Select yes if you have ever been involved with another business or taken over a VAT-registered business
-involvedInOtherBusiness.error.required.obi              = Select yes if you have ever been involved with another business
-involvedInOtherBusiness.error.required.takingOver       = Select yes if you have taken over a VAT-registered business
-involvedInOtherBusiness.error.required.vatGroup         = Select yes if you want to set up a VAT group
-involvedInOtherBusiness.text                            = Tell us if any of the following apply:
-
-involvedInOtherBusiness.bullet1                     = over the past 2 years, you have had another self-employed business in the UK or Isle of Man (do not tell us if your only source of self-employed income was from being a landlord)
-involvedInOtherBusiness.bullet2                     = over the past 2 years, you have been a partner or director with a different business in the UK or Isle of Man
-involvedInOtherBusiness.bullet4                     = the company used to be a different type of VAT-registered business, for example a sole trader
-involvedInOtherBusiness.bullet5                     = the company has taken over another VAT-registered company that was making a profit
-
-involvedInOtherBusiness.beforeText                  = you want to
-involvedInOtherBusiness.linkText                    = set up a VAT group
-
 eligibilityDropout.heading                          = The business must register for VAT using a different service
 
 eligibility.agriculture.text                        = To join the Agricultural Flat Rate Scheme, the business will need to
@@ -197,8 +151,6 @@ eligibility.agriculture.link                        = register using form VAT98
 
 eligibility.divisionDropout.text                    = To register a group, division or joint venture,
 eligibility.divisionDropout.link                    = use the VAT 1 form.
-
-eligibility.exception.link                          = Find out how to apply for an exception
 
 eligibility.international.special.text              = If the business:
 eligibility.international.bullet1                   = is selling assets that you have claimed a repayment of VAT under Directive 2008/9 or 13th Directive refund arrangements -
@@ -217,19 +169,6 @@ internationalActivities.bullet2                     = sell goods into Northern I
 internationalActivities.details.heading             = What is Directive 2008/9EC or Thirteenth VAT directive?
 internationalActivities.details.para                = This Directive is used to reclaim VAT paid in EU member states.
 
-zeroRatedSales.heading.business                 = Does the business sell mainly zero-rated goods or services?
-zeroRatedSales.heading.partnership              = Does the partnership sell mainly zero-rated goods or services?
-zeroRatedSales.error.required                   = Select yes if the business sells mainly zero-rated goods or services
-zeroRatedSales.dropdownText                     = Examples of zero-rated goods or services
-zeroRatedSales.dropdownLine1                    = Zero-rated goods and services are VAT-taxable but the VAT rate on them is 0%.
-zeroRatedSales.dropdownLine2                    = They include:
-zeroRatedSales.bullet1                          = most food and drink (but not things like alcoholic drinks, confectionery, crisps and savoury snacks, hot food, sports drinks, hot takeaways, ice cream, soft drinks and mineral water)
-zeroRatedSales.bullet2                          = books and newspapers
-zeroRatedSales.bullet3                          = printing services for brochures, leaflets or pamphlets
-zeroRatedSales.bullet4                          = children’s clothes and shoes
-zeroRatedSales.bullet5                          = most goods you export to non-EU countries
-zeroRatedSales.linkText                         = Find out about VAT rates on different goods and services
-
 registeringBusiness.heading                     = Whose business do you want to register?
 registeringBusiness.radioOwn                    = Your own
 registeringBusiness.radioOwn.hint               = Select this option if you are the owner or proprietor of the business you wish to register.
@@ -237,20 +176,11 @@ registeringBusiness.radioElse                   = Someone else’s
 registeringBusiness.radioElse.hint              = Select this option if you are an employee of the business you are registering or were otherwise asked to complete this registration on behalf of someone else.
 registeringBusiness.error.required              = Select whose business you want to register
 
-vatExemption.title                              = Does the business want to apply for a VAT exemption?
-vatExemption.heading                            = Does the business want to apply for a VAT exemption?
-vatExemption.error.required                     = Select yes if the business wants to apply for a VAT exemption
-vatExemption.text                               = The business may not have to register for VAT if it sells mainly or only zero-rated goods or services.
-
 vatRegistrationException.title                  = Would you like to apply for a VAT registration exception?
 vatRegistrationException.heading                = Would you like to apply for a VAT registration exception?
 vatRegistrationException.error.required         = Select yes if the business is applying for a VAT registration exception
 vatRegistrationException.p1                     = You can apply for a registration exception if the business goes over the VAT threshold temporarily.
 vatRegistrationException.p2                     = If you apply for an exception and are successful, we will contact you to tell you your request has been accepted.
-
-applyInWriting.title                            = You must apply in writing
-applyInWriting.heading                          = You must apply in writing
-applyInWriting.text                             = Please use form VAT1 to apply for an exemption from VAT registration.
 
 agriculturalFlatRateScheme.heading.business                 = Is the business applying for the Agricultural Flat Rate Scheme?
 agriculturalFlatRateScheme.heading.partnership              = Is the partnership applying for the Agricultural Flat Rate Scheme?
@@ -258,11 +188,6 @@ agriculturalFlatRateScheme.error.required                   = Select yes if the 
 agriculturalFlatRateScheme.text                             = The scheme is a different type of VAT registration for farmers.
 agriculturalFlatRateScheme.linkText                         = Find out more about the Agricultural Flat Rate Scheme
 
-eligible.heading                        = You can register for VAT online
-eligible.p1                             = Based on your answers, you can register for VAT using the online service.
-eligible.button                         = Continue to VAT registration
-
-fixedEstablishment.title                = Does the business have a fixed establishment in the UK or Isle of Man?
 fixedEstablishment.heading              = Does the business have a fixed establishment in the UK or Isle of Man?
 fixedEstablishment.error.required       = Select yes if the business has a fixed establishment in the UK or Isle of Man
 fixedEstablishment.para                 = A UK or Isle of Man establishment exists if either the:
@@ -276,7 +201,6 @@ taxableSuppliesInUk.bullet2             = previously intended to make taxable su
 taxableSuppliesInUk.bullet3             = intends to make taxable supplies in the UK within the next 3 months
 taxableSuppliesInUk.error.required      = Select yes if the business has made taxable supplies in the UK
 
-doNotNeedToRegister.title               = Currently you do not need to register for VAT
 doNotNeedToRegister.heading             = Currently you do not need to register for VAT
 doNotNeedToRegister.p1                  = From the answers provided, you do not need to register for VAT as you have not and do not plan to make taxable supplies in the UK.
 doNotNeedToRegister.p2                  = If this changes, the business should register for VAT.
@@ -302,7 +226,6 @@ dateOfBusinessTransfer.error.cole.date.required     = Enter a date for when the 
 dateOfBusinessTransfer.error.date.minDate           = Enter a date on or after {0}
 dateOfBusinessTransfer.error.date.maxDate           = Enter a date on or before {0}
 dateOfBusinessTransfer.error.date.invalid           = Enter a date in the correct format
-
 
 previousBusinessName.heading.togc                   = What is the name of the previous business?
 previousBusinessName.heading.cole                   = What was the business name prior to the change of legal entity?

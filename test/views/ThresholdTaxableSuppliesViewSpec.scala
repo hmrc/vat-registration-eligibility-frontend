@@ -18,7 +18,6 @@ package views
 
 import forms.ThresholdTaxableSuppliesFormProvider
 import models.NormalMode
-import play.api.i18n.{Lang, Messages, MessagesApi}
 import utils.TimeMachine
 import views.html.ThresholdTaxableSupplies
 
