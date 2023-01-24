@@ -30,7 +30,7 @@
 
 @(form: Form[_])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("fixedEstablishment.title"))), backLink = true) {
+@layout(pageTitle = Some(title(form, messages("fixedEstablishment.heading"))), backLink = true) {
 
     @errorSummary(form.errors)
 

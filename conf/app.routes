@@ -61,8 +61,6 @@ POST       /business-activities-next-12-months          controllers.Internationa
 GET        /registration-exception                      controllers.VATRegistrationExceptionController.onPageLoad
 POST       /registration-exception                      controllers.VATRegistrationExceptionController.onSubmit()
 
-GET        /apply-writing                               controllers.ApplyInWritingController.onPageLoad
-
 GET        /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onPageLoad
 POST       /agricultural-flat-rate                      controllers.AgriculturalFlatRateSchemeController.onSubmit()
 

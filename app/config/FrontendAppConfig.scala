@@ -17,18 +17,12 @@
 package config
 
 import featureswitch.core.config.FeatureSwitching
-import play.api.Configuration
-import play.api.i18n.Lang
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
-                                  val servicesConfig: ServicesConfig
-                                 ) extends FeatureSwitching {
-
-  lazy val host: String = servicesConfig.getString("host")
+class FrontendAppConfig @Inject()(val servicesConfig: ServicesConfig) extends FeatureSwitching {
 
   private def loadConfig(key: String) = servicesConfig.getString(key)
 
@@ -39,44 +33,23 @@ class FrontendAppConfig @Inject()(val runModeConfiguration: Configuration,
   lazy val contactFormServiceIdentifier = "vrs"
 
   lazy val appName = loadConfig(s"appName")
-  lazy val analyticsToken = loadConfig(s"google-analytics.token")
-  lazy val analyticsHost = loadConfig(s"google-analytics.host")
-  lazy val reportAProblemPartialUrl = s"$contactFrontendUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  lazy val reportAProblemNonJSUrl = s"$contactFrontendUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
   lazy val betaFeedbackUrl = s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
   lazy val loginUrl = loadConfig("urls.login")
   private val configRoot = "microservice.services"
   lazy val vatRegFEURL = loadConfig(s"$configRoot.vat-registration-frontend.url")
   lazy val vatRegFEURI = loadConfig(s"$configRoot.vat-registration-frontend.uri")
-  lazy val vatRegFEFirstPage = loadConfig(s"$configRoot.vat-registration-frontend.vrfeFirstPage")
   lazy val postSignInUrl = loadConfig(s"$configRoot.vat-registration-frontend.postSignInUrl")
-  lazy val feedbackUrl = loadConfig(s"$configRoot.vat-registration-frontend.feedbackUrl")
   lazy val feedbackFrontendUrl = loadConfig(s"$configRoot.feedback-frontend.url")
   lazy val exitSurveyUrl = s"$feedbackFrontendUrl/feedback/vat-registration"
-  lazy val VATNotice700_1supplementURL = servicesConfig.getConfString("gov-uk.VATNotice700_1supplementURL",
-    throw new Exception("Couldn't get VATNotice700_1supplementURL URL"))
-  lazy val VAT1FormURL = servicesConfig.getConfString("gov-uk.VAT1FormURL", throw new Exception("Couldn't get VAT1FormURL URL"))
   lazy val VAT1AFormURL = servicesConfig.getConfString("gov-uk.VAT1AFormURL", throw new Exception("Couldn't get VAT1AFormURL URL"))
-  lazy val VAT1BFormURL = servicesConfig.getConfString("gov-uk.VAT1BFormURL", throw new Exception("Couldn't get VAT1BFormURL URL"))
   lazy val VAT1CFormURL = servicesConfig.getConfString("gov-uk.VAT1CFormURL", throw new Exception("Couldn't get VAT1CFormURL URL"))
   lazy val VAT98FormURL = servicesConfig.getConfString("gov-uk.VAT98FormURL", throw new Exception("Couldn't get VAT98FormURL URL"))
-  lazy val VATDivisionURL = servicesConfig.getConfString("gov-uk.VATDivisionURL", throw new Exception("Couldn't get VATDivisionURL URL"))
-  lazy val VATWriteInURL = servicesConfig.getConfString("gov-uk.VATWriteInURL", throw new Exception("Couldn't get VATWriteInURL URL"))
   lazy val VATNotice700_46agriculturalURL = servicesConfig.getConfString("gov-uk.VATNotice700_46agriculturalURL",
     throw new Exception("Couldn't get VATNotice700_46agriculturalURL URL"))
-  lazy val VATRateDifferentGoodsURL = servicesConfig.getConfString("gov-uk.VATRateDifferentGoodsURL",
-    throw new Exception("Couldn't get VATRateDifferentGoodsURL URL"))
-  lazy val VATSetUpVATGroup = servicesConfig.getConfString("gov-uk.VATSetUpVATGroup",
-    throw new Exception("Couldn't get VATSetUpVATGroup URL"))
   lazy val VATMtdInformationGroup = servicesConfig.getConfString("gov-uk.VATMtdInformationGroup",
     throw new Exception("Couldn't get VATMtdInformationGroup URL"))
-  lazy val VATFileChanges = servicesConfig.getConfString("gov-uk.VATFileChanges", throw new Exception("Couldn't get VATFileChanges URL"))
-  lazy val languageTranslationEnabled = runModeConfiguration.getOptional[Boolean]("microservice.services.features.welsh-translation").getOrElse(true)
+  lazy val VATDivisionURL = servicesConfig.getConfString("gov-uk.VATDivisionURL", throw new Exception("Couldn't get VATDivisionURL URL"))
   lazy val calculateTurnoverUrl = "https://www.gov.uk/vat-registration/calculate-turnover"
-
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy"))
 
   lazy val accessibilityStatementUrl = servicesConfig.getString("accessibility-statement.host") + "/accessibility-statement/vat-registration"
 }

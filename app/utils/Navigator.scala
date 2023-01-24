@@ -45,7 +45,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad
     case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad
     case VATRegistrationExceptionId => routes.VATRegistrationExceptionController.onPageLoad
-    case ApplyInWritingId => routes.ApplyInWritingController.onPageLoad
     case EligibilityDropoutId(mode) => mode match {
       case InternationalActivitiesId.toString => routes.EligibilityDropoutController.internationalActivitiesDropout
       case mode => routes.EligibilityDropoutController.onPageLoad(mode)

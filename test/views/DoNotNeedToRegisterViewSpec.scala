@@ -21,7 +21,6 @@ import views.html.DoNotNeedToRegister
 class DoNotNeedToRegisterViewSpec extends ViewSpecBase {
 
   val messageKeyPrefix = "doNotNeedToRegister"
-  val title = "Currently you do not need to register for VAT"
   val h1 = "Currently you do not need to register for VAT"
   val p1 = "From the answers provided, you do not need to register for VAT as you have not and do not plan to make taxable supplies in the UK."
   val p2 = "If this changes, the business should register for VAT."
@@ -38,7 +37,7 @@ class DoNotNeedToRegisterViewSpec extends ViewSpecBase {
     }
 
     "have the correct title" in {
-      doc.select(Selectors.title).text() mustBe title(title)
+      doc.select(Selectors.title).text() mustBe title(h1)
     }
 
     "have the correct heading" in {

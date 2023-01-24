@@ -6,37 +6,28 @@ date.year                               = Blwyddyn
 
 error.browser.title.prefix              = Gwall:
 error.boolean                           = Rhowch ateb
-error.invalid_date                      = Rhowch ddyddiad cywir
-error.date.day_blank                    = Nodwch ddiwrnod
-error.date.day_invalid                  = Rhowch ddiwrnod cywir gan ddefnyddio’r rhifau 1 i 31
-error.date.month_blank                  = Nodwch fis
-error.date.month_invalid                = Rhowch fis cywir gan ddefnyddio’r rhifau 1 i 12
-error.date.year_blank                   = Nodwch flwyddyn
-error.date.year_invalid                 = Rhowch flwyddyn gywir
+error.invalidDate                       = Rhowch ddyddiad cywir
+error.date.dayBlank                     = Nodwch ddiwrnod
+error.date.dayInvalid                   = Rhowch ddiwrnod cywir gan ddefnyddio’r rhifau 1 i 31
+error.date.monthBlank                   = Nodwch fis
+error.date.monthInvalid                 = Rhowch fis cywir gan ddefnyddio’r rhifau 1 i 12
+error.date.yearBlank                    = Nodwch flwyddyn
+error.date.yearInvalid                  = Rhowch flwyddyn gywir
 error.integer                           = Rhowch ateb mewn rhifau cyfan
 error.number                            = Nodwch rif dilys
 error.required                          = Nodwch werth
 error.summary.title                     = Mae problem wedi codi
 
-index.title                             = vat-registration-eligibility-frontend
 index.heading                           = vat-registration-eligibility-frontend
 index.guidance                          = Croeso i’ch pen blaen newydd. Gweler y ffeil README am arweiniad ynghylch sut i ddechrau arni.
 
-session_expired.title                   = Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
-session_expired.heading                 = Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
-session_expired.guidance                = Mae’r manylion yr ydych wedi’u rhoi wedi cael eu dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth ers 1 awr.
+sessionExpired.heading                 = Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
+sessionExpired.guidance                = Mae’r manylion yr ydych wedi’u rhoi wedi cael eu dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth ers 1 awr.
 
-site.back                               = Yn ôl
-site.delete                             = Tynnu
-site.edit                               = Newid
-site.useFormVAT1                        = Defnyddiwch ffurflen VAT1
 site.finish                             = Gorffen
 site.finishAndSignOut                   = Gorffen ac allgofnodi
-site.hidden-delete                      = Dileu {0}
-site.hidden-edit                        = Newid {0}
 site.no                                 = Na
 site.yes                                = Iawn
-site.save_and_continue                  = Cadw ac yn eich blaen
 site.continue                           = Yn eich blaen
 service.name                            = Cofrestru ar gyfer TAW
 site.opensInNewTab                      = (yn agor tab newydd)
@@ -45,7 +36,6 @@ common.feedbackFirst                    = Gwasanaeth newydd yw hwn – bydd eich
 common.feedbackSecond                   = adborth
 common.feedbackThird                    = yn ein helpu i’w wella.
 
-unauthorised.title                      = Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 unauthorised.heading                    = Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 
 businessEntity.heading                  = Pa fath o fusnes yr hoffech ei gofrestru ar gyfer TAW?
@@ -113,10 +103,9 @@ thresholdPreviousThirtyDays.error.date.required         = Nodwch y dyddiad pan f
 thresholdPreviousThirtyDays.error.date.inFuture         = Nodwch ddyddiad sydd yn y gorffennol
 thresholdPreviousThirtyDays.error.date.invalid          = Nodwch ddyddiad yn y fformat cywir
 
-thresholdTaxableSupplies.heading                        = Pryd gwnaeth y busnes gyflenwadau trethadwy yn y DU, neu pryd bwriadodd y busnes wneud hynny?
-thresholdTaxableSupplies.text                           = Dylech nodi’r dyddiad cynharaf y gwnaeth y busnes gyflenwadau trethadwy yn y DU, neu y bwriadodd y busnes wneud hynny.
-thresholdTaxableSupplies.dateHint                       = Er enghraifft, 18 10 2020
-
+thresholdTaxableSupplies.heading                                = Pryd gwnaeth y busnes gyflenwadau trethadwy yn y DU, neu pryd bwriadodd y busnes wneud hynny?
+thresholdTaxableSupplies.text                                   = Dylech nodi’r dyddiad cynharaf y gwnaeth y busnes gyflenwadau trethadwy yn y DU, neu y bwriadodd y busnes wneud hynny.
+thresholdTaxableSupplies.dateHint                               = Er enghraifft, 18 10 2020
 thresholdTaxableSupplies.error.date.required                    = Nodwch y dyddiad y gwnaeth y busnes gyflenwadau trethadwy yn y DU, neu y bwriadodd y busnes wneud hynny
 thresholdTaxableSupplies.error.date.required.day                = Mae’n rhaid i’r dyddiad y gwnaeth y busnes gyflenwadau trethadwy, neu’r dyddiad y gwnaeth y busnes fwriadu gwneud hynny, gynnwys diwrnod
 thresholdTaxableSupplies.error.date.required.dayMonth           = Mae’n rhaid i’r dyddiad y gwnaeth y busnes gyflenwadau trethadwy, neu’r dyddiad y gwnaeth y busnes fwriadu gwneud hynny, gynnwys diwrnod a mis
@@ -132,7 +121,6 @@ voluntaryRegistration.heading.business                  = A hoffech gofrestru’
 voluntaryRegistration.heading.partnership               = A hoffech gofrestru’r bartneriaeth yn wirfoddol ar gyfer TAW?
 voluntaryRegistration.error.required                    = Dewiswch ‘Iawn’ os hoffech gofrestru’n wirfoddol ar gyfer TAW
 
-choseNotToRegister.title             = Rydych wedi dewis peidio cofrestru’r busnes ar gyfer TAW
 choseNotToRegister.heading           = Rydych wedi dewis peidio cofrestru’r busnes ar gyfer TAW
 
 mtdInformation.heading               = Bydd y busnes yn cael ei gofrestru ar gyfer Troi Treth yn Ddigidol ar gyfer TAW
@@ -142,8 +130,6 @@ mtdInformation.bullet2               = cyflwyno Ffurflenni TAW yn uniongyrchol i
 mtdInformation.linkText              = Dysgu rhagor am Droi Treth yn Ddigidol ar gyfer TAW
 mtdInformation.button                = Yn eich blaen i gofrestru ar gyfer TAW
 
-thresholdInTwelveMonths.title.business                      = A yw trosiant trethadwy’r busnes wedi mynd dros £85,000 yn ystod unrhyw gyfnod o 12 mis?
-thresholdInTwelveMonths.title.partnership                   = A yw trosiant trethadwy’r bartneriaeth wedi mynd dros £85,000 yn ystod unrhyw gyfnod o 12 mis?
 thresholdInTwelveMonths.heading.business                    = A yw trosiant trethadwy’r busnes wedi mynd dros £85,000 yn ystod unrhyw gyfnod o 12 mis?
 thresholdInTwelveMonths.heading.partnership                 = A yw trosiant trethadwy’r bartneriaeth wedi mynd dros £85,000 yn ystod unrhyw gyfnod o 12 mis?
 thresholdInTwelveMonths.error.required                      = Dewiswch ‘Iawn’ os yw’r busnes wedi mynd dros y trothwy cofrestru ar gyfer TAW yn ystod unrhyw gyfnod o 12 mis
@@ -158,38 +144,6 @@ thresholdInTwelveMonths.heading2.business                   = Pryd aeth y busnes
 thresholdInTwelveMonths.heading2.partnership                = Pryd aeth y bartneriaeth dros y trothwy?
 thresholdInTwelveMonths.dateHint                            = Er enghraifft, 02 2020
 
-turnoverEstimate.title.business                         = Beth rydych yn meddwl fydd trosiant trethadwy TAW y busnes ar gyfer y 12 mis nesaf?
-turnoverEstimate.title.partnership                      = Beth rydych yn meddwl fydd trosiant trethadwy TAW y bartneriaeth ar gyfer y 12 mis nesaf?
-turnoverEstimate.heading.business                       = Beth rydych yn meddwl fydd trosiant trethadwy TAW y busnes ar gyfer y 12 mis nesaf?
-turnoverEstimate.heading.partnership                    = Beth rydych yn meddwl fydd trosiant trethadwy TAW y bartneriaeth ar gyfer y 12 mis nesaf?
-turnoverEstimate.text                                   = Cofiwch gynnwys yr holl nwyddau a gwasanaethau a werthir nad ydynt wedi’u heithrio rhag TAW. Mae’n rhaid i chi gynnwys nwyddau a gwasanaethau sydd â chyfradd TAW o 0%.
-turnoverEstimate.linkText                               = Dysgu rhagor am y nwyddau a’r gwasanaethau sydd wedi’u heithrio rhag TAW
-turnoverEstimate.giveAnEstimate                         = Er enghraifft, £90000
-turnoverEstimate.pound                                  = Â£
-turnoverEstimate.error.required                         = Nodwch beth rydych yn meddwl fydd trosiant trethadwy TAW y busnes ar gyfer y 12 mis nesaf
-turnoverEstimate.error.amount.numbers                   = Rhowch werth gan ddefnyddio rhifau yn unig
-turnoverEstimate.error.amount.giveMoreThan              = Rhowch amcangyfrif sy’n fwy na £{0}
-turnoverEstimate.error.amount.giveLessThan              = Rhowch amcangyfrif sy’n llai na neu’n hafal i £{0}
-
-
-involvedInOtherBusiness.heading                         = A ydych wedi bod yn gysylltiedig â busnes arall neu wedi cymryd drosodd fusnes sydd wedi’i gofrestru ar gyfer TAW?
-involvedInOtherBusiness.headingObi                      = A ydych wedi bod yn gysylltiedig â busnes arall?
-involvedInOtherBusiness.headingTakingOver               = A ydych wedi cymryd drosodd fusnes sydd wedi’i gofrestru ar gyfer TAW?
-involvedInOtherBusiness.headingVatGroup                 = A hoffech sefydlu grŵp TAW?
-involvedInOtherBusiness.error.required                  = Dewiswch ‘Iawn’ os ydych erioed wedi bod yn gysylltiedig â busnes arall neu wedi cymryd drosodd fusnes sydd wedi’i gofrestru ar gyfer TAW
-involvedInOtherBusiness.error.required.obi              = Dewiswch ‘Iawn’ os ydych erioed wedi bod yn gysylltiedig â busnes arall
-involvedInOtherBusiness.error.required.takingOver       = Dewiswch ‘Iawn’ os ydych wedi cymryd drosodd fusnes sydd wedi’i gofrestru ar gyfer TAW
-involvedInOtherBusiness.error.required.vatGroup         = Dewiswch ‘Iawn’ os hoffech sefydlu grŵp TAW
-involvedInOtherBusiness.text                            = Rhowch wybod i ni os yw unrhyw un o’r canlynol yn berthnasol:
-
-involvedInOtherBusiness.bullet1                     = dros y ddwy flynedd ddiwethaf, rydych wedi bod â busnes hunangyflogedig arall yn y DU neu Ynys Manaw (peidiwch â rhoi gwybod i ni os mai eich unig ffynhonnell o incwm hunangyflogedig oedd bod yn landlord)
-involvedInOtherBusiness.bullet2                     = dros y ddwy flynedd ddiwethaf, rydych wedi bod yn bartner neu’n gyfarwyddwyr gyda gwahanol fusnes yn y DU neu Ynys Manaw
-involvedInOtherBusiness.bullet4                     = roedd y cwmni’n arfer bod yn wahanol fath o fusnes sydd wedi’i gofrestru ar gyfer TAW, er enghraifft unig fasnachwr
-involvedInOtherBusiness.bullet5                     = mae’r cwmni wedi cymryd drosodd gwmni arall sydd wedi’i gofrestru ar gyfer TAW a oedd yn gwneud elw
-
-involvedInOtherBusiness.beforeText                  = hoffech
-involvedInOtherBusiness.linkText                    = sefydlu grŵp TAW
-
 eligibilityDropout.heading                          = Mae’n rhaid i’r busnes gofrestru ar gyfer TAW gan ddefnyddio gwasanaeth gwahanol
 
 eligibility.agriculture.text                        = I ymuno â’r Cynllun Cyfradd Unffurf Amaethyddol, bydd angen i’r busnes
@@ -197,8 +151,6 @@ eligibility.agriculture.link                        = gofrestru gan ddefnyddio f
 
 eligibility.divisionDropout.text                    = I gofrestru grŵp, is-adran neu fenter ar y cyd,
 eligibility.divisionDropout.link                    = defnyddiwch ffurflen VAT 1.
-
-eligibility.exception.link                          = Ewch ati i gael gwybod sut i wneud cais am eithriad
 
 eligibility.international.special.text              = Os yw’r busnes:
 eligibility.international.bullet1                   = yn gwerthu asedion yr ydych wedi hawlio ad-daliad TAW arnynt o dan drefniadau ad-dalu Cyfarwyddeb 2008/9 neu’r 13eg Gyfarwyddeb –
@@ -217,19 +169,6 @@ internationalActivities.bullet2                             = yn gwerthu nwyddau
 internationalActivities.details.heading                     = Beth yw Cyfarwyddeb 2008/9EC neu’r drydedd Gyfarwyddeb TAW ar ddeg?
 internationalActivities.details.para                        = Defnyddir y Gyfarwyddeb hon i adennill TAW a dalwyd mewn Aelod-wladwriaethau’r UE.
 
-zeroRatedSales.heading.business                 = A yw’r busnes yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf?
-zeroRatedSales.heading.partnership              = A yw’r bartneriaeth yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf?
-zeroRatedSales.error.required                   = Dewiswch ‘Iawn’ os yw’r busnes yn gwerthu nwyddau neu wasanaethau cyfradd sero gan fwyaf
-zeroRatedSales.dropdownText                     = Enghreifftiau o nwyddau neu wasanaethau cyfradd sero
-zeroRatedSales.dropdownLine1                    = Mae nwyddau a gwasanaethau cyfradd sero yn agored i TAW, ond mae’r gyfradd TAW arnynt yn 0%.
-zeroRatedSales.dropdownLine2                    = Maent yn cynnwys:
-zeroRatedSales.bullet1                          = y rhan fwyaf o fwyd a diod (ond nid pethau fel diodydd alcoholaidd, melysion, creision a byrbrydau sawrus, bwydydd poeth, diodydd chwaraeon, bwydydd tecawê poeth, hufen iâ, diodydd meddal a dŵr mwynol)
-zeroRatedSales.bullet2                          = llyfrau a phapurau newydd
-zeroRatedSales.bullet3                          = gwasanaethau argraffu ar gyfer llyfrynnau, taflenni neu bamffledi
-zeroRatedSales.bullet4                          = dillad ac esgidiau plant
-zeroRatedSales.bullet5                          = y rhan fwyaf o nwyddau rydych yn eu hallforio i wledydd nad ydynt yn yr UE
-zeroRatedSales.linkText                         = Dysgu am gyfraddau TAW ar wahanol nwyddau a gwasanaethau
-
 registeringBusiness.heading                     = Busnes pwy hoffech ei gofrestru?
 registeringBusiness.radioOwn                    = Eich un chi
 registeringBusiness.radioOwn.hint               = Dewiswch yr opsiwn hwn os mai chi yw perchennog y busnes yr ydych yn dymuno ei gofrestru.
@@ -237,20 +176,11 @@ registeringBusiness.radioElse                   = Un rhywun arall
 registeringBusiness.radioElse.hint              = Dewiswch yr opsiwn hwn os ydych yn gyflogai i’r cwmni rydych yn ei gofrestru neu fel arall, y gofynnwyd i chi gwblhau’r cofrestriad hwn ar ran rhywun arall.
 registeringBusiness.error.required              = Dewiswch fusnes pwy yr hoffech ei gofrestru
 
-vatExemption.title                              = A hoffai’r busnes wneud cais am eithriad rhag TAW?
-vatExemption.heading                            = A hoffai’r busnes wneud cais am eithriad rhag TAW?
-vatExemption.error.required                     = Dewiswch ‘Iawn’ os hoffai’r busnes wneud cais am eithriad rhag TAW
-vatExemption.text                               = Efallai na fydd yn rhaid i’r busnes gofrestru ar gyfer TAW os yw’n gwerthu nwyddau neu wasanaethau cyfradd sero yn bennaf neu’n unig.
-
 vatRegistrationException.title                  = A hoffech wneud cais am eithriad rhag cofrestru ar gyfer TAW?
 vatRegistrationException.heading                = A hoffech wneud cais am eithriad rhag cofrestru ar gyfer TAW?
 vatRegistrationException.error.required         = Dewiswch ‘Iawn’ os yw’r busnes yn gwneud cais am eithriad rhag cofrestru ar gyfer TAW
 vatRegistrationException.p1                     = Gallwch wneud cais am eithriad rhag cofrestru os bydd y busnes yn mynd dros y trothwy TAW dros dro.
 vatRegistrationException.p2                     = Os byddwch yn gwneud cais am eithriad a’ch bod yn llwyddiannus, byddwn yn cysylltu â chi i roi gwybod bod eich cais wedi’i dderbyn.
-
-applyInWriting.title                        = Mae’n rhaid i chi wneud cais ysgrifenedig
-applyInWriting.heading                      = Mae’n rhaid i chi wneud cais ysgrifenedig
-applyInWriting.text                         = Defnyddiwch ffurflen VAT1 i wneud cais am eithriad rhag cofrestru ar gyfer TAW.
 
 agriculturalFlatRateScheme.heading.business                 = A yw’r busnes yn gwneud cais am y Cynllun Cyfradd Unffurf Amaethyddol?
 agriculturalFlatRateScheme.heading.partnership              = A yw’r bartneriaeth yn gwneud cais am y Cynllun Cyfradd Unffurf Amaethyddol?
@@ -258,11 +188,6 @@ agriculturalFlatRateScheme.error.required                   = Dewiswch ‘Iawn�
 agriculturalFlatRateScheme.text                             = Mae’r cynllun yn fath gwahanol o gofrestriad TAW ar gyfer ffermwyr.
 agriculturalFlatRateScheme.linkText                         = Dysgu rhagor am y Cynllun Cyfradd Unffurf Amaethyddol
 
-eligible.heading                            = Gallwch gofrestru ar gyfer TAW ar-lein
-eligible.p1                                 = Ar sail eich atebion, gallwch gofrestru ar gyfer TAW gan ddefnyddio’r gwasanaeth ar-lein.
-eligible.button                             = Yn eich blaen i gofrestru ar gyfer TAW
-
-fixedEstablishment.title                    = A oes gan y busnes sefydliad sefydlog yn y DU neu Ynys Manaw?
 fixedEstablishment.heading                  = A oes gan y busnes sefydliad sefydlog yn y DU neu Ynys Manaw?
 fixedEstablishment.error.required           = Dewiswch ‘Iawn’ os oes gan y busnes sefydliad sefydlog yn y DU neu Ynys Manaw
 fixedEstablishment.para                     = Mae sefydliad yn bodoli yn y DU neu Ynys Manaw os yw’r naill neu’r llall yn berthnasol:
@@ -276,7 +201,6 @@ taxableSuppliesInUk.bullet2                 = wedi bwriadu, yn flaenorol, gwneud
 taxableSuppliesInUk.bullet3                 = yn bwriadu gwneud cyflenwadau trethadwy yn y DU o fewn y 3 mis nesaf
 taxableSuppliesInUk.error.required          = Dewiswch ‘Iawn’ os yw’r busnes wedi gwneud cyflenwadau trethadwy yn y DU
 
-doNotNeedToRegister.title                   = Ar hyn o bryd, nid oes angen i chi gofrestru ar gyfer TAW
 doNotNeedToRegister.heading                 = Ar hyn o bryd, nid oes angen i chi gofrestru ar gyfer TAW
 doNotNeedToRegister.p1                      = Ar sail yr atebion a roddwyd, nid oes angen i chi gofrestru ar gyfer TAW gan nad ydych wedi gwneud nac yn bwriadu gwneud cyflenwadau trethadwy yn y DU.
 doNotNeedToRegister.p2                      = Os bydd hyn yn newid, dylai’r busnes gofrestru ar gyfer TAW.
@@ -302,7 +226,6 @@ dateOfBusinessTransfer.error.cole.date.required     = Nodwch y dyddiad y newidiw
 dateOfBusinessTransfer.error.date.minDate           = Nodwch ddyddiad ar neu ar ôl {0}
 dateOfBusinessTransfer.error.date.maxDate           = Nodwch ddyddiad ar neu cyn {0}
 dateOfBusinessTransfer.error.date.invalid           = Nodwch ddyddiad yn y fformat cywir
-
 
 previousBusinessName.heading.togc                   = Beth yw enw’r busnes blaenorol?
 previousBusinessName.heading.cole                   = Beth oedd enw’r busnes cyn newid yr endid cyfreithiol?
