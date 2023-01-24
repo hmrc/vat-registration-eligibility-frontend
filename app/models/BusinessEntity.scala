@@ -83,25 +83,6 @@ object BusinessEntity {
     case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 
-  def businessEntityToString(businessEntity: BusinessEntity): String = businessEntity match {
-    case UKCompany => "businessEntity.limited-company"
-    case SoleTrader => "businessEntity.soletrader"
-    case Partnership => "businessEntity.partnership"
-    case GeneralPartnership => "businessEntity.general-partnership"
-    case LimitedPartnership => "businessEntity.limited-partnership"
-    case ScottishPartnership => "businessEntity.scottish-partnership"
-    case ScottishLimitedPartnership => "businessEntity.scottish-limited-partnership"
-    case LimitedLiabilityPartnership => "businessEntity.limited-liability-partnership"
-    case Other => "businessEntity.other"
-    case CharitableIncorporatedOrganisation => "businessEntity.charitable-incorporated-organisation"
-    case NonIncorporatedTrust => "businessEntity.non-incorporated-trust"
-    case RegisteredSociety => "businessEntity.registered-society"
-    case UnincorporatedAssociation => "businessEntity.unincorporated-association"
-    case Division => "businessEntity.division"
-    case NETP => "businessEntityOverseas.netp"
-    case Overseas => "businessEntityOverseas.overseas"
-  }
-
   implicit val jsonReads: Reads[BusinessEntity] = Reads[BusinessEntity] {
     case JsString(`ukCompanyKey`) => JsSuccess(UKCompany)
     case JsString(`soleTraderKey`) => JsSuccess(SoleTrader)

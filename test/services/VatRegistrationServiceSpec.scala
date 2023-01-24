@@ -21,17 +21,14 @@ import connectors.mocks.MockSessionService
 import identifiers._
 import models._
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito._
-import play.api.i18n.{Lang, Messages}
 import play.api.libs.json._
 import play.api.mvc.AnyContentAsEmpty
 import uk.gov.hmrc.http.cache.client.CacheMap
 import utils.UserAnswers
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
@@ -40,19 +37,8 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
   class Setup {
     val service = new VatRegistrationService(
       mockVatRegConnector,
-      sessionServiceMock,
-      mockMessagesAPI
+      sessionServiceMock
     )
-
-    val mockMessages: Messages = mock[Messages]
-
-    when(mockMessagesAPI.preferred(ArgumentMatchers.any[DataRequest[_]]()))
-      .thenReturn(mockMessages)
-    when(mockMessages.lang)
-      .thenReturn(Lang("en"))
-
-    when(mockMessages.apply(ArgumentMatchers.anyString(), ArgumentMatchers.any()))
-      .thenReturn("mocked message")
   }
 
   implicit val r: DataRequest[AnyContentAsEmpty.type] = fakeDataRequestIncorped
@@ -75,24 +61,9 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
       )
 
       mockSessionFetch()(Future.successful(Some(new CacheMap("foo", fullListMapHappyPathTwelveMonthsFalse))))
-      when(mockVatRegConnector.saveEligibility(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj("wizz" -> "woo")))
+      when(mockVatRegConnector.saveEligibility(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
 
-      await(service.submitEligibility) mustBe Json.parse(
-        """
-          |{"sections":[
-          |{"title":"Registration Reason",
-          | "data":[
-          | {"questionId":"fixedEstablishment","question":"eligibility.cya.fixedEstablishment","answer":"eligibility.site.yes","answerValue":true},
-          | {"questionId":"businessEntity","question":"eligibility.cya.businessEntity","answer":"eligibility.businessEntity.limited-company","answerValue":"50"},
-          | {"questionId":"agriculturalFlatRateScheme","question":"eligibility.cya.agriculturalFlatRateScheme","answer":"eligibility.site.no","answerValue":false},
-          | {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities","answer":"eligibility.site.no","answerValue":false},
-          | {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
-          | {"questionId":"registrationReason","question":"eligibility.cya.registrationReason","answer":"eligibility.registrationReason.sellingGoods.radio","answerValue":"selling-goods-and-services"},
-          | {"questionId":"thresholdInTwelveMonths","question":"eligibility.cya.thresholdInTwelveMonths","answer":"eligibility.site.no","answerValue":false},
-          | {"questionId":"thresholdNextThirtyDays","question":"eligibility.cya.thresholdNextThirtyDays","answer":"eligibility.site.no","answerValue":false},
-          | {"questionId":"voluntaryRegistration","question":"eligibility.cya.voluntaryRegistration","answer":"eligibility.site.yes","answerValue":true}
-          |]}]}
-          |""".stripMargin)
+      await(service.submitEligibility) mustBe Json.toJson(fullListMapHappyPathTwelveMonthsFalse)
     }
 
     "return the JsObject submitted to Vat registration for togc" in new Setup {
@@ -116,31 +87,9 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
       implicit val r: DataRequest[AnyContentAsEmpty.type] = fakeDataRequestIncorped.copy(userAnswers = new UserAnswers(CacheMap("1", togcColeData)))
 
       mockSessionFetch()(Future.successful(Some(new CacheMap("foo", togcColeData))))
-      when(mockVatRegConnector.saveEligibility(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj("wizz" -> "woo")))
+      when(mockVatRegConnector.saveEligibility(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
 
-      await(service.submitEligibility) mustBe Json.parse(
-        s"""
-           |{
-           |  "sections":[
-           |    {
-           |      "title":"Registration Reason",
-           |      "data":[
-           |        {"questionId":"fixedEstablishment","question":"eligibility.cya.fixedEstablishment","answer":"eligibility.site.yes","answerValue":true},
-           |        {"questionId":"businessEntity","question":"eligibility.cya.businessEntity","answer":"eligibility.businessEntity.limited-company","answerValue":"50"},
-           |        {"questionId":"agriculturalFlatRateScheme","question":"eligibility.cya.agriculturalFlatRateScheme","answer":"eligibility.site.no","answerValue":false},
-           |        {"questionId":"internationalActivities","question":"eligibility.cya.internationalActivities","answer":"eligibility.site.no","answerValue":false},
-           |        {"questionId":"registeringBusiness","question":"eligibility.cya.registeringBusiness","answer":"eligibility.registeringBusiness.radioOwn","answerValue":"own"},
-           |        {"questionId":"registrationReason","question":"eligibility.cya.registrationReason","answer":"eligibility.registrationReason.takingOver.radio","answerValue":"taking-over-business"},
-           |        {"questionId":"dateOfBusinessTransfer","question":"eligibility.cya.dateOfBusinessTransfer.togc","answer":"${LocalDate.now().format(DateTimeFormatter.ofPattern("d MMMM yyyy"))}","answerValue":"${LocalDate.now()}"},
-           |        {"questionId":"previousBusinessName","question":"eligibility.cya.previousBusinessName.togc","answer":"$testPreviousName","answerValue":"$testPreviousName"},
-           |        {"questionId":"vatNumber","question":"eligibility.cya.vatNumber.togc","answer":"$testVrn","answerValue":"$testVrn"},
-           |        {"questionId":"keepOldVrn","question":"eligibility.cya.keepOldVrn.togc","answer":"eligibility.site.yes","answerValue":true},
-           |        {"questionId":"termsAndConditions","question":"eligibility.cya.termsAndConditions.togc","answer":"eligibility.site.yes","answerValue":true}
-           |      ]
-           |    }
-           |  ]
-           |}
-           |""".stripMargin)
+      await(service.submitEligibility) mustBe Json.toJson(togcColeData)
     }
   }
 }

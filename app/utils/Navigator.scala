@@ -16,12 +16,12 @@
 
 package utils
 
-import config.Logging
 import controllers.routes
 import featureswitch.core.config._
 import featureswitch.core.models.FeatureSwitch
 import identifiers._
 import models._
+import play.api.Logging
 import play.api.libs.json.Reads
 import play.api.mvc.Call
 import utils.DefaultImplicitJsonReads.BooleanReads

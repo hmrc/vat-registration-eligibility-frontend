@@ -20,12 +20,11 @@ import controllers.actions.{CacheIdentifierAction, DataRetrievalAction}
 import identifiers.Identifier
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.JourneyService
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import utils.Navigator
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class IndexController @Inject()(val authConnector: AuthConnector,
@@ -41,20 +40,20 @@ class IndexController @Inject()(val authConnector: AuthConnector,
   }
 
   def initJourney(regId: String): Action[AnyContent] = Action.async { implicit request =>
-    authorised().retrieve(Retrievals.internalId) {
-      case Some(internalId) =>
-        journeyService.initialiseJourney(internalId, regId).map { _ =>
-          Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
-        }
-      case _ =>
-        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+    authorised() {
+      journeyService.initialiseJourney(regId).map { _ =>
+        Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
+      }
     }
   }
 
-  def navigateToPageId(pageId: String): Action[AnyContent] = Action { _ =>
-    Redirect(navigator.pageIdToPageLoad(new Identifier {
-      override def toString: String = pageId
-    }))
+  def navigateToPageId(pageId: String, regId: String): Action[AnyContent] = Action.async { implicit request =>
+    authorised() {
+      journeyService.initialiseJourney(regId).map { _ =>
+        Redirect(navigator.pageIdToPageLoad(new Identifier {
+          override def toString: String = pageId
+        }))
+      }
+    }
   }
-
 }

@@ -17,94 +17,76 @@
 package services
 
 import base.SpecBase
-import mocks.S4LServiceMock
 import models.CurrentProfile
 import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
-import play.api.libs.json.{Format, JsString, Json}
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class JourneyServiceSpec extends SpecBase with S4LServiceMock  {
+class JourneyServiceSpec extends SpecBase {
 
   class Setup {
-    val service = new JourneyService(mockSessionService, mockVatRegConnector, mockS4LService)
+    val service = new JourneyService(mockSessionService, mockVatRegConnector)
   }
 
   val testRegId = "testRegId"
-  val testIntId = "internalId"
+  val testDifferentRegId = "testDifferentRegId"
   val testSessionId = "testSessionId"
-  val profile = CurrentProfile(testRegId)
-  val testCacheMap = CacheMap(testIntId, Map("CurrentProfile" -> Json.toJson(profile)))
-  private val dataKey = "eligibility-data"
+  val testCacheMap: CacheMap = CacheMap(testSessionId, Map("CurrentProfile" -> Json.toJson(CurrentProfile(testRegId))))
+  val testDifferentCacheMap: CacheMap = CacheMap(testSessionId, Map("CurrentProfile" -> Json.toJson(CurrentProfile(testDifferentRegId))))
 
   "initialiseJourney" when {
-    "the session contains data stored under the user's Iiternal ID (old journey)" must {
-      "store their data under session ID and return the cachemap" in new Setup {
-        val sessionCacheMap = testCacheMap.copy(id = testSessionId)
+    "the session contains user data with a matching regId" must {
+      "allow the user to continue with their current session unchanged" in new Setup {
+        when(mockSessionService.fetch)
+          .thenReturn(Future.successful(Some(testCacheMap)))
 
-        when(mockSessionService.sessionId(any[HeaderCarrier]))
-          .thenReturn(testSessionId)
+        val res: CacheMap = await(service.initialiseJourney(testRegId))
 
-        when(mockSessionService.fetch(ArgumentMatchers.eq(testIntId))(any[HeaderCarrier])).
-          thenReturn(Future.successful(Some(testCacheMap)))
-
-        when(mockSessionService.save(ArgumentMatchers.eq(sessionCacheMap))(any[HeaderCarrier]))
-          .thenReturn(Future.successful(sessionCacheMap))
-
-        val res = await(service.initialiseJourney(testIntId, testRegId))
-
-        res mustBe sessionCacheMap
+        res mustBe testCacheMap
       }
     }
-    "the session doesn't contain data against the users internal ID (new journey)" when {
-      "save 4 later contains data against the registration ID for the journey" must {
-        "store in session and return the found data" in new Setup {
-          val s4lCacheMap = testCacheMap.copy(id = testRegId, data = Map("some" -> JsString("thing")))
-          val sessionCacheMap = s4lCacheMap.copy(id = testSessionId)
+    "the session doesn't contain user data with a matching regId" when {
+      "the backend has user data for this regId" must {
+        "store in session and return the user data from backend" in new Setup {
+          when(mockSessionService.fetch)
+            .thenReturn(Future.successful(Some(testDifferentCacheMap)))
+
+          when(mockVatRegConnector.getEligibilityAnswers(ArgumentMatchers.eq(testRegId))(any[HeaderCarrier], any[ExecutionContext]))
+            .thenReturn(Future.successful(Some(testCacheMap.data)))
 
           when(mockSessionService.sessionId(any[HeaderCarrier]))
             .thenReturn(testSessionId)
 
-          when(mockSessionService.fetch(ArgumentMatchers.eq(testIntId))(any[HeaderCarrier])).
-            thenReturn(Future.successful(None))
+          when(mockSessionService.save(ArgumentMatchers.eq(testCacheMap)))
+            .thenReturn(Future.successful(testCacheMap))
 
-          when(mockS4LService.fetchAndGet[CacheMap](ArgumentMatchers.eq(testRegId), ArgumentMatchers.eq(dataKey))(any[HeaderCarrier], any[Format[CacheMap]]))
-            .thenReturn(Future.successful(Some(s4lCacheMap)))
+          val res: CacheMap = await(service.initialiseJourney(testRegId))
 
-          when(mockSessionService.save(ArgumentMatchers.eq(sessionCacheMap))(any[HeaderCarrier]))
-            .thenReturn(Future.successful(sessionCacheMap))
-
-          val res = await(service.initialiseJourney(testIntId, testRegId))
-
-          res mustBe sessionCacheMap
+          res mustBe testCacheMap
         }
       }
-      "save 4 later doesn't contain data against the registration ID for the journey" must {
+      "the backend doesn't have user data for this regId" must {
         "store in session and return an empty cachemap" in new Setup {
-          val sessionCacheMap = testCacheMap.copy(id = testSessionId)
+          when(mockSessionService.fetch)
+            .thenReturn(Future.successful(None))
+
+          when(mockVatRegConnector.getEligibilityAnswers(ArgumentMatchers.eq(testRegId))(any[HeaderCarrier], any[ExecutionContext]))
+            .thenReturn(Future.successful(None))
 
           when(mockSessionService.sessionId(any[HeaderCarrier]))
             .thenReturn(testSessionId)
 
-          when(mockJourneyService.emptyCacheMap(ArgumentMatchers.eq(testRegId))(any[HeaderCarrier]))
-            .thenReturn(sessionCacheMap)
+          when(mockSessionService.save(ArgumentMatchers.eq(testCacheMap)))
+            .thenReturn(Future.successful(testCacheMap))
 
-          when(mockSessionService.fetch(ArgumentMatchers.eq(testIntId))(any[HeaderCarrier])).
-            thenReturn(Future.successful(None))
+          val res: CacheMap = await(service.initialiseJourney(testRegId))
 
-          when(mockS4LService.fetchAndGet[CacheMap](ArgumentMatchers.eq(testRegId), ArgumentMatchers.eq(dataKey))(any[HeaderCarrier], any[Format[CacheMap]]))
-            .thenReturn(Future.successful(None))
-
-          when(mockSessionService.save(ArgumentMatchers.eq(sessionCacheMap))(any[HeaderCarrier]))
-            .thenReturn(Future.successful(sessionCacheMap))
-
-          val res = await(service.initialiseJourney(testIntId, testRegId))
-
-          res mustBe sessionCacheMap
+          res mustBe testCacheMap
         }
       }
     }

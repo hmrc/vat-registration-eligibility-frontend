@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.SpecBase
-import connectors.mocks.{MockS4lConnector, MockSessionService}
+import connectors.mocks.MockSessionService
 import models.CurrentProfile
 import models.requests.{CacheIdentifierRequest, OptionalDataRequest}
 import org.scalatest.concurrent.ScalaFutures
@@ -29,7 +29,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with MockS4lConnector with MockSessionService {
+class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with MockSessionService {
 
   class Harness(sessionService: SessionService) extends DataRetrievalActionImpl(sessionService) {
     def callTransform[A](request: CacheIdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
@@ -44,7 +44,6 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
     "there is no data in the cache" when {
       "set userAnswers to 'None' in the request" in {
         mockSessionFetch()(Future.successful(None))
-        mockS4LFetchAll(None)
 
         val action = new Harness(sessionServiceMock)
 

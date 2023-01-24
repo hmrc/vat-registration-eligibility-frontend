@@ -27,12 +27,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class JourneyService @Inject()(val sessionService: SessionService,
-                               val vatRegistrationConnector: VatRegistrationConnector,
-                               s4LService: S4LService)
+                               val vatRegistrationConnector: VatRegistrationConnector)
                               (implicit ec: ExecutionContext) {
 
   private val profileKey = "CurrentProfile"
-  private val dataKey = "eligibility-data"
 
   def emptyCacheMap(regId: String)(implicit hc: HeaderCarrier): CacheMap =
     CacheMap(id = sessionService.sessionId, data = Map(profileKey -> Json.toJson(CurrentProfile(regId))))
@@ -40,15 +38,18 @@ class JourneyService @Inject()(val sessionService: SessionService,
   def getProfile(implicit hc: HeaderCarrier): Future[Option[CurrentProfile]] =
     sessionService.getEntry[CurrentProfile](profileKey)
 
-  def initialiseJourney(internalId: String, regId: String)(implicit hc: HeaderCarrier): Future[CacheMap] =
-    sessionService.fetch(internalId)
-      .flatMap {
-        case Some(cacheMap) =>
-          Future.successful(cacheMap)
-        case _ =>
-          s4LService.fetchAndGet[CacheMap](regId, dataKey)
-            .map(_.getOrElse(emptyCacheMap(regId)))
-      }
-      .flatMap(cacheMap => sessionService.save(cacheMap.copy(id = sessionService.sessionId)))
+  def initialiseJourney(regId: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+    sessionService.fetch.flatMap {
+      case Some(cacheMap) if cacheMap.data.get(profileKey).contains(Json.toJson(CurrentProfile(regId))) =>
+        Future.successful(cacheMap)
+      case _ =>
+        vatRegistrationConnector.getEligibilityAnswers(regId).flatMap {
+          case Some(answers) if answers.get(profileKey).contains(Json.toJson(CurrentProfile(regId))) =>
+            sessionService.save(emptyCacheMap(regId).copy(data = answers))
+          case _ =>
+            sessionService.save(emptyCacheMap(regId))
+        }
+    }
+  }
 
 }

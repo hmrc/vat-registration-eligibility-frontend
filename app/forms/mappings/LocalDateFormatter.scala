@@ -81,7 +81,7 @@ case class LocalDateFormatter(errorKeyRoot: String,
     def dateFieldsPresent(optDay: Option[String], optMonth: Option[String], optYear: Option[String]): Either[Seq[FormError], (String, String, String)] = {
       (optDay, optMonth, optYear) match {
         case (Some(day), Some(month), Some(year)) =>
-          Right(day, month, year)
+          Right((day, month, year))
         case (None, Some(_), Some(_)) =>
           Left(Seq(FormError(dayKey, dayRequiredKey)))
         case (None, None, Some(_)) =>
