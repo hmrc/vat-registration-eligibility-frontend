@@ -20,14 +20,12 @@
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import views.html.helper.CSPNonce
-@import views.layouts.LanguageChecker
 
 @this(
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcLayout: HmrcLayout,
-    standardBetaBanner: StandardBetaBanner,
-    languageChecker: LanguageChecker
+    standardBetaBanner: StandardBetaBanner
 )
 
 @(pageTitle: Option[String] = None, beforeContentBlock: Option[Html] = None, backLink: Boolean = false, signOutLink: Boolean = true, timeout:Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: FrontendAppConfig)
@@ -73,5 +71,5 @@
     nonce = CSPNonce.get,
     accessibilityStatementUrl = Some(appConfig.accessibilityStatementUrl),
     additionalScriptsBlock = Some(scripts),
-    isWelshTranslationAvailable = languageChecker.isWelshAvailable
+    isWelshTranslationAvailable = true
 )(content)
