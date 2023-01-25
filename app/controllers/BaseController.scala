@@ -16,15 +16,37 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.VatRegLanguageSupport
 import featureswitch.core.config.FeatureSwitching
-import play.api.mvc.MessagesControllerComponents
+import play.api.Logging
+import play.api.mvc.{MessagesControllerComponents, Result}
+import uk.gov.hmrc.auth.core.{AuthorisationException, NoActiveSession}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-abstract class BaseController @Inject()(implicit val mcc: MessagesControllerComponents) extends FrontendController(mcc)
+abstract class BaseController @Inject()(implicit val mcc: MessagesControllerComponents,
+                                        appConfig: FrontendAppConfig,
+                                        executionContext: ExecutionContext) extends FrontendController(mcc)
   with VatRegLanguageSupport
-  with FeatureSwitching {
+  with FeatureSwitching
+  with Logging {
 
+  implicit class HandleResult(res: Future[Result])(implicit hc: HeaderCarrier) {
+    def handleErrorResult: Future[Result] = {
+      res recoverWith {
+        case _: NoActiveSession =>
+          Future.successful(Redirect(appConfig.loginUrl, Map("continue" -> Seq(appConfig.postSignInUrl))))
+        case ae: AuthorisationException =>
+          logger.info(s"User is not authorised - reason: ${ae.reason}")
+          Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
+        case e =>
+          logger.warn(s"An exception occurred - err: ${e.getMessage}")
+          throw e
+      }
+    }
+  }
 }

@@ -21,11 +21,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 
 import java.net.URLEncoder
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class FeedbackController @Inject()(implicit val appConfig: FrontendAppConfig,
-                                   mcc: MessagesControllerComponents) extends BaseController {
+class FeedbackController @Inject()(implicit mcc: MessagesControllerComponents,
+                                   appConfig: FrontendAppConfig,
+                                   executionContext: ExecutionContext) extends BaseController {
 
   lazy val betaFeedbackUrl: String = appConfig.betaFeedbackUrl
 

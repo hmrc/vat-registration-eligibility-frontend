@@ -52,6 +52,11 @@ trait WiremockHelper {
       .withHttpHeaders(HeaderNames.COOKIE -> getSessionCookie(), "Csrf-Token" -> "nocheck")
       .withFollowRedirects(false)
 
+  def buildClientWithoutSession(path: String) =
+    ws.url(s"http://localhost:${port.toString}/check-if-you-can-register-for-vat${path.replace("/check-if-you-can-register-for-vat", "")}")
+      .withHttpHeaders("Csrf-Token" -> "nocheck")
+      .withFollowRedirects(false)
+
   def stubPatch(url: String, status: Integer, responseBody: String, inputBody: String) =
     stubFor(patch(urlMatching(url)).withRequestBody(equalToJson(inputBody))
       .willReturn(

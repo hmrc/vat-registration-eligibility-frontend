@@ -22,12 +22,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.ChoseNotToRegister
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ChoseNotToRegisterController @Inject()(identify: CacheIdentifierAction,
                                              view: ChoseNotToRegister)
-                                            (implicit appConfig: FrontendAppConfig,
-                                             mcc: MessagesControllerComponents) extends BaseController {
+                                            (implicit mcc: MessagesControllerComponents,
+                                             appConfig: FrontendAppConfig,
+                                             executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = identify {
     implicit request =>

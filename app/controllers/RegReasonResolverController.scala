@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
 import identifiers.RegReasonResolverId
 import models.NormalMode
@@ -23,13 +24,16 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import utils.{Navigator, UserAnswers}
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class RegReasonResolverController @Inject()(navigator: Navigator,
                                             identify: CacheIdentifierAction,
                                             getData: DataRetrievalAction,
                                             requireData: DataRequiredAction)
-                                           (implicit mcc: MessagesControllerComponents) extends BaseController {
+                                           (implicit mcc: MessagesControllerComponents,
+                                            appConfig: FrontendAppConfig,
+                                            executionContext: ExecutionContext) extends BaseController {
 
   def resolve: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>

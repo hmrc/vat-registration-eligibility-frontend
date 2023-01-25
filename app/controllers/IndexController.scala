@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRetrievalAction}
 import identifiers.Identifier
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +34,8 @@ class IndexController @Inject()(val authConnector: AuthConnector,
                                 getData: DataRetrievalAction,
                                 journeyService: JourneyService)
                                (implicit executionContext: ExecutionContext,
-                                mcc: MessagesControllerComponents) extends BaseController with AuthorisedFunctions {
+                                mcc: MessagesControllerComponents,
+                                appConfig: FrontendAppConfig) extends BaseController with AuthorisedFunctions {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData) { _ =>
     Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
@@ -44,7 +46,7 @@ class IndexController @Inject()(val authConnector: AuthConnector,
       journeyService.initialiseJourney(regId).map { _ =>
         Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
       }
-    }
+    }.handleErrorResult
   }
 
   def navigateToPageId(pageId: String, regId: String): Action[AnyContent] = Action.async { implicit request =>
@@ -54,6 +56,6 @@ class IndexController @Inject()(val authConnector: AuthConnector,
           override def toString: String = pageId
         }))
       }
-    }
+    }.handleErrorResult
   }
 }

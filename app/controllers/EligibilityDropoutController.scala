@@ -23,14 +23,16 @@ import play.api.mvc._
 import views.html._
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class EligibilityDropoutController @Inject()(identify: CacheIdentifierAction,
                                              internationalActivityDropoutView: InternationalActivityDropout,
                                              agriculturalDropoutView: AgriculturalDropout,
                                              vatDivisionDropoutView: VatDivisionDropout)
-                                            (implicit appConfig: FrontendAppConfig,
-                                             mcc: MessagesControllerComponents) extends BaseController {
+                                            (implicit mcc: MessagesControllerComponents,
+                                             appConfig: FrontendAppConfig,
+                                             executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad(mode: String): Action[AnyContent] = identify {
     implicit request =>

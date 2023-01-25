@@ -40,8 +40,8 @@ object RegisteringBusiness {
   }
 
   implicit val jsonReads: Reads[RegisteringBusiness] = Reads[RegisteringBusiness] {
-    case JsString(`ownBusinessKey`) | JsBoolean(true) => JsSuccess(OwnBusiness) //TODO Remove JsBoolean cases 2 weeks from merge as they're to fix old data
-    case JsString(`someoneElseKey`) | JsBoolean(false) => JsSuccess(SomeoneElse)
+    case JsString(`ownBusinessKey`) => JsSuccess(OwnBusiness)
+    case JsString(`someoneElseKey`) => JsSuccess(SomeoneElse)
     case unknownKey => throw new IllegalArgumentException(s"Unknown Registering Business Reason: $unknownKey")
   }
 
