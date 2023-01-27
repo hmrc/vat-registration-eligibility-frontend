@@ -29,6 +29,11 @@ trait AuthHelper {
         ).toString()).withHeader(HeaderNames.SET_COOKIE, self.getSessionCookie())))
   }
 
+  def stubUnauthorised() = {
+    stubFor(
+      post(urlPathEqualTo("/auth/authorise"))
+        .willReturn(unauthorized()))
+  }
 
   def stubAudits() = {
     stubFor(post(urlMatching("/write/audit"))

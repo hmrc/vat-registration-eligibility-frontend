@@ -21,11 +21,13 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html.Unauthorised
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class UnauthorisedController @Inject()(view: Unauthorised)
                                       (implicit appConfig: FrontendAppConfig,
-                                       mcc: MessagesControllerComponents) extends BaseController {
+                                       mcc: MessagesControllerComponents,
+                                       executionContext: ExecutionContext) extends BaseController {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(view())
