@@ -65,7 +65,7 @@
     additionalHeadBlock = Some(head),
     beforeContentBlock = beforeContentBlock,
     displayHmrcBanner = true,
-    phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrl)),
+    phaseBanner = None,
     signOutUrl = if (signOutLink) Some(controllers.routes.SignOutController.signOut.url) else None,
     backLinkUrl = if (backLink) Some("#") else None,
     nonce = CSPNonce.get,
