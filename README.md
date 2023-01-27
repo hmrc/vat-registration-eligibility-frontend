@@ -11,7 +11,10 @@ This microservice functions as part of the VAT registration journey to:
 
 This service is started as part of the `VAT_REG_ALL` profile.
 
-It can also be started individually using either `sm --start VAT_REG_EL_FE -r`, or if you're using sm2, `sm2 --start VAT_REG_EL_FE`
+It can also be started individually using either `sm --start VAT_REG_EL_FE -r`, or if you're using sm2, `sm2 --start VAT_REG_EL_FE`.
+
+Prior to starting the service locally, make sure the instance running in service manager is stopped. 
+This can be done by running either `sm --stop VAT_REG_EL_FE`, or `sm2 --stop VAT_REG_FE` if using sm2
 
 ### From source code on your local machine
 
@@ -55,17 +58,33 @@ Individual journeys are not supported by VAT registration
    and providing you are logged in as `Agent` affinity group and have the `HMRC-AS-AGENT` enrolment, you will proceed
    with the agent journey. If you select `Your own` instead, the non-agent journey will apply.
 
+## Tests
+Prior to committing changes, please run tests and check on coverage report
+- `unit tests` can be run with `sbt clean test`
+- `integration tests` can be run with `sbt clean it:test`
+- `accessiblity tests` can be run with `sbt a11y:test` (This will need node.js and npm installed)
+
+Test coverage can be run using ```sbt clean coverage test it:test scalastyle coverageReport```.
+
 ## Test only routes
+The only test routes defined by the service are related to feature switches. These can be accessed by navigating to
+`http://localhost:9894/check-if-you-can-register-for-vat/test-only/api/feature-switches`.
+
+The 2 endpoints to support retrieval/setting of feature-switches are
+
+`GET        /api/feature-switches`
+Used to retrieve feature-switches config data for this service.
+
+`POST       /api/feature-switches`
+Used to post any updates to feature-switches config.
 
 ### Set feature switches
 
-It is recommended that you use the feature switch page on `vat-registration-frontend` for convenience as it has the ability
-to update feature switches for the 3 core VAT Registration services.
+As this service doesn't have a frontend page to showcase the feature-switches config, it is recommended that you use 
+the feature switch page on `vat-registration-frontend` for convenience as it has the ability to update feature switches 
+for the 3 core VAT Registration services.
 
 This can be found by navigating to `http://localhost:9895/register-for-vat/test-only/feature-switches`.
-
-This service does expose an endpoint for setting feature switches, which can also be accessed by navigating to
-`http://localhost:9894/check-if-you-can-register-for-vat/test-only/feature-switches`.
 
 > Note: These pages set feature switches using system properties, which are local to the specific JVM the service is running on.
 > If you are testing in an environment that provisions multiple instances, you will need to either submit the feature switch page
