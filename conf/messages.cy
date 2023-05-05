@@ -260,3 +260,12 @@ termsAndConditions.bullet4                          = y bydd unrhyw Ffurflen TAW
 termsAndConditions.bullet5                          = na fydd yn cael hawlio arian a dalwyd gan CThEM i’r perchennog blaenorol cyn trosglwyddo’r busnes
 termsAndConditions.bullet6.togc                     = i gael gafael ar gofnodion masnachu’r busnes a’u cadw
 termsAndConditions.button                           = Derbyn ac yn eich blaen
+
+#Fixed establishment
+variantC.title = Does the business have a fixed establishment in the UK?
+variantC.p1 = The Isle of Man is treated as part of the UK for VAT purposes.
+variantC.details.summary = What is a fixed establishment?
+variantC.details.content.p2 = A fixed establishment exists if either the:
+variantC.details.content.li1 = place where essential management decisions are made and the business’s central administration is carried out
+variantC.details.content.li2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies
+variantC.button = Continue
