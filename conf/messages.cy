@@ -261,7 +261,16 @@ termsAndConditions.bullet5                          = na fydd yn cael hawlio ari
 termsAndConditions.bullet6.togc                     = i gael gafael ar gofnodion masnachu’r busnes a’u cadw
 termsAndConditions.button                           = Derbyn ac yn eich blaen
 
-#Fixed establishment
+# Fixed Establishment Optimizely experiment content
+variantA.title = Business establishment
+variantA.inset = The Isle of Man is treated as part of the UK for VAT purposes.
+variantA.p1 = We need to know where your business has a fixed establishment.
+variantA.p2 = A fixed establishment exists if either the:
+variantA.li1 = place where essential management decisions are made and the business’s central administration is carried out is in the UK or Isle of Man
+variantA.li2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK or Isle of Man
+variantA.legend = Does the business have a fixed establishment in the UK?
+variantA.button = Continue
+
 variantC.title = Does the business have a fixed establishment in the UK?
 variantC.p1 = The Isle of Man is treated as part of the UK for VAT purposes.
 variantC.details.summary = What is a fixed establishment?
