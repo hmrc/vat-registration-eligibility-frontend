@@ -1,0 +1,58 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import models.requests.DataRequest
+@import config.FrontendAppConfig
+
+@this(
+        layout: views.html.layouts.layout,
+        errorSummary: components.errorSummary,
+        h1: components.h1,
+        p: components.p,
+        bullets: components.bullets,
+        formWithCsrf: FormWithCSRF,
+        yesNoRadio: components.yesNoRadio,
+        button: components.button,
+        govukDetails : GovukDetails,
+        govukInsetText : GovukInsetText
+)
+
+@(form: Form[_])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+
+@layout(pageTitle = Some(messages("variantA.legend")), backLink = true){
+
+    @errorSummary(form.errors)
+
+    @h1(messages("variantA.title"))
+
+    @govukInsetText(InsetText(content = Text(messages("variantA.inset"))))
+
+    @p{ @messages("variantA.p1")}
+    @p{ @messages("variantA.p2")}
+    @bullets("variantA.li1","variantA.li2")
+
+    @formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
+        @yesNoRadio(
+            form = form,
+            headingKey = messages("variantA.legend"),
+            isPageHeading = false,
+            classes = "govuk-fieldset__legend--l"
+        )
+
+        @button(messages("variantA.button"))
+    }
+
+}
