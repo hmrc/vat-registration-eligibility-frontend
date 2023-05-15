@@ -271,6 +271,14 @@ variantA.li2 = business has a permanent physical presence with the human and tec
 variantA.legend = Does the business have a fixed establishment in the UK?
 variantA.button = Continue
 
+variantB.fixedEstablishment.heading = Where does the business have a fixed establishment?
+variantB.fixedEstablishment.para = A fixed establishment exists if either the:
+variantB.fixedEstablishment.bullet1 = place where essential management decisions are made and the business’s central administration is carried out
+variantB.fixedEstablishment.bullet2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies
+variantB.site.uk = UK
+variantB.site.iom = Isle of Man
+variantB.site.other = Other
+
 variantC.title = Does the business have a fixed establishment in the UK?
 variantC.p1 = The Isle of Man is treated as part of the UK for VAT purposes.
 variantC.details.summary = What is a fixed establishment?
