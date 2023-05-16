@@ -16,20 +16,63 @@
 
 package featureswitch.core.config
 
+import config.FrontendAppConfig
 import featureswitch.core.models.FeatureSwitch
+import play.api.Logging
 
-trait FeatureSwitching {
+import scala.sys.SystemProperties
+
+trait FeatureSwitching extends Logging {
+
+  lazy val featureSwitchingModule: FeatureSwitchingModule = new FeatureSwitchingModule()
 
   val FEATURE_SWITCH_ON = "true"
   val FEATURE_SWITCH_OFF = "false"
 
-  def isEnabled(featureSwitch: FeatureSwitch): Boolean =
-    sys.props get featureSwitch.configName contains FEATURE_SWITCH_ON
+  def getValue(key: String)(implicit appConfig: FrontendAppConfig): String = {
+    sys.props.get(key).getOrElse(appConfig.servicesConfig.getString(key))
+  }
 
-  def enable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.configName -> FEATURE_SWITCH_ON
+  def getValue(featureSwitch: FeatureSwitch)(implicit appConfig: FrontendAppConfig): String = {
+    getValue(featureSwitch.configName)
+  }
 
-  def disable(featureSwitch: FeatureSwitch): Unit =
-    sys.props += featureSwitch.configName -> FEATURE_SWITCH_OFF
+  def isEnabled(featureSwitch: FeatureSwitch)(implicit appConfig: FrontendAppConfig): Boolean = {
+    getValue(featureSwitch).toBoolean
+  }
+
+  def isDisabled(featureSwitch: FeatureSwitch)(implicit appConfig: FrontendAppConfig): Boolean = {
+    !getValue(featureSwitch).toBoolean
+  }
+
+  def setValue(key: String, value: String): SystemProperties = {
+    sys.props += key -> value
+  }
+
+  def setValue(featureSwitch: FeatureSwitch, value: String): SystemProperties = {
+    setValue(featureSwitch.configName, value)
+  }
+
+  def resetValue(key: String): SystemProperties = {
+    sys.props -= key
+  }
+
+  def resetValue(featureSwitch: FeatureSwitch): SystemProperties = {
+    resetValue(featureSwitch.configName)
+  }
+
+  def enable(featureSwitch: FeatureSwitch): SystemProperties = {
+    logger.debug(s"[FeatureToggleSupport][enable] ${featureSwitch.configName} enabled")
+    setValue(featureSwitch, true.toString)
+  }
+
+  def disable(featureSwitch: FeatureSwitch): SystemProperties = {
+    logger.debug(s"[FeatureToggleSupport][disable] ${featureSwitch.configName} disabled")
+    setValue(featureSwitch, false.toString)
+  }
+
+  def resetAll(): Unit = {
+    featureSwitchingModule.switches.foreach(resetValue)
+  }
 
 }

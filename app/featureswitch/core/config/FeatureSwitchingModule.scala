@@ -25,7 +25,8 @@ import javax.inject.Singleton
 @Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
-  val switches = Seq(
+  val switches: Seq[FeatureSwitch] = Seq(
+    FixedEstablishmentExperiment
   )
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {
@@ -33,4 +34,9 @@ class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
       bind[FeatureSwitchRegistry].to(this).eagerly()
     )
   }
+}
+
+case object FixedEstablishmentExperiment extends FeatureSwitch {
+  override val configName: String = "feature-switch.fixedEstablishmentExperiment"
+  override val displayName: String = "Fixed Establishment Experiment"
 }

@@ -18,13 +18,15 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
-import forms.FixedEstablishmentFormProvider
+import featureswitch.core.config.{FeatureSwitching, FixedEstablishmentExperiment}
+import forms.{FixedEstablishmentFormProvider, FixedEstablishmentFormProviderVariantB}
 import identifiers.FixedEstablishmentId
 import models.NormalMode
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{DataCleardownService, SessionService}
-import utils.{Navigator, UserAnswers}
-import views.html.FixedEstablishment
+import utils.{Navigator, OptimizelyHelper, UserAnswers}
+import views.html.{FixedEstablishment, FixedEstablishmentVariantB, fixed_establishment_variant_a, fixed_establishment_variant_c}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,19 +38,35 @@ class FixedEstablishmentController @Inject()(sessionService: SessionService,
                                              getData: DataRetrievalAction,
                                              requireData: DataRequiredAction,
                                              formProvider: FixedEstablishmentFormProvider,
+                                             experimentVariantBFormProvider: FixedEstablishmentFormProviderVariantB,
                                              view: FixedEstablishment,
+                                             experimentVariantAView: fixed_establishment_variant_a,
+                                             experimentVariantBView: FixedEstablishmentVariantB,
+                                             experimentVariantCView: fixed_establishment_variant_c,
+                                             optimizelyHelper: OptimizelyHelper,
                                              dataCleardownService: DataCleardownService)
                                             (implicit appConfig: FrontendAppConfig,
                                              mcc: MessagesControllerComponents,
-                                             executionContext: ExecutionContext) extends BaseController {
+                                             executionContext: ExecutionContext) extends BaseController with FeatureSwitching {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      val preparedForm = request.userAnswers.fixedEstablishment match {
-        case None => formProvider()
-        case Some(value) => formProvider().fill(value)
+      def preparedForm(form: Form[Boolean]): Form[Boolean] = request.userAnswers.fixedEstablishment match {
+        case None => form
+        case Some(value) => form.fill(value)
       }
-      Ok(view(preparedForm))
+
+      val fixedEstablishmentVariantViews =
+        optimizelyHelper.render(
+          experimentId = "fixed-establishment",
+          isEnabled = isEnabled(FixedEstablishmentExperiment),
+          control = view(preparedForm(formProvider())),
+          experimentVariantAView(preparedForm(formProvider())),
+          experimentVariantBView(preparedForm(experimentVariantBFormProvider())),
+          experimentVariantCView(preparedForm(formProvider()))
+        )
+
+      Ok(fixedEstablishmentVariantViews)
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {

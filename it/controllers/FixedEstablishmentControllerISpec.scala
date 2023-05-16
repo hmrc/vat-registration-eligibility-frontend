@@ -1,5 +1,6 @@
 package controllers
 
+import featureswitch.core.config.FixedEstablishmentExperiment
 import helpers.IntegrationSpecBase
 import identifiers._
 import models.{ConditionalDateFormElement, DateFormElement}
@@ -16,32 +17,91 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
   val noRadio = "value-no"
 
   "GET /fixed-establishment" when {
-    "an answer exists for the page" must {
-      "return OK with the answer pre=populated" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
 
-        cacheSessionData(sessionId, FixedEstablishmentId, true)
+    "FixedEstablishmentExperiment is disabled" when {
 
-        val res = await(buildClient(pageUrl).get)
-        val doc = Jsoup.parse(res.body)
+      "an answer exists for the page" must {
 
-        res.status mustBe OK
-        doc.radioIsSelected(yesRadio) mustBe true
-        doc.radioIsSelected(noRadio) mustBe false
+        "return OK with the answer pre=populated" in new Setup {
+
+          disable(FixedEstablishmentExperiment)
+
+          stubSuccessfulLogin()
+          stubAudits()
+
+          cacheSessionData(sessionId, FixedEstablishmentId, true)
+
+          val res = await(buildClient(pageUrl).get)
+          val doc = Jsoup.parse(res.body)
+
+          res.status mustBe OK
+          doc.radioIsSelected(yesRadio) mustBe true
+          doc.radioIsSelected(noRadio) mustBe false
+        }
+      }
+
+      "an answer doesn't exist for the page" must {
+        "return OK with an empty form" in new Setup {
+
+          disable(FixedEstablishmentExperiment)
+
+          stubSuccessfulLogin()
+          stubAudits()
+
+          val res = await(buildClient(pageUrl).get)
+          val doc = Jsoup.parse(res.body)
+
+          res.status mustBe OK
+          doc.radioIsSelected(yesRadio) mustBe false
+          doc.radioIsSelected(noRadio) mustBe false
+        }
       }
     }
-    "an answer doesn't exist for the page" must {
-      "return OK with an empty form" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
 
-        val res = await(buildClient(pageUrl).get)
-        val doc = Jsoup.parse(res.body)
+    "FixedEstablishmentExperiment is enabled" when {
 
-        res.status mustBe OK
-        doc.radioIsSelected(yesRadio) mustBe false
-        doc.radioIsSelected(noRadio) mustBe false
+      "an answer exists for the page" must {
+
+        "return OK with the answer pre=populated" in new Setup {
+
+          enable(FixedEstablishmentExperiment)
+
+          stubSuccessfulLogin()
+          stubAudits()
+
+          cacheSessionData(sessionId, FixedEstablishmentId, true)
+
+          val res = await(buildClient(pageUrl).get)
+          val doc = Jsoup.parse(res.body)
+
+          res.status mustBe OK
+          doc.radioIsSelected(yesRadio) mustBe true
+          doc.radioIsSelected(noRadio) mustBe false
+          doc.radioIsSelected("value-uk") mustBe true
+          doc.radioIsSelected("value-iom") mustBe false
+          doc.radioIsSelected("value-other") mustBe false
+        }
+      }
+
+      "an answer doesn't exist for the page" must {
+        "return OK with an empty form" in new Setup {
+
+          enable(FixedEstablishmentExperiment)
+
+          stubSuccessfulLogin()
+          stubAudits()
+
+          val res = await(buildClient(pageUrl).get)
+          val doc = Jsoup.parse(res.body)
+
+          res.status mustBe OK
+          doc.radioIsSelected(yesRadio) mustBe false
+          doc.radioIsSelected(yesRadio) mustBe false
+          doc.radioIsSelected(noRadio) mustBe false
+          doc.radioIsSelected("value-uk") mustBe false
+          doc.radioIsSelected("value-iom") mustBe false
+          doc.radioIsSelected("value-other") mustBe false
+        }
       }
     }
   }

@@ -16,6 +16,7 @@
 
 package featureswitch.api.controllers
 
+import config.FrontendAppConfig
 import featureswitch.api.services.FeatureSwitchService
 import featureswitch.core.config.FeatureSwitching
 import featureswitch.core.models.FeatureSwitchSetting
@@ -28,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class FeatureSwitchApiController @Inject()(config: Configuration,
                                            featureSwitchService: FeatureSwitchService
-                                          ) extends InjectedController with FeatureSwitching {
+                                          )(implicit appConfig: FrontendAppConfig) extends InjectedController with FeatureSwitching {
   def getFeatureSwitches: Action[AnyContent] = Action {
     Ok(Json.toJson(featureSwitchService.getFeatureSwitches))
   }
