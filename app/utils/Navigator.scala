@@ -16,6 +16,7 @@
 
 package utils
 
+import config.FrontendAppConfig
 import controllers.routes
 import featureswitch.core.config._
 import featureswitch.core.models.FeatureSwitch
@@ -100,7 +101,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
                                                 fromPage: Identifier, onSuccessPage: Identifier,
                                                 featureSwitchSuccessPage: Identifier,
                                                 onFailPage: Identifier
-                                               )(implicit reads: Reads[T]): (Identifier, UserAnswers => Call) = {
+                                               )(implicit reads: Reads[T], appConfig: FrontendAppConfig): (Identifier, UserAnswers => Call) = {
     fromPage -> {
       _.getAnswer[T](fromPage) match {
         case Some(`condition`) if isEnabled(featureSwitch) => pageIdToPageLoad(featureSwitchSuccessPage)

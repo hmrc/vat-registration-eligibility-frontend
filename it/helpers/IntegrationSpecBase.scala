@@ -66,11 +66,13 @@ trait IntegrationSpecBase extends PlaySpec
 
   override def beforeAll(): Unit = {
     super.beforeAll()
+    resetAll()
     startWiremock()
   }
 
   override def afterAll(): Unit = {
     super.afterAll()
+    resetAll()
     stopWiremock()
   }
 

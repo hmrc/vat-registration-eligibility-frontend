@@ -16,6 +16,7 @@
 
 package featureswitch.api.services
 
+import config.FrontendAppConfig
 import featureswitch.core.config.{FeatureSwitchRegistry, FeatureSwitching}
 import featureswitch.core.models.FeatureSwitchSetting
 
@@ -24,7 +25,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class FeatureSwitchService @Inject()(featureSwitchRegistry: FeatureSwitchRegistry) extends FeatureSwitching {
 
-  def getFeatureSwitches: Seq[FeatureSwitchSetting] =
+  def getFeatureSwitches()(implicit appConfig: FrontendAppConfig): Seq[FeatureSwitchSetting] =
     featureSwitchRegistry.switches.map(
       switch =>
         FeatureSwitchSetting(
@@ -34,7 +35,8 @@ class FeatureSwitchService @Inject()(featureSwitchRegistry: FeatureSwitchRegistr
         )
     )
 
-  def updateFeatureSwitches(updatedFeatureSwitches: Seq[FeatureSwitchSetting]): Seq[FeatureSwitchSetting] = {
+  def updateFeatureSwitches(updatedFeatureSwitches: Seq[FeatureSwitchSetting])
+                           (implicit appConfig: FrontendAppConfig): Seq[FeatureSwitchSetting] = {
     updatedFeatureSwitches.foreach(
       featureSwitchSetting =>
         featureSwitchRegistry.get(featureSwitchSetting.configName) match {
