@@ -172,6 +172,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
           pageIdToPageLoad(TaxableSuppliesInUkId)
         case Some(true) =>
           pageIdToPageLoad(RegReasonResolverId)
+        case _ => pageIdToPageLoad(FixedEstablishmentId)
       }
     },
     RegReasonResolverId -> { userAnswers =>
