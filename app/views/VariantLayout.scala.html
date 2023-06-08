@@ -28,21 +28,8 @@
     button: components.button
 )
 
-@(form: Form[_])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(content: Html)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@errorSummary(form.errors)
-
-@h1(messages("fixedEstablishment.heading"))
-@p{ @messages("fixedEstablishment.para") }
-@bullets("fixedEstablishment.bullet1","fixedEstablishment.bullet2")
-
-@formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
-    @yesNoRadio(
-        form = form,
-        headingKey = "fixedEstablishment.heading",
-        isPageHeading = false,
-        classes = "govuk-visually-hidden"
-    )
-
-    @button(messages("site.continue"))
+@layout(pageTitle = Some(messages("fixedEstablishment.heading")), backLink = true){
+    @content
 }

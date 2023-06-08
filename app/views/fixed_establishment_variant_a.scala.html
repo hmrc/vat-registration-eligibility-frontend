@@ -32,27 +32,23 @@
 
 @(form: Form[_])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(messages("variantA.legend")), backLink = true){
+@errorSummary(form.errors)
 
-    @errorSummary(form.errors)
+@h1(messages("variantA.title"))
 
-    @h1(messages("variantA.title"))
+@govukInsetText(InsetText(content = Text(messages("variantA.inset"))))
 
-    @govukInsetText(InsetText(content = Text(messages("variantA.inset"))))
+@p{ @messages("variantA.p1")}
+@p{ @messages("variantA.p2")}
+@bullets("variantA.li1","variantA.li2")
 
-    @p{ @messages("variantA.p1")}
-    @p{ @messages("variantA.p2")}
-    @bullets("variantA.li1","variantA.li2")
+@formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
+    @yesNoRadio(
+        form = form,
+        headingKey = messages("variantA.legend"),
+        isPageHeading = false,
+        classes = "govuk-fieldset__legend--l"
+    )
 
-    @formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
-        @yesNoRadio(
-            form = form,
-            headingKey = messages("variantA.legend"),
-            isPageHeading = false,
-            classes = "govuk-fieldset__legend--l"
-        )
-
-        @button(messages("variantA.button"))
-    }
-
+    @button(messages("variantA.button"))
 }

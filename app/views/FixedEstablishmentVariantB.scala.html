@@ -31,44 +31,41 @@
 
 @(form: Form[_])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(title(form, messages("variantB.fixedEstablishment.heading"))), backLink = true) {
+@errorSummary(form.errors)
 
-    @errorSummary(form.errors)
+@h1(messages("variantB.fixedEstablishment.heading"))
+@p{ @messages("variantB.fixedEstablishment.para") }
+@bullets("variantB.fixedEstablishment.bullet1","variantB.fixedEstablishment.bullet2")
 
-    @h1(messages("variantB.fixedEstablishment.heading"))
-    @p{ @messages("variantB.fixedEstablishment.para") }
-    @bullets("variantB.fixedEstablishment.bullet1","variantB.fixedEstablishment.bullet2")
-
-    @formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
-        @inputRadio(
-            form = form,
-            legend = messages("variantB.fixedEstablishment.heading"),
-            legendAsHeading = false,
-            classes = "govuk-visually-hidden",
-            inline = false,
-            items = Seq(
-                RadioItem(
-                            id = Some("value-uk"),
-                            value = Some("true"),
-                            content = Text(messages("variantB.site.uk")),
-                            checked = form("value").value.contains("true")
-                ),
-                RadioItem(
-                            id = Some("value-iom"),
-                            value = Some("true"),
-                            content = Text(messages("variantB.site.iom")),
-                            checked = false
-                ),
-                RadioItem(
-                            id = Some("value-other"),
-                            value = Some("false"),
-                            content = Text(messages("variantB.site.other")),
-                            checked = form("value").value.contains("false")
-                )
+@formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
+    @inputRadio(
+        form = form,
+        legend = messages("variantB.fixedEstablishment.heading"),
+        legendAsHeading = false,
+        classes = "govuk-visually-hidden",
+        inline = false,
+        items = Seq(
+            RadioItem(
+                        id = Some("value-uk"),
+                        value = Some("true"),
+                        content = Text(messages("variantB.site.uk")),
+                        checked = form("value").value.contains("true")
             ),
-        )
+            RadioItem(
+                        id = Some("value-iom"),
+                        value = Some("true"),
+                        content = Text(messages("variantB.site.iom")),
+                        checked = false
+            ),
+            RadioItem(
+                        id = Some("value-other"),
+                        value = Some("false"),
+                        content = Text(messages("variantB.site.other")),
+                        checked = form("value").value.contains("false")
+            )
+        ),
+    )
 
-        @button(messages("site.continue"))
-    }
-
+    @button(messages("site.continue"))
 }
+

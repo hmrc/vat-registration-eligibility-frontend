@@ -24,9 +24,10 @@ import identifiers.FixedEstablishmentId
 import models.NormalMode
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
 import services.{DataCleardownService, SessionService}
 import utils.{Navigator, OptimizelyHelper, UserAnswers}
-import views.html.{FixedEstablishment, FixedEstablishmentVariantB, fixed_establishment_variant_a, fixed_establishment_variant_c}
+import views.html.{FixedEstablishment, FixedEstablishmentVariantB, fixed_establishment_variant_a, fixed_establishment_variant_c, VariantLayout}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,6 +44,7 @@ class FixedEstablishmentController @Inject()(sessionService: SessionService,
                                              experimentVariantAView: fixed_establishment_variant_a,
                                              experimentVariantBView: FixedEstablishmentVariantB,
                                              experimentVariantCView: fixed_establishment_variant_c,
+                                             vLayout: VariantLayout,
                                              optimizelyHelper: OptimizelyHelper,
                                              dataCleardownService: DataCleardownService)
                                             (implicit appConfig: FrontendAppConfig,
@@ -56,17 +58,18 @@ class FixedEstablishmentController @Inject()(sessionService: SessionService,
         case Some(value) => form.fill(value)
       }
 
-      val fixedEstablishmentVariantViews =
-        optimizelyHelper.render(
-          experimentId = "fixed-establishment",
-          isEnabled = isEnabled(FixedEstablishmentExperiment),
-          control = view(preparedForm(formProvider())),
-          experimentVariantAView(preparedForm(formProvider())),
-          experimentVariantBView(preparedForm(experimentVariantBFormProvider())),
-          experimentVariantCView(preparedForm(formProvider()))
-        )
+      val optimizelyHelperRender: Html = {
+          optimizelyHelper.render(
+            experimentId = "fixed-establishment",
+            isEnabled = isEnabled(FixedEstablishmentExperiment),
+            control = view(preparedForm(formProvider())),
+            experimentVariantAView(preparedForm(formProvider())),
+            experimentVariantBView(preparedForm(experimentVariantBFormProvider())),
+            experimentVariantCView(preparedForm(formProvider()))
+          )
+      }
 
-      Ok(fixedEstablishmentVariantViews)
+      Ok(vLayout(optimizelyHelperRender))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
