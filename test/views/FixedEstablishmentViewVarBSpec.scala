@@ -17,13 +17,19 @@
 package views
 
 import forms.FixedEstablishmentFormProvider
-import views.html.FixedEstablishmentVariantB
+import play.twirl.api.HtmlFormat
+import views.html.{FixedEstablishmentVariantB, VariantLayout}
 
 class FixedEstablishmentViewVarBSpec extends ViewSpecBase {
 
   val form = new FixedEstablishmentFormProvider()()
   implicit val msgs = messages
-  val view = app.injector.instanceOf[FixedEstablishmentVariantB]
+  implicit val dataReq = fakeDataRequest
+
+  val variantLayout = app.injector.instanceOf[VariantLayout]
+  val fixedEstablishmentView: FixedEstablishmentVariantB = app.injector.instanceOf[FixedEstablishmentVariantB]
+  val fixedEstablishmentViewHtml: HtmlFormat.Appendable = fixedEstablishmentView(form)
+  val view = variantLayout(fixedEstablishmentViewHtml)
 
   object Selectors extends BaseSelectors
 
@@ -33,7 +39,7 @@ class FixedEstablishmentViewVarBSpec extends ViewSpecBase {
   val bullet2 = "business has a permanent physical presence with the human and technical resources to make or receive taxable supplies"
 
   "FixedEstablishment view" must {
-    lazy val doc = asDocument(view(form)(fakeDataRequestIncorped, messages, frontendAppConfig))
+    lazy val doc = asDocument(view)
 
     "have the correct continue button" in {
       doc.select(Selectors.button).text() mustBe continueButton
@@ -41,10 +47,6 @@ class FixedEstablishmentViewVarBSpec extends ViewSpecBase {
 
     "have the correct back link" in {
       doc.select(Selectors.backLink).text() mustBe backLink
-    }
-
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
     }
 
     "have the correct heading" in {

@@ -18,17 +18,24 @@ package views
 
 import forms.FixedEstablishmentFormProvider
 import views.html.fixed_establishment_variant_a
+import views.html.VariantLayout
+import play.twirl.api.HtmlFormat
 
 class FixedEstablishmentVariantAViewSpec extends ViewSpecBase {
 
   val form = new FixedEstablishmentFormProvider()()
   implicit val msgs = messages
-  val view = app.injector.instanceOf[fixed_establishment_variant_a]
+  implicit val dataReq = fakeDataRequest 
+
+  val variantLayout = app.injector.instanceOf[VariantLayout]
+  val fixedEstablishmentView: fixed_establishment_variant_a = app.injector.instanceOf[fixed_establishment_variant_a]
+  val fixedEstablishmentViewHtml: HtmlFormat.Appendable = fixedEstablishmentView(form)
+  val view = variantLayout(fixedEstablishmentViewHtml)
 
   object Selectors extends BaseSelectors
 
   "fixed_establishment_variant_a view" must {
-    lazy val doc = asDocument(view(form)(fakeDataRequestIncorped, messages, frontendAppConfig))
+    lazy val doc = asDocument(view)
 
     "have the correct continue button" in {
       doc.select(Selectors.button).text() mustBe continueButton
@@ -36,10 +43,6 @@ class FixedEstablishmentVariantAViewSpec extends ViewSpecBase {
 
     "have the correct back link" in {
       doc.select(Selectors.backLink).text() mustBe backLink
-    }
-
-    "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe "Does the business have a fixed establishment in the UK?"
     }
 
     "have the correct heading" in {

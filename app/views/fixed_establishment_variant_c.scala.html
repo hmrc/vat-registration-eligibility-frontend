@@ -31,34 +31,30 @@
 
 @(form: Form[_])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(messages("variantC.title")), backLink = true) {
+@errorSummary(form.errors)
 
-    @errorSummary(form.errors)
+@h1(messages("variantC.title"))
+@p(Html(messages("variantC.p1")), id = Some("p1"))
 
-    @h1(messages("variantC.title"))
-    @p(Html(messages("variantC.p1")), id = Some("p1"))
+<details class="govuk-details" data-module="govuk-details">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+            @messages("variantC.details.summary")
+        </span>
+    </summary>
+    <div class="govuk-details__text">
+        @p(Html(messages("variantC.details.content.p2")), id = Some("p2"))
+        @bullets("variantC.details.content.li1","variantC.details.content.li2")
+    </div>
+</details>
 
-    <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                @messages("variantC.details.summary")
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-            @p(Html(messages("variantC.details.content.p2")), id = Some("p2"))
-            @bullets("variantC.details.content.li1","variantC.details.content.li2")
-        </div>
-    </details>
+@formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
+    @yesNoRadio(
+        form = form,
+        headingKey = "",
+        isPageHeading = true,
+        classes = "govuk-visually-hidden"
+    )
 
-    @formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
-        @yesNoRadio(
-            form = form,
-            headingKey = "",
-            isPageHeading = true,
-            classes = "govuk-visually-hidden"
-        )
-
-        @button(messages("variantC.button"))
-    }
-
+    @button(messages("variantC.button"))
 }
