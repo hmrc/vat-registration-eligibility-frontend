@@ -37,6 +37,6 @@ class RegReasonResolverController @Inject()(navigator: Navigator,
 
   def resolve: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Redirect(navigator.nextPage(RegReasonResolverId, NormalMode)(new UserAnswers(request.userAnswers.cacheMap)))
+      Redirect(navigator.nextPage(RegReasonResolverId, NormalMode)(request)(new UserAnswers(request.userAnswers.cacheMap)))
   }
 }

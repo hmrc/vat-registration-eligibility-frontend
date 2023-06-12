@@ -64,14 +64,17 @@ class BusinessEntityController @Inject()(sessionService: SessionService,
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
     formProvider().bindFromRequest.fold(
-      formWithErrors =>
-        Future.successful(
-          BadRequest(view(formWithErrors, routes.BusinessEntityController.onSubmit()))
-        ),
+      {
+        formWithErrors =>
+          warnLog("[BusinessEntityController][onSubmit] Form submitted with errors")
+          Future.successful(
+            BadRequest(view(formWithErrors, routes.BusinessEntityController.onSubmit()))
+          )
+      },
       {
         entityType =>
           sessionService.save[BusinessEntity](BusinessEntityId.toString, entityType) map { cacheMap =>
-            Redirect(navigator.nextPage(BusinessEntityId, NormalMode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(BusinessEntityId, NormalMode)(request)(new UserAnswers(cacheMap)))
           }
       }
     )

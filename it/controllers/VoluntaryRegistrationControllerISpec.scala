@@ -18,7 +18,7 @@ class VoluntaryRegistrationControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, VoluntaryRegistrationId, true)
+        cacheSessionData(sessionIdStr, VoluntaryRegistrationId, true)
 
         val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)

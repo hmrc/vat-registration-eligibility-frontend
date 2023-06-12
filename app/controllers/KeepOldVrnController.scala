@@ -59,7 +59,7 @@ class KeepOldVrnController @Inject()(sessionService: SessionService,
           for {
             _ <- if (!value) sessionService.removeEntry(TermsAndConditionsId.toString) else Future.successful()
             cacheMap <- sessionService.save[Boolean](KeepOldVrnId.toString, value)
-            redirect = Redirect(navigator.nextPage(KeepOldVrnId, NormalMode)(new UserAnswers(cacheMap)))
+            redirect = Redirect(navigator.nextPage(KeepOldVrnId, NormalMode)(request)(new UserAnswers(cacheMap)))
           } yield redirect
       )
   }

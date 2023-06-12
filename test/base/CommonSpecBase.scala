@@ -20,13 +20,14 @@ import org.mockito.Mockito.reset
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.PlaySpec
-import play.api.test.{DefaultAwaitTimeout, FutureAwaits}
+import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits}
 import uk.gov.hmrc.http.{HeaderCarrier, SessionId}
 
 trait CommonSpecBase extends PlaySpec with FutureAwaits with DefaultAwaitTimeout with BeforeAndAfterEach with MockitoSugar with VATEligibilityMocks {
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Option(SessionId("sess-ID")))
   val regId = "regId"
   val txId = "txId"
+  implicit val request = FakeRequest()
 
   override def beforeEach() = {
     super.beforeEach()

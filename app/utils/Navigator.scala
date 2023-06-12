@@ -22,18 +22,17 @@ import featureswitch.core.config._
 import featureswitch.core.models.FeatureSwitch
 import identifiers._
 import models._
-import play.api.Logging
 import play.api.libs.json.Reads
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 import utils.DefaultImplicitJsonReads.BooleanReads
 
 import javax.inject.{Inject, Singleton}
 
 //scalastyle:off
 @Singleton
-class Navigator @Inject extends Logging with FeatureSwitching {
+class Navigator @Inject extends LoggingUtil with FeatureSwitching {
 
-  def pageIdToPageLoad(pageId: Identifier): Call = pageId match {
+  def pageIdToPageLoad(pageId: Identifier)(implicit request: Request[_]): Call = pageId match {
     case FixedEstablishmentId => routes.FixedEstablishmentController.onPageLoad
     case BusinessEntityId => routes.BusinessEntityController.onPageLoad
     case BusinessEntityPartnershipId => routes.BusinessEntityPartnershipController.onPageLoad
@@ -62,12 +61,12 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     case VATNumberId => routes.VATNumberController.onPageLoad
     case KeepOldVrnId => routes.KeepOldVrnController.onPageLoad
     case TermsAndConditionsId => routes.TermsAndConditionsController.onPageLoad
-    case page => logger.info(s"${page.toString} does not exist navigating to start of the journey")
+    case page => infoLog(s"${page.toString} does not exist navigating to start of the journey")
       controllers.routes.FixedEstablishmentController.onPageLoad
   }
 
   private[utils] def nextOn[T](condition: T, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)
-                              (implicit reads: Reads[T]): (Identifier, UserAnswers => Call) = {
+                              (implicit reads: Reads[T], request: Request[_]): (Identifier, UserAnswers => Call) = {
     fromPage -> {
       _.getAnswer[T](fromPage) match {
         case Some(`condition`) => pageIdToPageLoad(onSuccessPage)
@@ -76,7 +75,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     }
   }
 
-  private[utils] def nextOn12MonthThresholdConditionalFormElement(condition: Boolean, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier):
+  private[utils] def nextOn12MonthThresholdConditionalFormElement(condition: Boolean, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)(implicit request: Request[_]):
   (Identifier, UserAnswers => Call) = {
     fromPage -> {
       _.thresholdInTwelveMonths match {
@@ -86,7 +85,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     }
   }
 
-  private[utils] def nextOnNextThirtyDaysThresholdConditionalFormElement(condition: Boolean, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier):
+  private[utils] def nextOnNextThirtyDaysThresholdConditionalFormElement(condition: Boolean, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)(implicit request: Request[_]):
   (Identifier, UserAnswers => Call) = {
     fromPage -> {
       _.thresholdNextThirtyDays match {
@@ -101,7 +100,7 @@ class Navigator @Inject extends Logging with FeatureSwitching {
                                                 fromPage: Identifier, onSuccessPage: Identifier,
                                                 featureSwitchSuccessPage: Identifier,
                                                 onFailPage: Identifier
-                                               )(implicit reads: Reads[T], appConfig: FrontendAppConfig): (Identifier, UserAnswers => Call) = {
+                                               )(implicit reads: Reads[T], appConfig: FrontendAppConfig, request: Request[_]): (Identifier, UserAnswers => Call) = {
     fromPage -> {
       _.getAnswer[T](fromPage) match {
         case Some(`condition`) if isEnabled(featureSwitch) => pageIdToPageLoad(featureSwitchSuccessPage)
@@ -111,10 +110,10 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     }
   }
 
-  private[utils] def toNextPage(fromPage: Identifier, toPage: Identifier): (Identifier, UserAnswers => Call) =
+  private[utils] def toNextPage(fromPage: Identifier, toPage: Identifier)(implicit request: Request[_]): (Identifier, UserAnswers => Call) =
     fromPage -> { _ => pageIdToPageLoad(toPage) }
 
-  private val routeMap: Map[Identifier, UserAnswers => Call] = Map(
+  private def routeMap(implicit request: Request[_]): Map[Identifier, UserAnswers => Call] = Map(
     BusinessEntityId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
         case Some(Other) => routes.BusinessEntityOtherController.onPageLoad
@@ -245,6 +244,6 @@ class Navigator @Inject extends Logging with FeatureSwitching {
     )
   )
 
-  def nextPage(id: Identifier, mode: Mode): UserAnswers => Call =
+  def nextPage(id: Identifier, mode: Mode)(implicit request: Request[_]): UserAnswers => Call =
     routeMap.getOrElse(id, _ => controllers.routes.FixedEstablishmentController.onPageLoad)
 }

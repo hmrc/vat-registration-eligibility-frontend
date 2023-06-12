@@ -36,7 +36,7 @@ class TaxableSuppliesInUkControllerISpec extends IntegrationSpecBase
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, TaxableSuppliesInUkId, true)
+        cacheSessionData(sessionIdStr, TaxableSuppliesInUkId, true)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)

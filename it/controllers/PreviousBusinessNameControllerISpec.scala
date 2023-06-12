@@ -20,7 +20,7 @@ class PreviousBusinessNameControllerISpec extends IntegrationSpecBase with Featu
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData(sessionId, PreviousBusinessNameId, testPreviousBusinessName)
+        cacheSessionData(sessionIdStr, PreviousBusinessNameId, testPreviousBusinessName)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)

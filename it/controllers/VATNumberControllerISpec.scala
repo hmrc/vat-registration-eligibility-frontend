@@ -33,7 +33,7 @@ class VATNumberControllerISpec extends IntegrationSpecBase with FeatureSwitching
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData[String](sessionId, VATNumberId, testVatNumber)
+          cacheSessionData[String](sessionIdStr, VATNumberId, testVatNumber)
 
           val res = await(buildClient(pageUrl).get)
           val doc = Jsoup.parse(res.body)

@@ -27,7 +27,7 @@ class DateOfBusinessTransferControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData[DateFormElement](sessionId, DateOfBusinessTransferId, DateFormElement(LocalDate.of(2017, 12, 1)))
+        cacheSessionData[DateFormElement](sessionIdStr, DateOfBusinessTransferId, DateFormElement(LocalDate.of(2017, 12, 1)))
 
         val res = await(buildClient(pageUrl).get())
         res.status mustBe OK

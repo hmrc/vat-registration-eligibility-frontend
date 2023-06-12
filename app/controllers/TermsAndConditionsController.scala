@@ -47,7 +47,7 @@ class TermsAndConditionsController @Inject()(sessionService: SessionService,
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
           sessionService.save[Boolean](TermsAndConditionsId.toString, true) map { cacheMap =>
-            Redirect(navigator.nextPage(TermsAndConditionsId, NormalMode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(TermsAndConditionsId, NormalMode)(request)(new UserAnswers(cacheMap)))
           }
   }
 }

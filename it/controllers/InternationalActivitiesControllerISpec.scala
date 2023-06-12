@@ -37,7 +37,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, InternationalActivitiesId, true)
+        cacheSessionData(sessionIdStr, InternationalActivitiesId, true)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)
@@ -69,14 +69,14 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, UKCompany)
 
         val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
           .post(Map("value" -> Seq("true"))))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.EligibilityDropoutController.internationalActivitiesDropout().url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](true))
+        verifySessionCacheData(sessionIdStr, InternationalActivitiesId, Option.apply[Boolean](true))
       }
 
       "navigate to Registering Business when false" in new Setup {
@@ -84,14 +84,14 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, UKCompany)
 
         val res = await(buildClient(controllers.routes.InternationalActivitiesController.onSubmit().url)
           .post(Map("value" -> Seq("false"))))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegisteringBusinessController.onPageLoad.url)
-        verifySessionCacheData(sessionId, InternationalActivitiesId, Option.apply[Boolean](false))
+        verifySessionCacheData(sessionIdStr, InternationalActivitiesId, Option.apply[Boolean](false))
       }
     }
     "the user doesn't answer" must {

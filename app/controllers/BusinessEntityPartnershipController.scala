@@ -58,7 +58,7 @@ class BusinessEntityPartnershipController @Inject()(sessionService: SessionServi
         ),
       entityType => {
         sessionService.save[BusinessEntity](BusinessEntityId.toString, entityType) map { cacheMap =>
-          Redirect(navigator.nextPage(BusinessEntityPartnershipId, NormalMode)(new UserAnswers(cacheMap)))
+          Redirect(navigator.nextPage(BusinessEntityPartnershipId, NormalMode)(request)(new UserAnswers(cacheMap)))
         }
       }
     )

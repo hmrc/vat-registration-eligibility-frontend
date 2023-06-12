@@ -19,8 +19,10 @@ package services
 import connectors.VatRegistrationConnector
 import models.CurrentProfile
 import play.api.libs.json.Json
+import play.api.mvc.Request
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.cache.client.CacheMap
+import utils.LinkLogger.infoLog
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,16 +40,20 @@ class JourneyService @Inject()(val sessionService: SessionService,
   def getProfile(implicit hc: HeaderCarrier): Future[Option[CurrentProfile]] =
     sessionService.getEntry[CurrentProfile](profileKey)
 
-  def initialiseJourney(regId: String)(implicit hc: HeaderCarrier): Future[CacheMap] = {
+  def initialiseJourney(regId: String)(implicit hc: HeaderCarrier, request: Request[_]): Future[CacheMap] = {
     sessionService.fetch.flatMap {
       case Some(cacheMap) if cacheMap.data.get(profileKey).contains(Json.toJson(CurrentProfile(regId))) =>
+        infoLog(s"[JourneyService][initialiseJourney] Fetched cache for regId $regId")
         Future.successful(cacheMap)
       case _ =>
         vatRegistrationConnector.getEligibilityAnswers(regId).flatMap {
           case Some(answers) if answers.get(profileKey).contains(Json.toJson(CurrentProfile(regId))) =>
+            infoLog(s"[JourneyService][initialiseJourney] Fetched eligibility answers from backend for regId $regId")
             sessionService.save(emptyCacheMap(regId).copy(data = answers))
           case _ =>
+            infoLog(s"[JourneyService][initialiseJourney] Saving empty cache for regId $regId")
             sessionService.save(emptyCacheMap(regId))
+
         }
     }
   }

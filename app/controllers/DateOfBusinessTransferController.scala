@@ -59,6 +59,6 @@ class DateOfBusinessTransferController @Inject()(sessionService: SessionService,
         formValue =>
           sessionService.save[DateFormElement](DateOfBusinessTransferId.toString, formValue).flatMap {
             cacheMap => Future.successful(cacheMap)
-          }.map(cMap => Redirect(navigator.nextPage(DateOfBusinessTransferId, NormalMode)(new UserAnswers(cMap)))))
+          }.map(cMap => Redirect(navigator.nextPage(DateOfBusinessTransferId, NormalMode)(request)(new UserAnswers(cMap)))))
   }
 }

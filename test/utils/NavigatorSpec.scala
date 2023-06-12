@@ -34,7 +34,7 @@ class NavigatorSpec extends SpecBase {
     "in Normal mode" must {
       "go to Index from an identifier that doesn't exist in the route map" in {
         case object UnknownIdentifier extends Identifier
-        navigator.nextPage(UnknownIdentifier, NormalMode)(mock[UserAnswers]) mustBe controllers.routes.FixedEstablishmentController.onPageLoad
+        navigator.nextPage(UnknownIdentifier, NormalMode)(request)(mock[UserAnswers]) mustBe controllers.routes.FixedEstablishmentController.onPageLoad
       }
     }
   }

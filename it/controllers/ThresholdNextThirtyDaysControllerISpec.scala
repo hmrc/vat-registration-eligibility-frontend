@@ -25,7 +25,7 @@ class ThresholdNextThirtyDaysControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(testDate)))
+        cacheSessionData(sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(testDate)))
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)

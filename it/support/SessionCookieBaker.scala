@@ -70,7 +70,7 @@ trait SessionCookieBaker {
 
   def cookieData(userId: String = "anyUserId"): Map[String, String] = {
     Map(
-      SessionKeys.sessionId -> sessionId,
+      SessionKeys.sessionId -> sessionIdStr,
       SessionKeys.authToken -> "testAuthToken",
       ExtraSessionKeys.token -> "RANDOMTOKEN",
       ExtraSessionKeys.userId -> userId)
@@ -78,7 +78,7 @@ trait SessionCookieBaker {
 
   def requestWithSession(req: FakeRequest[AnyContentAsFormUrlEncoded], userId: String): FakeRequest[AnyContentAsFormUrlEncoded] =
     req.withSession(
-      SessionKeys.sessionId -> sessionId,
+      SessionKeys.sessionId -> sessionIdStr,
       SessionKeys.authToken -> "testAuthToken",
       ExtraSessionKeys.token -> "RANDOMTOKEN",
       ExtraSessionKeys.userId -> userId)

@@ -58,7 +58,7 @@ class VATRegistrationExceptionController @Inject()(sessionService: SessionServic
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value => {
           sessionService.save[Boolean](VATRegistrationExceptionId.toString, value).map { cacheMap =>
-            Redirect(navigator.nextPage(VATRegistrationExceptionId, NormalMode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(VATRegistrationExceptionId, NormalMode)(request)(new UserAnswers(cacheMap)))
           }}
       )
   }

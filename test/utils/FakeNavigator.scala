@@ -18,8 +18,8 @@ package utils
 
 import identifiers.Identifier
 import models.{Mode, NormalMode}
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 
 class FakeNavigator(desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
-  override def nextPage(controllerId: Identifier, mode: Mode): (UserAnswers) => Call = (ua) => desiredRoute
+  override def nextPage(controllerId: Identifier, mode: Mode)(implicit request: Request[_]): (UserAnswers) => Call = (ua) => desiredRoute
 }

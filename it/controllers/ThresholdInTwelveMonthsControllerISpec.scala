@@ -25,8 +25,8 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with S4
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
-        cacheSessionData[RegisteringBusiness](sessionId, RegisteringBusinessId, OwnBusiness)
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, true)
+        cacheSessionData[RegisteringBusiness](sessionIdStr, RegisteringBusinessId, OwnBusiness)
 
         val res = await(buildClient("/gone-over-threshold").get())
         val doc = Jsoup.parse(res.body)
@@ -40,9 +40,9 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with S4
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
-        cacheSessionData[RegisteringBusiness](sessionId, RegisteringBusinessId, OwnBusiness)
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(testDate)))
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, true)
+        cacheSessionData[RegisteringBusiness](sessionIdStr, RegisteringBusinessId, OwnBusiness)
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(testDate)))
 
         val res = await(buildClient("/gone-over-threshold").get())
         val doc = Jsoup.parse(res.body)
@@ -93,9 +93,9 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with S4
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(value = false, None))
-        cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
-        cacheSessionData(sessionId, VATRegistrationExceptionId, true)
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(value = false, None))
+        cacheSessionData[Boolean](sessionIdStr, VoluntaryRegistrationId, true)
+        cacheSessionData(sessionIdStr, VATRegistrationExceptionId, true)
 
         val res = await(buildClient("/gone-over-threshold")
           .post(Map(
@@ -108,14 +108,14 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with S4
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdPreviousThirtyDaysController.onPageLoad.url)
 
         verifySessionCacheData[ConditionalDateFormElement](
-          sessionId,
+          sessionIdStr,
           ThresholdInTwelveMonthsId,
           Some(ConditionalDateFormElement(value = true, Some(LocalDate.of(dateAfterIncorp.getYear, dateAfterIncorp.getMonthValue, 1))))
         )
 
-        verifySessionCacheData(sessionId, VoluntaryRegistrationId, Option.empty[Boolean])
-        verifySessionCacheData(sessionId, ThresholdNextThirtyDaysId, Option.empty[ConditionalDateFormElement])
-        verifySessionCacheData(sessionId, VATRegistrationExceptionId, Some(true))
+        verifySessionCacheData(sessionIdStr, VoluntaryRegistrationId, Option.empty[Boolean])
+        verifySessionCacheData(sessionIdStr, ThresholdNextThirtyDaysId, Option.empty[ConditionalDateFormElement])
+        verifySessionCacheData(sessionIdStr, VATRegistrationExceptionId, Some(true))
       }
     }
     s"redirect to ${controllers.routes.ThresholdNextThirtyDaysController.onPageLoad.url}" when {
@@ -124,19 +124,19 @@ class ThresholdInTwelveMonthsControllerISpec extends IntegrationSpecBase with S4
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData(sessionId, VoluntaryRegistrationId, true)
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdPreviousThirtyDaysId, ConditionalDateFormElement(value = false, None))
-        cacheSessionData(sessionId, VATRegistrationExceptionId, true)
+        cacheSessionData(sessionIdStr, VoluntaryRegistrationId, true)
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdPreviousThirtyDaysId, ConditionalDateFormElement(value = false, None))
+        cacheSessionData(sessionIdStr, VATRegistrationExceptionId, true)
 
         val res = await(buildClient("/gone-over-threshold").post(Map(selectionFieldName -> Seq("false"))))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.ThresholdNextThirtyDaysController.onPageLoad.url)
 
-        verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, Some(ConditionalDateFormElement(false, None)))
-        verifySessionCacheData(sessionId, VoluntaryRegistrationId, Some(true))
-        verifySessionCacheData(sessionId, ThresholdPreviousThirtyDaysId, Option.empty[ConditionalDateFormElement])
-        verifySessionCacheData(sessionId, VATRegistrationExceptionId, Option.empty[Boolean])
+        verifySessionCacheData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, Some(ConditionalDateFormElement(false, None)))
+        verifySessionCacheData(sessionIdStr, VoluntaryRegistrationId, Some(true))
+        verifySessionCacheData(sessionIdStr, ThresholdPreviousThirtyDaysId, Option.empty[ConditionalDateFormElement])
+        verifySessionCacheData(sessionIdStr, VATRegistrationExceptionId, Option.empty[Boolean])
       }
     }
   }

@@ -20,7 +20,7 @@ class BusinessEntityOtherControllerISpec extends IntegrationSpecBase {
             stubSuccessfulLogin()
             stubAudits()
 
-            cacheSessionData(sessionId, BusinessEntityId, option)
+            cacheSessionData(sessionIdStr, BusinessEntityId, option)
 
             val res = await(buildClient(pageUrl).get)
             val doc = Jsoup.parse(res.body)

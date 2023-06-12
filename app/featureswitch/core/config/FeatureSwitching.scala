@@ -19,10 +19,12 @@ package featureswitch.core.config
 import config.FrontendAppConfig
 import featureswitch.core.models.FeatureSwitch
 import play.api.Logging
+import play.api.mvc.Request
+import utils.LoggingUtil
 
 import scala.sys.SystemProperties
 
-trait FeatureSwitching extends Logging {
+trait FeatureSwitching extends LoggingUtil {
 
   lazy val featureSwitchingModule: FeatureSwitchingModule = new FeatureSwitchingModule()
 
@@ -61,13 +63,13 @@ trait FeatureSwitching extends Logging {
     resetValue(featureSwitch.configName)
   }
 
-  def enable(featureSwitch: FeatureSwitch): SystemProperties = {
-    logger.debug(s"[FeatureToggleSupport][enable] ${featureSwitch.configName} enabled")
+  def enable(featureSwitch: FeatureSwitch)(implicit request: Request[_]): SystemProperties = {
+    infoLog(s"[FeatureToggleSupport][enable] ${featureSwitch.configName} enabled")
     setValue(featureSwitch, true.toString)
   }
 
-  def disable(featureSwitch: FeatureSwitch): SystemProperties = {
-    logger.debug(s"[FeatureToggleSupport][disable] ${featureSwitch.configName} disabled")
+  def disable(featureSwitch: FeatureSwitch)(implicit request: Request[_]): SystemProperties = {
+    debugLog(s"[FeatureToggleSupport][disable] ${featureSwitch.configName} disabled")
     setValue(featureSwitch, false.toString)
   }
 

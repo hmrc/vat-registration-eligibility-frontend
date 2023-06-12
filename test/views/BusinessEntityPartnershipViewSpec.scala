@@ -19,8 +19,7 @@ package views
 import config.FrontendAppConfig
 import forms.BusinessEntityPartnershipFormProvider
 import org.jsoup.Jsoup
-import play.api.mvc.{AnyContentAsEmpty, Call}
-import play.api.test.FakeRequest
+import play.api.mvc.Call
 import play.twirl.api.HtmlFormat
 import views.html.BusinessEntityPartnership
 
@@ -32,7 +31,6 @@ class BusinessEntityPartnershipViewSpec extends ViewSpecBase {
   object Selectors extends BaseSelectors
 
   val testCall: Call = Call("POST", "/test-url")
-  val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
   val view: BusinessEntityPartnership = app.injector.instanceOf[BusinessEntityPartnership]
 
   lazy val page: HtmlFormat.Appendable = view(

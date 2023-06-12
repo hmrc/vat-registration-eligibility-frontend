@@ -58,7 +58,7 @@ class RegisteringBusinessController @Inject()(sessionService: SessionService,
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
           sessionService.save[RegisteringBusiness](RegisteringBusinessId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(RegisteringBusinessId, NormalMode)(new UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(RegisteringBusinessId, NormalMode)(request)(new UserAnswers(cacheMap))))
       )
   }
 }

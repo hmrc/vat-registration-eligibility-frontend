@@ -74,7 +74,7 @@ class ThresholdInTwelveMonthsController @Inject()(sessionService: SessionService
               }
             }
           }.map(cacheMap =>
-            Redirect(navigator.nextPage(ThresholdInTwelveMonthsId, NormalMode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(ThresholdInTwelveMonthsId, NormalMode)(request)(new UserAnswers(cacheMap)))
           ))
   }
 }

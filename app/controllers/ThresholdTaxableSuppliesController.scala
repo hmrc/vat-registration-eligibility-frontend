@@ -58,6 +58,6 @@ class ThresholdTaxableSuppliesController @Inject()(sessionService: SessionServic
         formValue =>
           sessionService.save[DateFormElement](ThresholdTaxableSuppliesId.toString, formValue).flatMap {
             cacheMap => Future.successful(cacheMap)
-          }.map(cMap => Redirect(navigator.nextPage(ThresholdTaxableSuppliesId, NormalMode)(new UserAnswers(cMap)))))
+          }.map(cMap => Redirect(navigator.nextPage(ThresholdTaxableSuppliesId, NormalMode)(request)(new UserAnswers(cMap)))))
   }
 }

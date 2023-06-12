@@ -76,7 +76,7 @@ class RegistrationReasonController @Inject()(sessionService: SessionService,
           for {
             _ <- dataCleardownService.cleardownOnAnswerChange(value, RegistrationReasonId)
             cacheMap <- sessionService.save[RegistrationReason](RegistrationReasonId.toString, value)
-            redirect = Redirect(navigator.nextPage(RegistrationReasonId, NormalMode)(new UserAnswers(cacheMap)))
+            redirect = Redirect(navigator.nextPage(RegistrationReasonId, NormalMode)(request)(new UserAnswers(cacheMap)))
           } yield redirect
       )
   }

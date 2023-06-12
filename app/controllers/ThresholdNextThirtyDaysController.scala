@@ -63,6 +63,6 @@ class ThresholdNextThirtyDaysController @Inject()(sessionService: SessionService
               } else {
                 Future.successful(cacheMap)
               }
-          }.map(cMap => Redirect(navigator.nextPage(ThresholdNextThirtyDaysId, NormalMode)(new UserAnswers(cMap)))))
+          }.map(cMap => Redirect(navigator.nextPage(ThresholdNextThirtyDaysId, NormalMode)(request)(new UserAnswers(cMap)))))
   }
 }
