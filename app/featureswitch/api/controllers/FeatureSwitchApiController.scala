@@ -22,7 +22,7 @@ import featureswitch.core.config.FeatureSwitching
 import featureswitch.core.models.FeatureSwitchSetting
 import play.api.Configuration
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, InjectedController}
+import play.api.mvc.{Action, AnyContent, InjectedController, Request}
 
 import javax.inject.{Inject, Singleton}
 
@@ -35,7 +35,7 @@ class FeatureSwitchApiController @Inject()(config: Configuration,
   }
 
   def updateFeatureSwitches(): Action[Seq[FeatureSwitchSetting]] = Action(parse.json[Seq[FeatureSwitchSetting]]) {
-    req =>
+    implicit req =>
       val updatedFeatureSwitches = featureSwitchService.updateFeatureSwitches(req.body)
       Ok(Json.toJson(updatedFeatureSwitches))
   }

@@ -19,6 +19,7 @@ package featureswitch.api.services
 import config.FrontendAppConfig
 import featureswitch.core.config.{FeatureSwitchRegistry, FeatureSwitching}
 import featureswitch.core.models.FeatureSwitchSetting
+import play.api.mvc.Request
 
 import javax.inject.{Inject, Singleton}
 
@@ -36,7 +37,7 @@ class FeatureSwitchService @Inject()(featureSwitchRegistry: FeatureSwitchRegistr
     )
 
   def updateFeatureSwitches(updatedFeatureSwitches: Seq[FeatureSwitchSetting])
-                           (implicit appConfig: FrontendAppConfig): Seq[FeatureSwitchSetting] = {
+                           (implicit appConfig: FrontendAppConfig, request: Request[_]): Seq[FeatureSwitchSetting] = {
     updatedFeatureSwitches.foreach(
       featureSwitchSetting =>
         featureSwitchRegistry.get(featureSwitchSetting.configName) match {

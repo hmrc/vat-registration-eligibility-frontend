@@ -22,7 +22,7 @@ import forms.AgriculturalFlatRateSchemeFormProvider
 import identifiers.AgriculturalFlatRateSchemeId
 import models.NormalMode
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import services.SessionService
 import utils.{Navigator, UserAnswers}
 import views.html.AgriculturalFlatRateScheme
@@ -44,21 +44,22 @@ class AgriculturalFlatRateSchemeController @Inject()(sessionService: SessionServ
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
+      infoLog("[AgriculturalFlatRateSchemeController][onPageLoad]")
       val preparedForm = request.userAnswers.agriculturalFlatRateScheme match {
         case None => formProvider()
         case Some(value) => formProvider().fill(value)
       }
       Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership))
   }
-
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+      infoLog("[AgriculturalFlatRateSchemeController][onSubmit]")
       formProvider().bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
           sessionService.save[Boolean](AgriculturalFlatRateSchemeId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(AgriculturalFlatRateSchemeId, NormalMode)(new UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(AgriculturalFlatRateSchemeId, NormalMode)(request)(new UserAnswers(cacheMap))))
       )
   }
 }

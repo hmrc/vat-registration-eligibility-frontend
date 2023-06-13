@@ -17,21 +17,22 @@
 package utils
 
 import play.api.Logging
+import play.api.mvc.Request
 import play.twirl.api.Html
 import views.html.components
 
 import javax.inject.Inject
 
-class OptimizelyHelper @Inject()(div: components.div) extends Viewtils with Logging {
+class OptimizelyHelper @Inject()(div: components.div) extends Viewtils with LoggingUtil {
 
   def render(experimentId: String,
              isEnabled: Boolean,
              control: Html,
              variants: Html*
-            ): Html = {
+            )(implicit request: Request[_]): Html = {
 
     if (isEnabled) {
-      logger.info(s"[OptimizelyHelper][render] - experiment: $experimentId is enabled")
+      infoLog(s"[OptimizelyHelper][render] - experiment: $experimentId is enabled")
       experimentDiv(
         experimentId = experimentId,
         experimentContent =
@@ -41,7 +42,7 @@ class OptimizelyHelper @Inject()(div: components.div) extends Viewtils with Logg
           )
       )
     } else {
-      logger.info(s"[OptimizelyHelper][render] - experiment: $experimentId is disabled")
+      infoLog(s"[OptimizelyHelper][render] - experiment: $experimentId is disabled")
       experimentDiv(experimentId, control)
     }
   }

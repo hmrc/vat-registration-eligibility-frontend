@@ -34,7 +34,7 @@ class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase {
       "data is present in mongo" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        cacheSessionData(sessionId, ThresholdPreviousThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.of(2017, 12, 1))))
+        cacheSessionData(sessionIdStr, ThresholdPreviousThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.of(2017, 12, 1))))
 
         val res = await(buildClient(pageUrl).get)
 
@@ -51,8 +51,8 @@ class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase {
       "yes and a valid date is submitted, and Q1 is yes should also drop voluntary" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(localDate)))
-        cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(localDate)))
+        cacheSessionData[Boolean](sessionIdStr, VoluntaryRegistrationId, true)
 
           val res = await(buildClient(pageUrl)
             .post(Map(
@@ -65,23 +65,23 @@ class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase {
           res.status mustBe SEE_OTHER
           res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad.url)
 
-        verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdPreviousThirtyDaysId, Some(ConditionalDateFormElement(true, Some(dateAfterIncorp))))
-        verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, Some(ConditionalDateFormElement(true, Some(localDate))))
-        verifySessionCacheData(sessionId, VoluntaryRegistrationId, Option.empty[Boolean])
+        verifySessionCacheData[ConditionalDateFormElement](sessionIdStr, ThresholdPreviousThirtyDaysId, Some(ConditionalDateFormElement(true, Some(dateAfterIncorp))))
+        verifySessionCacheData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, Some(ConditionalDateFormElement(true, Some(localDate))))
+        verifySessionCacheData(sessionIdStr, VoluntaryRegistrationId, Option.empty[Boolean])
       }
       "no is submitted" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
 
-          cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(localDate)))
+          cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(localDate)))
 
           val res = await(buildClient(pageUrl).post(Map(selectionFieldName -> Seq("false"))))
 
           res.status mustBe SEE_OTHER
           res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.VATRegistrationExceptionController.onPageLoad.url)
 
-          verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdPreviousThirtyDaysId, Some(ConditionalDateFormElement(false, None)))
-          verifySessionCacheData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, Some(ConditionalDateFormElement(true, Some(localDate))))
+          verifySessionCacheData[ConditionalDateFormElement](sessionIdStr, ThresholdPreviousThirtyDaysId, Some(ConditionalDateFormElement(false, None)))
+          verifySessionCacheData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, Some(ConditionalDateFormElement(true, Some(localDate))))
         }
       }
     "the user doesn't answer" must {

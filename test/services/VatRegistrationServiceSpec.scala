@@ -61,7 +61,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
       )
 
       mockSessionFetch()(Future.successful(Some(new CacheMap("foo", fullListMapHappyPathTwelveMonthsFalse))))
-      when(mockVatRegConnector.saveEligibility(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockVatRegConnector.saveEligibility(any(), any())(any(), any(), any())).thenReturn(Future.successful(Json.obj()))
 
       await(service.submitEligibility) mustBe Json.toJson(fullListMapHappyPathTwelveMonthsFalse)
     }
@@ -87,7 +87,7 @@ class VatRegistrationServiceSpec extends SpecBase with VATEligibilityMocks with 
       implicit val r: DataRequest[AnyContentAsEmpty.type] = fakeDataRequestIncorped.copy(userAnswers = new UserAnswers(CacheMap("1", togcColeData)))
 
       mockSessionFetch()(Future.successful(Some(new CacheMap("foo", togcColeData))))
-      when(mockVatRegConnector.saveEligibility(any(), any())(any(), any())).thenReturn(Future.successful(Json.obj()))
+      when(mockVatRegConnector.saveEligibility(any(), any())(any(), any(), any())).thenReturn(Future.successful(Json.obj()))
 
       await(service.submitEligibility) mustBe Json.toJson(togcColeData)
     }

@@ -20,8 +20,8 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NETP)
-          cacheSessionData(sessionId, FixedEstablishmentId, false)
+          cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, NETP)
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, false)
 
           val res = await(buildClient(pageUrl).get)
 
@@ -34,8 +34,8 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NETP)
-          cacheSessionData(sessionId, FixedEstablishmentId, true)
+          cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, NETP)
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
 
           val res = await(buildClient(pageUrl).get)
           val doc = Jsoup.parse(res.body)
@@ -52,8 +52,8 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
-          cacheSessionData(sessionId, FixedEstablishmentId, false)
+          cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, Overseas)
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, false)
 
           val res = await(buildClient(pageUrl).get)
 
@@ -66,8 +66,8 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
-          cacheSessionData(sessionId, FixedEstablishmentId, true)
+          cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, Overseas)
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
 
           val res = await(buildClient(pageUrl).get)
           val doc = Jsoup.parse(res.body)
@@ -81,7 +81,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, GeneralPartnership)
+          cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, GeneralPartnership)
 
           val res = await(buildClient(pageUrl).get)
           val doc = Jsoup.parse(res.body)
@@ -95,7 +95,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, RegisteredSociety)
+          cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, RegisteredSociety)
 
           val res = await(buildClient(pageUrl).get)
           val doc = Jsoup.parse(res.body)
@@ -110,7 +110,7 @@ class BusinessEntityControllerISpec extends IntegrationSpecBase {
             stubSuccessfulLogin()
             stubAudits()
 
-            cacheSessionData(sessionId, BusinessEntityId, option)
+            cacheSessionData(sessionIdStr, BusinessEntityId, option)
 
             val res = await(buildClient(pageUrl).get)
             val doc = Jsoup.parse(res.body)

@@ -19,7 +19,7 @@ class AgriculturalFlatRateControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData[Boolean](sessionId, AgriculturalFlatRateSchemeId, true)
+        cacheSessionData[Boolean](sessionIdStr, AgriculturalFlatRateSchemeId, true)
 
         val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)

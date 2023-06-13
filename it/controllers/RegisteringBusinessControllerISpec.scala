@@ -39,7 +39,7 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData[RegisteringBusiness](sessionId, RegisteringBusinessId, OwnBusiness)
+        cacheSessionData[RegisteringBusiness](sessionIdStr, RegisteringBusinessId, OwnBusiness)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)
@@ -75,7 +75,7 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegistrationReasonController.onPageLoad.url)
-        verifySessionCacheData(sessionId, RegisteringBusinessId, Option.apply[RegisteringBusiness](OwnBusiness))
+        verifySessionCacheData(sessionIdStr, RegisteringBusinessId, Option.apply[RegisteringBusiness](OwnBusiness))
       }
 
       "navigate to Registration Reason Page when someone else's business if Third Party Transactor flow" in new Setup {
@@ -87,33 +87,33 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegistrationReasonController.onPageLoad.url)
-        verifySessionCacheData(sessionId, RegisteringBusinessId, Option.apply[RegisteringBusiness](SomeoneElse))
+        verifySessionCacheData(sessionIdStr, RegisteringBusinessId, Option.apply[RegisteringBusiness](SomeoneElse))
       }
 
       "navigate to Registration Reason for own business when flow is NETP" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NETP)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, NETP)
 
         val res = await(buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
           .post(Map("value" -> Seq("own"))))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegistrationReasonController.onPageLoad.url)
-        verifySessionCacheData(sessionId, RegisteringBusinessId, Option.apply[RegisteringBusiness](OwnBusiness))
+        verifySessionCacheData(sessionIdStr, RegisteringBusinessId, Option.apply[RegisteringBusiness](OwnBusiness))
       }
 
       "navigate to Registration Reason for someone else's business when flow is Overseas and ThirdParty flows are enabled" in new Setup {
         stubSuccessfulLogin()
         stubAudits()
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, Overseas)
 
         val res = await(buildClient(controllers.routes.RegisteringBusinessController.onSubmit.url)
           .post(Map("value" -> Seq("someone-else"))))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.RegistrationReasonController.onPageLoad.url)
-        verifySessionCacheData(sessionId, RegisteringBusinessId, Option.apply[RegisteringBusiness](SomeoneElse))
+        verifySessionCacheData(sessionIdStr, RegisteringBusinessId, Option.apply[RegisteringBusiness](SomeoneElse))
       }
     }
     "the user doesn't answer" must {

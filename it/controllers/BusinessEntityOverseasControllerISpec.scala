@@ -34,7 +34,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, NETP)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, NETP)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)
@@ -71,7 +71,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
 
-        verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(NETP))
+        verifySessionCacheData[BusinessEntity](sessionIdStr, BusinessEntityId, Some(NETP))
       }
 
       "return a redirect to Agricultural Flat Rate Scheme when NonUkCompany is selected" in new Setup {
@@ -84,7 +84,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
 
-        verifySessionCacheData[BusinessEntity](sessionId, BusinessEntityId, Some(Overseas))
+        verifySessionCacheData[BusinessEntity](sessionIdStr, BusinessEntityId, Some(Overseas))
       }
     }
     "the user doesn't answer" must {

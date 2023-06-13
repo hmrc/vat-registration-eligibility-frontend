@@ -81,7 +81,7 @@ class FixedEstablishmentController @Inject()(sessionService: SessionService,
           for {
             _ <- dataCleardownService.cleardownOnAnswerChange(value, FixedEstablishmentId)
             cacheMap <- sessionService.save[Boolean](FixedEstablishmentId.toString, value)
-            redirect = Redirect(navigator.nextPage(FixedEstablishmentId, NormalMode)(new UserAnswers(cacheMap)))
+            redirect = Redirect(navigator.nextPage(FixedEstablishmentId, NormalMode)(request)(new UserAnswers(cacheMap)))
           } yield redirect
       )
   }

@@ -57,7 +57,7 @@ class VATNumberController @Inject()(sessionService: SessionService,
           Future.successful(BadRequest(view(formWithErrors, request.userAnswers.togcColeKey))),
         formValue =>
           sessionService.save[String](VATNumberId.toString, formValue) map { cacheMap =>
-            Redirect(navigator.nextPage(VATNumberId, NormalMode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(VATNumberId, NormalMode)(request)(new UserAnswers(cacheMap)))
           }
       )
   }

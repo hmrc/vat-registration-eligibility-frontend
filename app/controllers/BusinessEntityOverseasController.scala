@@ -60,7 +60,7 @@ class BusinessEntityOverseasController @Inject()(sessionService: SessionService,
           ),
         entityType => {
           sessionService.save[BusinessEntity](BusinessEntityId.toString, entityType) map { cacheMap =>
-            Redirect(navigator.nextPage(BusinessEntityOverseasId, NormalMode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(BusinessEntityOverseasId, NormalMode)(request)(new UserAnswers(cacheMap)))
           }
         }
       )

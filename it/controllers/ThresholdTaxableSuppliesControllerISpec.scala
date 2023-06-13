@@ -25,7 +25,7 @@ class ThresholdTaxableSuppliesControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, ThresholdTaxableSuppliesId, DateFormElement(testDate))
+        cacheSessionData(sessionIdStr, ThresholdTaxableSuppliesId, DateFormElement(testDate))
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)

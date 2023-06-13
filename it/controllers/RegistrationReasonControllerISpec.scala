@@ -30,7 +30,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
             stubAudits()
             stubS4LGetNothing(testRegId)
 
-            cacheSessionData[RegistrationReason](sessionId, RegistrationReasonId, answer)
+            cacheSessionData[RegistrationReason](sessionIdStr, RegistrationReasonId, answer)
 
             val res = await(buildClient(pageUrl).get)
             val doc = Jsoup.parse(res.body)
@@ -50,8 +50,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
           stubAudits()
           stubS4LGetNothing(testRegId)
 
-          cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
-          cacheSessionData[RegistrationReason](sessionId, RegistrationReasonId, SettingUpVatGroup)
+          cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, UKCompany)
+          cacheSessionData[RegistrationReason](sessionIdStr, RegistrationReasonId, SettingUpVatGroup)
 
           val res = await(buildClient(pageUrl).get)
           val doc = Jsoup.parse(res.body)
@@ -86,7 +86,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, true)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> sellingGoodsAndServicesKey)))
 
@@ -99,7 +99,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, true)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> ukEstablishedOverseasExporterKey)))
 
@@ -112,7 +112,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, true)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> settingUpVatGroupKey)))
 
@@ -125,8 +125,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, false)
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, false)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, Overseas)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> takingOverBusinessKey)))
 
@@ -139,8 +139,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, false)
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, false)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, Overseas)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> changingLegalEntityOfBusinessKey)))
 
@@ -153,8 +153,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, false)
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, false)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, Overseas)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> sellingGoodsAndServicesKey)))
 
@@ -167,8 +167,8 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, Overseas)
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, true)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, Overseas)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> sellingGoodsAndServicesKey)))
 
@@ -181,19 +181,19 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, FixedEstablishmentId, true)
-        cacheSessionData[BusinessEntity](sessionId, BusinessEntityId, UKCompany)
-        cacheSessionData[RegistrationReason](sessionId, RegistrationReasonId, SellingGoodsAndServices)
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
-        cacheSessionData[DateFormElement](sessionId, DateOfBusinessTransferId, DateFormElement(LocalDate.now()))
-        cacheSessionData[String](sessionId, PreviousBusinessNameId, "test")
-        cacheSessionData[String](sessionId, VATNumberId, "test")
-        cacheSessionData[Boolean](sessionId, KeepOldVrnId, true)
-        cacheSessionData[Boolean](sessionId, TaxableSuppliesInUkId, true)
-        cacheSessionData[DateFormElement](sessionId, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
+        cacheSessionData[Boolean](sessionIdStr, FixedEstablishmentId, true)
+        cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, UKCompany)
+        cacheSessionData[RegistrationReason](sessionIdStr, RegistrationReasonId, SellingGoodsAndServices)
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[Boolean](sessionIdStr, VoluntaryRegistrationId, true)
+        cacheSessionData[DateFormElement](sessionIdStr, DateOfBusinessTransferId, DateFormElement(LocalDate.now()))
+        cacheSessionData[String](sessionIdStr, PreviousBusinessNameId, "test")
+        cacheSessionData[String](sessionIdStr, VATNumberId, "test")
+        cacheSessionData[Boolean](sessionIdStr, KeepOldVrnId, true)
+        cacheSessionData[Boolean](sessionIdStr, TaxableSuppliesInUkId, true)
+        cacheSessionData[DateFormElement](sessionIdStr, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
 
         val res = await(buildClient(pageUrl).post(Map("value" -> ukEstablishedOverseasExporterKey)))
 
@@ -202,7 +202,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
           DateOfBusinessTransferId, PreviousBusinessNameId, VATNumberId, KeepOldVrnId, TermsAndConditionsId,
           TaxableSuppliesInUkId, ThresholdTaxableSuppliesId
         ).foreach(id =>
-          verifySessionCacheData(sessionId, id, None)
+          verifySessionCacheData(sessionIdStr, id, None)
         )
 
         res.status mustBe SEE_OTHER

@@ -57,7 +57,7 @@ class PreviousBusinessNameController @Inject()(sessionService: SessionService,
           Future.successful(BadRequest(view(formWithErrors, mode, request.userAnswers.togcColeKey))),
         value =>
           sessionService.save[String](PreviousBusinessNameId.toString, value) map { cacheMap =>
-            Redirect(navigator.nextPage(PreviousBusinessNameId, mode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(PreviousBusinessNameId, mode)(request)(new UserAnswers(cacheMap)))
           }
       )
   }

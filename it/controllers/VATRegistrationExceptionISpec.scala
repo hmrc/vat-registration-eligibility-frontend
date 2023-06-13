@@ -18,7 +18,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, VATRegistrationExceptionId, true)
+        cacheSessionData(sessionIdStr, VATRegistrationExceptionId, true)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)

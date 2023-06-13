@@ -17,7 +17,6 @@
 package utils
 
 import base.SpecBase
-import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.components.div
 
@@ -35,8 +34,6 @@ class OptimizelyHelperSpec extends SpecBase with Viewtils {
   val testControlDiv: Html = div(content = testContent(), id = Some(s"$experimentId-control"))
   val multipleTestVariants: Seq[Html] = ('a' to 'e') map (idx => testContent(idx.toString))
   val multipleTestDivs: Html = html(testDiv(), testDiv("b"), testDiv("c"), testDiv("d"), testDiv("e"))
-
-  implicit val request = FakeRequest()
 
   "experimentDiv" must {
 

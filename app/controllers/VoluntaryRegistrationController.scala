@@ -58,7 +58,7 @@ class VoluntaryRegistrationController @Inject()(sessionService: SessionService,
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
           sessionService.save[Boolean](VoluntaryRegistrationId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(VoluntaryRegistrationId, NormalMode)(new UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(VoluntaryRegistrationId, NormalMode)(request)(new UserAnswers(cacheMap))))
       )
   }
 }

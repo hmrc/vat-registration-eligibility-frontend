@@ -49,14 +49,15 @@ trait IntegrationSpecBase extends PlaySpec
   val defaultUser = "/foo/bar"
   val testRegId = "testRegId"
   val testInternalId = "testInternalId"
-  val sessionId = "sessionId"
+  val sessionIdStr = "sessionId"
   val messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
   val appConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val request = FakeRequest()
   def request(url: String) = CacheIdentifierRequest(FakeRequest("GET", baseUrl + url), testRegId, testInternalId)
 
 
   override implicit def defaultAwaitTimeout: Timeout = 5.seconds
-  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionId)))
+  implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionIdStr)))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -76,7 +77,7 @@ trait IntegrationSpecBase extends PlaySpec
     stopWiremock()
   }
 
-  class Setup(app: Application = app, cacheMap: CacheMap = CacheMap(id = sessionId, data = Map()))(implicit hc: HeaderCarrier) {
+  class Setup(app: Application = app, cacheMap: CacheMap = CacheMap(id = sessionIdStr, data = Map()))(implicit hc: HeaderCarrier) {
     val timeout: Timeout = 5.seconds
     val profileKey = "CurrentProfile"
     val dataKey = "data"

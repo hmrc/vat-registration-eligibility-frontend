@@ -20,7 +20,7 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData(sessionId, KeepOldVrnId, true)
+        cacheSessionData(sessionIdStr, KeepOldVrnId, true)
 
         val res = await(buildClient(pageUrl).get)
         val doc = Jsoup.parse(res.body)
@@ -52,13 +52,13 @@ class KeepOldVrnControllerISpec extends IntegrationSpecBase with S4LStub {
         stubAudits()
         stubS4LGetNothing(testRegId)
 
-        cacheSessionData[Boolean](sessionId, TermsAndConditionsId, true)
+        cacheSessionData[Boolean](sessionIdStr, TermsAndConditionsId, true)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> Seq("false"))))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.MtdInformationController.onPageLoad.url)
-        verifySessionCacheData[Boolean](sessionId, TermsAndConditionsId, None)
+        verifySessionCacheData[Boolean](sessionIdStr, TermsAndConditionsId, None)
       }
 
       "redirect to Terms & Conditions page if the answer is yes" in new Setup {

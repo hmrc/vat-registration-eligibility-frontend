@@ -29,7 +29,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData(sessionId, FixedEstablishmentId, true)
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
 
           val res = await(buildClient(pageUrl).get)
           val doc = Jsoup.parse(res.body)
@@ -69,7 +69,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          cacheSessionData(sessionId, FixedEstablishmentId, true)
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
 
           val res = await(buildClient(pageUrl).get)
           val doc = Jsoup.parse(res.body)
@@ -135,7 +135,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, FixedEstablishmentId, true)
+        cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
 
         val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
 
@@ -147,19 +147,19 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        cacheSessionData(sessionId, FixedEstablishmentId, false)
+        cacheSessionData(sessionIdStr, FixedEstablishmentId, false)
 
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[ConditionalDateFormElement](sessionId, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[Boolean](sessionId, VoluntaryRegistrationId, true)
-        cacheSessionData[DateFormElement](sessionId, DateOfBusinessTransferId, DateFormElement(LocalDate.now()))
-        cacheSessionData[String](sessionId, PreviousBusinessNameId, "test")
-        cacheSessionData[String](sessionId, VATNumberId, "test")
-        cacheSessionData[Boolean](sessionId, KeepOldVrnId, true)
-        cacheSessionData[Boolean](sessionId, TermsAndConditionsId, true)
-        cacheSessionData[Boolean](sessionId, TaxableSuppliesInUkId, true)
-        cacheSessionData[DateFormElement](sessionId, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+        cacheSessionData[Boolean](sessionIdStr, VoluntaryRegistrationId, true)
+        cacheSessionData[DateFormElement](sessionIdStr, DateOfBusinessTransferId, DateFormElement(LocalDate.now()))
+        cacheSessionData[String](sessionIdStr, PreviousBusinessNameId, "test")
+        cacheSessionData[String](sessionIdStr, VATNumberId, "test")
+        cacheSessionData[Boolean](sessionIdStr, KeepOldVrnId, true)
+        cacheSessionData[Boolean](sessionIdStr, TermsAndConditionsId, true)
+        cacheSessionData[Boolean](sessionIdStr, TaxableSuppliesInUkId, true)
+        cacheSessionData[DateFormElement](sessionIdStr, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
 
         val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
 
@@ -168,7 +168,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
           DateOfBusinessTransferId, PreviousBusinessNameId, VATNumberId, KeepOldVrnId, TermsAndConditionsId,
           TaxableSuppliesInUkId, ThresholdTaxableSuppliesId
         ).foreach(id =>
-          verifySessionCacheData[Boolean](sessionId, id, None)
+          verifySessionCacheData[Boolean](sessionIdStr, id, None)
         )
 
         res.status mustBe SEE_OTHER

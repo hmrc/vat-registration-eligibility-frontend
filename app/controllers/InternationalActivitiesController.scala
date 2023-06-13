@@ -58,7 +58,7 @@ class InternationalActivitiesController @Inject()(sessionService: SessionService
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
           sessionService.save[Boolean](InternationalActivitiesId.toString, value).map(cacheMap =>
-            Redirect(navigator.nextPage(InternationalActivitiesId, NormalMode)(new UserAnswers(cacheMap))))
+            Redirect(navigator.nextPage(InternationalActivitiesId, NormalMode)(request)(new UserAnswers(cacheMap))))
       )
   }
 }

@@ -18,30 +18,32 @@ package connectors
 
 import play.api.Logging
 import play.api.libs.json.JsValue
+import play.api.mvc.Request
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, NotFoundException, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import utils.LoggingUtil
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VatRegistrationConnector @Inject()(val http: HttpClientV2,
-                                         val servicesConfig: ServicesConfig) extends Logging {
+                                         val servicesConfig: ServicesConfig) extends LoggingUtil {
   lazy val vatRegistrationUrl: String = servicesConfig.baseUrl("vat-registration")
   lazy val vatRegistrationUri: String =
     servicesConfig.getConfString("vat-registration.uri", throw new RuntimeException("expected incorporation-information.uri in config but none found"))
 
-  def saveEligibility(regId: String, eligibility: JsValue)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[JsValue] = {
+  def saveEligibility(regId: String, eligibility: JsValue)(implicit hc: HeaderCarrier, ec: ExecutionContext, request: Request[_]): Future[JsValue] = {
     val url = s"$vatRegistrationUrl$vatRegistrationUri/$regId/eligibility-data"
     http.patch(url"$url")
       .withBody(eligibility)
       .execute[HttpResponse]
       .map(_.json)
       .recover {
-        case e: NotFoundException => logger.error(s"[VatRegistrationConnector][saveEligibility] No vat registration found for regId: $regId")
+        case e: NotFoundException => errorLog(s"[VatRegistrationConnector][saveEligibility] No vat registration found for regId: $regId")
           throw e
-        case e => logger.error(s"[VatRegistrationConnector][saveEligibility] an error occurred for regId: $regId with exception: ${e.getMessage}")
+        case e => errorLog(s"[VatRegistrationConnector][saveEligibility] an error occurred for regId: $regId with exception: ${e.getMessage}")
           throw e
       }
   }

@@ -58,7 +58,7 @@ class TaxableSuppliesInUkController @Inject()(sessionService: SessionService,
           Future.successful(BadRequest(view(formWithErrors, NormalMode))),
         value =>
           sessionService.save[Boolean](TaxableSuppliesInUkId.toString, value).map { cacheMap =>
-            Redirect(navigator.nextPage(TaxableSuppliesInUkId, NormalMode)(new UserAnswers(cacheMap)))
+            Redirect(navigator.nextPage(TaxableSuppliesInUkId, NormalMode)(request)(new UserAnswers(cacheMap)))
           }
       )
   }
