@@ -23,6 +23,7 @@
         h1: components.h1,
         strong: components.strong,
         p: components.p,
+        link: components.link,
         formWithCsrf: FormWithCSRF,
         button: components.button,
         inputRadio: components.inputRadio,
@@ -89,6 +90,9 @@
 @detailsBlock = {
     @strong{ @messages("businessEntity.charitable-incorporated-organisation") }
     @p{ @messages("businessEntityOther.charitable-incorporated-organisation") }
+    @p{ @messages("businessEntityOther.charitable-incorporated-organisation-2") }
+    @p{ @messages("businessEntityOther.charitable-incorporated-organisation-3") }
+    @p{ @messages("businessEntityOther.charitable-incorporated-organisation-4-start") @link("https://find-and-update.company-information.service.gov.uk", messages("businessEntityOther.charitable-incorporated-organisation-4-link") , isExternal = true )@messages("businessEntityOther.charitable-incorporated-organisation-4-end") }
     @strong{ @messages("businessEntity.non-incorporated-trust") }
     @p{ @messages("businessEntityOther.non-incorporated-trust") }
     @strong{ @messages("businessEntity.registered-society") }
