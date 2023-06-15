@@ -43,7 +43,12 @@ businessEntity.error.required               = Select the type of business you wa
 
 businessEntityOther.heading                                     = What type of business do you want to register for VAT?
 businessEntityOther.details                                     = Business type descriptions
-businessEntityOther.charitable-incorporated-organisation        = A legal entity for a registered charity. CIOs provide the benefits of incorporation but the organisation only needs to be registered with the Charity Commission and not Companies House.
+businessEntityOther.charitable-incorporated-organisation        = A legal entity for a registered charity. CIOs provide the benefits of incorporation, but the organisation only needs to be registered with the Charity Commission and not Companies House.
+businessEntityOther.charitable-incorporated-organisation-2      = However, registering with the Charity Commission will also give a CIO a Company Registration Number (CRN).
+businessEntityOther.charitable-incorporated-organisation-3      = A CRN is needed to register a CIO for VAT.
+businessEntityOther.charitable-incorporated-organisation-4-start= To find your CRN you can
+businessEntityOther.charitable-incorporated-organisation-4-link = search the Companies House register
+businessEntityOther.charitable-incorporated-organisation-4-end  =.
 businessEntityOther.non-incorporated-trust                      = Unincorporated with no legal identity of its own. A trust holds assets on behalf of an individual or another organisation and governs how they are to be used. Run by a group of people called trustees.
 businessEntityOther.registered-society                          = There are different kinds of registered societies, for example, Industrial and Provident Society, Co-operative Society (Co-op) and Community Benefit Society (BenCom). They have limited liability in the same way as companies.
 businessEntityOther.unincorporated-association                  = Groups that agree, or ‘contract’, to come together for a specific purpose. They normally have a constitution setting out the purpose for which the association has been set up and the rules for the association and its members.

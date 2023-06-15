@@ -44,7 +44,7 @@ class BusinessEntityOtherViewSpec extends ViewSpecBase {
 
   val detailsSummary = "Business type descriptions"
   val provider1 = "Charitable Incorporated Organisation (CIO)"
-  val detailsPara1 = "A legal entity for a registered charity. CIOs provide the benefits of incorporation but the organisation only needs to be registered with the Charity Commission and not Companies House."
+  val detailsPara1 = "A legal entity for a registered charity. CIOs provide the benefits of incorporation, but the organisation only needs to be registered with the Charity Commission and not Companies House. However, registering with the Charity Commission will also give a CIO a Company Registration Number (CRN). A CRN is needed to register a CIO for VAT. To find your CRN you can search the Companies House register (opens in new tab)."
   val provider2 = "Trust (non-incorporated)"
   val detailsPara2 = "Unincorporated with no legal identity of its own. A trust holds assets on behalf of an individual or another organisation and governs how they are to be used. Run by a group of people called trustees."
   val provider3 = "Registered Society"
