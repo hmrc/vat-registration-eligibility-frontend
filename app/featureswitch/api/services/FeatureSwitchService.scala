@@ -40,7 +40,7 @@ class FeatureSwitchService @Inject()(featureSwitchRegistry: FeatureSwitchRegistr
                            (implicit appConfig: FrontendAppConfig, request: Request[_]): Seq[FeatureSwitchSetting] = {
     updatedFeatureSwitches.foreach(
       featureSwitchSetting =>
-        featureSwitchRegistry.get(featureSwitchSetting.configName) match {
+        featureSwitchRegistry.get(featureSwitchSetting.name) match {
           case Some(featureSwitch) =>
             if (featureSwitchSetting.isEnabled) enable(featureSwitch) else disable(featureSwitch)
         }
