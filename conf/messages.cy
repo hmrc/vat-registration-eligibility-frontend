@@ -193,11 +193,13 @@ agriculturalFlatRateScheme.error.required                   = Dewiswch ‘Iawn�
 agriculturalFlatRateScheme.text                             = Mae’r cynllun yn fath gwahanol o gofrestriad TAW ar gyfer ffermwyr.
 agriculturalFlatRateScheme.linkText                         = Dysgu rhagor am y Cynllun Cyfradd Unffurf Amaethyddol
 
-fixedEstablishment.heading                  = A oes gan y busnes sefydliad sefydlog yn y DU neu Ynys Manaw?
-fixedEstablishment.error.required           = Dewiswch ‘Iawn’ os oes gan y busnes sefydliad sefydlog yn y DU neu Ynys Manaw
-fixedEstablishment.para                     = Mae sefydliad yn bodoli yn y DU neu Ynys Manaw os yw’r naill neu’r llall yn berthnasol:
-fixedEstablishment.bullet1                  = mae’r man lle caiff penderfyniadau rheoli hanfodol eu gwneud, a lle caiff gweinyddiaeth ganolog y busnes ei chynnal, yn y DU neu Ynys Manaw
-fixedEstablishment.bullet2                  = mae gan y busnes bresenoldeb corfforol parhaol gyda’r adnoddau dynol a thechnegol i wneud neu dderbyn cyflenwadau trethadwy yn y DU neu Ynys Manaw
+fixedEstablishment.heading         = Ym mhle y mae gan y busnes o leiaf un sefydliad sefydlog?
+fixedEstablishment.para            = Mae sefydliad sefydlog yn bodoli mewn lleoliad corfforol pan fydd y naill o’r canlynol yn wir:
+fixedEstablishment.bullet1         = caiff penderfyniadau rheoli hanfodol eu gwneud yno, ynghyd â chynnal gweinyddiaeth ganolog y busnes
+fixedEstablishment.bullet2         = mae gan y busnes bresenoldeb corfforol parhaol yno gyda’r adnoddau dynol a thechnegol i wneud neu i gael cyflenwadau trethadwy
+fixedEstablishment.yes             = Mae gan y busnes o leiaf un sefydliad sefydlog yn y DU neu ar Ynys Manaw
+fixedEstablishment.no              = Nid oes gan y busnes yr un sefydliad sefydlog yn y DU neu ar Ynys Manaw
+fixedEstablishment.error.required  = Dewiswch lle mae gan y busnes o leiaf un sefydliad sefydlog
 
 taxableSuppliesInUk.heading                 = A yw’r busnes wedi gwneud cyflenwadau trethadwy yn y DU?
 taxableSuppliesInUk.para                    = Rhowch wybod i ni os yw’r busnes:
@@ -265,29 +267,3 @@ termsAndConditions.bullet4                          = y bydd unrhyw Ffurflen TAW
 termsAndConditions.bullet5                          = na fydd yn cael hawlio arian a dalwyd gan CThEM i’r perchennog blaenorol cyn trosglwyddo’r busnes
 termsAndConditions.bullet6.togc                     = i gael gafael ar gofnodion masnachu’r busnes a’u cadw
 termsAndConditions.button                           = Derbyn ac yn eich blaen
-
-# Fixed Establishment Optimizely experiment content
-variantA.title = Business establishment
-variantA.inset = The Isle of Man is treated as part of the UK for VAT purposes.
-variantA.p1 = We need to know where your business has a fixed establishment.
-variantA.p2 = A fixed establishment exists if either the:
-variantA.li1 = place where essential management decisions are made and the business’s central administration is carried out is in the UK or Isle of Man
-variantA.li2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK or Isle of Man
-variantA.legend = Does the business have a fixed establishment in the UK?
-variantA.button = Continue
-
-variantB.fixedEstablishment.heading = Where does the business have a fixed establishment?
-variantB.fixedEstablishment.para = A fixed establishment exists if either the:
-variantB.fixedEstablishment.bullet1 = place where essential management decisions are made and the business’s central administration is carried out
-variantB.fixedEstablishment.bullet2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies
-variantB.site.uk = UK
-variantB.site.iom = Isle of Man
-variantB.site.other = Other
-
-variantC.title = Does the business have a fixed establishment in the UK?
-variantC.p1 = The Isle of Man is treated as part of the UK for VAT purposes.
-variantC.details.summary = What is a fixed establishment?
-variantC.details.content.p2 = A fixed establishment exists if either the:
-variantC.details.content.li1 = place where essential management decisions are made and the business’s central administration is carried out
-variantC.details.content.li2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies
-variantC.button = Continue
