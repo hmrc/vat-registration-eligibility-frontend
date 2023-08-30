@@ -193,11 +193,13 @@ agriculturalFlatRateScheme.error.required                   = Select yes if the 
 agriculturalFlatRateScheme.text                             = The scheme is a different type of VAT registration for farmers.
 agriculturalFlatRateScheme.linkText                         = Find out more about the Agricultural Flat Rate Scheme
 
-fixedEstablishment.heading              = Does the business have a fixed establishment in the UK or Isle of Man?
-fixedEstablishment.error.required       = Select yes if the business has a fixed establishment in the UK or Isle of Man
-fixedEstablishment.para                 = A UK or Isle of Man establishment exists if either the:
-fixedEstablishment.bullet1              = place where essential management decisions are made and the business’s central administration is carried out is in the UK or Isle of Man
-fixedEstablishment.bullet2              = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK or Isle of Man
+fixedEstablishment.heading              = Where does the business have at least one fixed establishment?
+fixedEstablishment.para                 = A fixed establishment exists in a place if either:
+fixedEstablishment.bullet1              = essential management decisions are made and the business’s central administration is carried out
+fixedEstablishment.bullet2              = the business has a permanent physical presence with the human and technical resources to make or receive taxable supplies
+fixedEstablishment.yes                  = The business has at least one fixed establishment in the UK or Isle of Man
+fixedEstablishment.no                   = The business has no fixed establishments in the UK or Isle of Man
+fixedEstablishment.error.required       = Select where the business has at least one fixed establishment
 
 taxableSuppliesInUk.heading             = Has the business made taxable supplies in the UK?
 taxableSuppliesInUk.para                = Tell us if the business:
@@ -265,29 +267,3 @@ termsAndConditions.bullet4                          = that any VAT return the pr
 termsAndConditions.bullet5                          = it will have no right to claim money HMRC paid the previous owner before the transfer of the business
 termsAndConditions.bullet6.togc                     = to obtain and keep the business trading records
 termsAndConditions.button                           = Accept and continue
-
-# Fixed Establishment Optimizely experiment content
-variantA.title = Business establishment
-variantA.inset = The Isle of Man is treated as part of the UK for VAT purposes.
-variantA.p1 = We need to know where your business has a fixed establishment.
-variantA.p2 = A fixed establishment exists if either the:
-variantA.li1 = place where essential management decisions are made and the business’s central administration is carried out is in the UK or Isle of Man
-variantA.li2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK or Isle of Man
-variantA.legend = Does the business have a fixed establishment in the UK?
-variantA.button = Continue
-
-variantB.fixedEstablishment.heading = Where does the business have a fixed establishment?
-variantB.fixedEstablishment.para = A fixed establishment exists if either the:
-variantB.fixedEstablishment.bullet1 = place where essential management decisions are made and the business’s central administration is carried out
-variantB.fixedEstablishment.bullet2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies
-variantB.site.uk = UK
-variantB.site.iom = Isle of Man
-variantB.site.other = Other
-
-variantC.title = Does the business have a fixed establishment in the UK?
-variantC.p1 = The Isle of Man is treated as part of the UK for VAT purposes.
-variantC.details.summary = What is a fixed establishment?
-variantC.details.content.p2 = A fixed establishment exists if either the:
-variantC.details.content.li1 = place where essential management decisions are made and the business’s central administration is carried out
-variantC.details.content.li2 = business has a permanent physical presence with the human and technical resources to make or receive taxable supplies
-variantC.button = Continue

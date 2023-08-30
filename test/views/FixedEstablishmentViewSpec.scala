@@ -18,7 +18,7 @@ package views
 
 import forms.FixedEstablishmentFormProvider
 import play.twirl.api.HtmlFormat
-import views.html.{FixedEstablishment, VariantLayout}
+import views.html.FixedEstablishment
 
 class FixedEstablishmentViewSpec extends ViewSpecBase {
 
@@ -26,20 +26,21 @@ class FixedEstablishmentViewSpec extends ViewSpecBase {
   implicit val dataReq = fakeDataRequest
 
   val form = new FixedEstablishmentFormProvider()()
-  val variantLayout = app.injector.instanceOf[VariantLayout]
   val fixedEstablishmentView: FixedEstablishment = app.injector.instanceOf[FixedEstablishment]
   val fixedEstablishmentViewHtml: HtmlFormat.Appendable = fixedEstablishmentView(form)
-  val view = variantLayout(fixedEstablishmentViewHtml)
+  val view = app.injector.instanceOf[FixedEstablishment]
 
   object Selectors extends BaseSelectors
 
-  val h1 = "Does the business have a fixed establishment in the UK or Isle of Man?"
-  val paragraph = "A UK or Isle of Man establishment exists if either the:"
-  val bullet1 = "place where essential management decisions are made and the business’s central administration is carried out is in the UK or Isle of Man"
-  val bullet2 = "business has a permanent physical presence with the human and technical resources to make or receive taxable supplies in the UK or Isle of Man"
+  val h1 = "Where does the business have at least one fixed establishment?"
+  val paragraph = "A fixed establishment exists in a place if either:"
+  val bullet1 = "essential management decisions are made and the business’s central administration is carried out"
+  val bullet2 = "the business has a permanent physical presence with the human and technical resources to make or receive taxable supplies"
+  val radioYes = "The business has at least one fixed establishment in the UK or Isle of Man"
+  val radioNo = "The business has no fixed establishments in the UK or Isle of Man"
 
   "FixedEstablishment view" must {
-    lazy val doc = asDocument(view)
+    lazy val doc = asDocument(view(form))
 
     "have the correct continue button" in {
       doc.select(Selectors.button).text() mustBe continueButton
@@ -64,6 +65,11 @@ class FixedEstablishmentViewSpec extends ViewSpecBase {
     "have bullets" in {
       doc.select(Selectors.bullet(1)).text() mustBe bullet1
       doc.select(Selectors.bullet(2)).text() mustBe bullet2
+    }
+
+    "have the correct text for the input radion" in {
+      doc.select("label[for=fixedEstablishment-yes]").text() mustBe radioYes
+      doc.select("label[for=fixedEstablishment-no]").text() mustBe radioNo
     }
   }
 }

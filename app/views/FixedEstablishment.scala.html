@@ -25,11 +25,12 @@
     bullets: components.bullets,
     formWithCsrf: FormWithCSRF,
     yesNoRadio: components.yesNoRadio,
-    button: components.button
+    button: components.button,
+    inputRadio: components.inputRadio
 )
 
 @(form: Form[_])(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
-
+@layout(pageTitle = Some(title(form, messages("fixedEstablishment.heading"))), backLink = true) {
 @errorSummary(form.errors)
 
 @h1(messages("fixedEstablishment.heading"))
@@ -37,12 +38,28 @@
 @bullets("fixedEstablishment.bullet1","fixedEstablishment.bullet2")
 
 @formWithCsrf(action = routes.FixedEstablishmentController.onSubmit(), 'autoComplete -> "off") {
-    @yesNoRadio(
+    @inputRadio(
         form = form,
-        headingKey = "fixedEstablishment.heading",
-        isPageHeading = false,
-        classes = "govuk-visually-hidden"
+        legend = messages("fixedEstablishment.heading"),
+        legendAsHeading = false,
+        classes = "govuk-visually-hidden",
+        inline = false,
+        items = Seq(
+            RadioItem(
+                id = Some("fixedEstablishment-yes"),
+                value = Some("true"),
+                content = Text(messages("fixedEstablishment.yes")),
+                checked = form("value").value.contains("true")
+            ),
+            RadioItem(
+                id = Some("fixedEstablishment-no"),
+                value = Some("false"),
+                content = Text(messages("fixedEstablishment.no")),
+                checked = form("value").value.contains("false")
+            )
+        ),
     )
 
     @button(messages("site.continue"))
+}
 }
