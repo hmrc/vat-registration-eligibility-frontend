@@ -53,6 +53,7 @@ businessEntityOther.non-incorporated-trust                      = Anghorfforedig
 businessEntityOther.registered-society                          = Mae gwahanol fathau o gymdeithasau cofrestredig, er enghraifft, Cymdeithasau Diwydiannol a Darbodus, Cymdeithasau Cydweithredol (Co-op) a Chymdeithasau Budd Cymunedol (BenCom). Mae ganddynt atebolrwydd cyfyngedig yn yr un modd â chwmnïau.
 businessEntityOther.unincorporated-association                  = Grwpiau sy’n cytuno, neu sy’n contractio, i ddod at ei gilydd at ddiben penodol. Fel arfer, mae ganddynt gyfansoddiad sy’n amlinellu’r rheswm dros greu’r gymdeithas a’r rheolau ar gyfer y gymdeithas a’i haelodau.
 businessEntityOther.division                                    = Endid busnes sy’n rhan o grŵp mwy o faint. Mae ganddo ddwy gangen neu fwy yn cyflawni swyddogaethau gwahanol neu’n masnachu mewn gwahanol ranbarthau daearyddol.
+businessEntityOther.overseas                                    = Mae hyn yn golygu unrhyw gwmni sydd wedi’i ymgorffori y tu allan i’r DU ond sydd â rhyw fath o bresenoldeb corfforol yn y DU, megis lleoliad busnes, neu gangen ble y mae’n cynnal busnes.
 businessEntityOther.error.required                              = Dewiswch y math o fusnes yr hoffech ei gofrestru ar gyfer TAW
 
 businessEntityPartnership.heading                               = Pa fath o bartneriaeth rydych yn ei chofrestru?

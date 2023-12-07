@@ -36,7 +36,8 @@ class BusinessEntityOtherFormProviderSpec extends SpecBase {
         (NonIncorporatedTrust, nonIncorporatedTrustKey),
         (RegisteredSociety, registeredSocietyKey),
         (UnincorporatedAssociation, unincorporatedAssociationKey),
-        (Division, divisionKey)
+        (Division, divisionKey),
+        (Overseas, overseasKey)
       )
 
       entityList.map {

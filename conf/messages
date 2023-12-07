@@ -53,6 +53,7 @@ businessEntityOther.non-incorporated-trust                      = Unincorporated
 businessEntityOther.registered-society                          = There are different kinds of registered societies, for example, Industrial and Provident Society, Co-operative Society (Co-op) and Community Benefit Society (BenCom). They have limited liability in the same way as companies.
 businessEntityOther.unincorporated-association                  = Groups that agree, or ‘contract’, to come together for a specific purpose. They normally have a constitution setting out the purpose for which the association has been set up and the rules for the association and its members.
 businessEntityOther.division                                    = A business entity which is part of a larger group. It has 2 or more branches performing different functions or trading in different geographical regions.
+businessEntityOther.overseas                                    = This is any company incorporated outside the UK but with some degree of physical presence in the UK, such as a place of business, or a branch where it carries on business.
 businessEntityOther.error.required                              = Select the type of business you want to register for VAT
 
 businessEntityPartnership.heading                               = What type of partnership are you registering?
