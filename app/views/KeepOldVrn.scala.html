@@ -39,10 +39,17 @@
 
     @p{ @messages("keepOldVrn.para") }
 
-    @bullets(
-        s"keepOldVrn.bullet1.$togcColeKey",
-        s"keepOldVrn.bullet2.$togcColeKey"
-    )
+    @if(togcColeKey == "togc") {
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages(s"keepOldVrn.bullet1.$togcColeKey") <a target="_blank" href="https://www.gov.uk/government/publications/vat-request-for-transfer-of-a-registration-number-vat68">@messages(s"keepOldVrn.bullet1.$togcColeKey.Link")</a>.</li>
+            <li>@messages(s"keepOldVrn.bullet2.$togcColeKey")</li>
+        </ul>
+    } else {
+        @bullets(
+            s"keepOldVrn.bullet1.$togcColeKey",
+            s"keepOldVrn.bullet2.$togcColeKey"
+        )
+    }
 
     @formWithCsrf(action = KeepOldVrnController.onSubmit, 'autoComplete -> "off") {
         @yesNoRadio(
