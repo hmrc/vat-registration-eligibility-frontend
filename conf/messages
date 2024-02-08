@@ -245,9 +245,8 @@ previousBusinessName.error.name.specialChars        = Enter a valid business nam
 keepOldVrn.heading                                  = Do you want to keep the existing VAT registration number?
 keepOldVrn.error.required                           = Select yes if you want to keep the existing VAT registration number
 keepOldVrn.para                                     = To keep the number:
-keepOldVrn.bullet1.togc                             = both you and the previous owner must complete the
-keepOldVrn.bullet1.togc.Link                        = Request for transfer of a VAT registration number form (opens in a new tab)
-keepOldVrn.bullet2.togc                             = you must apply to register for VAT no more than 30 days after the request for a transfer of a VAT registration number form has been received by HMRC
+keepOldVrn.bullet1.togc                             = the previous owner must deregister the business for VAT, ideally using the ‘Change registration details’ online service
+keepOldVrn.bullet2.togc                             = you must apply for VAT no more than 30 days after the previous owner applies to deregister
 keepOldVrn.bullet1.cole                             = the previous entity must deregister for VAT, ideally using the ‘Change registration details’ online service
 keepOldVrn.bullet2.cole                             = you must apply for VAT no more than 30 days after the previous entity applies to deregister
 

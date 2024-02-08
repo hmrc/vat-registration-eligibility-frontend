@@ -27,8 +27,8 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
 
   val h1 = "Do you want to keep the existing VAT registration number?"
   val para = "To keep the number:"
-  val togcBullet1 = "both you and the previous owner must complete the Request for transfer of a VAT registration number form (opens in a new tab)."
-  val togcBullet2 = "you must apply to register for VAT no more than 30 days after the request for a transfer of a VAT registration number form has been received by HMRC"
+  val togcBullet1 = "the previous owner must deregister the business for VAT, ideally using the ‘Change registration details’ online service"
+  val togcBullet2 = "you must apply for VAT no more than 30 days after the previous owner applies to deregister"
   val coleBullet1 = "the previous entity must deregister for VAT, ideally using the ‘Change registration details’ online service"
   val coleBullet2 = "you must apply for VAT no more than 30 days after the previous entity applies to deregister"
 
