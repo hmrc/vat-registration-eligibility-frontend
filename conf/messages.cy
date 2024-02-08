@@ -245,9 +245,8 @@ previousBusinessName.error.name.specialChars        = Nodwch enw busnes dilys
 keepOldVrn.heading                                  = A hoffech gadw’r rhif cofrestru TAW sydd ohoni?
 keepOldVrn.error.required                           = Dewiswch ‘Iawn’ os hoffwch gadw’r rhif cofrestru TAW sydd ohoni
 keepOldVrn.para                                     = I gadw’r rhif:
-keepOldVrn.bullet1.togc                             = rhaid i chi, yn ogystal â’r perchennog blaenorol, lenwi’r
-keepOldVrn.bullet1.togc.Link                        = lenwi’r ffurflen gais i drosglwyddo rhif cofrestru TAW (yn agor tab newydd)
-keepOldVrn.bullet2.togc                             = rhaid i chi wneud cais i gofrestru ar gyfer TAW cyn pen 30 diwrnod ar ôl i’r ffurflen gais i drosglwyddo rhif cofrestru TAW ddod i law CThEF
+keepOldVrn.bullet1.togc                             = mae’n rhaid i’r perchennog blaenorol ddatgofrestru’r busnes ar gyfer TAW, yn ddelfrydol gan ddefnyddio’r gwasanaeth ar-lein ‘Newid manylion cofrestru’
+keepOldVrn.bullet2.togc                             = mae’n rhaid i chi wneud cais am TAW ddim mwy na 30 diwrnod ar ôl i’r perchennog blaenorol wneud cais i ddatgofrestru
 keepOldVrn.bullet1.cole                             = mae’n rhaid i’r endid blaenorol ddatgofrestru ar gyfer TAW, yn ddelfrydol gan ddefnyddio’r gwasanaeth ar-lein ‘Newid manylion cofrestru’
 keepOldVrn.bullet2.cole                             = mae’n rhaid i chi wneud cais am TAW ddim mwy na 30 diwrnod ar ôl i’r endid blaenorol wneud cais i ddatgofrestru
 
