@@ -14,7 +14,7 @@ private object AppDependencies {
   private val jsoupVersion = "1.15.3"
   private val scoverageVersion = "1.4.1"
   private val wireMockVersion = "2.27.2"
-  private val playHmrcFrontendVersion = "6.2.0-play-28"
+  private val playHmrcFrontendVersion = "8.5.0"
 
   val compile = Seq(
     ws,
@@ -22,7 +22,7 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "http-caching-client" % httpCachingClientVersion,
     "uk.gov.hmrc" %% "play-conditional-form-mapping" % playConditionalFormMappingVersion,
     "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapVersion,
-    "uk.gov.hmrc" %% "play-frontend-hmrc" % playHmrcFrontendVersion
+    "uk.gov.hmrc" %% "play-frontend-hmrc-play-28" % playHmrcFrontendVersion
   )
 
   trait TestDependencies {
