@@ -26,7 +26,6 @@
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcStandardPage: HmrcStandardPage,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-    hmrcLayout: HmrcLayout,
     standardBetaBanner: StandardBetaBanner,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
 )
@@ -46,8 +45,6 @@
 
 @scripts = {
     <script @{CSPNonce.attr} src="@controllers.routes.Assets.versioned("javascripts/backLink.js")"></script>
-    <script @CSPNonce.attr>window.GOVUKFrontend.initAll();</script>
-    <script @CSPNonce.attr>window.HMRCFrontend.initAll();</script>
 }
 
 @content = {
