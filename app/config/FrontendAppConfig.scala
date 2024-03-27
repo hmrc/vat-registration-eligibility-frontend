@@ -16,13 +16,17 @@
 
 package config
 
+import com.typesafe.config.{ConfigList, ConfigRenderOptions}
 import featureswitch.core.config.FeatureSwitching
+import play.api.Configuration
+import models.VatThreshold
+import play.api.libs.json.Json
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class FrontendAppConfig @Inject()(val servicesConfig: ServicesConfig) extends FeatureSwitching {
+class FrontendAppConfig @Inject()(val servicesConfig: ServicesConfig, configuration: Configuration) extends FeatureSwitching {
 
   private def loadConfig(key: String) = servicesConfig.getString(key)
 
@@ -49,6 +53,8 @@ class FrontendAppConfig @Inject()(val servicesConfig: ServicesConfig) extends Fe
   lazy val VATMtdInformationGroup = servicesConfig.getConfString("gov-uk.VATMtdInformationGroup",
     throw new Exception("Couldn't get VATMtdInformationGroup URL"))
   lazy val VATDivisionURL = servicesConfig.getConfString("gov-uk.VATDivisionURL", throw new Exception("Couldn't get VATDivisionURL URL"))
+  lazy val thresholdString: String = configuration.get[ConfigList]("vat-threshold").render(ConfigRenderOptions.concise())
+  lazy val thresholds: Seq[VatThreshold] = Json.parse(thresholdString).as[List[VatThreshold]]
   lazy val calculateTurnoverUrl = "https://www.gov.uk/vat-registration/calculate-turnover"
 
   lazy val accessibilityStatementUrl = servicesConfig.getString("accessibility-statement.host") + "/accessibility-statement/vat-registration"
