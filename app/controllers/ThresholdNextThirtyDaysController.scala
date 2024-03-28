@@ -44,15 +44,15 @@ class ThresholdNextThirtyDaysController @Inject()(sessionService: SessionService
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.thresholdNextThirtyDays match {
-        case None => formProvider()
-        case Some(value) => formProvider().fill(value)
+        case None => formProvider(formattedVatThreshold())
+        case Some(value) => formProvider(formattedVatThreshold()).fill(value)
       }
       Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership, vatThreshold = formattedVatThreshold()))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(formattedVatThreshold()).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, NormalMode, vatThreshold = formattedVatThreshold()))),
         formValue =>

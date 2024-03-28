@@ -18,6 +18,7 @@ package views
 
 import forms.ThresholdPreviousThirtyDaysFormProvider
 import models.NormalMode
+import play.api.data.Form
 import play.api.i18n.Messages
 import services.ThresholdService
 import utils.TimeMachine
@@ -32,8 +33,8 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase with ThresholdSer
   }
 
   val messageKeyPrefix = "thresholdPreviousThirtyDays"
-  val form = new ThresholdPreviousThirtyDaysFormProvider(TestTimeMachine)()
   implicit val msgs: Messages = messages
+  val form: Form[_] = new ThresholdPreviousThirtyDaysFormProvider(TestTimeMachine)(formattedVatThreshold())
 
   val h1Business = s"Did the business expect its taxable-turnover to go over $formattedVatThreshold in any 30 day period in the past?"
   val legendBusiness = "When did the business expect to go over the threshold?"

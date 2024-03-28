@@ -21,6 +21,7 @@ import identifiers.ThresholdPreviousThirtyDaysId
 import models.ConditionalDateFormElement
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.i18n.Messages
 import uk.gov.voa.play.form.ConditionalMappings.{isEqual, mandatoryIf}
 import utils.TimeMachine
 
@@ -39,16 +40,16 @@ class ThresholdPreviousThirtyDaysFormProvider @Inject()(timeMachine: TimeMachine
   val dateInvalidKey = s"$errorKeyRoot.date.invalid"
   def now = LocalDate.now()
 
-  def apply(): Form[ConditionalDateFormElement] = Form(
+  def apply(vatThreshold: String)(implicit messages: Messages): Form[ConditionalDateFormElement] = Form(
     mapping(
-      thresholdPreviousThirtyDaysSelection -> boolean(valueRequiredKey),
+      thresholdPreviousThirtyDaysSelection -> boolean(messages(valueRequiredKey, vatThreshold)),
       thresholdPreviousThirtyDaysDate -> mandatoryIf(isEqual(thresholdPreviousThirtyDaysSelection, "true"),
         tuple(
           "day" -> default(text(), ""),
           "month" -> default(text(), ""),
           "year" -> default(text(), "")
         ).verifying(firstError(
-          nonEmptyDate(dateRequiredKey),
+          nonEmptyDate(messages(dateRequiredKey, vatThreshold)),
           validDate(dateInvalidKey))
         ).transform[LocalDate](
           {case (day, month, year) => LocalDate.of(year.toInt, month.toInt, day.toInt)},

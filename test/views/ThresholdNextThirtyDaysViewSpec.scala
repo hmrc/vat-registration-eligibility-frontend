@@ -34,7 +34,8 @@ class ThresholdNextThirtyDaysViewSpec extends ViewSpecBase with ThresholdService
 
   object Selectors extends BaseSelectors
 
-  val form = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)()
+  implicit val msgs = messages
+  val form = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)(formattedVatThreshold())
 
   val h1Business = s"Does the business expect to make more than $formattedVatThreshold in a single month or a 30-day period?"
   val h1Partnership = s"Does the partnership expect to make more than $formattedVatThreshold in a single month or a 30-day period?"
