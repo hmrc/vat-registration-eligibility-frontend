@@ -51,7 +51,7 @@ trait IntegrationSpecBase extends PlaySpec
   val testInternalId = "testInternalId"
   val sessionIdStr = "sessionId"
   val messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
-  val appConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val appConfig = app.injector.instanceOf[FrontendAppConfig]
   implicit val request = FakeRequest()
   def request(url: String) = CacheIdentifierRequest(FakeRequest("GET", baseUrl + url), testRegId, testInternalId)
 

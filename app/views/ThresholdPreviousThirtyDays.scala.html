@@ -32,7 +32,7 @@
         button: components.button
 )
 
-@(form: Form[_], mode: Mode, isPartnership: Boolean = false)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], mode: Mode, isPartnership: Boolean = false, vatThreshold: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @headingKeySuffix = @{
     if(isPartnership) {
@@ -42,13 +42,13 @@
     }
 }
 
-@layout(pageTitle = Some(title(form, messages(s"thresholdPreviousThirtyDays.heading.$headingKeySuffix"))), backLink = true) {
+@layout(pageTitle = Some(title(form, messages(s"thresholdPreviousThirtyDays.heading.$headingKeySuffix", vatThreshold))), backLink = true) {
 
     @errorSummary(form.errors, Some(Map("thresholdPreviousThirtyDaysDate" -> "day")))
 
-    @h1(messages(s"thresholdPreviousThirtyDays.heading.$headingKeySuffix"))
+    @h1(messages(s"thresholdPreviousThirtyDays.heading.$headingKeySuffix", vatThreshold))
 
-    @p{ @messages("thresholdPreviousThirtyDays.p1") }
+    @p{ @messages("thresholdPreviousThirtyDays.p1", vatThreshold) }
 
     @formWithCsrf(action = ThresholdPreviousThirtyDaysController.onSubmit(), 'autoComplete -> "off",'novalidate -> "novalidate") {
         @conditionalYesNoRadio(

@@ -19,12 +19,13 @@ package views
 import forms.ThresholdPreviousThirtyDaysFormProvider
 import models.NormalMode
 import play.api.i18n.Messages
+import services.ThresholdService
 import utils.TimeMachine
 import views.html.ThresholdPreviousThirtyDays
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 
-class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase {
+class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase with ThresholdService {
 
   object TestTimeMachine extends TimeMachine {
     override def today: LocalDate = LocalDate.parse("2020-01-01")
@@ -34,9 +35,9 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase {
   val form = new ThresholdPreviousThirtyDaysFormProvider(TestTimeMachine)()
   implicit val msgs: Messages = messages
 
-  val h1Business = "Did the business expect its taxable-turnover to go over £85,000 in any 30 day period in the past?"
+  val h1Business = s"Did the business expect its taxable-turnover to go over $formattedVatThreshold in any 30 day period in the past?"
   val legendBusiness = "When did the business expect to go over the threshold?"
-  val h1Partnership = "Did the partnership expect its taxable-turnover to go over £85,000 in any 30 day period in the past?"
+  val h1Partnership = s"Did the partnership expect its taxable-turnover to go over $formattedVatThreshold in any 30 day period in the past?"
   val legendPartnership = "When did the partnership expect to go over the threshold?"
   val paragraph = "This could happen if, for example, a business planned to run an exhibition and anticipated selling so many tickets it expected to go over the VAT threshold. The business must register for VAT when you expected it to go over the threshold, not when it actually went over the threshold."
 
@@ -46,7 +47,7 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase {
 
   "ThresholdPreviousThirtyDays view" when {
     "Business entity is not partnership" must {
-      lazy val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+      lazy val doc = asDocument(view(form, NormalMode, vatThreshold = formattedVatThreshold())(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the correct continue button" in {
         doc.select(Selectors.button).text() mustBe continueButton
@@ -73,7 +74,7 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase {
       }
     }
     "Business entity is partnership" must {
-      lazy val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
+      lazy val doc = asDocument(view(form, NormalMode, isPartnership = true, vatThreshold = formattedVatThreshold())(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the correct continue button" in {
         doc.select(Selectors.button).text() mustBe continueButton

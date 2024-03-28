@@ -23,7 +23,7 @@ import identifiers._
 import models.{ConditionalDateFormElement, NETP, NormalMode, Overseas}
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SessionService
+import services.{SessionService, ThresholdService}
 import utils.{Navigator, UserAnswers}
 import views.html.ThresholdInTwelveMonths
 
@@ -40,7 +40,7 @@ class ThresholdInTwelveMonthsController @Inject()(sessionService: SessionService
                                                   view: ThresholdInTwelveMonths)
                                                  (implicit appConfig: FrontendAppConfig,
                                                   mcc: MessagesControllerComponents,
-                                                  executionContext: ExecutionContext) extends BaseController {
+                                                  executionContext: ExecutionContext) extends BaseController with ThresholdService {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
@@ -50,7 +50,7 @@ class ThresholdInTwelveMonthsController @Inject()(sessionService: SessionService
             case None => formProvider()
             case Some(value) => formProvider().fill(value)
           }
-          Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership))
+          Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership, formattedVatThreshold()))
         case (Some(false), Some(_), Some(NETP | Overseas)) =>
           Redirect(navigator.pageIdToPageLoad(TaxableSuppliesInUkId))
         case _ => Redirect(controllers.routes.FixedEstablishmentController.onPageLoad)
@@ -61,7 +61,7 @@ class ThresholdInTwelveMonthsController @Inject()(sessionService: SessionService
     implicit request =>
       formProvider().bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, NormalMode))),
+          Future.successful(BadRequest(view(formWithErrors, NormalMode, vatThreshold = formattedVatThreshold()))),
         formValue =>
           sessionService.save[ConditionalDateFormElement](ThresholdInTwelveMonthsId.toString, formValue).flatMap { _ =>
             if (formValue.value) {
