@@ -16,15 +16,17 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import models.ConditionalDateFormElement
 import play.api.data.FormError
+import services.ThresholdService
 import utils.TimeMachine
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
+class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours with SpecBase with ThresholdService {
 
   val testMaxDate: LocalDate = LocalDate.parse("2020-01-01")
   val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
@@ -32,8 +34,8 @@ class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
   object TestTimeMachine extends TimeMachine {
     override def today: LocalDate = testMaxDate
   }
-
-  val form = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)()
+  implicit val msgs = messages
+  val form = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)(formattedVatThreshold)
 
   val selectionFieldName = s"value"
   val dateFieldName = s"thresholdNextThirtyDaysDate"
@@ -45,11 +47,11 @@ class ThresholdNextThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
   "bind" must {
     "return errors" when {
       "nothing is selected" in {
-        form.bind(Map("" -> "")).errors mustBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
+        form.bind(Map("" -> "")).errors mustBe Seq(FormError(selectionFieldName, messages(requiredKey, formattedVatThreshold()), Seq()))
       }
 
       "yes is selected but no date is provided" in {
-        form.bind(Map(selectionFieldName -> "true")).errors mustBe Seq(FormError(dateFieldName, dateRequiredKey, Seq()))
+        form.bind(Map(selectionFieldName -> "true")).errors mustBe Seq(FormError(dateFieldName, messages(dateRequiredKey, formattedVatThreshold()), Seq()))
       }
 
       "yes is selected but an invalid date is provided" in {

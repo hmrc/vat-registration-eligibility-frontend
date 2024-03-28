@@ -16,25 +16,28 @@
 
 package forms
 
+import base.SpecBase
 import forms.behaviours.BooleanFieldBehaviours
 import models.ConditionalDateFormElement
 import play.api.data.FormError
+import services.ThresholdService
 import utils.TimeMachine
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ThresholdPreviousThirtyDaysFormProviderSpec extends BooleanFieldBehaviours {
+class ThresholdPreviousThirtyDaysFormProviderSpec extends BooleanFieldBehaviours with SpecBase with ThresholdService {
 
   val testMaxDate: LocalDate = LocalDate.parse("2020-01-01")
 
-  object TestTimeMachine extends TimeMachine {
+  object TestTimeMachine extends TimeMachine with ThresholdService {
     override def today: LocalDate = testMaxDate
   }
 
   val requiredKey = "thresholdPreviousThirtyDays.error.required"
   val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
-  val optionalDateForm = new ThresholdPreviousThirtyDaysFormProvider(TestTimeMachine)()
+  implicit val msgs = messages
+  val optionalDateForm = new ThresholdPreviousThirtyDaysFormProvider(TestTimeMachine)(formattedVatThreshold())
 
   "bind" must {
     val selectionFieldName = s"value"
@@ -45,11 +48,11 @@ class ThresholdPreviousThirtyDaysFormProviderSpec extends BooleanFieldBehaviours
 
     "return errors" when {
       "nothing is selected" in {
-        optionalDateForm.bind(Map("" -> "")).errors mustBe Seq(FormError(selectionFieldName, requiredKey, Seq()))
+        optionalDateForm.bind(Map("" -> "")).errors mustBe Seq(FormError(selectionFieldName, messages(requiredKey, formattedVatThreshold()), Seq()))
       }
 
       "yes is selected but no date is provided" in {
-        optionalDateForm.bind(Map(selectionFieldName -> "true")).errors mustBe Seq(FormError(dateFieldName, dateRequiredKey, Seq()))
+        optionalDateForm.bind(Map(selectionFieldName -> "true")).errors mustBe Seq(FormError(dateFieldName, messages(dateRequiredKey, formattedVatThreshold()), Seq()))
       }
 
       "yes is selected but an invalid date is provided" in {
