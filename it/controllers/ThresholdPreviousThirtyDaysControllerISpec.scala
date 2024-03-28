@@ -5,18 +5,19 @@ import identifiers.{ThresholdInTwelveMonthsId, ThresholdPreviousThirtyDaysId, Vo
 import models.ConditionalDateFormElement
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
+import services.ThresholdService
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase {
+class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase with ThresholdService {
 
   val pageUrl = "/gone-over-threshold-period"
   val selectionFieldName = "value"
   val dateFieldName = s"${ThresholdPreviousThirtyDaysId}Date"
   val internalId = "testInternalId"
   val pageHeading = "Has Test Company ever expected to go over the VAT-registration threshold in a single 30-day period?"
-  val pageHeadingAfter17 = "Has Test Company ever expected to make more than £85,000 in VAT-taxable sales in a single 30-day period?"
+  val pageHeadingAfter17 = s"Has Test Company ever expected to make more than $formattedVatThreshold in VAT-taxable sales in a single 30-day period?"
   val dateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy")
   val localDate = LocalDate.of(2020, 1, 1)
 

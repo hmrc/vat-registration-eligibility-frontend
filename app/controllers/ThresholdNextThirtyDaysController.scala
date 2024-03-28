@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import forms.ThresholdNextThirtyDaysFormProvider
 import identifiers.{ThresholdNextThirtyDaysId, VoluntaryRegistrationId}
 import models.{ConditionalDateFormElement, NormalMode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.SessionService
+import services.{SessionService, ThresholdService}
 import utils.{Navigator, UserAnswers}
 import views.html.ThresholdNextThirtyDays
 
@@ -39,22 +39,22 @@ class ThresholdNextThirtyDaysController @Inject()(sessionService: SessionService
                                                   view: ThresholdNextThirtyDays)
                                                  (implicit appConfig: FrontendAppConfig,
                                                   mcc: MessagesControllerComponents,
-                                                  executionContext: ExecutionContext) extends BaseController {
+                                                  executionContext: ExecutionContext) extends BaseController with ThresholdService {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.thresholdNextThirtyDays match {
-        case None => formProvider()
-        case Some(value) => formProvider().fill(value)
+        case None => formProvider(formattedVatThreshold())
+        case Some(value) => formProvider(formattedVatThreshold()).fill(value)
       }
-      Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership))
+      Ok(view(preparedForm, NormalMode, request.userAnswers.isPartnership, vatThreshold = formattedVatThreshold()))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      formProvider().bindFromRequest().fold(
+      formProvider(formattedVatThreshold()).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, NormalMode))),
+          Future.successful(BadRequest(view(formWithErrors, NormalMode, vatThreshold = formattedVatThreshold()))),
         formValue =>
           sessionService.save[ConditionalDateFormElement](ThresholdNextThirtyDaysId.toString, formValue).flatMap {
             cacheMap =>

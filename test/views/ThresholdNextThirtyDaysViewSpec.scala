@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,13 @@ package views
 
 import forms.ThresholdNextThirtyDaysFormProvider
 import models.NormalMode
+import services.ThresholdService
 import utils.TimeMachine
 import views.html.ThresholdNextThirtyDays
 
 import java.time.LocalDate
 
-class ThresholdNextThirtyDaysViewSpec extends ViewSpecBase {
+class ThresholdNextThirtyDaysViewSpec extends ViewSpecBase with ThresholdService {
 
   val messageKeyPrefix = "thresholdNextThirtyDays"
 
@@ -33,10 +34,11 @@ class ThresholdNextThirtyDaysViewSpec extends ViewSpecBase {
 
   object Selectors extends BaseSelectors
 
-  val form = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)()
+  implicit val msgs = messages
+  val form = new ThresholdNextThirtyDaysFormProvider(TestTimeMachine)(formattedVatThreshold())
 
-  val h1Business = "Does the business expect to make more than £85,000 in a single month or a 30-day period?"
-  val h1Partnership = "Does the partnership expect to make more than £85,000 in a single month or a 30-day period?"
+  val h1Business = s"Does the business expect to make more than $formattedVatThreshold in a single month or a 30-day period?"
+  val h1Partnership = s"Does the partnership expect to make more than $formattedVatThreshold in a single month or a 30-day period?"
   val testText = "This could happen when, for example, on 16 April a business wins a big contract to supply goods or services, which would mean the value of supplies made solely within the next 30 days, by 15 May, are more than the VAT registration threshold."
   val testLegendBusiness = "What date did the business realise it would go over the threshold?"
   val testLegendPartnership = "What date did the partnership realise it would go over the threshold?"
@@ -47,7 +49,7 @@ class ThresholdNextThirtyDaysViewSpec extends ViewSpecBase {
 
   "ThresholdNextThirtyDays view" when {
     "Business entity is not partnership" must {
-      val doc = asDocument(view(form, NormalMode)(fakeDataRequestIncorped, messages, frontendAppConfig))
+      val doc = asDocument(view(form, NormalMode, vatThreshold = formattedVatThreshold())(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the correct continue button" in {
         doc.select(Selectors.button).text() mustBe continueButton
@@ -78,7 +80,7 @@ class ThresholdNextThirtyDaysViewSpec extends ViewSpecBase {
       }
     }
     "Business entity is partnership" must {
-      val doc = asDocument(view(form, NormalMode, isPartnership = true)(fakeDataRequestIncorped, messages, frontendAppConfig))
+      val doc = asDocument(view(form, NormalMode, isPartnership = true, vatThreshold = formattedVatThreshold())(fakeDataRequestIncorped, messages, frontendAppConfig))
 
       "have the correct continue button" in {
         doc.select(Selectors.button).text() mustBe continueButton
