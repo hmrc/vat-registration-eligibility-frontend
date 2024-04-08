@@ -17,7 +17,7 @@
 package repositories
 
 import com.mongodb.client.model.Indexes.ascending
-import org.joda.time.{DateTime, DateTimeZone}
+//import org.joda.time.{DateTime, DateTimeZone}
 import org.mongodb.scala.model
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates.unset
@@ -27,21 +27,23 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.play.http.logging.Mdc
 
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
-                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)) {
+                         lastUpdated: Instant = Instant.now()) {
+//                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)) {
   def as[T](implicit f: DatedCacheMap => T): T = f(this)
 }
 
 object DatedCacheMap {
-  implicit val dateFormat = MongoJodaFormats.dateTimeFormat
+  implicit val dateFormat = MongoJavatimeFormats.instantFormat
   implicit val formats = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)

@@ -19,7 +19,7 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions._
 import identifiers._
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import views.html._
 
 import javax.inject.{Inject, Singleton}
