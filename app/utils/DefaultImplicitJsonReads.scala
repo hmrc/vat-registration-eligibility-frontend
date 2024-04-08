@@ -18,6 +18,6 @@ package utils
 
 import play.api.libs.json.DefaultReads
 
-object DefaultImplicitJsonReads extends DefaultReads {
+/*object DefaultImplicitJsonReads extends DefaultReads {
 
-}
+}*/

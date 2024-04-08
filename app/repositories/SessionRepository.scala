@@ -17,7 +17,7 @@
 package repositories
 
 import com.mongodb.client.model.Indexes.ascending
-//import org.joda.time.{DateTime, DateTimeZone}
+import play.api.libs.json.{Format, OFormat}
 import org.mongodb.scala.model
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates.unset
@@ -38,13 +38,11 @@ import scala.concurrent.{ExecutionContext, Future}
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
                          lastUpdated: Instant = Instant.now()) {
-//                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)) {
   def as[T](implicit f: DatedCacheMap => T): T = f(this)
 }
 
 object DatedCacheMap {
-  implicit val dateFormat = MongoJavatimeFormats.instantFormat
-  implicit val formats = Json.format[DatedCacheMap]
+  implicit val formats: OFormat[DatedCacheMap] = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 
@@ -70,6 +68,8 @@ class SessionRepository @Inject()(config: Configuration,
       )
     )
   ) {
+
+  implicit val dateFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
   def get(id: String): Future[Option[CacheMap]] = Mdc.preservingMdc {
     collection.find(equal("id", id)).map(_.as[CacheMap]).headOption()
