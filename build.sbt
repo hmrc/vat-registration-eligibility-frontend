@@ -32,6 +32,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(defaultSettings(): _*)
   .settings(scalaSettings: _*)
   .settings(scoverageSettings)
+  .settings(inConfig(Test)(testSettings): _*)
   .settings(
     RoutesKeys.routesImport ++= Seq("models._"),
     TwirlKeys.templateImports ++= Seq(
@@ -67,6 +68,3 @@ lazy val it = project
   .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
   .settings(DefaultBuildSettings.itSettings())
   .settings(libraryDependencies ++= AppDependencies.test)
-
-lazy val all = taskKey[Unit]("Runs units, its, and ally tests")
-all := Def.sequential(Test / test, A11yTest / test).value
