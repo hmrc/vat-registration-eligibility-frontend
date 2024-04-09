@@ -71,8 +71,6 @@ trait IntegrationSpecBase extends PlaySpec
   implicit val request = FakeRequest()
   def request(url: String) = CacheIdentifierRequest(FakeRequest("GET", baseUrl + url), testRegId, testInternalId)
 
-  implicit val timeout: Timeout = 5.seconds
-//  override implicit def defaultAwaitTimeout: Timeout = 5.seconds
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionIdStr)))
 
   override def beforeEach(): Unit = {
