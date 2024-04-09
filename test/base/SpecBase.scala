@@ -34,7 +34,7 @@ import scala.concurrent.ExecutionContext
 trait SpecBase extends CommonSpecBase with GuiceOneAppPerSuite {
 
   override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure("metrics.enabled" -> "false")
+//    .configure("metrics.enabled" -> "false")
     .build()
 
   def injector: Injector = app.injector

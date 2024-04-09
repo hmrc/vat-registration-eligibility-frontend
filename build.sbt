@@ -22,9 +22,9 @@ val scoverageSettings = Seq(
 )
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
-    libraryDependencies ++= AppDependencies(),
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     PlayKeys.playDefaultPort := 9894,
     retrieveManaged := true,
     update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
@@ -32,20 +32,6 @@ lazy val microservice = Project(appName, file("."))
   .settings(defaultSettings(): _*)
   .settings(scalaSettings: _*)
   .settings(scoverageSettings)
-//  .configs(IntegrationTest)
-//  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-//  .settings(
-//    Test / fork                           := true,
-//    Test / testForkedParallel             := true,
-//    Test / parallelExecution              := false,
-//    Test / logBuffered                    := false,
-//    addTestReportOption(IntegrationTest, "int-test-reports"),
-//    IntegrationTest / fork                := false,
-//    IntegrationTest / testForkedParallel  := false,
-//    IntegrationTest / parallelExecution   := false,
-//    IntegrationTest / logBuffered         := false,
-//    IntegrationTest / scalaSource         := baseDirectory.value / "it"
-//  )
   .settings(
     RoutesKeys.routesImport ++= Seq("models._"),
     TwirlKeys.templateImports ++= Seq(
@@ -73,10 +59,7 @@ lazy val microservice = Project(appName, file("."))
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork                      := true,
-  Test / testForkedParallel := true,
-  javaOptions ++= Seq(
-    "-Dconfig.resource=test.application.conf"
-  )
+  Test / testForkedParallel := true
 )
 
 lazy val it = project

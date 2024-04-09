@@ -16,7 +16,7 @@
 
 package helpers
 
-import akka.util.Timeout
+import org.apache.pekko.util.Timeout
 import config.FrontendAppConfig
 import featureswitch.core.config.{FeatureSwitching, FeatureSwitchingModule}
 import models.CurrentProfile
@@ -71,8 +71,8 @@ trait IntegrationSpecBase extends PlaySpec
   implicit val request = FakeRequest()
   def request(url: String) = CacheIdentifierRequest(FakeRequest("GET", baseUrl + url), testRegId, testInternalId)
 
-
-  override implicit def defaultAwaitTimeout: Timeout = 5.seconds
+  implicit val timeout: Timeout = 5.seconds
+//  override implicit def defaultAwaitTimeout: Timeout = 5.seconds
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionIdStr)))
 
   override def beforeEach(): Unit = {
@@ -100,8 +100,8 @@ trait IntegrationSpecBase extends PlaySpec
 
     val sessionService = app.injector.instanceOf[SessionService]
 
-    await(sessionService.save(cacheMap))(timeout)
-    await(sessionService.save(profileKey, CurrentProfile(testRegId)))(timeout)
+    await(sessionService.save(cacheMap))
+    await(sessionService.save(profileKey, CurrentProfile(testRegId)))
   }
 
 }
