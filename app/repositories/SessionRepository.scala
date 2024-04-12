@@ -17,7 +17,7 @@
 package repositories
 
 import com.mongodb.client.model.Indexes.ascending
-import org.joda.time.{DateTime, DateTimeZone}
+import play.api.libs.json.{Format, OFormat}
 import org.mongodb.scala.model
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates.unset
@@ -27,22 +27,22 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.play.http.logging.Mdc
 
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
-                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)) {
+                         lastUpdated: Instant = Instant.now()) {
   def as[T](implicit f: DatedCacheMap => T): T = f(this)
 }
 
 object DatedCacheMap {
-  implicit val dateFormat = MongoJodaFormats.dateTimeFormat
-  implicit val formats = Json.format[DatedCacheMap]
+  implicit val formats: OFormat[DatedCacheMap] = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 
@@ -68,6 +68,8 @@ class SessionRepository @Inject()(config: Configuration,
       )
     )
   ) {
+
+  implicit val dateFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
   def get(id: String): Future[Option[CacheMap]] = Mdc.preservingMdc {
     collection.find(equal("id", id)).map(_.as[CacheMap]).headOption()

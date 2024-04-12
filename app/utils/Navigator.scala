@@ -24,7 +24,6 @@ import identifiers._
 import models._
 import play.api.libs.json.Reads
 import play.api.mvc.{Call, Request}
-import utils.DefaultImplicitJsonReads.BooleanReads
 
 import javax.inject.{Inject, Singleton}
 
