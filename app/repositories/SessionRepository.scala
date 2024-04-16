@@ -27,17 +27,17 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.play.http.logging.Mdc
 
-import java.time.Instant
+import java.time.temporal.ChronoUnit
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
-                         lastUpdated: Instant = Instant.now()) {
+                         lastUpdated: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)) {
   def as[T](implicit f: DatedCacheMap => T): T = f(this)
 }
 
@@ -68,8 +68,6 @@ class SessionRepository @Inject()(config: Configuration,
       )
     )
   ) {
-
-  implicit val dateFormat: Format[Instant] = MongoJavatimeFormats.instantFormat
 
   def get(id: String): Future[Option[CacheMap]] = Mdc.preservingMdc {
     collection.find(equal("id", id)).map(_.as[CacheMap]).headOption()
