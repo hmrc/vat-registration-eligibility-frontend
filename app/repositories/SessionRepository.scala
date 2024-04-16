@@ -30,14 +30,14 @@ import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.play.http.logging.Mdc
 
 import java.time.temporal.ChronoUnit
-import java.time.{LocalDateTime, ZoneOffset, ZonedDateTime}
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
-                         lastUpdated: LocalDateTime = ZonedDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS).toLocalDateTime) {
+                         lastUpdated: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)) {
   def as[T](implicit f: DatedCacheMap => T): T = f(this)
 }
 
