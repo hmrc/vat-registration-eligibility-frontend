@@ -17,7 +17,7 @@
 package repositories
 
 import com.mongodb.client.model.Indexes.ascending
-import play.api.libs.json.{Format, OFormat}
+import play.api.libs.json.OFormat
 import org.mongodb.scala.model
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates.unset
@@ -30,14 +30,14 @@ import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.play.http.logging.Mdc
 
 import java.time.temporal.ChronoUnit
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
-                         lastUpdated: LocalDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)) {
+                         lastUpdated: Instant = Instant.now().truncatedTo(ChronoUnit.MILLIS)) {
   def as[T](implicit f: DatedCacheMap => T): T = f(this)
 }
 
