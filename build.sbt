@@ -1,15 +1,15 @@
-import uk.gov.hmrc._
-import DefaultBuildSettings._
+import uk.gov.hmrc.DefaultBuildSettings
+import DefaultBuildSettings.{defaultSettings, scalaSettings}
 import play.sbt.routes.RoutesKeys
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 
 val appName: String = "vat-registration-eligibility-frontend"
 
-scalaVersion := "2.12.12"
+ThisBuild / majorVersion := 1
+ThisBuild / scalaVersion := "2.13.13"
 
-val silencerVersion = "1.7.0"
+val silencerVersion = "1.7.16"
 
 val scoverageSettings = Seq(
   ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
@@ -22,29 +22,17 @@ val scoverageSettings = Seq(
 )
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(Seq(PlayScala, SbtDistributablesPlugin): _*)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(
-    libraryDependencies ++= AppDependencies(),
+    libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     PlayKeys.playDefaultPort := 9894,
     retrieveManaged := true,
-    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
-    majorVersion := 1
+    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
-  .settings(defaultSettings(), scalaSettings, scoverageSettings, publishingSettings)
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
-  .settings(
-    Test / fork                           := true,
-    Test / testForkedParallel             := true,
-    Test / parallelExecution              := false,
-    Test / logBuffered                    := false,
-    addTestReportOption(IntegrationTest, "int-test-reports"),
-    IntegrationTest / fork                := false,
-    IntegrationTest / testForkedParallel  := false,
-    IntegrationTest / parallelExecution   := false,
-    IntegrationTest / logBuffered         := false,
-    IntegrationTest / scalaSource         := baseDirectory.value / "it"
-  )
+  .settings(defaultSettings(): _*)
+  .settings(scalaSettings: _*)
+  .settings(scoverageSettings)
+  .settings(inConfig(Test)(testSettings): _*)
   .settings(
     RoutesKeys.routesImport ++= Seq("models._"),
     TwirlKeys.templateImports ++= Seq(
@@ -69,3 +57,14 @@ lazy val microservice = Project(appName, file("."))
     )
   )
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
+
+lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+  fork                      := true,
+  Test / testForkedParallel := true
+)
+
+lazy val it = project
+  .enablePlugins(PlayScala)
+  .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
+  .settings(DefaultBuildSettings.itSettings())
+  .settings(libraryDependencies ++= AppDependencies.test)

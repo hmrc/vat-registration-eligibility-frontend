@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package repositories
 
 import com.mongodb.client.model.Indexes.ascending
-import org.joda.time.{DateTime, DateTimeZone}
+import play.api.libs.json.OFormat
 import org.mongodb.scala.model
 import org.mongodb.scala.model.Filters._
 import org.mongodb.scala.model.Updates.unset
@@ -27,22 +27,22 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
-import uk.gov.hmrc.mongo.play.json.formats.MongoJodaFormats
 import uk.gov.hmrc.play.http.logging.Mdc
 
+import java.time.temporal.ChronoUnit
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class DatedCacheMap(id: String,
                          data: Map[String, JsValue],
-                         lastUpdated: DateTime = DateTime.now(DateTimeZone.UTC)) {
+                         lastUpdated: Instant = Instant.now().truncatedTo(ChronoUnit.MILLIS)) {
   def as[T](implicit f: DatedCacheMap => T): T = f(this)
 }
 
 object DatedCacheMap {
-  implicit val dateFormat = MongoJodaFormats.dateTimeFormat
-  implicit val formats = Json.format[DatedCacheMap]
+  implicit val formats: OFormat[DatedCacheMap] = Json.format[DatedCacheMap]
 
   def apply(cacheMap: CacheMap): DatedCacheMap = DatedCacheMap(cacheMap.id, cacheMap.data)
 

@@ -61,10 +61,10 @@ Individual journeys are not supported by VAT registration
 ## Tests
 Prior to committing changes, please run tests and check on coverage report
 - `unit tests` can be run with `sbt clean test`
-- `integration tests` can be run with `sbt clean it:test`
+- `integration tests` can be run with `sbt clean it/test`
 - `accessiblity tests` can be run with `sbt a11y:test` (This will need node.js and npm installed)
 
-Test coverage can be run using ```sbt clean coverage test it:test scalastyle coverageReport```.
+Test coverage can be run using ```sbt clean coverage test it/test scalastyle coverageReport```.
 
 ## Test only routes
 The only test routes defined by the service are related to feature switches. These can be accessed by navigating to
