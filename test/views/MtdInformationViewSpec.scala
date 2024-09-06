@@ -26,7 +26,7 @@ class MtdInformationViewSpec extends ViewSpecBase {
     val bullet1 = "keep digital records"
     val bullet2 = "submit VAT Returns directly to HMRC"
     val linkText = "Find out more about Making Tax Digital for VAT (opens in new tab)"
-    val link = "https://www.gov.uk/guidance/making-tax-digital-for-vat"
+    val link = "https://www.gov.uk/government/collections/making-tax-digital-for-vat"
     val buttonText = "Continue to register for VAT"
   }
 
