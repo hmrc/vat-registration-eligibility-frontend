@@ -44,17 +44,17 @@ class KeepOldVrnController @Inject()(sessionService: SessionService,
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.keepOldVrn match {
-        case None => formProvider(request.userAnswers.togcColeKey)
-        case Some(value) => formProvider(request.userAnswers.togcColeKey).fill(value)
+        case None => formProvider(request.userAnswers.togcColeKey,request.userAnswers.registeringBusiness.toString)
+        case Some(value) => formProvider(request.userAnswers.togcColeKey, request.userAnswers.registeringBusiness.toString).fill(value)
       }
-      Ok(view(preparedForm, request.userAnswers.togcColeKey))
+      Ok(view(preparedForm, request.userAnswers.togcColeKey, request.userAnswers.registeringBusiness.toString))
   }
 
   def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      formProvider(request.userAnswers.togcColeKey).bindFromRequest().fold(
+      formProvider(request.userAnswers.togcColeKey, request.userAnswers.registeringBusiness.toString).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.userAnswers.togcColeKey))),
+          Future.successful(BadRequest(view(formWithErrors, request.userAnswers.togcColeKey, request.userAnswers.registeringBusiness.toString))),
         value =>
           for {
             _ <- if (!value) sessionService.removeEntry(TermsAndConditionsId.toString) else Future.successful()

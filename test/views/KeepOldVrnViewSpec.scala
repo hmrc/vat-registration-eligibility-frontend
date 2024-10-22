@@ -24,13 +24,15 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
   val messageKeyPrefix = "keepOldVrn"
   val togc = "togc"
   val cole = "cole"
+  val own = "own"
+
 
   val h1 = "Do you want to keep the existing VAT registration number?"
   val para = "To keep the number:"
-  val togcBullet1 = "the previous owner must deregister the business for VAT, ideally using the ‘Change registration details’ online service"
-  val togcBullet2 = "you must apply for VAT no more than 30 days after the previous owner applies to deregister"
-  val coleBullet1 = "the previous entity must deregister for VAT, ideally using the ‘Change registration details’ online service"
-  val coleBullet2 = "you must apply for VAT no more than 30 days after the previous entity applies to deregister"
+  val togcBullet1 = "both you and the previous owner must complete the Request for transfer of a VAT registration number form (opens in a new tab)."
+  val togcBullet2 = "you must apply to register for VAT no more than 30 days after the request for a transfer of a VAT registration number form has been received by HMRC"
+  val coleBullet1 = "the previous entity must complete the Request for transfer of a VAT registration number form (opens in a new tab)."
+  val coleBullet2 = "you must apply to register for VAT no more than 30 days after the request for a transfer of a VAT registration number form has been received by HMRC"
 
   val view = app.injector.instanceOf[KeepOldVrn]
 
@@ -38,8 +40,8 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
 
   "Keep VAT Number view" when {
     s"registration reason is $togc" must {
-      val form = new KeepOldVrnFormProvider()(togc)
-      lazy val doc = asDocument(view(form, togc)(fakeDataRequest, messages, frontendAppConfig))
+      val form = new KeepOldVrnFormProvider()(togc,own)
+      lazy val doc = asDocument(view(form, togc,own)(fakeDataRequest, messages, frontendAppConfig))
 
       "have the correct continue button" in {
         doc.select(Selectors.button).text() mustBe continueButton
@@ -68,8 +70,8 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
     }
 
     s"registration reason is $cole" must {
-      val form = new KeepOldVrnFormProvider()(cole)
-      lazy val doc = asDocument(view(form, cole)(fakeDataRequest, messages, frontendAppConfig))
+      val form = new KeepOldVrnFormProvider()(cole,own)
+      lazy val doc = asDocument(view(form, cole,own)(fakeDataRequest, messages, frontendAppConfig))
 
       "have the correct continue button" in {
         doc.select(Selectors.button).text() mustBe continueButton
