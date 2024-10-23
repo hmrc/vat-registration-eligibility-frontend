@@ -29,7 +29,7 @@
     h1: components.h1
 )
 
-@(form: Form[_], togcColeKey: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
+@(form: Form[_], togcColeKey: String, partyType: String)(implicit request: DataRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("keepOldVrn.heading"))), backLink = true) {
 
@@ -39,10 +39,20 @@
 
     @p{ @messages("keepOldVrn.para") }
 
-    @bullets(
-        s"keepOldVrn.bullet1.$togcColeKey",
-        s"keepOldVrn.bullet2.$togcColeKey"
-    )
+
+
+    @if(partyType == "Some(SomeoneElse)") {
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages(s"keepOldVrn.bullet1.tp.$togcColeKey") <a target="_blank" href="https://www.gov.uk/government/publications/vat-request-for-transfer-of-a-registration-number-vat68">@messages(s"keepOldVrn.bullet1.$togcColeKey.link")</a>.</li>
+        <li>@messages(s"keepOldVrn.bullet2.tp.$togcColeKey")</li>
+    </ul>
+} else {
+<ul class="govuk-list govuk-list--bullet">
+    <li>@messages(s"keepOldVrn.bullet1.$togcColeKey") <a target="_blank" href="https://www.gov.uk/government/publications/vat-request-for-transfer-of-a-registration-number-vat68">@messages(s"keepOldVrn.bullet1.$togcColeKey.link")</a>.</li>
+    <li>@messages(s"keepOldVrn.bullet2.$togcColeKey")</li>
+</ul>
+}
 
     @formWithCsrf(action = KeepOldVrnController.onSubmit, 'autoComplete -> "off") {
         @yesNoRadio(

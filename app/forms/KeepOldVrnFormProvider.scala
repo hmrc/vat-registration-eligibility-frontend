@@ -24,7 +24,7 @@ import javax.inject.Singleton
 @Singleton
 class KeepOldVrnFormProvider extends Mappings {
 
-  def apply(togcColeKey: String): Form[Boolean] = {
+  def apply(togcColeKey: String, partyType: String): Form[Boolean] = {
     Form(
       "value" -> boolean("keepOldVrn.error.required")
     )
