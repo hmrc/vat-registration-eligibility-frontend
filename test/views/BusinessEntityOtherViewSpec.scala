@@ -49,8 +49,8 @@ class BusinessEntityOtherViewSpec extends ViewSpecBase {
   val detailsPara2 = "Unincorporated with no legal identity of its own. A trust holds assets on behalf of an individual or another organisation and governs how they are to be used. Run by a group of people called trustees."
   val provider3 = "Registered Society"
   val detailsPara3 = "There are different kinds of registered societies, for example, Industrial and Provident Society, Co-operative Society (Co-op) and Community Benefit Society (BenCom). They have limited liability in the same way as companies."
-  val provider4 = "Unincorporated Association"
-  val detailsPara4 = "Groups that agree, or ‘contract’, to come together for a specific purpose. They normally have a constitution setting out the purpose for which the association has been set up and the rules for the association and its members."
+  val provider4 = "Unincorporated Association or other relevant charity"
+  val detailsPara4 = "These are groups that agree, or ‘contract’, to come together for a specific purpose. Unincorporated associations usually have a constitution setting out its purpose and its rules."
   val provider5 = "Division"
   val detailsPara5 = "A business entity which is part of a larger group. It has 2 or more branches performing different functions or trading in different geographical regions."
 

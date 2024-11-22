@@ -51,11 +51,11 @@ businessEntityOther.charitable-incorporated-organisation-4-link = search the Com
 businessEntityOther.charitable-incorporated-organisation-4-end  =.
 businessEntityOther.non-incorporated-trust                      = Unincorporated with no legal identity of its own. A trust holds assets on behalf of an individual or another organisation and governs how they are to be used. Run by a group of people called trustees.
 businessEntityOther.registered-society                          = There are different kinds of registered societies, for example, Industrial and Provident Society, Co-operative Society (Co-op) and Community Benefit Society (BenCom). They have limited liability in the same way as companies.
-businessEntityOther.unincorporated-association                  = Groups that agree, or ‘contract’, to come together for a specific purpose. They normally have a constitution setting out the purpose for which the association has been set up and the rules for the association and its members.
+businessEntityOther.unincorporated-association                  = These are groups that agree, or ‘contract’, to come together for a specific purpose. Unincorporated associations usually have a constitution setting out its purpose and its rules. 
+businessEntityOther.unincorporated-association-2                = Other relevant charity is a charitable incorporated organisation that has a Company Registration Number (CRN) that starts with either CE or CS.
 businessEntityOther.division                                    = A business entity which is part of a larger group. It has 2 or more branches performing different functions or trading in different geographical regions.
 businessEntityOther.overseas                                    = This is any company incorporated outside the UK but with some degree of physical presence in the UK, such as a place of business, or a branch where it carries on business.
 businessEntityOther.error.required                              = Select the type of business you want to register for VAT
-
 businessEntityPartnership.heading                               = What type of partnership are you registering?
 businessEntityPartnership.details                               = Partnership type descriptions
 businessEntityPartnership.general-partnership                   = These are made up of 2 or more people. One of the partners will be ‘nominated’ to deal with HMRC. General partnerships have no legal existence separate to the partners themselves.
@@ -77,7 +77,7 @@ businessEntity.other                                            = Other
 businessEntity.charitable-incorporated-organisation             = Charitable Incorporated Organisation (CIO)
 businessEntity.non-incorporated-trust                           = Trust (non-incorporated)
 businessEntity.registered-society                               = Registered Society
-businessEntity.unincorporated-association                       = Unincorporated Association
+businessEntity.unincorporated-association                       = Unincorporated Association or other relevant charity
 businessEntity.division                                         = Division
 businessEntity.overseas                                         = Non-UK Company
 
