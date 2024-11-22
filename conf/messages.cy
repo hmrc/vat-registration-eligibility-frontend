@@ -52,6 +52,7 @@ businessEntityOther.charitable-incorporated-organisation-4-end  = ' i ddod o hyd
 businessEntityOther.non-incorporated-trust                      = Anghorfforedig heb unrhyw hunaniaeth gyfreithiol ei hun. Mae ymddiriedolaeth yn dal asedion ar ran unigolyn neu sefydliad arall, ac mae’n llywodraethu sut y caiff yr asedion hynny eu defnyddio. Caiff ei rhedeg gan grŵp o bobl o’r enw ymddiriedolwyr.
 businessEntityOther.registered-society                          = Mae gwahanol fathau o gymdeithasau cofrestredig, er enghraifft, Cymdeithasau Diwydiannol a Darbodus, Cymdeithasau Cydweithredol (Co-op) a Chymdeithasau Budd Cymunedol (BenCom). Mae ganddynt atebolrwydd cyfyngedig yn yr un modd â chwmnïau.
 businessEntityOther.unincorporated-association                  = Grwpiau sy’n cytuno, neu sy’n contractio, i ddod at ei gilydd at ddiben penodol. Fel arfer, mae ganddynt gyfansoddiad sy’n amlinellu’r rheswm dros greu’r gymdeithas a’r rheolau ar gyfer y gymdeithas a’i haelodau.
+businessEntityOther.unincorporated-association-2                = Diffinnir ‘elusen berthnasol arall’ fel sefydliad corfforedig elusennol sydd â Rhif Cofrestru’r Cwmni (CRN) sy’n dechrau gyda naill ai CE neu CS.
 businessEntityOther.division                                    = Endid busnes sy’n rhan o grŵp mwy o faint. Mae ganddo ddwy gangen neu fwy yn cyflawni swyddogaethau gwahanol neu’n masnachu mewn gwahanol ranbarthau daearyddol.
 businessEntityOther.overseas                                    = Mae hyn yn golygu unrhyw gwmni sydd wedi’i ymgorffori y tu allan i’r DU ond sydd â rhyw fath o bresenoldeb corfforol yn y DU, megis lleoliad busnes, neu gangen ble y mae’n cynnal busnes.
 businessEntityOther.error.required                              = Dewiswch y math o fusnes yr hoffech ei gofrestru ar gyfer TAW
@@ -77,7 +78,7 @@ businessEntity.other                                            = Arall
 businessEntity.charitable-incorporated-organisation             = Sefydliad Corfforedig Elusennol (CIO)
 businessEntity.non-incorporated-trust                           = Ymddiriedolaeth (anghorfforedig)
 businessEntity.registered-society                               = Cymdeithas Gofrestredig
-businessEntity.unincorporated-association                       = Cymdeithas Anghorfforedig
+businessEntity.unincorporated-association                       = Cymdeithas Anghorfforedig neu elusen berthnasol arall
 businessEntity.division                                         = Is-adran
 businessEntity.overseas                                         = Cwmni y tu allan i’r DU
 
