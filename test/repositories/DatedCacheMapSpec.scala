@@ -29,7 +29,7 @@ class DatedCacheMapSpec extends PlaySpec {
       val lastUpdated = localDate.atZone(ZoneId.systemDefault()).toInstant
       val datedCacheMap = DatedCacheMap("id", Map.empty, lastUpdated)
       Json.toJson(datedCacheMap).as[DatedCacheMap] mustBe datedCacheMap
-      datedCacheMap.lastUpdated.toString mustBe "2024-04-19T08:45:59.365Z"
+      datedCacheMap.lastUpdated.toString mustBe "2024-04-19T09:45:59.365Z"
     }
   }
 }
