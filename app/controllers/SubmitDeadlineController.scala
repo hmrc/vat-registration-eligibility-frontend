@@ -18,19 +18,18 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.actions.{CacheIdentifierAction, DataRequiredAction, DataRetrievalAction}
-import featureswitch.core.models.FeatureSwitch
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.VatRegistrationService
-import views.html.MtdInformation
+import views.html.SubmitDeadlineView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
-class MtdInformationController @Inject()(identify: CacheIdentifierAction,
+class SubmitDeadlineController @Inject()(identify: CacheIdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
-                                         view: MtdInformation,
+                                         view: SubmitDeadlineView,
                                          vatRegistrationService: VatRegistrationService)
                                         (implicit appConfig: FrontendAppConfig,
                                          mcc: MessagesControllerComponents,
@@ -41,12 +40,9 @@ class MtdInformationController @Inject()(identify: CacheIdentifierAction,
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    if (isEnabled(FeatureSwitch.SubmitDeadline)) {
-      Future.successful(Redirect(routes.SubmitDeadlineController.onPageLoad))
-    } else {
-    vatRegistrationService.submitEligibility(hc, implicitly[ExecutionContext], request).map { _ =>
+      vatRegistrationService.submitEligibility(hc, implicitly[ExecutionContext], request).map { _ =>
       Redirect(s"${appConfig.vatRegFEURL}${appConfig.vatRegFEURI}/journey/${request.regId}")
-    }
+
     }
   }
 
