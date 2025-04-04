@@ -20,3 +20,10 @@ trait FeatureSwitch {
   val configName: String
   val displayName: String
 }
+object FeatureSwitch {
+
+  case object SubmitDeadline extends FeatureSwitch {
+    val configName: String = "feature-switch.submit-deadline"
+    val displayName: String = "Taxable Turnover May-June Journey"
+  }
+}

@@ -14,7 +14,7 @@ This service is started as part of the `VAT_REG_ALL` profile.
 It can also be started individually using either `sm --start VAT_REG_EL_FE -r`, or if you're using sm2, `sm2 --start VAT_REG_EL_FE`.
 
 Prior to starting the service locally, make sure the instance running in service manager is stopped. 
-This can be done by running either `sm --stop VAT_REG_EL_FE`, or `sm2 --stop VAT_REG_FE` if using sm2
+This can be done by running either `sm --stop VAT_REG_EL_FE`, or `sm2 --stop VAT_REG_EL_FE` if using sm2
 
 ### From source code on your local machine
 
