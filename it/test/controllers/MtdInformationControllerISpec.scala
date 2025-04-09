@@ -43,7 +43,7 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
 
   "POST /mtd-mandatory-information" must {
     "redirect back to VRS-FE to continue registration" in new Setup {
-      disable(FeatureSwitch.SubmitDeadline)
+      disable(FeatureSwitch.SubmitDeadlinePage)
 
       stubS4LGetNothing(testRegId)
       stubSuccessfulLogin()
@@ -68,7 +68,7 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
     }
 
     "redirect to the new flow if feature switch is enabled" in new Setup {
-      enable(FeatureSwitch.SubmitDeadline)
+      enable(FeatureSwitch.SubmitDeadlinePage)
 
       stubS4LGetNothing(testRegId)
       stubSuccessfulLogin()
@@ -94,7 +94,7 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
     }
 
     "Return Internal Server Error if data is missing and feature switch is disabled" in new Setup {
-      disable(FeatureSwitch.SubmitDeadline)
+      disable(FeatureSwitch.SubmitDeadlinePage)
       stubS4LGetNothing(testRegId)
       stubSuccessfulLogin()
       stubAudits()
@@ -106,7 +106,7 @@ class MtdInformationControllerISpec extends IntegrationSpecBase
     }
 
     "Return Internal Server Error if data is missing and feature switch is enabled" in new Setup {
-      enable(FeatureSwitch.SubmitDeadline)
+      enable(FeatureSwitch.SubmitDeadlinePage)
       stubS4LGetNothing(testRegId)
       stubSuccessfulLogin()
       stubAudits()

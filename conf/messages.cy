@@ -137,11 +137,10 @@ mtdInformation.bullet2               = cyflwyno Ffurflenni TAW yn uniongyrchol i
 mtdInformation.linkText              = Dysgu rhagor am Droi Treth yn Ddigidol ar gyfer TAW
 mtdInformation.button                = Yn eich blaen i gofrestru ar gyfer TAW
 
-submitDeadline.heading               = You must submit this VAT registration application by 1 June 2025, or you will need to start again
-submitDeadline.p1                    = The service is being updated on 1 June 2025.
-submitDeadline.p2                    = If you don't complete and submit this application before this date, you'll have to start the application again.
-submitDeadline.p3                    = After 1 June 2025, you'll have 28 days to complete a VAT application each time you save your progress.
-submitDeadline.button                = Continue
+submitDeadline.heading               = Mae’n rhaid i chi gyflwyno’r cais cofrestru TAW hwn erbyn 17 Mai 2025, neu bydd angen i chi ddechrau eto
+submitDeadline.p1                    = Mae’r gwasanaeth hwn yn cael ei ddiweddaru ar 17 Mai 2025.
+submitDeadline.p2                    = Os na fyddwch yn cwblhau a chyflwyno’r cais hwn cyn y dyddiad hwn, bydd yn rhaid i chi ddechrau’r cais eto.
+submitDeadline.p3                    = Ar ôl 17 Mai 2025, bydd gennych 28 diwrnod i gwblhau cais TAW bob tro y byddwch chi’n arbed eich cynnydd.
 
 thresholdInTwelveMonths.heading.business                    = A yw trosiant trethadwy’r busnes wedi mynd dros {0} yn ystod unrhyw gyfnod o 12 mis?
 thresholdInTwelveMonths.heading.partnership                 = A yw trosiant trethadwy’r bartneriaeth wedi mynd dros {0} yn ystod unrhyw gyfnod o 12 mis?

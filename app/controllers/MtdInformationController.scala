@@ -41,7 +41,7 @@ class MtdInformationController @Inject()(identify: CacheIdentifierAction,
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    if (isEnabled(FeatureSwitch.SubmitDeadline)) {
+    if (isEnabled(FeatureSwitch.SubmitDeadlinePage)) {
       Future.successful(Redirect(routes.SubmitDeadlineController.onPageLoad))
     } else {
     vatRegistrationService.submitEligibility(hc, implicitly[ExecutionContext], request).map { _ =>
