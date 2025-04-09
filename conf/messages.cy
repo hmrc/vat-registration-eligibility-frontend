@@ -137,10 +137,10 @@ mtdInformation.bullet2               = cyflwyno Ffurflenni TAW yn uniongyrchol i
 mtdInformation.linkText              = Dysgu rhagor am Droi Treth yn Ddigidol ar gyfer TAW
 mtdInformation.button                = Yn eich blaen i gofrestru ar gyfer TAW
 
-submitDeadline.heading               = Mae’n rhaid i chi gyflwyno’r cais cofrestru TAW hwn erbyn 17 Mai 2025, neu bydd angen i chi ddechrau eto
-submitDeadline.p1                    = Mae’r gwasanaeth hwn yn cael ei ddiweddaru ar 17 Mai 2025.
+submitDeadline.heading               = Mae’n rhaid i chi gyflwyno’r cais cofrestru TAW hwn erbyn 19 Mai 2025, neu bydd angen i chi ddechrau eto
+submitDeadline.p1                    = Mae’r gwasanaeth hwn yn cael ei ddiweddaru ar 19 Mai 2025.
 submitDeadline.p2                    = Os na fyddwch yn cwblhau a chyflwyno’r cais hwn cyn y dyddiad hwn, bydd yn rhaid i chi ddechrau’r cais eto.
-submitDeadline.p3                    = Ar ôl 17 Mai 2025, bydd gennych 28 diwrnod i gwblhau cais TAW bob tro y byddwch chi’n arbed eich cynnydd.
+submitDeadline.p3                    = Ar ôl 19 Mai 2025, bydd gennych 28 diwrnod i gwblhau cais TAW bob tro y byddwch chi’n arbed eich cynnydd.
 
 thresholdInTwelveMonths.heading.business                    = A yw trosiant trethadwy’r busnes wedi mynd dros {0} yn ystod unrhyw gyfnod o 12 mis?
 thresholdInTwelveMonths.heading.partnership                 = A yw trosiant trethadwy’r bartneriaeth wedi mynd dros {0} yn ystod unrhyw gyfnod o 12 mis?

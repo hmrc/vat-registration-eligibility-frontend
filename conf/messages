@@ -136,10 +136,10 @@ mtdInformation.bullet2               = submit VAT Returns directly to HMRC
 mtdInformation.linkText              = Find out more about Making Tax Digital for VAT
 mtdInformation.button                = Continue to register for VAT
 
-submitDeadline.heading               = You must submit this VAT registration application by 1 June 2025, or you will need to start again
-submitDeadline.p1                    = The service is being updated on 1 June 2025.
+submitDeadline.heading               = You must submit this VAT registration application by 19 May 2025, or you will need to start again
+submitDeadline.p1                    = The service is being updated on 19 May 2025.
 submitDeadline.p2                    = If you don’t complete and submit this application before this date, you’ll have to start the application again.
-submitDeadline.p3                    = After 1 June 2025, you’ll have 28 days to complete a VAT application each time you save your progress.
+submitDeadline.p3                    = After 19 May 2025, you’ll have 28 days to complete a VAT application each time you save your progress.
 
 thresholdInTwelveMonths.heading.business                    = Has the business’s taxable turnover gone over {0} in any 12 month period?
 thresholdInTwelveMonths.heading.partnership                 = Has the partnership’s taxable turnover gone over {0} in any 12 month period?
