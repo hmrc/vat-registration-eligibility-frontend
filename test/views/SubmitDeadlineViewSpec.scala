@@ -21,10 +21,10 @@ import views.html.SubmitDeadlineView
 class SubmitDeadlineViewSpec extends ViewSpecBase {
 
   object ExpectedContent {
-    val h1 = "You must submit this VAT registration application by 1 June 2025, or you will need to start again"
-    val p1 = "The service is being updated on 1 June 2025."
+    val h1 = "You must submit this VAT registration application by 19 May 2025, or you will need to start again"
+    val p1 = "The service is being updated on 19 May 2025."
     val p2 = "If you don’t complete and submit this application before this date, you’ll have to start the application again."
-    val p3 = "After 1 June 2025, you’ll have 28 days to complete a VAT application each time you save your progress."
+    val p3 = "After 19 May 2025, you’ll have 28 days to complete a VAT application each time you save your progress."
     val buttonText = "Continue"
   }
 
