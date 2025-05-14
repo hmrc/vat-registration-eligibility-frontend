@@ -19,15 +19,16 @@ package repositories
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
-import java.time.{LocalDateTime, ZoneId}
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class DatedCacheMapSpec extends PlaySpec {
 
   "DatedCacheMap" must {
     "serialize and deserialize lastUpdated" in {
-      val localDate = LocalDateTime.parse("2024-04-19T09:45:59.365")
-      val lastUpdated = localDate.atZone(ZoneId.systemDefault()).toInstant
-      val datedCacheMap = DatedCacheMap("id", Map.empty, lastUpdated)
+      val instant = Instant.parse("2024-04-19T09:45:59.365Z").truncatedTo(ChronoUnit.MILLIS)
+      val datedCacheMap = DatedCacheMap("id", Map.empty, instant)
+
       Json.toJson(datedCacheMap).as[DatedCacheMap] mustBe datedCacheMap
       datedCacheMap.lastUpdated.toString mustBe "2024-04-19T09:45:59.365Z"
     }
