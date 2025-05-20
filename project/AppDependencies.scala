@@ -9,7 +9,7 @@ object AppDependencies {
   private val httpCachingClientVersion = "11.2.0"
   private val mongoPlayVersion = "2.6.0"
   private val playConditionalFormMappingVersion = "2.0.0"
-  private val bootstrapVersion = "8.5.0"
+  private val bootstrapVersion = "8.6.0"
   private val jsoupVersion = "1.17.2"
   private val playHmrcFrontendVersion = "8.5.0"
   private val playVersion = "30"
