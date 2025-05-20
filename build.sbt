@@ -7,9 +7,9 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 val appName: String = "vat-registration-eligibility-frontend"
 
 ThisBuild / majorVersion := 1
-ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / scalaVersion := "2.13.16"
 
-val silencerVersion = "1.7.16"
+val silencerVersion = "1.7.19"
 
 val scoverageSettings = Seq(
   ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*models.*;.*repositories.*;" +
