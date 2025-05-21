@@ -90,8 +90,8 @@ class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)
 
   private val filter = Filters.`type`("lastUpdated", BsonType.STRING)
 
-  private def errorMessage(e: Throwable, deletionOrCount: String) =
-    s"[MongoRemoveInvalidDataOnStartUp][countOrDeleteInvalidData] $deletionOrCount of data failed with invalid 'lastUpdated' index." +
+  private def errorMessage(e: Throwable) =
+    s"[MongoRemoveInvalidDataOnStartUp][countOrDeleteInvalidData] Deletion of data failed with invalid 'lastUpdated' index." +
       s"\n[MongoRemoveInvalidDataOnStartUp][countOrDeleteInvalidData] Error: $e"
 
   def deleteDataWithLastUpdatedStringType(): Future[DeleteResult] =
@@ -103,7 +103,7 @@ class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)
         result
       }
       .recover { case e: Throwable =>
-        logger.error(errorMessage(e, "deletion"))
+        logger.error(errorMessage(e))
         DeleteResult.acknowledged(0)
       }
 
