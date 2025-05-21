@@ -27,4 +27,9 @@ object FeatureSwitch {
     val configName: String = "feature-switch.submit-deadline-page"
     val displayName: String = "Taxable Turnover May-June Submit Deadline Page"
   }
+
+  case object DeleteInvalidTimestampData extends FeatureSwitch {
+    val configName: String = "feature-switch.delete-invalid-timestamp-data"
+    val displayName: String = "Enable to delete database items with a String 'lastUpdated' timestamp on start up"
+  }
 }
