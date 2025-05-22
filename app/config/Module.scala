@@ -18,12 +18,14 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions.{CacheIdentifierAction, CacheIdentifierActionImpl, DataRetrievalAction, DataRetrievalActionImpl}
+import repositories.MongoRemoveInvalidDataOnStartUp
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
     bind(classOf[CacheIdentifierAction]).to(classOf[CacheIdentifierActionImpl]).asEagerSingleton()
     bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
+    bind(classOf[MongoRemoveInvalidDataOnStartUp]).asEagerSingleton()
   }
 
 }
