@@ -26,7 +26,9 @@ import javax.inject.Singleton
 class FeatureSwitchingModule extends Module with FeatureSwitchRegistry {
 
   val switches: Seq[FeatureSwitch] = Seq(
-    FeatureSwitch.SubmitDeadlinePage
+    FeatureSwitch.SubmitDeadlinePage,
+    FeatureSwitch.DeleteAllInvalidTimestampData,
+    FeatureSwitch.DeleteSomeInvalidTimestampData
   )
 
   override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = {

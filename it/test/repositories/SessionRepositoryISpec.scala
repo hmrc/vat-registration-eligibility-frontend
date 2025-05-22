@@ -17,7 +17,6 @@
 package repositories
 
 import config.FrontendAppConfig
-import featureswitch.core.models.FeatureSwitch.DeleteInvalidTimestampData
 import helpers.IntegrationSpecBase
 import org.mockito.Mockito.when
 import org.mongodb.scala.bson.collection.immutable.Document
@@ -70,9 +69,9 @@ class SessionRepositoryISpec extends IntegrationSpecBase with TableDrivenPropert
     }
   }
 
-  private val mockAppConfig: FrontendAppConfig = mock[FrontendAppConfig]
-  private val mockServicesConfig: ServicesConfig        = mock[ServicesConfig]
-    when(mockAppConfig.servicesConfig).thenReturn(mockServicesConfig)
+  private val mockAppConfig: FrontendAppConfig   = mock[FrontendAppConfig]
+  private val mockServicesConfig: ServicesConfig = mock[ServicesConfig]
+  when(mockAppConfig.servicesConfig).thenReturn(mockServicesConfig)
 
   trait DeleteDataSetup {
     val testSessionRepository: SessionRepository        = app.injector.instanceOf[SessionRepository]
@@ -97,7 +96,7 @@ class SessionRepositoryISpec extends IntegrationSpecBase with TableDrivenPropert
     data = Map("voluntaryRegistration" -> JsBoolean(false)),
     lastUpdated = Instant.now().minusSeconds(3600)
   )
-  private val invalidData1 = Document(
+  private val invalidData = Document(
     "id"          -> BsonString("invalid-1"),
     "data"        -> BsonDocument("voluntaryRegistration" -> BsonBoolean(true)),
     "lastUpdated" -> BsonString("2020-01-01T00:00:00Z"), // This is the invalid data type, is String not BsonDateTime
@@ -135,7 +134,7 @@ class SessionRepositoryISpec extends IntegrationSpecBase with TableDrivenPropert
       }
 
       "database has only invalid data" in new DeleteDataSetup {
-        fillDatabaseWithData(Seq(invalidData1))
+        fillDatabaseWithData(Seq(invalidData))
         await(mongoCollection.countDocuments().head()) mustBe 1
 
         await(testSessionRepository.deleteAllDataWithLastUpdatedStringType()).getDeletedCount mustBe 1
@@ -143,7 +142,7 @@ class SessionRepositoryISpec extends IntegrationSpecBase with TableDrivenPropert
       }
 
       "database has a mix of valid and invalid data" in new DeleteDataSetup {
-        fillDatabaseWithData(Seq(invalidData1) ++ validDataSetDocs)
+        fillDatabaseWithData(Seq(invalidData) ++ validDataSetDocs)
         await(mongoCollection.countDocuments().head()) mustBe 3
 
         await(testSessionRepository.deleteAllDataWithLastUpdatedStringType()).getDeletedCount mustBe 1
@@ -156,45 +155,84 @@ class SessionRepositoryISpec extends IntegrationSpecBase with TableDrivenPropert
     "delete data - up to config limit - with a 'lastUpdated' index of type String" when {
       "database is empty" when {
         "delete limit is zero" in new DeleteDataSetup {
+          val limit = 0
           await(mongoCollection.drop().head())
           await(mongoCollection.countDocuments().head()) mustBe 0
 
-          when(mockServicesConfig.getString(DeleteInvalidTimestampData.configName)).thenReturn("false")
-
-          await(testSessionRepository.deleteNDataWithLastUpdatedStringType()).getDeletedCount mustBe 0
+          await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 0
           await(testSessionRepository.collection.countDocuments().head()) mustBe 0
         }
         "delete limit exceeds document count" in new DeleteDataSetup {
+          val limit = 2
           await(mongoCollection.drop().head())
           await(mongoCollection.countDocuments().head()) mustBe 0
 
-          await(testSessionRepository.deleteNDataWithLastUpdatedStringType()).getDeletedCount mustBe 0
+          await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 0
           await(testSessionRepository.collection.countDocuments().head()) mustBe 0
         }
       }
 
-      "database has only valid data" in new DeleteDataSetup {
+      "database has only valid data, no data should be deleted" in new DeleteDataSetup {
+        val limit = 2
         fillDatabaseWithData(validDataSetDocs)
         await(mongoCollection.countDocuments().head()) mustBe 2
 
-        await(testSessionRepository.deleteNDataWithLastUpdatedStringType()).getDeletedCount mustBe 0
+        await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 0
         await(testSessionRepository.collection.countDocuments().head()) mustBe 2
       }
 
-      "database has only invalid data" in new DeleteDataSetup {
-        fillDatabaseWithData(Seq(invalidData1))
-        await(mongoCollection.countDocuments().head()) mustBe 1
+      "database has only invalid data" when {
+        "limit is zero" in new DeleteDataSetup {
+          val limit = 0
+          fillDatabaseWithData(Seq(invalidData, invalidData))
+          await(mongoCollection.countDocuments().head()) mustBe 2
 
-        await(testSessionRepository.deleteNDataWithLastUpdatedStringType()).getDeletedCount mustBe 1
-        await(testSessionRepository.collection.countDocuments().head()) mustBe 0
+          await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 0
+          await(testSessionRepository.collection.countDocuments().head()) mustBe 2
+        }
+        "limit is greater than invalid doc count" in new DeleteDataSetup {
+          val limit = 5
+          fillDatabaseWithData(Seq(invalidData, invalidData))
+          await(mongoCollection.countDocuments().head()) mustBe 2
+
+          await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 2
+          await(testSessionRepository.collection.countDocuments().head()) mustBe 0
+        }
+        "limit is less than invalid doc count" in new DeleteDataSetup {
+          val limit = 1
+          fillDatabaseWithData(Seq(invalidData, invalidData))
+          await(mongoCollection.countDocuments().head()) mustBe 2
+
+          await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 1
+          await(testSessionRepository.collection.countDocuments().head()) mustBe 1
+        }
       }
 
-      "database has a mix of valid and invalid data" in new DeleteDataSetup {
-        fillDatabaseWithData(Seq(invalidData1) ++ validDataSetDocs)
-        await(mongoCollection.countDocuments().head()) mustBe 3
+      "database has a mix of valid and invalid data" when {
+        "limit is zero" in new DeleteDataSetup {
+          val limit = 0
+          fillDatabaseWithData(validDataSetDocs ++ Seq(invalidData, invalidData))
+          await(mongoCollection.countDocuments().head()) mustBe 4
 
-        await(testSessionRepository.deleteNDataWithLastUpdatedStringType()).getDeletedCount mustBe 1
-        await(testSessionRepository.collection.countDocuments().head()) mustBe 2
+          await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 0
+          await(testSessionRepository.collection.countDocuments().head()) mustBe 4
+        }
+        "limit is greater than invalid doc count" in new DeleteDataSetup {
+          val limit = 5
+          fillDatabaseWithData(validDataSetDocs ++ Seq(invalidData, invalidData))
+          await(mongoCollection.countDocuments().head()) mustBe 4
+
+          await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 2
+          await(testSessionRepository.collection.countDocuments().head()) mustBe 2
+        }
+        "limit is less than invalid doc count" in new DeleteDataSetup {
+          val limit = 1
+          fillDatabaseWithData(validDataSetDocs ++ Seq(invalidData, invalidData))
+          await(mongoCollection.countDocuments().head()) mustBe 4
+
+          await(testSessionRepository.deleteNDataWithLastUpdatedStringType(limit)).getDeletedCount mustBe 1
+          await(testSessionRepository.collection.countDocuments().head()) mustBe 3
+        }
       }
     }
   }

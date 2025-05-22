@@ -17,10 +17,10 @@
 package repositories
 
 import config.FrontendAppConfig
-import featureswitch.core.models.FeatureSwitch.{DeleteAllInvalidTimestampData, DeleteSomeInvalidTimestampData}
+import featureswitch.core.models.FeatureSwitch.{DeleteAllInvalidTimestampData, DeleteSomeInvalidTimestampData, LimitForDeleteSomeData}
 import org.apache.pekko.actor.ActorSystem
 import utils.LoggingUtil
-import utils.PageIdBinding.isEnabled
+import utils.PageIdBinding.{getValue, isEnabled}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -43,11 +43,9 @@ class MongoRemoveInvalidDataOnStartUp @Inject() (actorSystem: ActorSystem, sessi
   }
 
   private def deleteInvalidData(): Unit = {
-    val deleteLimitKey              = appConfig.deleteLimitDatabaseConfigKey
-    val deleteAllDocuments: Boolean = isEnabled(DeleteAllInvalidTimestampData)
-    val deleteNDocuments: Boolean   = isEnabled(DeleteSomeInvalidTimestampData)
-    val deleteDocumentLimit: Option[Int] = // If limit is not set or is invalid Int, don't run DeleteSomeInvalidTimestampData
-      Try(sys.props.get(deleteLimitKey).getOrElse(appConfig.servicesConfig.getString(deleteLimitKey)).toInt).toOption
+    val deleteAllDocuments: Boolean      = isEnabled(DeleteAllInvalidTimestampData)
+    val deleteNDocuments: Boolean        = isEnabled(DeleteSomeInvalidTimestampData)
+    val deleteDocumentLimit: Option[Int] = Try(getValue(LimitForDeleteSomeData).toInt).toOption
 
     (deleteNDocuments, deleteDocumentLimit, deleteAllDocuments) match {
       case (true, Some(limit), false) if limit > 0 =>
@@ -58,6 +56,10 @@ class MongoRemoveInvalidDataOnStartUp @Inject() (actorSystem: ActorSystem, sessi
         logger.warn(
           s"[MongoRemoveInvalidDataOnStartUp] 'DeleteAllInvalidTimestampData' switch is set to true - starting deleteAllDataWithLastUpdatedString process.")
         sessionRepository.deleteAllDataWithLastUpdatedStringType()
+      case (true, None, false) =>
+        logger.warn(
+          s"[MongoRemoveInvalidDataOnStartUp] 'DeleteSomeInvalidTimestampData' switch is on but limit config is invalid" +
+            s" - no action taken.")
       case (false, _, false) =>
         logger.warn(
           s"[MongoRemoveInvalidDataOnStartUp] 'DeleteAllInvalidTimestampData' and 'DeleteSomeInvalidTimestampData'" +

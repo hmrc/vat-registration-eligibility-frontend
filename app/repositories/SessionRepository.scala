@@ -96,32 +96,36 @@ class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)
       s"\n[MongoRemoveInvalidDataOnStartUp][delete${allOrN}DataWithLastUpdatedStringType] Error: $e"
 
   def deleteNDataWithLastUpdatedStringType(nLimitForDeletion: Int): Future[DeleteResult] =
-    collection
-      .withDocumentClass() // Has to be Document instead of DatedCacheMap to get '_id'
-      .find(filter)
-      .projection(include("_id"))
-      .limit(nLimitForDeletion)
-      .toFuture()
-      .flatMap { documents =>
-        val ids = documents.map(_.getObjectId("_id"))
-        if (ids.nonEmpty) {
-          val idFilter = Filters.in("_id", ids: _*)
-          collection
-            .deleteMany(idFilter)
-            .toFuture()
-            .map { result =>
-              logger.warn(s"[MongoRemoveInvalidDataOnStartUp][deleteNDataWithLastUpdatedStringType] Number of DELETED" +
-                s" invalid documents: ${result.getDeletedCount}, limit: $nLimitForDeletion")
-              result
-            }
-        } else {
-          Future.successful(DeleteResult.acknowledged(0))
+    if (nLimitForDeletion > 0) { // This seems unnecessary but if limit is zero => no limit
+      collection
+        .withDocumentClass() // Has to be Document instead of DatedCacheMap to get '_id'
+        .find(filter)
+        .projection(include("_id"))
+        .limit(nLimitForDeletion)
+        .toFuture()
+        .flatMap { documents =>
+          val ids = documents.map(_.getObjectId("_id"))
+          if (ids.nonEmpty) {
+            val idFilter = Filters.in("_id", ids: _*)
+            collection
+              .deleteMany(idFilter)
+              .toFuture()
+              .map { result =>
+                logger.warn(s"[MongoRemoveInvalidDataOnStartUp][deleteNDataWithLastUpdatedStringType] Number of DELETED" +
+                  s" invalid documents: ${result.getDeletedCount}, limit: $nLimitForDeletion")
+                result
+              }
+          } else {
+            Future.successful(DeleteResult.acknowledged(0))
+          }
         }
-      }
-      .recover { case e: Throwable =>
-        logger.error(errorMessage(e, "N"))
-        DeleteResult.acknowledged(0)
-      }
+        .recover { case e: Throwable =>
+          logger.error(errorMessage(e, "N"))
+          DeleteResult.acknowledged(0)
+        }
+    } else {
+      Future.successful(DeleteResult.acknowledged(0))
+    }
 
   def deleteAllDataWithLastUpdatedStringType(): Future[DeleteResult] =
     collection

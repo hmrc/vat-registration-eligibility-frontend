@@ -38,4 +38,9 @@ object FeatureSwitch {
     val displayName: String = "Enable to delete database items with a String 'lastUpdated' timestamp on start up, up to the config limit"
   }
 
+  case object LimitForDeleteSomeData extends FeatureSwitch {
+    val configName: String = "feature-switch.limit-for-deleting-invalid-timestamp-data"
+    val displayName: String = "Not a Boolean feature switch - is an Int limit value"
+  }
+
 }
