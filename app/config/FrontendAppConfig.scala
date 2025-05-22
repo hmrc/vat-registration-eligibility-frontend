@@ -28,6 +28,8 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class FrontendAppConfig @Inject()(val servicesConfig: ServicesConfig, configuration: Configuration) extends FeatureSwitching {
 
+  lazy val deleteLimitDatabaseConfigKey: String = "limit-for-deleting-invalid-timestamp-data"
+
   private def loadConfig(key: String) = servicesConfig.getString(key)
 
   lazy val timeout: Int = servicesConfig.getInt("timeout.timeout")

@@ -21,6 +21,7 @@ import com.mongodb.client.result.DeleteResult
 import org.bson.BsonType
 import org.mongodb.scala.model
 import org.mongodb.scala.model.Filters._
+import org.mongodb.scala.model.Projections.include
 import org.mongodb.scala.model.Updates.unset
 import org.mongodb.scala.model._
 import play.api.Configuration
@@ -90,20 +91,49 @@ class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)
 
   private val filter = Filters.`type`("lastUpdated", BsonType.STRING)
 
-  private def errorMessage(e: Throwable) =
-    s"[MongoRemoveInvalidDataOnStartUp][countOrDeleteInvalidData] Deletion of data failed with invalid 'lastUpdated' index." +
-      s"\n[MongoRemoveInvalidDataOnStartUp][countOrDeleteInvalidData] Error: $e"
+  private def errorMessage(e: Throwable, allOrN: String) =
+    s"[MongoRemoveInvalidDataOnStartUp][delete${allOrN}DataWithLastUpdatedStringType] Deletion of data failed with invalid 'lastUpdated' index." +
+      s"\n[MongoRemoveInvalidDataOnStartUp][delete${allOrN}DataWithLastUpdatedStringType] Error: $e"
 
-  def deleteDataWithLastUpdatedStringType(): Future[DeleteResult] =
+  def deleteNDataWithLastUpdatedStringType(nLimitForDeletion: Int): Future[DeleteResult] =
+    collection
+      .withDocumentClass() // Has to be Document instead of DatedCacheMap to get '_id'
+      .find(filter)
+      .projection(include("_id"))
+      .limit(nLimitForDeletion)
+      .toFuture()
+      .flatMap { documents =>
+        val ids = documents.map(_.getObjectId("_id"))
+        if (ids.nonEmpty) {
+          val idFilter = Filters.in("_id", ids: _*)
+          collection
+            .deleteMany(idFilter)
+            .toFuture()
+            .map { result =>
+              logger.warn(s"[MongoRemoveInvalidDataOnStartUp][deleteNDataWithLastUpdatedStringType] Number of DELETED" +
+                s" invalid documents: ${result.getDeletedCount}, limit: $nLimitForDeletion")
+              result
+            }
+        } else {
+          Future.successful(DeleteResult.acknowledged(0))
+        }
+      }
+      .recover { case e: Throwable =>
+        logger.error(errorMessage(e, "N"))
+        DeleteResult.acknowledged(0)
+      }
+
+  def deleteAllDataWithLastUpdatedStringType(): Future[DeleteResult] =
     collection
       .deleteMany(filter)
       .toFuture()
       .map { result =>
-        logger.warn(s"[MongoRemoveInvalidDataOnStartUp][countOrDeleteInvalidData] Number of DELETED invalid documents: ${result.getDeletedCount}")
+        logger.warn(
+          s"[MongoRemoveInvalidDataOnStartUp][deleteAllDataWithLastUpdatedStringType] Number of DELETED invalid documents: ${result.getDeletedCount}")
         result
       }
       .recover { case e: Throwable =>
-        logger.error(errorMessage(e))
+        logger.error(errorMessage(e, "All"))
         DeleteResult.acknowledged(0)
       }
 

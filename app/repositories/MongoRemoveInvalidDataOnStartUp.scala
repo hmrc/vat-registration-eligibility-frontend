@@ -17,7 +17,7 @@
 package repositories
 
 import config.FrontendAppConfig
-import featureswitch.core.models.FeatureSwitch.DeleteInvalidTimestampData
+import featureswitch.core.models.FeatureSwitch.{DeleteAllInvalidTimestampData, DeleteSomeInvalidTimestampData}
 import org.apache.pekko.actor.ActorSystem
 import utils.LoggingUtil
 import utils.PageIdBinding.isEnabled
@@ -25,6 +25,7 @@ import utils.PageIdBinding.isEnabled
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
+import scala.util.Try
 
 @Singleton
 class MongoRemoveInvalidDataOnStartUp @Inject() (actorSystem: ActorSystem, sessionRepository: SessionRepository)(implicit
@@ -32,21 +33,41 @@ class MongoRemoveInvalidDataOnStartUp @Inject() (actorSystem: ActorSystem, sessi
     ec: ExecutionContext)
     extends LoggingUtil {
 
+  // Delay gives time for spin up, + random jitter to avoid conflicting startup actions
   protected def jitterDelay: FiniteDuration = (10 + scala.util.Random.nextInt(5)).seconds
 
   actorSystem.scheduler.scheduleOnce(jitterDelay) {
     logger.warn(s"[MongoRemoveInvalidDataOnStartUp] Start up job has started after delay of $jitterDelay.")
-    countOrDeleteInvalidData()
+    deleteInvalidData()
     logger.warn(s"[MongoRemoveInvalidDataOnStartUp] Start up job has ended.")
   }
 
-  private def countOrDeleteInvalidData(): Unit =
-    if (isEnabled(DeleteInvalidTimestampData)) {
-      logger.warn(
-        s"[MongoRemoveInvalidDataOnStartUp] 'DeleteInvalidTimestampData' switch is set to true - starting deleteDataWithLastUpdatedString process.")
-      sessionRepository.deleteDataWithLastUpdatedStringType()
-    } else {
-      logger.warn(s"[MongoRemoveInvalidDataOnStartUp] 'DeleteInvalidTimestampData' switch is set to false - no action taken.")
+  private def deleteInvalidData(): Unit = {
+    val deleteLimitKey              = appConfig.deleteLimitDatabaseConfigKey
+    val deleteAllDocuments: Boolean = isEnabled(DeleteAllInvalidTimestampData)
+    val deleteNDocuments: Boolean   = isEnabled(DeleteSomeInvalidTimestampData)
+    val deleteDocumentLimit: Option[Int] = // If limit is not set or is invalid Int, don't run DeleteSomeInvalidTimestampData
+      Try(sys.props.get(deleteLimitKey).getOrElse(appConfig.servicesConfig.getString(deleteLimitKey)).toInt).toOption
+
+    (deleteNDocuments, deleteDocumentLimit, deleteAllDocuments) match {
+      case (true, Some(limit), false) if limit > 0 =>
+        logger.warn(
+          s"[MongoRemoveInvalidDataOnStartUp] 'DeleteSomeInvalidTimestampData' switch is set to true - starting deleteNDataWithLastUpdatedString process.")
+        sessionRepository.deleteNDataWithLastUpdatedStringType(limit)
+      case (false, _, true) =>
+        logger.warn(
+          s"[MongoRemoveInvalidDataOnStartUp] 'DeleteAllInvalidTimestampData' switch is set to true - starting deleteAllDataWithLastUpdatedString process.")
+        sessionRepository.deleteAllDataWithLastUpdatedStringType()
+      case (false, _, false) =>
+        logger.warn(
+          s"[MongoRemoveInvalidDataOnStartUp] 'DeleteAllInvalidTimestampData' and 'DeleteSomeInvalidTimestampData'" +
+            s" switches are set to false - no action taken.")
+      case _ =>
+        logger.warn(
+          s"[MongoRemoveInvalidDataOnStartUp] Conflicting 'DeleteInvalidTimestampData' / 'DeleteSomeInvalidTimestampData'" +
+            s" switches or invalid deletion limit, - no action taken.")
     }
+
+  }
 
 }
