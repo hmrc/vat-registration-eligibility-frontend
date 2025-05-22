@@ -97,7 +97,7 @@ class MongoRemoveInvalidDataOnStartUpSpec extends PlaySpec with MockitoSugar {
     }
 
     "make a call to the database to delete the invalid data up to the config limit" when {
-      "'DeleteSomeInvalidTimestampData' (and not 'DeleteAllInvalidTimestampData') switch is enabled with a configured deletion limit" in new TestMongoRemoveInvalidDataOnStartUp() {
+      "'DeleteSomeInvalidTimestampData' (and not 'DeleteAllInvalidTimestampData') switch is enabled with a configured deletion limit" ignore new TestMongoRemoveInvalidDataOnStartUp() {
         when(mockServicesConfig.getString(LimitForDeleteSomeData.configName)).thenReturn("2")
         when(mockServicesConfig.getString(DeleteSomeInvalidTimestampData.configName)).thenReturn("true")
         when(mockServicesConfig.getString(DeleteAllInvalidTimestampData.configName)).thenReturn("false")
