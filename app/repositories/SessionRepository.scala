@@ -17,11 +17,8 @@
 package repositories
 
 import com.mongodb.client.model.Indexes.ascending
-import com.mongodb.client.result.DeleteResult
-import org.bson.BsonType
 import org.mongodb.scala.model
 import org.mongodb.scala.model.Filters._
-import org.mongodb.scala.model.Projections.include
 import org.mongodb.scala.model.Updates.unset
 import org.mongodb.scala.model._
 import play.api.Configuration
@@ -31,7 +28,6 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import uk.gov.hmrc.play.http.logging.Mdc
-import utils.LoggingUtil
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -53,8 +49,7 @@ class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)
             .expireAfter(config.get[Int]("mongodb.timeToLiveInSeconds"), TimeUnit.SECONDS)
         )
       )
-    )
-    with LoggingUtil {
+    ) {
 
   def get(id: String): Future[Option[CacheMap]] = Mdc.preservingMdc {
     collection.find(equal("id", id)).map(_.as[CacheMap]).headOption()
@@ -88,58 +83,6 @@ class SessionRepository @Inject() (config: Configuration, mongo: MongoComponent)
   def delete(id: String): Future[Boolean] = Mdc.preservingMdc {
     collection.deleteOne(equal("id", id)).map(_.wasAcknowledged()).head()
   }
-
-  private val filter = Filters.`type`("lastUpdated", BsonType.STRING)
-
-  private def errorMessage(e: Throwable, allOrN: String) =
-    s"[MongoRemoveInvalidDataOnStartUp][delete${allOrN}DataWithLastUpdatedStringType] Deletion of data failed with invalid 'lastUpdated' index." +
-      s"\n[MongoRemoveInvalidDataOnStartUp][delete${allOrN}DataWithLastUpdatedStringType] Error: $e"
-
-  def deleteNDataWithLastUpdatedStringType(nLimitForDeletion: Int): Future[DeleteResult] =
-    if (nLimitForDeletion > 0) { // This seems unnecessary but if limit is zero => no limit
-      collection
-        .withDocumentClass() // Has to be Document instead of DatedCacheMap to get '_id'
-        .find(filter)
-        .projection(include("_id"))
-        .limit(nLimitForDeletion)
-        .toFuture()
-        .flatMap { documents =>
-          val ids = documents.map(_.getObjectId("_id"))
-          if (ids.nonEmpty) {
-            val idFilter = Filters.in("_id", ids: _*)
-            collection
-              .deleteMany(idFilter)
-              .toFuture()
-              .map { result =>
-                logger.warn(s"[MongoRemoveInvalidDataOnStartUp][deleteNDataWithLastUpdatedStringType] Number of DELETED" +
-                  s" invalid documents: ${result.getDeletedCount}, limit: $nLimitForDeletion")
-                result
-              }
-          } else {
-            Future.successful(DeleteResult.acknowledged(0))
-          }
-        }
-        .recover { case e: Throwable =>
-          logger.error(errorMessage(e, "N"))
-          DeleteResult.acknowledged(0)
-        }
-    } else {
-      Future.successful(DeleteResult.acknowledged(0))
-    }
-
-  def deleteAllDataWithLastUpdatedStringType(): Future[DeleteResult] =
-    collection
-      .deleteMany(filter)
-      .toFuture()
-      .map { result =>
-        logger.warn(
-          s"[MongoRemoveInvalidDataOnStartUp][deleteAllDataWithLastUpdatedStringType] Number of DELETED invalid documents: ${result.getDeletedCount}")
-        result
-      }
-      .recover { case e: Throwable =>
-        logger.error(errorMessage(e, "All"))
-        DeleteResult.acknowledged(0)
-      }
 
 }
 
