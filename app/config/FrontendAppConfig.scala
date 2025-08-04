@@ -43,8 +43,11 @@ class FrontendAppConfig @Inject()(val servicesConfig: ServicesConfig, configurat
   lazy val vatRegFEURL = loadConfig(s"$configRoot.vat-registration-frontend.url")
   lazy val vatRegFEURI = loadConfig(s"$configRoot.vat-registration-frontend.uri")
   lazy val postSignInUrl = loadConfig(s"$configRoot.vat-registration-frontend.postSignInUrl")
+  private lazy val basGatewayUrl: String = loadConfig(s"bas-gateway-frontend.host")
+  private val signOutUri: String = loadConfig("sign-out.uri")
+  lazy val signOutUrl: String = s"$basGatewayUrl$signOutUri"
   lazy val feedbackFrontendUrl = loadConfig(s"$configRoot.feedback-frontend.url")
-  lazy val exitSurveyUrl = s"$feedbackFrontendUrl/feedback/vat-registration"
+  lazy val exitSurveyUrl = s"$feedbackFrontendUrl/feedback/vat-registrations"
   lazy val VAT1AFormURL = servicesConfig.getConfString("gov-uk.VAT1AFormURL", throw new Exception("Couldn't get VAT1AFormURL URL"))
   lazy val VAT1CFormURL = servicesConfig.getConfString("gov-uk.VAT1CFormURL", throw new Exception("Couldn't get VAT1CFormURL URL"))
   lazy val VAT98FormURL = servicesConfig.getConfString("gov-uk.VAT98FormURL", throw new Exception("Couldn't get VAT98FormURL URL"))
