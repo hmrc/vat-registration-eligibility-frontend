@@ -28,6 +28,6 @@ class SignOutController @Inject()(implicit val appConfig: FrontendAppConfig,
                                   val executionContext: ExecutionContext) extends BaseController {
 
   def signOut: Action[AnyContent] = Action {
-    _ => Redirect(s"${appConfig.signOutUrl}?continue=${appConfig.exitSurveyUrl}").withNewSession
+    _ => Redirect(appConfig.exitSurveyUrl).withNewSession
   }
 }
