@@ -32,7 +32,7 @@ class SignOutControllerISpec extends IntegrationSpecBase {
       val res = await(buildClient(pageUrl).get)
 
       res.status mustBe SEE_OTHER
-      res.header(HeaderNames.LOCATION) mustBe Some(s"${appConfig.signOutUrl}?continue=${appConfig.exitSurveyUrl}")
+      res.header(HeaderNames.LOCATION) mustBe Some(appConfig.exitSurveyUrl)
     }
   }
 
