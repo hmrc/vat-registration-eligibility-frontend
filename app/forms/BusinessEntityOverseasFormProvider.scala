@@ -31,25 +31,33 @@ class BusinessEntityOverseasFormProvider extends Mappings {
   val businessEntity: String = "value"
   val businessEntityError: String = "businessEntityOverseas.error.required"
 
-  def apply(): Form[OverseasType] = Form(
+  def apply(): Form[BusinessEntity] = Form(
     single(
       businessEntity -> of(formatter)
     )
   )
 
-  def formatter: Formatter[OverseasType] = new Formatter[OverseasType] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], OverseasType] = {
+  def formatter: Formatter[BusinessEntity] = new Formatter[BusinessEntity] {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BusinessEntity] = {
       data.get(key) match {
-        case Some(`netpKey`) => Right(NETP)
         case Some(`overseasKey`) => Right(Overseas)
+        case Some(`soleTraderKey`) => Right(SoleTrader)
+        case Some(`ukCompanyKey`) => Right(UKCompany)
+        case Some(`partnershipKey`) => Right(Partnership)
+        case Some(`limitedLiabilityPartnershipKey`) => Right(LimitedLiabilityPartnership)
+        case Some(`nonIncorporatedTrustKey`) => Right(NonIncorporatedTrust)
         case _ => Left(Seq(FormError(key, businessEntityError)))
       }
     }
 
-    override def unbind(key: String, value: OverseasType): Map[String, String] = {
+    override def unbind(key: String, value: BusinessEntity): Map[String, String] = {
       val stringValue = value match {
-        case NETP => netpKey
         case Overseas => overseasKey
+        case SoleTrader => soleTraderKey
+        case UKCompany => ukCompanyKey
+        case Partnership => partnershipKey
+        case LimitedLiabilityPartnership => limitedLiabilityPartnershipKey
+        case NonIncorporatedTrust => nonIncorporatedTrustKey
       }
       Map(key -> stringValue)
     }

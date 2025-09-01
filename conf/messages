@@ -65,6 +65,23 @@ businessEntityPartnership.scottish-limited-partnership          = These are simi
 businessEntityPartnership.limited-liability-partnership         = These must be registered at Companies House. They are taxed as partnerships but they have the benefits of being a corporate entity. All the partners have limited liability for debts.
 businessEntityPartnership.error.required                        = Select the type of partnership you want to register for VAT
 
+businessEntityOverseas.netp.heading                             = What type of business do you want to register for VAT?
+businessEntityOverseas.netp.details                             = Business type descriptions
+businessEntityOverseas.netp.text1                               = Selecting any of these means you will be registered as a non-established taxable person (NETP).
+businessEntityOverseas.netp.text2                               = An NETP is any person who is not normally resident in the UK or whose business has no fixed establishments in the UK or Isle of Man.
+businessEntityOverseas.netp.nonukcompany.txt                    = Non-UK company
+businessEntityOverseas.netp.nonukcompany.desc                   = This is any company incorporated outside the jurisdiction of the UK.
+businessEntityOverseas.netp.soletrader.txt                      = Sole trader
+businessEntityOverseas.netp.soletrader.desc                     = Sole traders work for themselves, are classed as self-employed and make all the business decisions.
+businessEntityOverseas.netp.ukcompany.txt                       = UK company
+businessEntityOverseas.netp.ukcompany.desc                      = This is a company that is registered with Companies House in the UK. It includes limited or unlimited companies.
+businessEntityOverseas.netp.generalpartnership.txt              = General partnership
+businessEntityOverseas.netp.generalpartnership.desc             = These are made up of 2 or more people. One of the partners will be nominated to deal with HMRC. General partnerships have no legal existence separate to the partners themselves. Most partnerships are of this type.
+businessEntityOverseas.netp.llp.txt                             = Limited liability partnership
+businessEntityOverseas.netp.llp.desc                            = These must be registered at Companies House. They are taxed as partnerships, but they have the benefits of being a corporate entity. All the partners have limited liability for debts.
+businessEntityOverseas.netp.trust.txt                           = Trust (unincorporated)
+businessEntityOverseas.netp.trust.desc                          = Trusts have no legal identity of their own. They hold assets on behalf of an individual or another organisation and govern how they are to be used. They are run by a group of people called trustees.
+
 businessEntity.limited-company                                  = UK company (includes Limited and Unlimited companies)
 businessEntity.soletrader                                       = Sole trader
 businessEntity.partnership                                      = Partnership
