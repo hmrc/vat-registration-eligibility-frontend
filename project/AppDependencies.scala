@@ -11,7 +11,7 @@ object AppDependencies {
   private val playConditionalFormMappingVersion = "2.0.0"
   private val bootstrapVersion = "10.1.0"
   private val jsoupVersion = "1.17.2"
-  private val playHmrcFrontendVersion = "12.8.0"
+  private val playHmrcFrontendVersion = "12.10.0"
   private val playVersion = "30"
 
   val compile = Seq(
