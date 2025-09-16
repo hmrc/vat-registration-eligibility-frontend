@@ -43,7 +43,7 @@ class TermsAndConditionsViewSpec extends ViewSpecBase {
     lazy val doc = asDocument(view(Some(ChangingLegalEntityOfBusiness))(fakeRequest, messages, frontendAppConfig))
 
     "have the correct browser title" in {
-      doc.select(Selectors.title).text() mustBe title(h1)
+      doc.select(Selectors.title).first().text() mustBe title(h1)
     }
 
     "have the correct back link" in {

@@ -52,7 +52,7 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
       }
 
       "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1)
+        doc.select(Selectors.title).first().text() mustBe title(h1)
       }
 
       "have the correct heading" in {
@@ -82,7 +82,7 @@ class KeepOldVrnViewSpec extends ViewSpecBase {
       }
 
       "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1)
+        doc.select(Selectors.title).first().text() mustBe title(h1)
       }
 
       "have the correct heading" in {

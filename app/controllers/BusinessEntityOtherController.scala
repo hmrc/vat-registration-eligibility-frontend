@@ -51,7 +51,7 @@ class BusinessEntityOtherController @Inject()(sessionService: SessionService,
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    formProvider().bindFromRequest.fold(
+    formProvider().bindFromRequest().fold(
       {
         formWithErrors =>
           warnLog("[BusinessEntityOtherController][onSubmit] Form submitted with errors")

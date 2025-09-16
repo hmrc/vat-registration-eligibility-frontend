@@ -16,7 +16,6 @@
 
 package connectors
 
-import play.api.Logging
 import play.api.libs.json.JsValue
 import play.api.mvc.Request
 import uk.gov.hmrc.http.client.HttpClientV2

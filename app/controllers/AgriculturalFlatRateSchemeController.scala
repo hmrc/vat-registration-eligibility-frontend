@@ -22,7 +22,7 @@ import forms.AgriculturalFlatRateSchemeFormProvider
 import identifiers.AgriculturalFlatRateSchemeId
 import models.NormalMode
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import utils.{Navigator, UserAnswers}
 import views.html.AgriculturalFlatRateScheme

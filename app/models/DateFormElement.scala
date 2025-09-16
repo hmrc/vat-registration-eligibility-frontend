@@ -16,12 +16,12 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
 case class DateFormElement(date: LocalDate)
 
 object DateFormElement {
-  implicit val DateFormElement = Json.format[DateFormElement]
+  implicit val format: OFormat[DateFormElement] = Json.format[DateFormElement]
 }

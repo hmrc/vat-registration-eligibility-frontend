@@ -18,7 +18,6 @@ package featureswitch.core.config
 
 import config.FrontendAppConfig
 import featureswitch.core.models.FeatureSwitch
-import play.api.Logging
 import play.api.mvc.Request
 import utils.LoggingUtil
 

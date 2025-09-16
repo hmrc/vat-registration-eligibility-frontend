@@ -16,12 +16,12 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 
 case class ConditionalDateFormElement(value: Boolean, optionalData: Option[LocalDate])
 
 object ConditionalDateFormElement {
-  implicit val conditionalDateFormElementFormat = Json.format[ConditionalDateFormElement]
+  implicit val format: OFormat[ConditionalDateFormElement] = Json.format[ConditionalDateFormElement]
 }

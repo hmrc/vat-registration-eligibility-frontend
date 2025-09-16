@@ -51,7 +51,7 @@ class BusinessEntityPartnershipController @Inject()(sessionService: SessionServi
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
-    formProvider().bindFromRequest.fold(
+    formProvider().bindFromRequest().fold(
       formWithErrors =>
         Future.successful(
           BadRequest(view(formWithErrors, routes.BusinessEntityPartnershipController.onSubmit()))

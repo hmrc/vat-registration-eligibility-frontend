@@ -16,10 +16,10 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class CurrentProfile(registrationID: String)
 
 object CurrentProfile {
-  implicit val currentProfileJsonFormat = Json.format[CurrentProfile]
+  implicit val format: OFormat[CurrentProfile] = Json.format[CurrentProfile]
 }
