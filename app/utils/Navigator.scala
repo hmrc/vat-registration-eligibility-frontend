@@ -151,7 +151,7 @@ class Navigator @Inject extends LoggingUtil with FeatureSwitching {
         case Some(SoleTrader) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
         case Some(Overseas) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
         case Some(UKCompany) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
-        case Some(Partnership) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(GeneralPartnership) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
         case Some(_: PartnershipType) => routes.AgriculturalFlatRateSchemeController.onPageLoad
         case Some(_: OtherType) => routes.AgriculturalFlatRateSchemeController.onPageLoad
         case _ => pageIdToPageLoad(FixedEstablishmentId)

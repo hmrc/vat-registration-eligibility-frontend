@@ -43,7 +43,7 @@ class BusinessEntityOverseasFormProvider extends Mappings {
         case Some(`overseasKey`) => Right(Overseas)
         case Some(`soleTraderKey`) => Right(SoleTrader)
         case Some(`ukCompanyKey`) => Right(UKCompany)
-        case Some(`partnershipKey`) => Right(Partnership)
+        case Some(`generalPartnershipKey`) => Right(GeneralPartnership)
         case Some(`limitedLiabilityPartnershipKey`) => Right(LimitedLiabilityPartnership)
         case Some(`nonIncorporatedTrustKey`) => Right(NonIncorporatedTrust)
         case _ => Left(Seq(FormError(key, businessEntityError)))
@@ -55,7 +55,7 @@ class BusinessEntityOverseasFormProvider extends Mappings {
         case Overseas => overseasKey
         case SoleTrader => soleTraderKey
         case UKCompany => ukCompanyKey
-        case Partnership => partnershipKey
+        case GeneralPartnership => generalPartnershipKey
         case LimitedLiabilityPartnership => limitedLiabilityPartnershipKey
         case NonIncorporatedTrust => nonIncorporatedTrustKey
       }

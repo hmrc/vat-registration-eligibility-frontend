@@ -18,8 +18,8 @@ package controllers
 
 import helpers.IntegrationSpecBase
 import identifiers.BusinessEntityId
-import models.BusinessEntity.{limitedLiabilityPartnershipKey, limitedPartnershipKey, nonIncorporatedTrustKey, overseasKey, partnershipKey, soleTraderKey, ukCompanyKey}
-import models.{BusinessEntity, LimitedLiabilityPartnership, LimitedPartnership, NonIncorporatedTrust, Overseas, Partnership, SoleTrader, UKCompany}
+import models.BusinessEntity.{generalPartnershipKey, limitedLiabilityPartnershipKey, limitedPartnershipKey, nonIncorporatedTrustKey, overseasKey, partnershipKey, soleTraderKey, ukCompanyKey}
+import models.{BusinessEntity, GeneralPartnership, LimitedLiabilityPartnership, LimitedPartnership, NonIncorporatedTrust, Overseas, Partnership, SoleTrader, UKCompany}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
@@ -45,7 +45,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         doc.radioIsSelected(soleTraderKey) mustBe true
         doc.radioIsSelected(overseasKey) mustBe false
         doc.radioIsSelected(ukCompanyKey) mustBe false
-        doc.radioIsSelected(partnershipKey) mustBe false
+        doc.radioIsSelected(generalPartnershipKey) mustBe false
         doc.radioIsSelected(limitedLiabilityPartnershipKey) mustBe false
         doc.radioIsSelected(nonIncorporatedTrustKey) mustBe false
       }
@@ -62,7 +62,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         doc.radioIsSelected(soleTraderKey) mustBe false
         doc.radioIsSelected(overseasKey) mustBe false
         doc.radioIsSelected(ukCompanyKey) mustBe false
-        doc.radioIsSelected(partnershipKey) mustBe false
+        doc.radioIsSelected(generalPartnershipKey) mustBe false
         doc.radioIsSelected(limitedLiabilityPartnershipKey) mustBe false
         doc.radioIsSelected(nonIncorporatedTrustKey) mustBe false
       }
@@ -115,12 +115,12 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         stubAudits()
 
         val res: WSResponse = await(buildClient(controllers.routes.BusinessEntityOverseasController.onSubmit().url)
-          .post(Map("value" -> Seq(partnershipKey))))
+          .post(Map("value" -> Seq(generalPartnershipKey))))
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.AgriculturalFlatRateSchemeController.onPageLoad.url)
 
-        verifySessionCacheData[BusinessEntity](sessionIdStr, BusinessEntityId, Some(Partnership))
+        verifySessionCacheData[BusinessEntity](sessionIdStr, BusinessEntityId, Some(GeneralPartnership))
       }
 
       "return a redirect to Agricultural Flat Rate Scheme when Limited Partnership is selected" in new Setup {
