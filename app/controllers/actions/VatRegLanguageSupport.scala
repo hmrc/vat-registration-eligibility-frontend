@@ -16,7 +16,7 @@
 
 package controllers.actions
 
-import play.api.i18n.{I18nSupport, Lang, Messages}
+import play.api.i18n.{I18nSupport, Messages}
 import play.api.mvc.RequestHeader
 
 trait VatRegLanguageSupport extends I18nSupport {

@@ -24,7 +24,7 @@ import services.ThresholdService
 import utils.TimeMachine
 import views.html.ThresholdPreviousThirtyDays
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDate
 
 class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase with ThresholdService {
 
@@ -59,7 +59,7 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase with ThresholdSer
       }
 
       "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1Business)
+        doc.select(Selectors.title).first().text() mustBe title(h1Business)
       }
 
       "have the correct heading" in {
@@ -86,7 +86,7 @@ class ThresholdPreviousThirtyDaysViewSpec extends ViewSpecBase with ThresholdSer
       }
 
       "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+        doc.select(Selectors.title).first().text() mustBe title(h1Partnership)
       }
 
       "have the correct heading" in {

@@ -22,7 +22,7 @@ import featureswitch.core.config.FeatureSwitching
 import featureswitch.core.models.FeatureSwitchSetting
 import play.api.Configuration
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, InjectedController, Request}
+import play.api.mvc.{Action, AnyContent, InjectedController}
 
 import javax.inject.{Inject, Singleton}
 

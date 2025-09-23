@@ -21,7 +21,6 @@ import models.VatThreshold
 import uk.gov.hmrc.http.InternalServerException
 
 import java.time.LocalDateTime
-import javax.inject.{Inject, Singleton}
 import utils.{CurrencyFormatter, LoggingUtil}
 
 

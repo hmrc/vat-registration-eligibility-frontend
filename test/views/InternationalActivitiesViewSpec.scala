@@ -53,7 +53,7 @@ class InternationalActivitiesViewSpec extends ViewSpecBase with JsoupElementExtr
       }
 
       "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1Business)
+        doc.select(Selectors.title).first().text() mustBe title(h1Business)
       }
 
       "have the correct heading" in {
@@ -99,7 +99,7 @@ class InternationalActivitiesViewSpec extends ViewSpecBase with JsoupElementExtr
       }
 
       "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1Partnership)
+        doc.select(Selectors.title).first().text() mustBe title(h1Partnership)
       }
 
       "have the correct heading" in {

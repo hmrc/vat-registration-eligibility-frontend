@@ -61,7 +61,7 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
       }
 
       "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1Togc)
+        doc.select(Selectors.title).first().text() mustBe title(h1Togc)
       }
 
       "have the correct heading" in {
@@ -97,7 +97,7 @@ class DateOfBusinessTransferViewSpec extends ViewSpecBase {
       }
 
       "have the correct browser title" in {
-        doc.select(Selectors.title).text() mustBe title(h1Cole)
+        doc.select(Selectors.title).first().text() mustBe title(h1Cole)
       }
 
       "have the correct heading" in {

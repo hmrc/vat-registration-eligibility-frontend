@@ -19,7 +19,6 @@ package controllers
 import config.FrontendAppConfig
 import controllers.actions.VatRegLanguageSupport
 import featureswitch.core.config.FeatureSwitching
-import play.api.Logging
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.auth.core.{AuthorisationException, NoActiveSession}
 import uk.gov.hmrc.http.HeaderCarrier
