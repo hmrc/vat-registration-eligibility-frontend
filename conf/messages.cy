@@ -71,7 +71,7 @@ businessEntityOverseas.netp.details                             = Disgrifiadau o
 businessEntityOverseas.netp.text1                               = Bydd dewis unrhyw un o’r rhain yn golygu y byddwch wedi’ch cofrestru fel person trethadwy sydd heb ei sefydlu (NETP).
 businessEntityOverseas.netp.text2                               = NETP yw unrhyw berson nad yw’n breswyl yn y DU fel arfer neu nad oes gan ei fusnes sefydliad sefydlog yn y DU neu Ynys Manaw.
 businessEntityOverseas.netp.nonukcompany.txt                    = Cwmni y tu allan i’r DU
-businessEntityOverseas.netp.nonukcompany.desc                   = Dyma unrhyw gwmni sydd wedi'i ymgorffori y tu allan i awdurdodaeth y DU.
+businessEntityOverseas.netp.nonukcompany.desc                   = Dyma unrhyw gwmni sydd wedi’i ymgorffori y tu allan i awdurdodaeth y DU.
 businessEntityOverseas.netp.soletrader.txt                      = Unig fasnachwr
 businessEntityOverseas.netp.soletrader.desc                     = Mae unig fasnachwyr yn gweithio iddyn nhw eu hunain, yn cael eu hystyried yn hunangyflogedig ac yn gwneud yr holl benderfyniadau busnes.
 businessEntityOverseas.netp.ukcompany.txt                       = Cwmni yn y DU
@@ -103,7 +103,7 @@ businessEntityOverseas.heading                          = Pa fath o fusnes yr ho
 businessEntityOverseas.hint                             = Mae NETP yn unrhyw berson nad yw fel arfer yn preswylio yn y DU neu nad oes ganddo sefydliad yn y DU.
 businessEntityOverseas.netp                             = Person trethadwy heb ei sefydlu (NETP)
 businessEntityOverseas.overseas                         = Cwmni y tu allan i’r DU
-businessEntityOverseas.error.required                   = Dewiswch y math o fusnes yr hoffech ei gofrestru ar gyfer TAW
+businessEntityOverseas.error.required                   = Dewiswch pa fath o fusnes yr hoffech ei gofrestru ar gyfer TAW
 
 thresholdNextThirtyDays.heading.business                = A yw’r busnes yn disgwyl gwneud mwy nag {0} mewn un mis neu mewn cyfnod o 30 diwrnod?
 thresholdNextThirtyDays.heading.partnership             = A yw’r bartneriaeth yn disgwyl gwneud mwy nag {0} mewn un mis neu mewn cyfnod o 30 diwrnod?

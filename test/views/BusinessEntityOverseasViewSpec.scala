@@ -45,7 +45,7 @@ class BusinessEntityOverseasViewSpec extends ViewSpecBase {
   val provider3 = "UK company"
   val detailsPara3 = "This is a company that is registered with Companies House in the UK. It includes limited or unlimited companies."
   val provider4 = "General partnership"
-  val detailsPara4: String = "These are made up of 2 or more people. One of the partners will be nominated to deal with HMRC. " +
+  val detailsPara4: String = "These are made up of 2 or more people. One of the partners will be ‘nominated’ to deal with HMRC. " +
     "General partnerships have no legal existence separate to the partners themselves. Most partnerships are of this type."
   val provider5 = "Limited liability partnership"
   val detailsPara5: String = "These must be registered at Companies House. " +
