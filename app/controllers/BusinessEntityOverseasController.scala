@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.BusinessEntityOverseasFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
-import models.{BusinessEntity, NormalMode, OverseasType}
+import models.{BusinessEntity, NormalMode, OtherType, OverseasType, PartnershipType}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import utils.{Navigator, UserAnswers}
@@ -44,7 +44,7 @@ class BusinessEntityOverseasController @Inject()(sessionService: SessionService,
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       val preparedForm = request.userAnswers.businessEntity match {
-        case Some(overseasEntity: OverseasType) => formProvider().fill(overseasEntity)
+        case Some(businessEntity: BusinessEntity) => formProvider().fill(businessEntity)
         case _ => formProvider()
       }
 

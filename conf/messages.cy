@@ -66,6 +66,23 @@ businessEntityPartnership.scottish-limited-partnership          = Mae’r rhain 
 businessEntityPartnership.limited-liability-partnership         = Mae’n rhaid cofrestru’r rhain yn Nhŷ’r Cwmnïau. Fe’u trethir fel partneriaethau, ond mae ganddynt y manteision o fod yn endid corfforaethol. Mae gan bob partner atebolrwydd cyfyngedig am ddyledion.
 businessEntityPartnership.error.required                        = Dewiswch y math o bartneriaeth yr hoffech ei chofrestru ar gyfer TAW
 
+businessEntityOverseas.netp.heading                             = Pa fath o fusnes yr hoffech ei gofrestru ar gyfer TAW?
+businessEntityOverseas.netp.details                             = Disgrifiadau o’r math o fusnes
+businessEntityOverseas.netp.text1                               = Bydd dewis unrhyw un o’r rhain yn golygu y byddwch wedi’ch cofrestru fel person trethadwy sydd heb ei sefydlu (NETP).
+businessEntityOverseas.netp.text2                               = NETP yw unrhyw berson nad yw’n breswyl yn y DU fel arfer neu nad oes gan ei fusnes sefydliad sefydlog yn y DU neu Ynys Manaw.
+businessEntityOverseas.netp.nonukcompany.txt                    = Cwmni y tu allan i’r DU
+businessEntityOverseas.netp.nonukcompany.desc                   = Dyma unrhyw gwmni sydd wedi’i ymgorffori y tu allan i awdurdodaeth y DU.
+businessEntityOverseas.netp.soletrader.txt                      = Unig fasnachwr
+businessEntityOverseas.netp.soletrader.desc                     = Mae unig fasnachwyr yn gweithio iddyn nhw eu hunain, yn cael eu hystyried yn hunangyflogedig ac yn gwneud yr holl benderfyniadau busnes.
+businessEntityOverseas.netp.ukcompany.txt                       = Cwmni yn y DU
+businessEntityOverseas.netp.ukcompany.desc                      = Mae hwn yn gwmni sydd wedi’i gofrestru gyda Thŷ’r Cwmnïau yn y DU. Mae’n cynnwys cwmnïau cyfyngedig neu anghyfyngedig.
+businessEntityOverseas.netp.generalpartnership.txt              = Partneriaeth gyffredinol
+businessEntityOverseas.netp.generalpartnership.desc             = Mae’r rhain wedi’u ffurfio o ddau neu fwy o bobl. Bydd un o’r partneriaid yn cael ei ‘enwebu’ i ddelio â CThEF. Nid oes gan bartneriaethau cyffredinol fodolaeth gyfreithiol sydd ar wahân i’r partneriaid eu hunain. Mae’r rhan fwyaf o bartneriaethau o’r math hwn.
+businessEntityOverseas.netp.llp.txt                             = Partneriaeth atebolrwydd cyfyngedig
+businessEntityOverseas.netp.llp.desc                            = Mae’n rhaid cofrestru’r rhain yn Nhŷ’r Cwmnïau. Fe’u trethir fel partneriaethau, ond mae ganddynt y manteision o fod yn endid corfforaethol. Mae gan bob partner atebolrwydd cyfyngedig am ddyledion.
+businessEntityOverseas.netp.trust.txt                           = Ymddiriedolaeth (anghorfforedig)
+businessEntityOverseas.netp.trust.desc                          = Nid oes gan ymddiriedolaethau eu hunaniaeth gyfreithiol eu hunain. Maent yn dal asedion ar ran unigolyn neu sefydliad arall, ac yn llywodraethu sut y caiff yr asedion hynny eu defnyddio. Maent yn cael eu rhedeg gan grŵp o bobl o’r enw ymddiriedolwyr.
+
 businessEntity.limited-company                                  = Cwmni yn y DU (gan gynnwys cwmnïau Cyfyngedig ac Anghyfyngedig)
 businessEntity.soletrader                                       = Unig fasnachwr
 businessEntity.partnership                                      = Partneriaeth
@@ -86,7 +103,7 @@ businessEntityOverseas.heading                          = Pa fath o fusnes yr ho
 businessEntityOverseas.hint                             = Mae NETP yn unrhyw berson nad yw fel arfer yn preswylio yn y DU neu nad oes ganddo sefydliad yn y DU.
 businessEntityOverseas.netp                             = Person trethadwy heb ei sefydlu (NETP)
 businessEntityOverseas.overseas                         = Cwmni y tu allan i’r DU
-businessEntityOverseas.error.required                   = Dewiswch y math o fusnes yr hoffech ei gofrestru ar gyfer TAW
+businessEntityOverseas.error.required                   = Dewiswch pa fath o fusnes yr hoffech ei gofrestru ar gyfer TAW
 
 thresholdNextThirtyDays.heading.business                = A yw’r busnes yn disgwyl gwneud mwy nag {0} mewn un mis neu mewn cyfnod o 30 diwrnod?
 thresholdNextThirtyDays.heading.partnership             = A yw’r bartneriaeth yn disgwyl gwneud mwy nag {0} mewn un mis neu mewn cyfnod o 30 diwrnod?

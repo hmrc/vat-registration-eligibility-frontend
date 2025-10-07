@@ -21,34 +21,72 @@
         layout: views.html.layouts.layout,
         errorSummary: components.errorSummary,
         h1: components.h1,
+        strong: components.strong,
+        p: components.p,
         formWithCsrf: FormWithCSRF,
         button: components.button,
-        inputRadio: components.inputRadio
+        inputRadio: components.inputRadio,
+        details: components.details
 )
 
-@(form: Form[OverseasType], postAction: Call)(implicit request: Request[_], messages: Messages, appconfig: FrontendAppConfig)
+@(form: Form[BusinessEntity], postAction: Call)(implicit request: Request[_], messages: Messages, appconfig: FrontendAppConfig)
 
 @layout(pageTitle = Some(title(form, messages("businessEntityOverseas.heading"))), backLink = true) {
 
-    @errorSummary(form.errors)
+    @errorSummary(form.errors, errorId = Some(overseasKey))
+
+    @h1("businessEntityOverseas.netp.heading")
+
+    @p{ @messages("businessEntityOverseas.netp.text1") }
+    @p{ @messages("businessEntityOverseas.netp.text2") }
+
+    @details(
+        messages("businessEntityOverseas.netp.details"),
+        detailsBlock
+    )
 
     @formWithCsrf(action = postAction) {
         @inputRadio(
             form = form,
             legend = messages("businessEntityOverseas.heading"),
+            legendAsHeading = false,
+            classes = "govuk-visually-hidden",
             items = Seq(
                 RadioItem(
-                    id = Some(netpKey),
-                    value = Some(netpKey),
-                    content = Text(messages("businessEntityOverseas.netp")),
-                    hint = Some(Hint(content = Text(messages("businessEntityOverseas.hint")))),
-                    checked = form("value").value.contains(netpKey)
-                ),
-                RadioItem(
                     id = Some(overseasKey),
-                    content = Text(messages("businessEntityOverseas.overseas")),
+                    content = Text(messages("businessEntityOverseas.netp.nonukcompany.txt")),
                     value = Some(overseasKey),
                     checked = form("value").value.contains(overseasKey)
+                ),
+                RadioItem(
+                    id = Some(soleTraderKey),
+                    value = Some(soleTraderKey),
+                    content = Text(Messages("businessEntityOverseas.netp.soletrader.txt")),
+                    checked = form("value").value.contains(soleTraderKey)
+                ),
+                RadioItem(
+                    id = Some(ukCompanyKey),
+                    value = Some(ukCompanyKey),
+                    content = Text(Messages("businessEntityOverseas.netp.ukcompany.txt")),
+                    checked = form("value").value.contains(ukCompanyKey)
+                ),
+                RadioItem(
+                    id = Some(generalPartnershipKey),
+                    value = Some(generalPartnershipKey),
+                    content = Text(Messages("businessEntityOverseas.netp.generalpartnership.txt")),
+                    checked = form("value").value.contains(generalPartnershipKey)
+                ),
+                RadioItem(
+                    id = Some(limitedLiabilityPartnershipKey),
+                    value = Some(limitedLiabilityPartnershipKey),
+                    content = Text(Messages("businessEntityOverseas.netp.llp.txt")),
+                    checked = form("value").value.contains(limitedLiabilityPartnershipKey)
+                ),
+                RadioItem(
+                    id = Some(nonIncorporatedTrustKey),
+                    value = Some(nonIncorporatedTrustKey),
+                    content = Text(Messages("businessEntityOverseas.netp.trust.txt")),
+                    checked = form("value").value.contains(nonIncorporatedTrustKey)
                 )
             )
         )
@@ -57,3 +95,18 @@
     }
 }
 
+
+@detailsBlock = {
+    @strong{ @messages("businessEntityOverseas.netp.nonukcompany.txt") }
+    @p{ @messages("businessEntityOverseas.netp.nonukcompany.desc") }
+    @strong{ @messages("businessEntityOverseas.netp.soletrader.txt") }
+    @p{ @messages("businessEntityOverseas.netp.soletrader.desc") }
+    @strong{ @messages("businessEntityOverseas.netp.ukcompany.txt") }
+    @p{ @messages("businessEntityOverseas.netp.ukcompany.desc") }
+    @strong{ @messages("businessEntityOverseas.netp.generalpartnership.txt") }
+    @p{ @messages("businessEntityOverseas.netp.generalpartnership.desc") }
+    @strong{ @messages("businessEntityOverseas.netp.llp.txt") }
+    @p{ @messages("businessEntityOverseas.netp.llp.desc") }
+    @strong{ @messages("businessEntityOverseas.netp.trust.txt") }
+    @p{ @messages("businessEntityOverseas.netp.trust.desc") }
+}
