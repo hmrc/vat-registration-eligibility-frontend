@@ -18,8 +18,15 @@ package controllers
 
 import helpers.IntegrationSpecBase
 import identifiers.BusinessEntityId
-import models.BusinessEntity.{generalPartnershipKey, limitedLiabilityPartnershipKey, limitedPartnershipKey, nonIncorporatedTrustKey, overseasKey, partnershipKey, soleTraderKey, ukCompanyKey}
-import models.{BusinessEntity, GeneralPartnership, LimitedLiabilityPartnership, LimitedPartnership, NonIncorporatedTrust, Overseas, Partnership, SoleTrader, UKCompany}
+import models.BusinessEntity.{
+  generalPartnershipKey,
+  limitedLiabilityPartnershipKey,
+  nonIncorporatedTrustKey,
+  overseasKey,
+  soleTraderKey,
+  ukCompanyKey
+}
+import models._
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.libs.ws.WSResponse
@@ -38,7 +45,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
 
         cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, SoleTrader)
 
-        val res: WSResponse = await(buildClient(pageUrl).get)
+        val res: WSResponse = await(buildClient(pageUrl).get())
         val doc: Document = Jsoup.parse(res.body)
 
         res.status mustBe OK
@@ -55,7 +62,7 @@ class BusinessEntityOverseasControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res: WSResponse = await(buildClient(pageUrl).get)
+        val res: WSResponse = await(buildClient(pageUrl).get())
         val doc: Document = Jsoup.parse(res.body)
 
         res.status mustBe OK

@@ -28,7 +28,7 @@ import javax.inject.Singleton
 @Singleton
 class BusinessEntityOverseasFormProvider extends Mappings {
 
-  val businessEntity: String = "value"
+  val businessEntity: String      = "value"
   val businessEntityError: String = "businessEntityOverseas.error.required"
 
   def apply(): Form[BusinessEntity] = Form(
@@ -38,26 +38,25 @@ class BusinessEntityOverseasFormProvider extends Mappings {
   )
 
   def formatter: Formatter[BusinessEntity] = new Formatter[BusinessEntity] {
-    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BusinessEntity] = {
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BusinessEntity] =
       data.get(key) match {
-        case Some(`overseasKey`) => Right(Overseas)
-        case Some(`soleTraderKey`) => Right(SoleTrader)
-        case Some(`ukCompanyKey`) => Right(UKCompany)
-        case Some(`generalPartnershipKey`) => Right(GeneralPartnership)
+        case Some(`overseasKey`)                    => Right(Overseas)
+        case Some(`soleTraderKey`)                  => Right(SoleTrader)
+        case Some(`ukCompanyKey`)                   => Right(UKCompany)
+        case Some(`generalPartnershipKey`)          => Right(GeneralPartnership)
         case Some(`limitedLiabilityPartnershipKey`) => Right(LimitedLiabilityPartnership)
-        case Some(`nonIncorporatedTrustKey`) => Right(NonIncorporatedTrust)
-        case _ => Left(Seq(FormError(key, businessEntityError)))
+        case Some(`nonIncorporatedTrustKey`)        => Right(NonIncorporatedTrust)
+        case _                                      => Left(Seq(FormError(key, businessEntityError)))
       }
-    }
 
     override def unbind(key: String, value: BusinessEntity): Map[String, String] = {
       val stringValue = value match {
-        case Overseas => overseasKey
-        case SoleTrader => soleTraderKey
-        case UKCompany => ukCompanyKey
-        case GeneralPartnership => generalPartnershipKey
+        case Overseas                    => overseasKey
+        case SoleTrader                  => soleTraderKey
+        case UKCompany                   => ukCompanyKey
+        case GeneralPartnership          => generalPartnershipKey
         case LimitedLiabilityPartnership => limitedLiabilityPartnershipKey
-        case NonIncorporatedTrust => nonIncorporatedTrustKey
+        case NonIncorporatedTrust        => nonIncorporatedTrustKey
       }
       Map(key -> stringValue)
     }

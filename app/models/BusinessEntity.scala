@@ -20,87 +20,87 @@ import play.api.libs.json._
 
 sealed trait BusinessEntity
 
-case object UKCompany extends BusinessEntity
-case object SoleTrader extends BusinessEntity
+case object UKCompany   extends BusinessEntity
+case object SoleTrader  extends BusinessEntity
 case object Partnership extends BusinessEntity
-case object Other extends BusinessEntity
+case object Other       extends BusinessEntity
 
-sealed trait PartnershipType extends BusinessEntity
-case object GeneralPartnership extends PartnershipType
-case object LimitedPartnership extends PartnershipType
-case object ScottishPartnership extends PartnershipType
-case object ScottishLimitedPartnership extends PartnershipType
+sealed trait PartnershipType            extends BusinessEntity
+case object GeneralPartnership          extends PartnershipType
+case object LimitedPartnership          extends PartnershipType
+case object ScottishPartnership         extends PartnershipType
+case object ScottishLimitedPartnership  extends PartnershipType
 case object LimitedLiabilityPartnership extends PartnershipType
 
-sealed trait OtherType extends BusinessEntity
+sealed trait OtherType                         extends BusinessEntity
 case object CharitableIncorporatedOrganisation extends OtherType
-case object NonIncorporatedTrust extends OtherType
-case object RegisteredSociety extends OtherType
-case object UnincorporatedAssociation extends OtherType
-case object Division extends OtherType
-case object VatGroup extends OtherType
+case object NonIncorporatedTrust               extends OtherType
+case object RegisteredSociety                  extends OtherType
+case object UnincorporatedAssociation          extends OtherType
+case object Division                           extends OtherType
+case object VatGroup                           extends OtherType
 
 sealed trait OverseasType extends BusinessEntity
-case object Overseas extends OverseasType with OtherType
-case object NETP extends OverseasType
+case object Overseas      extends OverseasType with OtherType
+case object NETP          extends OverseasType
 
 object BusinessEntity {
-  val ukCompanyKey = "50"
-  val soleTraderKey = "Z1"
-  val partnershipKey = "partnership"
-  val generalPartnershipKey = "61"
-  val limitedPartnershipKey = "62"
-  val scottishPartnershipKey = "58"
-  val scottishLimitedPartnershipKey = "59"
-  val limitedLiabilityPartnershipKey = "52"
-  val otherKey = "other"
+  val partnershipKey                        = "partnership"
+  val otherKey                              = "other"
+  val ukCompanyKey                          = "50"
+  val limitedLiabilityPartnershipKey        = "52"
   val charitableIncorporatedOrganisationKey = "53"
-  val nonIncorporatedTrustKey = "60"
-  val registeredSocietyKey = "54"
-  val unincorporatedAssociationKey = "63"
-  val divisionKey = "65"
-  val netpKey = "NETP"
-  val overseasKey = "55"
+  val registeredSocietyKey                  = "54"
+  val overseasKey                           = "55"
+  val scottishPartnershipKey                = "58"
+  val scottishLimitedPartnershipKey         = "59"
+  val nonIncorporatedTrustKey               = "60"
+  val generalPartnershipKey                 = "61"
+  val limitedPartnershipKey                 = "62"
+  val unincorporatedAssociationKey          = "63"
+  val divisionKey                           = "65"
+  val soleTraderKey                         = "Z1"
+  val netpKey                               = "NETP"
 
   // scalastyle:off
   implicit def writes[T <: BusinessEntity]: Writes[T] = Writes[T] {
-    case UKCompany => JsString(ukCompanyKey)
-    case SoleTrader => JsString(soleTraderKey)
-    case Partnership => JsString(partnershipKey)
-    case GeneralPartnership => JsString(generalPartnershipKey)
-    case LimitedPartnership => JsString(limitedPartnershipKey)
-    case ScottishPartnership => JsString(scottishPartnershipKey)
-    case ScottishLimitedPartnership => JsString(scottishLimitedPartnershipKey)
-    case LimitedLiabilityPartnership => JsString(limitedLiabilityPartnershipKey)
-    case Other => JsString(otherKey)
+    case UKCompany                          => JsString(ukCompanyKey)
+    case SoleTrader                         => JsString(soleTraderKey)
+    case Partnership                        => JsString(partnershipKey)
+    case GeneralPartnership                 => JsString(generalPartnershipKey)
+    case LimitedPartnership                 => JsString(limitedPartnershipKey)
+    case ScottishPartnership                => JsString(scottishPartnershipKey)
+    case ScottishLimitedPartnership         => JsString(scottishLimitedPartnershipKey)
+    case LimitedLiabilityPartnership        => JsString(limitedLiabilityPartnershipKey)
+    case Other                              => JsString(otherKey)
     case CharitableIncorporatedOrganisation => JsString(charitableIncorporatedOrganisationKey)
-    case NonIncorporatedTrust => JsString(nonIncorporatedTrustKey)
-    case RegisteredSociety => JsString(registeredSocietyKey)
-    case UnincorporatedAssociation => JsString(unincorporatedAssociationKey)
-    case Division => JsString(divisionKey)
-    case NETP => JsString(netpKey)
-    case Overseas => JsString(overseasKey)
-    case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
+    case NonIncorporatedTrust               => JsString(nonIncorporatedTrustKey)
+    case RegisteredSociety                  => JsString(registeredSocietyKey)
+    case UnincorporatedAssociation          => JsString(unincorporatedAssociationKey)
+    case Division                           => JsString(divisionKey)
+    case NETP                               => JsString(netpKey)
+    case Overseas                           => JsString(overseasKey)
+    case unknownKey                         => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 
   implicit val jsonReads: Reads[BusinessEntity] = Reads[BusinessEntity] {
-    case JsString(`ukCompanyKey`) => JsSuccess(UKCompany)
-    case JsString(`soleTraderKey`) => JsSuccess(SoleTrader)
-    case JsString(`partnershipKey`) => JsSuccess(Partnership)
-    case JsString(`generalPartnershipKey`) => JsSuccess(GeneralPartnership)
-    case JsString(`limitedPartnershipKey`) => JsSuccess(LimitedPartnership)
-    case JsString(`scottishPartnershipKey`) => JsSuccess(ScottishPartnership)
-    case JsString(`scottishLimitedPartnershipKey`) => JsSuccess(ScottishLimitedPartnership)
-    case JsString(`limitedLiabilityPartnershipKey`) => JsSuccess(LimitedLiabilityPartnership)
-    case JsString(`otherKey`) => JsSuccess(Other)
+    case JsString(`ukCompanyKey`)                          => JsSuccess(UKCompany)
+    case JsString(`soleTraderKey`)                         => JsSuccess(SoleTrader)
+    case JsString(`partnershipKey`)                        => JsSuccess(Partnership)
+    case JsString(`generalPartnershipKey`)                 => JsSuccess(GeneralPartnership)
+    case JsString(`limitedPartnershipKey`)                 => JsSuccess(LimitedPartnership)
+    case JsString(`scottishPartnershipKey`)                => JsSuccess(ScottishPartnership)
+    case JsString(`scottishLimitedPartnershipKey`)         => JsSuccess(ScottishLimitedPartnership)
+    case JsString(`limitedLiabilityPartnershipKey`)        => JsSuccess(LimitedLiabilityPartnership)
+    case JsString(`otherKey`)                              => JsSuccess(Other)
     case JsString(`charitableIncorporatedOrganisationKey`) => JsSuccess(CharitableIncorporatedOrganisation)
-    case JsString(`nonIncorporatedTrustKey`) => JsSuccess(NonIncorporatedTrust)
-    case JsString(`registeredSocietyKey`) => JsSuccess(RegisteredSociety)
-    case JsString(`unincorporatedAssociationKey`) => JsSuccess(UnincorporatedAssociation)
-    case JsString(`divisionKey`) => JsSuccess(Division)
-    case JsString(`netpKey`) => JsSuccess(NETP)
-    case JsString(`overseasKey`) => JsSuccess(Overseas)
-    case unknownKey => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
+    case JsString(`nonIncorporatedTrustKey`)               => JsSuccess(NonIncorporatedTrust)
+    case JsString(`registeredSocietyKey`)                  => JsSuccess(RegisteredSociety)
+    case JsString(`unincorporatedAssociationKey`)          => JsSuccess(UnincorporatedAssociation)
+    case JsString(`divisionKey`)                           => JsSuccess(Division)
+    case JsString(`netpKey`)                               => JsSuccess(NETP)
+    case JsString(`overseasKey`)                           => JsSuccess(Overseas)
+    case unknownKey                                        => throw new IllegalArgumentException(s"Unknown Business Entity: $unknownKey")
   }
 
   implicit val jsonFormat: Format[BusinessEntity] = Format[BusinessEntity](jsonReads, writes)

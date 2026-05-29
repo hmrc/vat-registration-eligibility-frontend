@@ -45,7 +45,7 @@ class BusinessEntityPartnershipControllerISpec extends IntegrationSpecBase {
 
             cacheSessionData(sessionIdStr, BusinessEntityId, option)
 
-            val res = await(buildClient(pageUrl).get)
+            val res = await(buildClient(pageUrl).get())
             val doc = Jsoup.parse(res.body)
 
             res.status mustBe OK
@@ -63,7 +63,7 @@ class BusinessEntityPartnershipControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK

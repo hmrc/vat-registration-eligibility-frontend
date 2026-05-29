@@ -30,7 +30,7 @@ class TermsAndConditionsControllerISpec extends IntegrationSpecBase with S4LStub
       stubAudits()
       stubS4LGetNothing(testRegId)
 
-      val res = await(buildClient(pageUrl).get)
+      val res = await(buildClient(pageUrl).get())
 
       res.status mustBe OK
     }

@@ -48,7 +48,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
 
             cacheSessionData[RegistrationReason](sessionIdStr, RegistrationReasonId, answer)
 
-            val res = await(buildClient(pageUrl).get)
+            val res = await(buildClient(pageUrl).get())
             val doc = Jsoup.parse(res.body)
 
             res.status mustBe OK
@@ -69,7 +69,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
           cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, UKCompany)
           cacheSessionData[RegistrationReason](sessionIdStr, RegistrationReasonId, SettingUpVatGroup)
 
-          val res = await(buildClient(pageUrl).get)
+          val res = await(buildClient(pageUrl).get())
           val doc = Jsoup.parse(res.body)
 
           res.status mustBe OK
@@ -82,7 +82,7 @@ class RegistrationReasonControllerISpec extends IntegrationSpecBase with S4LStub
           stubAudits()
           stubS4LGetNothing(testRegId)
 
-          val res = await(buildClient(pageUrl).get)
+          val res = await(buildClient(pageUrl).get())
           val doc = Jsoup.parse(res.body)
 
           res.status mustBe OK

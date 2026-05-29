@@ -29,7 +29,7 @@ class DoNotNeedToRegisterControllerISpec extends IntegrationSpecBase {
       stubSuccessfulLogin()
       stubAudits()
 
-      val res = await(buildClient(pageUrl).get)
+      val res = await(buildClient(pageUrl).get())
 
       res.status mustBe OK
     }

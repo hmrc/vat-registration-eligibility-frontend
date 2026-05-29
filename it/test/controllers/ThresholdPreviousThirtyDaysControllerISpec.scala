@@ -43,7 +43,7 @@ class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase wit
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
 
         res.status mustBe OK
       }
@@ -53,7 +53,7 @@ class ThresholdPreviousThirtyDaysControllerISpec extends IntegrationSpecBase wit
         stubAudits()
         cacheSessionData(sessionIdStr, ThresholdPreviousThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.of(2017, 12, 1))))
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
 
         res.status mustBe OK
       }

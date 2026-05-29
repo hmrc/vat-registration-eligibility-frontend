@@ -41,7 +41,7 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
 
         cacheSessionData[RegisteringBusiness](sessionIdStr, RegisteringBusinessId, OwnBusiness)
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
@@ -54,7 +54,7 @@ class RegisteringBusinessControllerISpec extends IntegrationSpecBase with Featur
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
