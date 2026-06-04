@@ -18,7 +18,7 @@ package helpers
 
 import identifiers.Identifier
 import org.scalatest.BeforeAndAfterEach
-import play.api.libs.json.{DefaultReads, Format, Json}
+import play.api.libs.json.{DefaultReads, Format, JsValue, Json}
 import repositories.SessionRepository
 import uk.gov.hmrc.http.cache.client.CacheMap
 import uk.gov.hmrc.mongo.test.MongoSupport
@@ -47,5 +47,10 @@ trait SessionStub extends MongoSupport with BeforeAndAfterEach with DefaultReads
       cacheMap.fold(CacheMap(id, Map(key.toString -> Json.toJson(data))))(map => map.copy(data = map.data + (key.toString -> Json.toJson(data))))
 
     await(repo.upsert(updatedCacheMap))
+  }
+
+  def getAllSessionData(id: String): Option[Map[String, JsValue]] = {
+    await(repo.collection.countDocuments().head())
+    await(repo.get(id)).map(_.data)
   }
 }

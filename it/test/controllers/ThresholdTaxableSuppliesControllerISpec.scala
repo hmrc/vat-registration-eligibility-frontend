@@ -41,7 +41,7 @@ class ThresholdTaxableSuppliesControllerISpec extends IntegrationSpecBase {
 
         cacheSessionData(sessionIdStr, ThresholdTaxableSuppliesId, DateFormElement(testDate))
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
@@ -53,7 +53,7 @@ class ThresholdTaxableSuppliesControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
 
         res.status mustBe OK
       }

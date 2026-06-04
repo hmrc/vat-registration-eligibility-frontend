@@ -29,7 +29,7 @@ class FeedbackControllerISpec extends IntegrationSpecBase {
       stubSuccessfulLogin()
       stubAudits()
 
-      val res = await(buildClient(pageUrl).get)
+      val res = await(buildClient(pageUrl).get())
       val referrer = res.headers.get(REFERER).getOrElse("")
 
       res.status mustBe SEE_OTHER

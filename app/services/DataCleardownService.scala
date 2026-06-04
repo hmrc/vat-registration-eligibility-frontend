@@ -39,6 +39,10 @@ class DataCleardownService @Inject()(sessionService: SessionService)
 
   private def clearAllThresholdData(implicit headerCarrier: HeaderCarrier): Future[CacheMap] =
     for {
+      _ <- sessionService.removeEntry(BusinessEntityId.toString)
+      _ <- sessionService.removeEntry(BusinessEntityPartnershipId.toString)
+      _ <- sessionService.removeEntry(BusinessEntityOtherId.toString)
+      _ <- sessionService.removeEntry(BusinessEntityOverseasId.toString)
       _ <- sessionService.removeEntry(ThresholdInTwelveMonthsId.toString)
       _ <- sessionService.removeEntry(ThresholdPreviousThirtyDaysId.toString)
       _ <- sessionService.removeEntry(ThresholdNextThirtyDaysId.toString)

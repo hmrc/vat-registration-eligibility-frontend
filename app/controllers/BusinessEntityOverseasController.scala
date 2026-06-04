@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import forms.BusinessEntityOverseasFormProvider
 import identifiers.{BusinessEntityId, BusinessEntityOverseasId}
-import models.{BusinessEntity, NormalMode, OtherType, OverseasType, PartnershipType}
+import models.{BusinessEntity, NormalMode}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.SessionService
 import utils.{Navigator, UserAnswers}

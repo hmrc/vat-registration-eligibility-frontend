@@ -67,8 +67,8 @@ trait IntegrationSpecBase extends PlaySpec
   val testInternalId = "testInternalId"
   val sessionIdStr = "sessionId"
   val messages = app.injector.instanceOf[MessagesApi].preferred(Seq(Lang("en")))
-  implicit val appConfig = app.injector.instanceOf[FrontendAppConfig]
-  implicit val request = FakeRequest()
+  implicit val appConfig: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  implicit val request: FakeRequest[_] = FakeRequest()
   def request(url: String) = CacheIdentifierRequest(FakeRequest("GET", baseUrl + url), testRegId, testInternalId)
 
   implicit val hc: HeaderCarrier = HeaderCarrier(sessionId = Some(SessionId(sessionIdStr)))

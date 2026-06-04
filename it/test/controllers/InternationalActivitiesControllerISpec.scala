@@ -39,7 +39,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
 
         cacheSessionData(sessionIdStr, InternationalActivitiesId, true)
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
@@ -52,7 +52,7 @@ class InternationalActivitiesControllerISpec extends IntegrationSpecBase with Fe
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK

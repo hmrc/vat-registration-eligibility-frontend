@@ -38,7 +38,7 @@ class PreviousBusinessNameControllerISpec extends IntegrationSpecBase with Featu
 
         cacheSessionData(sessionIdStr, PreviousBusinessNameId, testPreviousBusinessName)
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
@@ -53,7 +53,7 @@ class PreviousBusinessNameControllerISpec extends IntegrationSpecBase with Featu
 
         val nothing = ""
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK

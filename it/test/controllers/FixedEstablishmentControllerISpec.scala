@@ -18,7 +18,7 @@ package controllers
 
 import helpers.IntegrationSpecBase
 import identifiers._
-import models.{ConditionalDateFormElement, DateFormElement}
+import models._
 import org.jsoup.Jsoup
 import play.api.test.Helpers._
 import play.mvc.Http.HeaderNames
@@ -27,9 +27,9 @@ import java.time.LocalDate
 
 class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
 
-  val pageUrl = "/fixed-establishment"
+  val pageUrl  = "/fixed-establishment"
   val yesRadio = "fixedEstablishment-yes"
-  val noRadio = "fixedEstablishment-no"
+  val noRadio  = "fixedEstablishment-no"
 
   "GET /fixed-establishment" when {
 
@@ -43,7 +43,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
 
           cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
 
-          val res = await(buildClient(pageUrl).get)
+          val res = await(buildClient(pageUrl).get())
           val doc = Jsoup.parse(res.body)
 
           res.status mustBe OK
@@ -57,7 +57,7 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
           stubSuccessfulLogin()
           stubAudits()
 
-          val res = await(buildClient(pageUrl).get)
+          val res = await(buildClient(pageUrl).get())
           val doc = Jsoup.parse(res.body)
 
           res.status mustBe OK
@@ -70,72 +70,101 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
   }
 
   "POST /fixed-establishment" when {
-    "the user answers 'Yes'" must {
-      "redirect to the Business Entity page" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
+    "there is no prior data" when {
+      "the user answers 'Yes'" must {
+        "redirect to the Business Entity page" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
+          val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
 
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+        }
+      }
+
+      "the user answers 'No'" when {
+        "redirect to the Business Entity Overseas page" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
+
+          val res = await(buildClient(pageUrl).post(Map("value" -> "false")))
+
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
+        }
       }
     }
-    "the user answers 'No'" when {
-      "redirect to the Business Entity Overseas page" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
 
-        val res = await(buildClient(pageUrl).post(Map("value" -> "false")))
+    "there is non-conflicting prior data" when {
+      "the user answers 'Yes' and had previously answered 'Yes'" must {
+        "redirect to the Business Entity page and do not clear existing answers" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
 
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
+          setUpExistingJourneyData()
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
+          checkNumberOfDocumentsInSession() mustBe 16
+
+          val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
+
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+          checkNumberOfDocumentsInSession() mustBe 16
+        }
+      }
+
+      "the user answers 'No' and had previously answered 'No'" must {
+        "redirect to the Business Entity page and do not clear existing answers" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
+
+          setUpExistingJourneyData()
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, false)
+          checkNumberOfDocumentsInSession() mustBe 16
+
+          val res = await(buildClient(pageUrl).post(Map("value" -> "false")))
+
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
+          checkNumberOfDocumentsInSession() mustBe 16
+        }
       }
     }
 
-    "the user answers 'Yes' but the question was answered previously" must {
-      "redirect to the Business Entity page if the old answer is 'Yes'" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
+    "there is conflicting prior data" when {
+      "the user answers 'Yes' but had previously answered 'No'" must {
+        "redirect to the Business Entity page and clear old answers" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
 
-        cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
+          setUpExistingJourneyData()
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, false)
+          checkNumberOfDocumentsInSession() mustBe 16
 
-        val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
+          val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
 
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+          checkNumberOfDocumentsInSession() mustBe 2
+        }
       }
 
-      "redirect to the Business Entity page and clear down all threshold data if the old answer is 'No'" in new Setup {
-        stubSuccessfulLogin()
-        stubAudits()
+      "the user answers 'No' but had previously answered 'Yes'" must {
+        "redirect to the Business Entity page and clear old answers" in new Setup {
+          stubSuccessfulLogin()
+          stubAudits()
 
-        cacheSessionData(sessionIdStr, FixedEstablishmentId, false)
+          setUpExistingJourneyData()
+          cacheSessionData(sessionIdStr, FixedEstablishmentId, true)
+          checkNumberOfDocumentsInSession() mustBe 16
 
-        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
-        cacheSessionData[Boolean](sessionIdStr, VoluntaryRegistrationId, true)
-        cacheSessionData[DateFormElement](sessionIdStr, DateOfBusinessTransferId, DateFormElement(LocalDate.now()))
-        cacheSessionData[String](sessionIdStr, PreviousBusinessNameId, "test")
-        cacheSessionData[String](sessionIdStr, VATNumberId, "test")
-        cacheSessionData[Boolean](sessionIdStr, KeepOldVrnId, true)
-        cacheSessionData[Boolean](sessionIdStr, TermsAndConditionsId, true)
-        cacheSessionData[Boolean](sessionIdStr, TaxableSuppliesInUkId, true)
-        cacheSessionData[DateFormElement](sessionIdStr, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
+          val res = await(buildClient(pageUrl).post(Map("value" -> "false")))
 
-        val res = await(buildClient(pageUrl).post(Map("value" -> "true")))
-
-        List(
-          ThresholdInTwelveMonthsId, ThresholdNextThirtyDaysId, ThresholdNextThirtyDaysId, VoluntaryRegistrationId,
-          DateOfBusinessTransferId, PreviousBusinessNameId, VATNumberId, KeepOldVrnId, TermsAndConditionsId,
-          TaxableSuppliesInUkId, ThresholdTaxableSuppliesId
-        ).foreach(id =>
-          verifySessionCacheData[Boolean](sessionIdStr, id, None)
-        )
-
-        res.status mustBe SEE_OTHER
-        res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityController.onPageLoad.url)
+          res.status mustBe SEE_OTHER
+          res.header(HeaderNames.LOCATION) mustBe Some(routes.BusinessEntityOverseasController.onPageLoad.url)
+          checkNumberOfDocumentsInSession() mustBe 2
+        }
       }
     }
 
@@ -149,6 +178,30 @@ class FixedEstablishmentControllerISpec extends IntegrationSpecBase {
         res.status mustBe BAD_REQUEST
       }
     }
+
   }
+
+  private def setUpExistingJourneyData(): Unit = {
+    cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityId, UKCompany)
+    cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityPartnershipId, GeneralPartnership)
+    cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityOtherId, NonIncorporatedTrust)
+    cacheSessionData[BusinessEntity](sessionIdStr, BusinessEntityOverseasId, Overseas)
+    cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdInTwelveMonthsId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+    cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+    cacheSessionData[ConditionalDateFormElement](sessionIdStr, ThresholdNextThirtyDaysId, ConditionalDateFormElement(true, Some(LocalDate.now())))
+    cacheSessionData[Boolean](sessionIdStr, VoluntaryRegistrationId, true)
+    cacheSessionData[DateFormElement](sessionIdStr, DateOfBusinessTransferId, DateFormElement(LocalDate.now()))
+    cacheSessionData[String](sessionIdStr, PreviousBusinessNameId, "test")
+    cacheSessionData[String](sessionIdStr, VATNumberId, "test")
+    cacheSessionData[Boolean](sessionIdStr, KeepOldVrnId, true)
+    cacheSessionData[Boolean](sessionIdStr, TermsAndConditionsId, true)
+    cacheSessionData[Boolean](sessionIdStr, TaxableSuppliesInUkId, true)
+    cacheSessionData[DateFormElement](sessionIdStr, ThresholdTaxableSuppliesId, DateFormElement(LocalDate.now()))
+  }
+
+  private def checkNumberOfDocumentsInSession(): Int =
+    getAllSessionData(sessionIdStr)
+      .map(_.size)
+      .getOrElse(0)
 
 }

@@ -32,82 +32,88 @@ import javax.inject.{Inject, Singleton}
 class Navigator @Inject extends LoggingUtil with FeatureSwitching {
 
   def pageIdToPageLoad(pageId: Identifier)(implicit request: Request[_]): Call = pageId match {
-    case FixedEstablishmentId => routes.FixedEstablishmentController.onPageLoad
-    case BusinessEntityId => routes.BusinessEntityController.onPageLoad
-    case BusinessEntityPartnershipId => routes.BusinessEntityPartnershipController.onPageLoad
-    case BusinessEntityOverseasId => routes.BusinessEntityOverseasController.onPageLoad
-    case ThresholdNextThirtyDaysId => routes.ThresholdNextThirtyDaysController.onPageLoad
+    case FixedEstablishmentId          => routes.FixedEstablishmentController.onPageLoad
+    case BusinessEntityId              => routes.BusinessEntityController.onPageLoad
+    case BusinessEntityPartnershipId   => routes.BusinessEntityPartnershipController.onPageLoad
+    case BusinessEntityOverseasId      => routes.BusinessEntityOverseasController.onPageLoad
+    case ThresholdNextThirtyDaysId     => routes.ThresholdNextThirtyDaysController.onPageLoad
     case ThresholdPreviousThirtyDaysId => routes.ThresholdPreviousThirtyDaysController.onPageLoad
-    case VoluntaryRegistrationId => routes.VoluntaryRegistrationController.onPageLoad
-    case ChoseNotToRegisterId => routes.ChoseNotToRegisterController.onPageLoad
-    case ThresholdInTwelveMonthsId => routes.ThresholdInTwelveMonthsController.onPageLoad
-    case InternationalActivitiesId => routes.InternationalActivitiesController.onPageLoad
-    case RegisteringBusinessId => routes.RegisteringBusinessController.onPageLoad
-    case VATRegistrationExceptionId => routes.VATRegistrationExceptionController.onPageLoad
-    case EligibilityDropoutId(mode) => mode match {
-      case InternationalActivitiesId.toString => routes.EligibilityDropoutController.internationalActivitiesDropout
-      case mode => routes.EligibilityDropoutController.onPageLoad(mode)
-    }
+    case VoluntaryRegistrationId       => routes.VoluntaryRegistrationController.onPageLoad
+    case ChoseNotToRegisterId          => routes.ChoseNotToRegisterController.onPageLoad
+    case ThresholdInTwelveMonthsId     => routes.ThresholdInTwelveMonthsController.onPageLoad
+    case InternationalActivitiesId     => routes.InternationalActivitiesController.onPageLoad
+    case RegisteringBusinessId         => routes.RegisteringBusinessController.onPageLoad
+    case VATRegistrationExceptionId    => routes.VATRegistrationExceptionController.onPageLoad
+    case EligibilityDropoutId(mode) =>
+      mode match {
+        case InternationalActivitiesId.toString => routes.EligibilityDropoutController.internationalActivitiesDropout
+        case mode                               => routes.EligibilityDropoutController.onPageLoad(mode)
+      }
     case AgriculturalFlatRateSchemeId => routes.AgriculturalFlatRateSchemeController.onPageLoad
-    case MtdInformationId => routes.MtdInformationController.onPageLoad
-    case TaxableSuppliesInUkId => routes.TaxableSuppliesInUkController.onPageLoad
-    case DateOfBusinessTransferId => routes.DateOfBusinessTransferController.onPageLoad
-    case ThresholdTaxableSuppliesId => routes.ThresholdTaxableSuppliesController.onPageLoad
-    case DoNotNeedToRegisterId => routes.DoNotNeedToRegisterController.onPageLoad
-    case RegistrationReasonId => routes.RegistrationReasonController.onPageLoad
-    case RegReasonResolverId => routes.RegReasonResolverController.resolve
-    case PreviousBusinessNameId => routes.PreviousBusinessNameController.onPageLoad
-    case VATNumberId => routes.VATNumberController.onPageLoad
-    case KeepOldVrnId => routes.KeepOldVrnController.onPageLoad
-    case TermsAndConditionsId => routes.TermsAndConditionsController.onPageLoad
-    case page => infoLog(s"${page.toString} does not exist navigating to start of the journey")
+    case MtdInformationId             => routes.MtdInformationController.onPageLoad
+    case TaxableSuppliesInUkId        => routes.TaxableSuppliesInUkController.onPageLoad
+    case DateOfBusinessTransferId     => routes.DateOfBusinessTransferController.onPageLoad
+    case ThresholdTaxableSuppliesId   => routes.ThresholdTaxableSuppliesController.onPageLoad
+    case DoNotNeedToRegisterId        => routes.DoNotNeedToRegisterController.onPageLoad
+    case RegistrationReasonId         => routes.RegistrationReasonController.onPageLoad
+    case RegReasonResolverId          => routes.RegReasonResolverController.resolve
+    case PreviousBusinessNameId       => routes.PreviousBusinessNameController.onPageLoad
+    case VATNumberId                  => routes.VATNumberController.onPageLoad
+    case KeepOldVrnId                 => routes.KeepOldVrnController.onPageLoad
+    case TermsAndConditionsId         => routes.TermsAndConditionsController.onPageLoad
+    case page =>
+      infoLog(s"${page.toString} does not exist navigating to start of the journey")
       controllers.routes.FixedEstablishmentController.onPageLoad
   }
 
-  private[utils] def nextOn[T](condition: T, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)
-                              (implicit reads: Reads[T], request: Request[_]): (Identifier, UserAnswers => Call) = {
+  private[utils] def nextOn[T](condition: T, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)(implicit
+      reads: Reads[T],
+      request: Request[_]): (Identifier, UserAnswers => Call) =
     fromPage -> {
       _.getAnswer[T](fromPage) match {
         case Some(`condition`) => pageIdToPageLoad(onSuccessPage)
-        case _ => pageIdToPageLoad(onFailPage)
+        case _                 => pageIdToPageLoad(onFailPage)
       }
     }
-  }
 
-  private[utils] def nextOn12MonthThresholdConditionalFormElement(condition: Boolean, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)(implicit request: Request[_]):
-  (Identifier, UserAnswers => Call) = {
+  private[utils] def nextOn12MonthThresholdConditionalFormElement(condition: Boolean,
+                                                                  fromPage: Identifier,
+                                                                  onSuccessPage: Identifier,
+                                                                  onFailPage: Identifier)(implicit
+      request: Request[_]): (Identifier, UserAnswers => Call) =
     fromPage -> {
       _.thresholdInTwelveMonths match {
         case Some(ConditionalDateFormElement(`condition`, _)) => pageIdToPageLoad(onSuccessPage)
-        case _ => pageIdToPageLoad(onFailPage)
+        case _                                                => pageIdToPageLoad(onFailPage)
       }
     }
-  }
 
-  private[utils] def nextOnNextThirtyDaysThresholdConditionalFormElement(condition: Boolean, fromPage: Identifier, onSuccessPage: Identifier, onFailPage: Identifier)(implicit request: Request[_]):
-  (Identifier, UserAnswers => Call) = {
+  private[utils] def nextOnNextThirtyDaysThresholdConditionalFormElement(condition: Boolean,
+                                                                         fromPage: Identifier,
+                                                                         onSuccessPage: Identifier,
+                                                                         onFailPage: Identifier)(implicit
+      request: Request[_]): (Identifier, UserAnswers => Call) =
     fromPage -> {
       _.thresholdNextThirtyDays match {
         case Some(ConditionalDateFormElement(`condition`, _)) => pageIdToPageLoad(onSuccessPage)
-        case _ => pageIdToPageLoad(onFailPage)
+        case _                                                => pageIdToPageLoad(onFailPage)
       }
     }
-  }
 
-  private[utils] def nextOnWithFeatureSwitch[T](condition: T,
-                                                featureSwitch: FeatureSwitch,
-                                                fromPage: Identifier, onSuccessPage: Identifier,
-                                                featureSwitchSuccessPage: Identifier,
-                                                onFailPage: Identifier
-                                               )(implicit reads: Reads[T], appConfig: FrontendAppConfig, request: Request[_]): (Identifier, UserAnswers => Call) = {
+  private[utils] def nextOnWithFeatureSwitch[T](
+      condition: T,
+      featureSwitch: FeatureSwitch,
+      fromPage: Identifier,
+      onSuccessPage: Identifier,
+      featureSwitchSuccessPage: Identifier,
+      onFailPage: Identifier)(implicit reads: Reads[T], appConfig: FrontendAppConfig, request: Request[_]): (Identifier, UserAnswers => Call) =
     fromPage -> {
       _.getAnswer[T](fromPage) match {
         case Some(`condition`) if isEnabled(featureSwitch) => pageIdToPageLoad(featureSwitchSuccessPage)
-        case Some(`condition`) => pageIdToPageLoad(onSuccessPage)
-        case _ => pageIdToPageLoad(onFailPage)
+        case Some(`condition`)                             => pageIdToPageLoad(onSuccessPage)
+        case _                                             => pageIdToPageLoad(onFailPage)
       }
     }
-  }
 
   private[utils] def toNextPage(fromPage: Identifier, toPage: Identifier)(implicit request: Request[_]): (Identifier, UserAnswers => Call) =
     fromPage -> { _ => pageIdToPageLoad(toPage) }
@@ -115,60 +121,62 @@ class Navigator @Inject extends LoggingUtil with FeatureSwitching {
   private def routeMap(implicit request: Request[_]): Map[Identifier, UserAnswers => Call] = Map(
     BusinessEntityId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
-        case Some(Other) => routes.BusinessEntityOtherController.onPageLoad
+        case Some(Other)       => routes.BusinessEntityOtherController.onPageLoad
         case Some(Partnership) => routes.BusinessEntityPartnershipController.onPageLoad
-        case Some(_) => routes.AgriculturalFlatRateSchemeController.onPageLoad
-        case _ => routes.BusinessEntityController.onPageLoad
+        case Some(_)           => routes.AgriculturalFlatRateSchemeController.onPageLoad
+        case _                 => routes.BusinessEntityController.onPageLoad
       }
     },
     BusinessEntityPartnershipId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
         case Some(_: PartnershipType) => routes.AgriculturalFlatRateSchemeController.onPageLoad
-        case _ => routes.BusinessEntityController.onPageLoad
+        case _                        => routes.BusinessEntityController.onPageLoad
       }
     },
     BusinessEntityOtherId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
-        case Some(Division) => routes.EligibilityDropoutController.onPageLoad(BusinessEntityId.toString)
+        case Some(Division)     => routes.EligibilityDropoutController.onPageLoad(BusinessEntityId.toString)
         case Some(_: OtherType) => routes.AgriculturalFlatRateSchemeController.onPageLoad
-        case _ => routes.BusinessEntityController.onPageLoad
+        case _                  => routes.BusinessEntityController.onPageLoad
       }
     },
-    nextOn(false,
+    nextOn(
+      false,
       fromPage = AgriculturalFlatRateSchemeId,
       onSuccessPage = InternationalActivitiesId,
       onFailPage = EligibilityDropoutId(AgriculturalFlatRateSchemeId.toString)
     ),
     FixedEstablishmentId -> { userAnswers =>
       userAnswers.fixedEstablishment match {
-        case Some(true) => pageIdToPageLoad(BusinessEntityId)
+        case Some(true)  => pageIdToPageLoad(BusinessEntityId)
         case Some(false) => pageIdToPageLoad(BusinessEntityOverseasId)
-        case _ => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
+        case _           => pageIdToPageLoad(EligibilityDropoutId(InternationalActivitiesId.toString))
       }
     },
     BusinessEntityOverseasId -> { userAnswers =>
       userAnswers.getAnswer[BusinessEntity](BusinessEntityId) match {
-        case Some(SoleTrader) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
-        case Some(Overseas) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
-        case Some(UKCompany) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(SoleTrader)         => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(Overseas)           => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
+        case Some(UKCompany)          => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
         case Some(GeneralPartnership) => pageIdToPageLoad(AgriculturalFlatRateSchemeId)
         case Some(_: PartnershipType) => routes.AgriculturalFlatRateSchemeController.onPageLoad
-        case Some(_: OtherType) => routes.AgriculturalFlatRateSchemeController.onPageLoad
-        case _ => pageIdToPageLoad(FixedEstablishmentId)
+        case Some(_: OtherType)       => routes.AgriculturalFlatRateSchemeController.onPageLoad
+        case _                        => pageIdToPageLoad(FixedEstablishmentId)
       }
     },
-    nextOn(false,
+    nextOn(
+      false,
       fromPage = InternationalActivitiesId,
       onSuccessPage = RegisteringBusinessId,
-      onFailPage = EligibilityDropoutId(InternationalActivitiesId.toString)
-    ),
+      onFailPage = EligibilityDropoutId(InternationalActivitiesId.toString)),
     toNextPage(
       fromPage = RegisteringBusinessId,
       toPage = RegistrationReasonId
     ),
     RegistrationReasonId -> { userAnswers =>
       userAnswers.fixedEstablishment match {
-        case Some(false) if userAnswers.registrationReason.exists(answer => List(TakingOverBusiness, ChangingLegalEntityOfBusiness).contains(answer)) =>
+        case Some(false)
+            if userAnswers.registrationReason.exists(answer => List(TakingOverBusiness, ChangingLegalEntityOfBusiness).contains(answer)) =>
           pageIdToPageLoad(RegReasonResolverId)
         case Some(false) =>
           pageIdToPageLoad(TaxableSuppliesInUkId)
@@ -189,30 +197,22 @@ class Navigator @Inject extends LoggingUtil with FeatureSwitching {
           pageIdToPageLoad(ThresholdTaxableSuppliesId)
       }
     },
-    nextOn12MonthThresholdConditionalFormElement(true,
+    nextOn12MonthThresholdConditionalFormElement(
+      true,
       fromPage = ThresholdInTwelveMonthsId,
       onSuccessPage = ThresholdPreviousThirtyDaysId,
-      onFailPage = ThresholdNextThirtyDaysId
-    ),
+      onFailPage = ThresholdNextThirtyDaysId),
     toNextPage(
       fromPage = ThresholdPreviousThirtyDaysId,
       toPage = VATRegistrationExceptionId
     ),
-    nextOnNextThirtyDaysThresholdConditionalFormElement(true,
+    nextOnNextThirtyDaysThresholdConditionalFormElement(
+      true,
       fromPage = ThresholdNextThirtyDaysId,
       onSuccessPage = VATRegistrationExceptionId,
-      onFailPage = VoluntaryRegistrationId
-    ),
-    nextOn(true,
-      fromPage = VATRegistrationExceptionId,
-      onSuccessPage = MtdInformationId,
-      onFailPage = MtdInformationId
-    ),
-    nextOn(true,
-      fromPage = VoluntaryRegistrationId,
-      onSuccessPage = MtdInformationId,
-      onFailPage = ChoseNotToRegisterId
-    ),
+      onFailPage = VoluntaryRegistrationId),
+    nextOn(true, fromPage = VATRegistrationExceptionId, onSuccessPage = MtdInformationId, onFailPage = MtdInformationId),
+    nextOn(true, fromPage = VoluntaryRegistrationId, onSuccessPage = MtdInformationId, onFailPage = ChoseNotToRegisterId),
     TaxableSuppliesInUkId -> { userAnswers =>
       if (userAnswers.taxableSuppliesInUk.contains(true)) {
         pageIdToPageLoad(RegReasonResolverId)
@@ -236,11 +236,7 @@ class Navigator @Inject extends LoggingUtil with FeatureSwitching {
       fromPage = VATNumberId,
       toPage = KeepOldVrnId
     ),
-    nextOn(true,
-      fromPage = KeepOldVrnId,
-      onSuccessPage = TermsAndConditionsId,
-      onFailPage = MtdInformationId
-    ),
+    nextOn(true, fromPage = KeepOldVrnId, onSuccessPage = TermsAndConditionsId, onFailPage = MtdInformationId),
     toNextPage(
       fromPage = TermsAndConditionsId,
       toPage = MtdInformationId

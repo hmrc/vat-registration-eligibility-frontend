@@ -29,7 +29,7 @@ class IndexControllerISpec extends IntegrationSpecBase {
       stubSuccessfulLogin()
       stubAudits()
 
-      val res = await(buildClient("/").get)
+      val res = await(buildClient("/").get())
 
       res.status mustBe SEE_OTHER
       res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
@@ -42,7 +42,7 @@ class IndexControllerISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(s"/journey/$testRegId").get)
+        val res = await(buildClient(s"/journey/$testRegId").get())
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(controllers.routes.FixedEstablishmentController.onPageLoad.url)
@@ -54,7 +54,7 @@ class IndexControllerISpec extends IntegrationSpecBase {
         stubUnauthorised()
         stubAudits()
 
-        val res = await(buildClient(s"/journey/$testRegId").get)
+        val res = await(buildClient(s"/journey/$testRegId").get())
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(routes.UnauthorisedController.onPageLoad.url)
@@ -63,7 +63,7 @@ class IndexControllerISpec extends IntegrationSpecBase {
 
     "the user is not logged in" must {
       "redirect to sign in url" in new Setup {
-        val res = await(buildClientWithoutSession(s"/journey/$testRegId").get)
+        val res = await(buildClientWithoutSession(s"/journey/$testRegId").get())
 
         res.status mustBe SEE_OTHER
         res.header(HeaderNames.LOCATION) mustBe Some(s"${appConfig.loginUrl}?continue=${URLEncoder.encode(appConfig.postSignInUrl, "utf-8")}")

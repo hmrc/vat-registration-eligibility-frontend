@@ -36,7 +36,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase {
 
         cacheSessionData(sessionIdStr, VATRegistrationExceptionId, true)
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
@@ -49,7 +49,7 @@ class VATRegistrationExceptionISpec extends IntegrationSpecBase {
         stubSuccessfulLogin()
         stubAudits()
 
-        val res = await(buildClient(pageUrl).get)
+        val res = await(buildClient(pageUrl).get())
         val doc = Jsoup.parse(res.body)
 
         res.status mustBe OK
