@@ -33,11 +33,27 @@ class DataCleardownService @Inject()(sessionService: SessionService)
   def cleardownOnAnswerChange[T](newAnswer: T, identifier: Identifier)
                                 (implicit request: DataRequest[AnyContent], headerCarrier: HeaderCarrier, reads: Reads[T]): Future[CacheMap] =
     (request.userAnswers.getAnswer[T](identifier), identifier) match {
-      case (Some(oldAnswer), RegistrationReasonId | FixedEstablishmentId) if oldAnswer != newAnswer => clearAllThresholdData
+      case (Some(oldAnswer), RegistrationReasonId) if oldAnswer != newAnswer => clearAllThresholdData
+      case (Some(oldAnswer), FixedEstablishmentId) if oldAnswer != newAnswer => clearAllThresholdAndBusinessEntityData
       case (None | Some(_), _) => Future.successful(request.userAnswers.cacheMap)
     }
 
   private def clearAllThresholdData(implicit headerCarrier: HeaderCarrier): Future[CacheMap] =
+    for {
+      _ <- sessionService.removeEntry(ThresholdInTwelveMonthsId.toString)
+      _ <- sessionService.removeEntry(ThresholdPreviousThirtyDaysId.toString)
+      _ <- sessionService.removeEntry(ThresholdNextThirtyDaysId.toString)
+      _ <- sessionService.removeEntry(VoluntaryRegistrationId.toString)
+      _ <- sessionService.removeEntry(DateOfBusinessTransferId.toString)
+      _ <- sessionService.removeEntry(PreviousBusinessNameId.toString)
+      _ <- sessionService.removeEntry(VATNumberId.toString)
+      _ <- sessionService.removeEntry(KeepOldVrnId.toString)
+      _ <- sessionService.removeEntry(TermsAndConditionsId.toString)
+      _ <- sessionService.removeEntry(TaxableSuppliesInUkId.toString)
+      cacheMap <- sessionService.removeEntry(ThresholdTaxableSuppliesId.toString)
+    } yield cacheMap
+
+  private def clearAllThresholdAndBusinessEntityData(implicit headerCarrier: HeaderCarrier): Future[CacheMap] =
     for {
       _ <- sessionService.removeEntry(BusinessEntityId.toString)
       _ <- sessionService.removeEntry(BusinessEntityPartnershipId.toString)
