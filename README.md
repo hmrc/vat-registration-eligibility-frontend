@@ -11,10 +11,10 @@ This microservice functions as part of the VAT registration journey to:
 
 This service is started as part of the `VAT_REG_ALL` profile.
 
-It can also be started individually using either `sm --start VAT_REG_EL_FE -r`, or if you're using sm2, `sm2 --start VAT_REG_EL_FE`.
+It can also be started individually using sm2, `sm2 --start VAT_REG_EL_FE`.
 
 Prior to starting the service locally, make sure the instance running in service manager is stopped. 
-This can be done by running either `sm --stop VAT_REG_EL_FE`, or `sm2 --stop VAT_REG_EL_FE` if using sm2
+This can be done by running using sm2 `sm2 --stop VAT_REG_EL_FE`.
 
 ### From source code on your local machine
 
@@ -64,7 +64,7 @@ Prior to committing changes, please run tests and check on coverage report
 - `integration tests` can be run with `sbt clean it/test`
 - `accessiblity tests` can be run with `sbt a11y:test` (This will need node.js and npm installed)
 
-Test coverage can be run using ```sbt clean coverage test it/test scalastyle coverageReport```.
+Test coverage can be run using ```sbt clean coverage test it/test scalastyle coverageReport``` or run the test script `run-all-tests.sh`.
 
 ## Test only routes
 The only test routes defined by the service are related to feature switches. These can be accessed by navigating to

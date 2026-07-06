@@ -62,14 +62,14 @@
         serviceName = Some(messages("service.name")),
         pageTitle = pageTitle,
         isWelshTranslationAvailable = true,
-        banners = Banners(
-            displayHmrcBanner = true,
-        ),
         templateOverrides = TemplateOverrides(
             additionalHeadBlock = Some(head),
             additionalScriptsBlock = Some(scripts),
             beforeContentBlock = beforeContentBlock,
         ),
-        backLink = if (backLink) Some(BackLink.mimicsBrowserBackButtonViaJavaScript) else None
+        backLink = if (backLink) Some(BackLink.mimicsBrowserBackButtonViaJavaScript) else None,
+        serviceNavigation = Some(
+            ServiceNavigation(serviceName = Some(messages("service.name"))).withLanguageToggle
+        )
     )
 )(content)
