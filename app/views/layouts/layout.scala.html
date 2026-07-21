@@ -21,6 +21,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.Banners
+@import featureswitch.core.models.FeatureSwitch.UrBannerEnabled
 
 @this(
     hmrcTimeoutDialog: HmrcTimeoutDialog,
@@ -28,9 +30,17 @@
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     standardBetaBanner: StandardBetaBanner,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    hmrcUserResearchBanner: HmrcUserResearchBanner
 )
 
-@(pageTitle: Option[String] = None, beforeContentBlock: Option[Html] = None, backLink: Boolean = false, signOutLink: Boolean = true, timeout:Boolean = true)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
+@(
+    pageTitle: Option[String] = None,
+    beforeContentBlock: Option[Html] = None,
+    backLink: Boolean = false,
+    signOutLink: Boolean = true,
+    timeout:Boolean = true,
+    urBanner: Option[UserResearchBanner] = None
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: FrontendAppConfig)
 
 @head = {
     <!--[if lte IE 8]><link href=' @controllers.routes.Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
@@ -66,6 +76,9 @@
             additionalHeadBlock = Some(head),
             additionalScriptsBlock = Some(scripts),
             beforeContentBlock = beforeContentBlock,
+        ),
+        banners = Banners(
+            additionalBannersBlock = if(appConfig.isEnabled(UrBannerEnabled)) urBanner.map(hmrcUserResearchBanner(_)) else None
         ),
         backLink = if (backLink) Some(BackLink.mimicsBrowserBackButtonViaJavaScript) else None,
         serviceNavigation = Some(

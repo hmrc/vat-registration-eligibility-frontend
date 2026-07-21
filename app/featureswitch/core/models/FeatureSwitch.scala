@@ -28,4 +28,9 @@ object FeatureSwitch {
     val displayName: String = "Taxable Turnover May-June Submit Deadline Page"
   }
 
+  case object UrBannerEnabled extends FeatureSwitch {
+    val configName: String  = "feature-switch.ur-banner-enabled"
+    val displayName: String = "UR Banner Enabled"
+  }
+
 }
