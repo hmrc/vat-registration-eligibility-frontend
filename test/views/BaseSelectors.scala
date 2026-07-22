@@ -35,7 +35,7 @@ trait BaseSelectors {
   val nthLabel: Int => String = i => s"form > div > div:nth-child($i) > label"
   val warning = "main .govuk-warning-text__text"
   val contactHmrc = "#contact-hmrc"
-  val button = ".govuk-button"
+  val button = "#main-content .govuk-button"
   val detailsSummary = ".govuk-details__summary-text"
   val detailsContent = ".govuk-details__text"
   val radioYes = "label[for=value]"

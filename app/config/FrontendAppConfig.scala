@@ -61,4 +61,6 @@ class FrontendAppConfig @Inject()(val servicesConfig: ServicesConfig, configurat
   lazy val calculateTurnoverUrl = "https://www.gov.uk/vat-registration/calculate-turnover"
 
   lazy val accessibilityStatementUrl = servicesConfig.getString("accessibility-statement.host") + "/accessibility-statement/vat-registration"
+
+  lazy val urBannerBaseUrl: String = loadConfig("urls.urBannerBase")
 }

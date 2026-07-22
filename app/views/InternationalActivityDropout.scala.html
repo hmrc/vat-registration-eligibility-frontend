@@ -16,6 +16,7 @@
 
 @import config.FrontendAppConfig
 @import models.requests.CacheIdentifierRequest
+@import utils.UrBannerUtil
 
 @this(
     layout: views.html.layouts.layout,
@@ -28,7 +29,11 @@
 
 @()(implicit request: CacheIdentifierRequest[_], messages: Messages, appConfig: FrontendAppConfig)
 
-@layout(pageTitle = Some(titleNoForm(messages("eligibilityDropout.heading"))), backLink = true) {
+@layout(
+    pageTitle = Some(titleNoForm(messages("eligibilityDropout.heading"))),
+    backLink = true,
+    urBanner = UrBannerUtil.getUrBanner()
+) {
 
     @h1(messages("eligibilityDropout.heading"))
     @p{ @messages("eligibility.international.special.text") }
