@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class VatRegistrationConnector @Inject()(val http: HttpClientV2,
                                          val servicesConfig: ServicesConfig) extends LoggingUtil {
-  lazy val vatRegistrationUrl: String = servicesConfig.baseUrl("vat-registration")
-  lazy val vatRegistrationUri: String =
+  private lazy val vatRegistrationUrl: String = servicesConfig.baseUrl("vat-registration")
+  private lazy val vatRegistrationUri: String =
     servicesConfig.getConfString("vat-registration.uri", throw new RuntimeException("expected incorporation-information.uri in config but none found"))
 
   def saveEligibility(regId: String, eligibility: JsValue)(implicit hc: HeaderCarrier, ec: ExecutionContext, request: Request[_]): Future[JsValue] = {
