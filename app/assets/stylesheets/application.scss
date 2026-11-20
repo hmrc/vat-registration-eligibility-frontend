@@ -8,3 +8,7 @@ $hmrc-assets-path: "/check-if-you-can-register-for-vat/assets/lib/hmrc-frontend/
   display: block;
   font-weight: bold;
 }
+
+.govuk-fieldset__legend.govuk-visually-hidden {
+  white-space: wrap !important
+}
